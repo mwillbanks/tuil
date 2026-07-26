@@ -44,6 +44,48 @@ import {
 
 export * from "@mwillbanks/tuil-core";
 export type {
+  OperationDefinition,
+  OperationProgress,
+  OperationSnapshot,
+  OperationStatus,
+} from "@mwillbanks/tuil-operations";
+export {
+  createOperation,
+  defineOperation,
+  OperationExecutor,
+} from "@mwillbanks/tuil-operations";
+export type {
+  NavigationEntry,
+  NavigationSurface,
+  NavigationTarget,
+  RouteDefinition,
+  RouteMatch,
+  RouterEvent,
+  RouterState,
+} from "@mwillbanks/tuil-router";
+export {
+  createRouter,
+  defineRoutes,
+  route,
+  TerminalRouter,
+} from "@mwillbanks/tuil-router";
+export type {
+  PersistedWorkflow,
+  WorkflowDefinition,
+  WorkflowEvent,
+  WorkflowSnapshot,
+  WorkflowStatus,
+  WorkflowStep,
+} from "@mwillbanks/tuil-workflow";
+export {
+  createWorkflow,
+  defineOperationStep,
+  defineStep,
+  defineWorkflow,
+  transition,
+  WorkflowRunner,
+} from "@mwillbanks/tuil-workflow";
+export type {
   EventDefinition,
   EventDefinitions,
   EventMap,

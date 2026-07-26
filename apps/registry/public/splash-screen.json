@@ -1,0 +1,19 @@
+{
+  "name": "splash-screen",
+  "type": "workflow",
+  "tier": 3,
+  "title": "Splash Screen",
+  "description": "Unicode-aware startup status and determinate progress screen.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["status", "progressbar"],
+  "slots": [],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["workflow"]
+}

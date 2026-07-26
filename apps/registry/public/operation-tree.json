@@ -1,0 +1,19 @@
+{
+  "name": "operation-tree",
+  "type": "workflow",
+  "tier": 3,
+  "title": "Operation Tree",
+  "description": "Expandable hierarchical operation display.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["tree", "treeitem", "status"],
+  "slots": ["root", "item", "title", "metadata"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["workflow"]
+}

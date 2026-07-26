@@ -1,0 +1,26 @@
+{
+  "name": "@mwillbanks/tuil-operations",
+  "version": "0.1.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "bun ../../tooling/build/package.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@mwillbanks/tuil-core": "workspace:*",
+    "@mwillbanks/tuil-events": "workspace:*",
+    "@tanstack/pacer": "catalog:",
+    "nusm": "catalog:"
+  },
+  "files": [
+    "dist"
+  ]
+}

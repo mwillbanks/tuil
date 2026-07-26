@@ -18,8 +18,18 @@
   },
   "dependencies": {
     "@mwillbanks/tuil": "workspace:*",
+    "@mwillbanks/tuil-core": "workspace:*",
+    "@mwillbanks/tuil-focus": "workspace:*",
+    "@mwillbanks/tuil-form": "workspace:*",
+    "@mwillbanks/tuil-hotkeys": "workspace:*",
     "@mwillbanks/tuil-ink": "workspace:*",
-    "@mwillbanks/tuil-registry": "workspace:*"
+    "@mwillbanks/tuil-operations": "workspace:*",
+    "@mwillbanks/tuil-registry": "workspace:*",
+    "@mwillbanks/tuil-router": "workspace:*",
+    "@mwillbanks/tuil-theme": "workspace:*",
+    "@mwillbanks/tuil-workflow": "workspace:*",
+    "ink": "catalog:",
+    "react": "catalog:"
   },
   "files": [
     "dist"

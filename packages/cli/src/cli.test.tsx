@@ -3,6 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { renderTuil } from "@mwillbanks/tuil-testing-ink";
+import { initWizardStories } from "../../../registry/blocks/init-wizard.stories.tsx";
 import { type InitAnswers, InitWizard } from "./index.tsx";
 
 const directories: string[] = [];
@@ -33,6 +34,30 @@ async function run(
 }
 
 describe("tuil CLI", () => {
+  test("keeps the self-hosted UI mirror identical to registry source", async () => {
+    const sourcePaths = [
+      "blocks/init-wizard.tsx",
+      "components/button.tsx",
+      "feedback/overlays.tsx",
+      "forms/controls.tsx",
+      "navigation/navigation.tsx",
+      "workflows/workflow.tsx",
+    ] as const;
+    for (const sourcePath of sourcePaths) {
+      expect(
+        await readFile(
+          join(import.meta.dir, `../../../registry/${sourcePath}`),
+          "utf8",
+        ),
+      ).toBe(
+        await readFile(
+          join(import.meta.dir, `generated-ui/${sourcePath}`),
+          "utf8",
+        ),
+      );
+    }
+  });
+
   test("creates a safe, complete project structure", async () => {
     const root = await mkdtemp(join(tmpdir(), "tuil-cli-"));
     directories.push(root);
@@ -64,6 +89,14 @@ describe("tuil CLI", () => {
       "@mwillbanks/tuil-form",
       "^0.1.0",
     );
+    expect(packageJson.dependencies).toHaveProperty(
+      "@mwillbanks/tuil-router",
+      "^0.1.0",
+    );
+    expect(packageJson.dependencies).toHaveProperty(
+      "@mwillbanks/tuil-workflow",
+      "^0.1.0",
+    );
     expect(await readFile(join(root, "demo/src/index.tsx"), "utf8")).toContain(
       "FeaturePanels",
     );
@@ -91,7 +124,16 @@ describe("tuil CLI", () => {
     ).toContain("export function TextInput");
     expect(
       await readFile(join(root, "demo/src/workflows/main.ts"), "utf8"),
-    ).toContain("nextWorkflowStep");
+    ).toContain("projectWorkflow");
+    expect(
+      await readFile(join(root, "demo/src/features/index.tsx"), "utf8"),
+    ).toContain("<Workflow workflow={projectWorkflow}>");
+    expect(
+      await readFile(join(root, "demo/src/features/index.tsx"), "utf8"),
+    ).toContain("<Workflow.Operations");
+    expect(
+      await readFile(join(root, "demo/src/features/router-panel.tsx"), "utf8"),
+    ).toContain("router.navigate");
   });
 
   test("installs registry source and protects local changes", async () => {
@@ -187,7 +229,21 @@ describe("tuil CLI", () => {
     );
     expect(librarySource).toContain("TextInput");
     expect(librarySource).toContain("Select");
-    expect(librarySource).toContain("29 components");
+    expect(librarySource).toContain("Breadcrumbs");
+    expect(librarySource).toContain("Stepper");
+    expect(
+      await readFile(
+        join(root, "component-library-demo/src/features/router-panel.tsx"),
+        "utf8",
+      ),
+    ).toContain("useSyncExternalStore");
+    expect(
+      await readFile(
+        join(root, "component-library-demo/src/workflows/main.ts"),
+        "utf8",
+      ),
+    ).toContain("defineOperation");
+    expect(librarySource).toContain("40 components");
     const invalid = await run(root, [
       "init",
       "invalid-demo",
@@ -202,6 +258,16 @@ describe("tuil CLI", () => {
 
   test("uses tuil input, focus, and buttons for interactive initialization", async () => {
     let answers: InitAnswers | undefined;
+    const focusWhenReady = async (
+      app: ReturnType<typeof renderTuil>["app"],
+      id: string,
+    ): Promise<void> => {
+      for (let attempt = 0; attempt < 100; attempt += 1) {
+        if (app.focus.focus(id)) return;
+        await Bun.sleep(1);
+      }
+      throw new Error(`Focus target "${id}" was not registered`);
+    };
     const view = renderTuil(
       <InitWizard
         initialName="demo"
@@ -214,21 +280,58 @@ describe("tuil CLI", () => {
       />,
     );
     await view.ready;
+    await focusWhenReady(view.app, "init-project-name");
+    await view.user.press("enter");
+    await focusWhenReady(view.app, "init-template");
+    await view.user.press("enter");
+    await view.user.press("enter");
+    await focusWhenReady(view.app, "init-features");
+    await view.user.press("space");
+    await focusWhenReady(view.app, "review-project");
     await view.user.press("enter");
     await Bun.sleep(10);
-    await view.user.press("tab");
-    await view.user.press("enter");
-    await Bun.sleep(10);
-    await view.user.press("enter");
-    await view.user.press("tab");
-    await view.user.press("tab");
-    await view.user.press("tab");
+    const confirm = view.screen.getByRole("button", {
+      name: "Create project",
+    });
+    expect(confirm.id).toBeDefined();
+    await focusWhenReady(view.app, confirm.id as string);
     await view.user.press("enter");
     expect(answers).toEqual({
       name: "demo",
       template: "application",
       features: ["router"],
     });
+    await view.cleanup();
+  });
+
+  test("renders the documented initializer static fallback story", async () => {
+    const story = initWizardStories.stories.StaticFallback;
+    const view = renderTuil(
+      <InitWizard
+        initialName={story.args.initialName ?? "static-tuil-app"}
+        onComplete={story.args.onComplete ?? (() => undefined)}
+        onCancel={story.args.onCancel ?? (() => undefined)}
+      />,
+      {
+        terminal: {
+          mode: "static",
+          capabilities: {
+            interactive: false,
+            tty: false,
+            unicode: story.terminal?.unicode,
+            width: story.terminal?.width,
+            height: story.terminal?.height,
+          },
+        },
+      },
+    );
+    await view.ready;
+    await Bun.sleep(10);
+    expect(view.screen.frame()).toContain("tuil init");
+    expect(view.screen.frame()).toContain("Project name");
+    expect(
+      view.screen.getByRole("textbox", { name: "Project name" }),
+    ).toBeDefined();
     await view.cleanup();
   });
 

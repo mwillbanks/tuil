@@ -22,8 +22,11 @@
     "@mwillbanks/tuil-events": "workspace:*",
     "@mwillbanks/tuil-focus": "workspace:*",
     "@mwillbanks/tuil-hotkeys": "workspace:*",
+    "@mwillbanks/tuil-operations": "workspace:*",
     "@mwillbanks/tuil-plugin": "workspace:*",
-    "@mwillbanks/tuil-theme": "workspace:*"
+    "@mwillbanks/tuil-router": "workspace:*",
+    "@mwillbanks/tuil-theme": "workspace:*",
+    "@mwillbanks/tuil-workflow": "workspace:*"
   },
   "peerDependencies": {
     "react": "catalog:"

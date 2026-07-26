@@ -1,5 +1,5 @@
-import { readdir, readFile } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { mkdir, readdir, readFile } from "node:fs/promises";
+import { dirname, join, resolve } from "node:path";
 
 interface RegistryManifest {
   name: string;
@@ -297,6 +297,74 @@ const metadata: Record<
     ],
     registryDependencies: ["button", "text-input"],
   },
+  tabs: {
+    target: "src/components/tuil/navigation/navigation.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
+  menu: {
+    target: "src/components/tuil/navigation/navigation.tsx",
+    dependencies: [],
+  },
+  menubar: {
+    target: "src/components/tuil/navigation/navigation.tsx",
+    dependencies: [],
+  },
+  breadcrumbs: {
+    target: "src/components/tuil/navigation/navigation.tsx",
+    dependencies: [],
+  },
+  stepper: {
+    target: "src/components/tuil/navigation/navigation.tsx",
+    dependencies: [],
+  },
+  workflow: {
+    target: "src/components/tuil/workflows/workflow.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-hotkeys",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-operations",
+      "@mwillbanks/tuil-theme",
+      "@mwillbanks/tuil-workflow",
+      "ink",
+      "react",
+    ],
+    registryDependencies: ["button", "dialog", "text-input", "tabs"],
+  },
+  "operation-list": {
+    target: "src/components/tuil/workflows/workflow.tsx",
+    dependencies: [],
+  },
+  "operation-tree": {
+    target: "src/components/tuil/workflows/workflow.tsx",
+    dependencies: [],
+  },
+  "splash-screen": {
+    target: "src/components/tuil/workflows/workflow.tsx",
+    dependencies: [],
+  },
+  "help-overlay": {
+    target: "src/components/tuil/workflows/workflow.tsx",
+    dependencies: [],
+  },
+  "init-wizard": {
+    target: "src/components/tuil/blocks/init-wizard.tsx",
+    dependencies: [
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-operations",
+      "@mwillbanks/tuil-router",
+      "@mwillbanks/tuil-workflow",
+      "react",
+    ],
+    registryDependencies: ["field", "workflow"],
+  },
 };
 
 const publicDirectory = resolve(import.meta.dir, "../../apps/registry/public");
@@ -324,6 +392,20 @@ const overlayAliases = new Set([
   "toast",
   "command-palette",
 ]);
+const navigationSourceOwner = "tabs";
+const navigationAliases = new Set([
+  "menu",
+  "menubar",
+  "breadcrumbs",
+  "stepper",
+]);
+const workflowSourceOwner = "workflow";
+const workflowAliases = new Set([
+  "operation-list",
+  "operation-tree",
+  "splash-screen",
+  "help-overlay",
+]);
 
 for (const manifestName of manifests) {
   const manifestPath = join(publicDirectory, manifestName);
@@ -338,7 +420,11 @@ for (const manifestName of manifests) {
     ? formSourceOwner
     : overlayAliases.has(manifest.name)
       ? overlaySourceOwner
-      : undefined;
+      : navigationAliases.has(manifest.name)
+        ? navigationSourceOwner
+        : workflowAliases.has(manifest.name)
+          ? workflowSourceOwner
+          : undefined;
   manifest.dependencies = sourceOwner ? [] : [...itemMetadata.dependencies];
   manifest.registryDependencies = sourceOwner
     ? [sourceOwner]
@@ -393,10 +479,34 @@ const generatedModulePath = resolve(
 await Bun.write(generatedModulePath, generatedModule);
 generatedPaths.push(generatedModulePath);
 
+const repositoryRoot = resolve(import.meta.dir, "../..");
+const selfHostedSources = [
+  "registry/blocks/init-wizard.tsx",
+  "registry/components/button.tsx",
+  "registry/feedback/overlays.tsx",
+  "registry/forms/controls.tsx",
+  "registry/navigation/navigation.tsx",
+  "registry/workflows/workflow.tsx",
+] as const;
+for (const sourcePath of selfHostedSources) {
+  generatedPaths.push(resolve(repositoryRoot, sourcePath));
+  const generatedPath = resolve(
+    repositoryRoot,
+    "packages/cli/src/generated-ui",
+    sourcePath.replace("registry/", ""),
+  );
+  await mkdir(dirname(generatedPath), { recursive: true });
+  await Bun.write(
+    generatedPath,
+    await readFile(resolve(repositoryRoot, sourcePath), "utf8"),
+  );
+  generatedPaths.push(generatedPath);
+}
+
 const formatter = Bun.spawn(
   [process.execPath, "biome", "format", "--write", ...generatedPaths],
   {
-    cwd: resolve(import.meta.dir, "../.."),
+    cwd: repositoryRoot,
     stdout: "pipe",
     stderr: "pipe",
   },

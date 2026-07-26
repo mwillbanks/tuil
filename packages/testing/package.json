@@ -17,6 +17,9 @@
   "dependencies": {
     "@mwillbanks/tuil-core": "workspace:*"
   },
+  "peerDependencies": {
+    "react": "catalog:"
+  },
   "files": [
     "dist"
   ]

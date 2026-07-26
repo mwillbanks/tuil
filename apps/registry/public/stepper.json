@@ -1,0 +1,19 @@
+{
+  "name": "stepper",
+  "type": "navigation",
+  "tier": 3,
+  "title": "Stepper",
+  "description": "Accessible workflow step progress for horizontal and vertical layouts.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["status", "button"],
+  "slots": ["root", "list", "item"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["tabs"]
+}

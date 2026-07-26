@@ -19,6 +19,7 @@ import {
 } from "node:path";
 import {
   createApp,
+  createPlugin,
   defineConfig,
   type RenderMode,
   type TuilConfig,
@@ -27,7 +28,6 @@ import {
   Alert,
   AppBar,
   AppShell,
-  Button,
   Heading,
   Progress,
   renderStatic,
@@ -35,7 +35,6 @@ import {
   Stack,
   StatusBar,
   Text,
-  useTerminalInput,
 } from "@mwillbanks/tuil-ink";
 import {
   FileRegistrySource,
@@ -48,8 +47,19 @@ import {
   type RegistryItemType,
   type RegistrySource,
 } from "@mwillbanks/tuil-registry";
-import { type ReactNode, useState } from "react";
+import type { ReactNode } from "react";
 import { generatedRegistryItems } from "./generated-registry.ts";
+import {
+  type Feature,
+  features,
+  type InitAnswers,
+  InitWizard,
+  type Template,
+  templates,
+} from "./generated-ui/blocks/init-wizard.tsx";
+
+export type { InitAnswers };
+export { InitWizard };
 
 const defaultConfig = defineConfig({
   renderer: "ink",
@@ -87,28 +97,6 @@ class BundledRegistrySource implements RegistrySource {
   }
 }
 
-type Template =
-  | "minimal"
-  | "application"
-  | "dashboard"
-  | "wizard"
-  | "command-center"
-  | "plugin"
-  | "component-library";
-
-const templates = [
-  "minimal",
-  "application",
-  "dashboard",
-  "wizard",
-  "command-center",
-  "plugin",
-  "component-library",
-] as const satisfies readonly Template[];
-
-const features = ["router", "forms", "workflow"] as const;
-type Feature = (typeof features)[number];
-
 const componentExports = {
   box: "Box",
   stack: "Stack",
@@ -139,6 +127,17 @@ const componentExports = {
   tooltip: "Tooltip",
   toast: "Toast",
   "command-palette": "CommandPalette",
+  tabs: "Tabs",
+  menu: "Menu",
+  menubar: "Menubar",
+  breadcrumbs: "Breadcrumbs",
+  stepper: "Stepper",
+  workflow: "Workflow",
+  "operation-list": "OperationList",
+  "operation-tree": "OperationTree",
+  "splash-screen": "SplashScreen",
+  "help-overlay": "HelpOverlay",
+  "init-wizard": "InitWizard",
 } as const;
 
 const templateComponents: Readonly<Record<Template, readonly string[]>> = {
@@ -425,7 +424,12 @@ export function App() {
 `;
   }
   if (template === "component-library") {
-    return `import {Alert, AppBar, AppShell, Badge, Box, Button, Checkbox, Container, Dialog, Divider, Field, Heading, Progress, Select, Spinner, Stack, StatusBar, Text, TextInput, Tooltip} from "../components/tuil/index.ts";
+    return `import {Alert, AppBar, AppShell, Badge, Box, Breadcrumbs, Button, Checkbox, Container, Dialog, Divider, Field, Heading, Progress, Select, Spinner, Stack, StatusBar, Stepper, Tabs, Text, TextInput, Tooltip} from "../components/tuil/index.ts";
+
+const catalogSections = [
+  {id: "foundation", label: "Foundation", content: "Layout and typography"},
+  {id: "forms", label: "Forms", content: "Validated terminal input"},
+] as const;
 
 export function App() {
   return (
@@ -443,6 +447,9 @@ export function App() {
             <Field label="Search components"><TextInput id="component-search" label="Search components" /></Field>
             <Checkbox id="interactive-components">Interactive components</Checkbox>
             <Select id="component-category" label="Component category" options={[{value: "forms", label: "Forms"}, {value: "feedback", label: "Feedback"}]} />
+            <Breadcrumbs items={[{id: "catalog", label: "Catalog"}, {id: "components", label: "Components"}]} />
+            <Tabs id="catalog-sections" items={catalogSections} />
+            <Stepper steps={[{id: "install", label: "Install", status: "completed"}, {id: "customize", label: "Customize", status: "current"}, {id: "ship", label: "Ship"}]} current="customize" />
             <Tooltip targetId="inspect-component" content="Open the selected component">
             <Button id="inspect-component" autoFocus>Inspect</Button>
             </Tooltip>
@@ -481,6 +488,12 @@ function projectFiles(
   enabledFeatures: readonly Feature[],
   themePreset: string,
 ): Readonly<Record<string, string>> {
+  const formsEnabled =
+    enabledFeatures.includes("forms") || template === "component-library";
+  const routerEnabled =
+    enabledFeatures.includes("router") || template === "component-library";
+  const workflowEnabled =
+    enabledFeatures.includes("workflow") || template === "component-library";
   const dependencies: Record<string, string> = {
     "@mwillbanks/tuil": "^0.1.0",
     "@mwillbanks/tuil-core": "^0.1.0",
@@ -491,9 +504,16 @@ function projectFiles(
     ink: "^7.1.0",
     react: "^19.0.0",
   };
-  if (enabledFeatures.includes("forms") || template === "component-library") {
+  if (formsEnabled) {
     dependencies["@mwillbanks/tuil-form"] = "^0.1.0";
     dependencies["@tanstack/react-form"] = "^1.33.2";
+  }
+  if (routerEnabled) {
+    dependencies["@mwillbanks/tuil-router"] = "^0.1.0";
+  }
+  if (workflowEnabled) {
+    dependencies["@mwillbanks/tuil-operations"] = "^0.1.0";
+    dependencies["@mwillbanks/tuil-workflow"] = "^0.1.0";
   }
   const files: Record<string, string> = {
     "package.json": `${JSON.stringify(
@@ -551,32 +571,55 @@ function projectFiles(
     "src/app/app.tsx": templateAppSource(name, template, enabledFeatures),
     "src/app/commands.ts": `import {defineCommand} from "@mwillbanks/tuil";\n\nexport const quitCommand = defineCommand({\n  id: "app.quit",\n  title: "Quit",\n  hotkeys: ["ctrl+c"],\n  execute() {\n    process.exitCode = 0;\n  },\n});\n`,
     "src/app/events.ts": `import {defineEvents, event} from "@mwillbanks/tuil";\n\nexport const events = defineEvents({\n  "app:message": event<{message: string}>(),\n});\n`,
-    "src/app/routes.ts": `export interface ApplicationRoute {\n  readonly id: string;\n  readonly title: string;\n}\n\nexport const routes = [\n  {id: "home", title: "Home"},\n  ${enabledFeatures.includes("router") ? '{id: "settings", title: "Settings"},' : ""}\n] as const satisfies readonly ApplicationRoute[];\n`,
+    "src/app/routes.ts": routerEnabled
+      ? `import {createRouter, defineRoutes, route} from "@mwillbanks/tuil-router";\n\nexport const routeDefinitions = defineRoutes({\n  home: route({component: "Home"}),\n  settings: route({\n    component: "Settings",\n    loader: async ({signal}) => {\n      signal.throwIfAborted();\n      return {ready: true};\n    },\n  }),\n});\n\nexport const router = createRouter(routeDefinitions);\nexport const routes = [\n  {id: "home", title: "Home"},\n  {id: "settings", title: "Settings"},\n] as const;\n`
+      : `export interface ApplicationRoute {\n  readonly id: string;\n  readonly title: string;\n}\n\nexport const routes = [\n  {id: "home", title: "Home"},\n] as const satisfies readonly ApplicationRoute[];\n`,
     "src/app/theme.ts": `export {theme} from "../lib/theme.ts";\n`,
     "tests/app.test.ts": `import {expect, test} from "bun:test";\nimport {routes} from "../src/app/routes.ts";\n\ntest("project is configured", () => {\n  expect(${JSON.stringify(name)}).not.toBeEmpty();\n  expect(routes[0]?.id).toBe("home");\n});\n`,
   };
-  files["src/features/index.tsx"] = enabledFeatures.includes("forms")
-    ? `import {Text} from "../components/tuil/index.ts";\nimport {ProjectForm} from "./project-form.tsx";\n\nexport function FeaturePanels() {\n  return <><Text>Project setup</Text><ProjectForm onSubmit={() => undefined} /></>;\n}\n`
-    : `export function FeaturePanels() {\n  return null;\n}\n`;
-  if (enabledFeatures.includes("forms")) {
+  const featureImports = [
+    formsEnabled ? 'import {ProjectForm} from "./project-form.tsx";' : "",
+    routerEnabled ? 'import {RouterPanel} from "./router-panel.tsx";' : "",
+    workflowEnabled
+      ? 'import {Text, Workflow} from "../components/tuil/index.ts";\nimport {projectWorkflow} from "../workflows/main.ts";'
+      : formsEnabled
+        ? 'import {Text} from "../components/tuil/index.ts";'
+        : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+  const featurePanels = [
+    formsEnabled
+      ? "<Text>Project setup</Text><ProjectForm onSubmit={() => undefined} />"
+      : "",
+    routerEnabled ? "<RouterPanel />" : "",
+    workflowEnabled
+      ? "<Workflow workflow={projectWorkflow}><Workflow.Stepper /><Workflow.Content /><Workflow.Errors /><Workflow.Operations expandable showDuration showAttempts /><Workflow.Actions showSkip /></Workflow>"
+      : "",
+  ]
+    .filter(Boolean)
+    .join("");
+  files["src/features/index.tsx"] =
+    featurePanels.length > 0
+      ? `${featureImports}\n\nexport function FeaturePanels() {\n  return <>${featurePanels}</>;\n}\n`
+      : `export function FeaturePanels() {\n  return null;\n}\n`;
+  if (formsEnabled) {
     files["src/features/project-form.tsx"] =
       `import {adaptTanStackField, useForm} from "@mwillbanks/tuil-form";\nimport {Button, Field, Form, TextInput, ValidationSummary} from "../components/tuil/index.ts";\n\nexport interface ProjectFormValues {\n  readonly name: string;\n  readonly description: string;\n}\n\nexport function ProjectForm(props: {readonly onSubmit: (values: ProjectFormValues) => void | Promise<void>}) {\n  const form = useForm({\n    defaultValues: {name: "", description: ""},\n    onSubmit: ({value}) => props.onSubmit(value),\n  });\n  return (\n    <Form id="project-form" onSubmit={() => form.handleSubmit()}>\n      <form.Field\n        name="name"\n        validators={{onSubmit: ({value}) => value.trim() ? undefined : "Project name is required"}}\n      >\n        {(field) => {\n          const terminalField = adaptTanStackField(field);\n          return (\n            <Field label="Project name" field={terminalField} required>\n              <TextInput\n                id={field.name}\n                label="Project name"\n                field={terminalField}\n                autoFocus\n              />\n            </Field>\n          );\n        }}\n      </form.Field>\n      <ValidationSummary />\n      <Button command="project-form.submit">Create</Button>\n    </Form>\n  );\n}\n`;
   }
-  if (enabledFeatures.includes("workflow")) {
+  if (routerEnabled) {
+    files["src/features/router-panel.tsx"] =
+      `import {useEffect, useSyncExternalStore} from "react";\nimport {Breadcrumbs, Tabs, Text} from "../components/tuil/index.ts";\nimport {router, routes} from "../app/routes.ts";\n\nexport function RouterPanel() {\n  const state = useSyncExternalStore(\n    (notify) => router.subscribe(notify),\n    () => router.state,\n    () => router.state,\n  );\n  useEffect(() => {\n    if (!router.state.location) {\n      void router.navigate({to: "home"}).catch(() => undefined);\n    }\n  }, []);\n  const current = state.location?.route ?? "home";\n  return (\n    <>\n      <Breadcrumbs items={routes.map((item) => ({id: item.id, label: item.title, current: item.id === current}))} />\n      <Tabs\n        id="application-routes"\n        items={routes.map((item) => ({id: item.id, label: item.title, content: item.title}))}\n        value={current}\n        onValueChange={async (to) => {\n          if (to === "home" || to === "settings") await router.navigate({to});\n        }}\n      />\n      {state.error ? <Text>Navigation error: {String(state.error)}</Text> : null}\n    </>\n  );\n}\n`;
+  }
+  if (workflowEnabled) {
     files["src/workflows/main.ts"] =
-      `export const workflowSteps = ["configure", "review", "complete"] as const;\nexport type WorkflowStep = (typeof workflowSteps)[number];\n\nexport function nextWorkflowStep(step: WorkflowStep): WorkflowStep {\n  const index = workflowSteps.indexOf(step);\n  return workflowSteps[Math.min(index + 1, workflowSteps.length - 1)] as WorkflowStep;\n}\n`;
+      `import {defineOperation} from "@mwillbanks/tuil-operations";\nimport {createWorkflow, defineOperationStep, defineStep, defineWorkflow, transition} from "@mwillbanks/tuil-workflow";\n\nconst provision = defineOperation({\n  id: "project.provision",\n  title: "Provision project",\n  async run({signal, updateProgress}) {\n    signal.throwIfAborted();\n    updateProgress({current: 1, total: 1, message: "Ready"});\n    return {created: true};\n  },\n});\n\nexport const projectWorkflow = createWorkflow(defineWorkflow({\n  id: "project.create",\n  version: 1,\n  initialState: {approved: false},\n  steps: {\n    configure: defineStep({title: "Configure", component: "Configure the project", help: "Choose project settings."}),\n    review: defineStep({title: "Review", component: "Review the selected settings"}),\n    complete: defineOperationStep({title: "Create", operations: [provision]}),\n  },\n  transitions: [transition("configure", "review"), transition("review", "complete")],\n}));\n`;
   }
   if (template === "plugin") {
     files["src/plugins/example.ts"] =
       `import {createPlugin} from "@mwillbanks/tuil";\n\nexport const examplePlugin = createPlugin({\n  id: "example",\n  version: "0.1.0",\n  setup(context) {\n    return context.registry.register({\n      id: "example.status",\n      title: "Example plugin status",\n    });\n  },\n});\n`;
   }
   return files;
-}
-
-export interface InitAnswers {
-  readonly name: string;
-  readonly template: Template;
-  readonly features: readonly Feature[];
 }
 
 function parseTemplate(value: unknown): Template {
@@ -588,125 +631,16 @@ function parseTemplate(value: unknown): Template {
   return value as Template;
 }
 
-export function InitWizard(props: {
-  readonly initialName: string;
-  readonly onComplete: (answers: InitAnswers) => void;
-  readonly onCancel: () => void;
-}): ReactNode {
-  const [stage, setStage] = useState<"name" | "template" | "features">("name");
-  const [name, setName] = useState(props.initialName);
-  const [template, setTemplate] = useState<Template>("application");
-  const [selectedFeatures, setSelectedFeatures] = useState<readonly Feature[]>(
-    [],
-  );
-  useTerminalInput(
-    (input, key) => {
-      if (stage !== "name") return false;
-      if (key.ctrl || key.meta || key.escape || key.tab) return false;
-      if (key.return) {
-        if (name.trim().length > 0) setStage("template");
-        return true;
-      }
-      if (key.backspace || key.delete) {
-        setName((current) => current.slice(0, -1));
-        return true;
-      }
-      if (/^[\x20-\x7e]+$/.test(input)) {
-        setName((current) => `${current}${input}`);
-        return true;
-      }
-      return false;
-    },
-    { enabled: stage === "name", priority: 1_000 },
-  );
-  const toggleFeature = (feature: Feature) => {
-    setSelectedFeatures((current) =>
-      current.includes(feature)
-        ? current.filter((value) => value !== feature)
-        : [...current, feature],
-    );
-  };
-  return (
-    <AppShell>
-      <AppShell.AppBar>
-        <AppBar>
-          <Heading>tuil init</Heading>
-        </AppBar>
-      </AppShell.AppBar>
-      <AppShell.Main>
-        <Stack gap="sm">
-          {stage === "name" ? (
-            <>
-              <Text>Project name</Text>
-              <Text>{`> ${name}_`}</Text>
-              <Text>Type a name, then press Enter.</Text>
-            </>
-          ) : null}
-          {stage === "template" ? (
-            <>
-              <Text>Select a template</Text>
-              {templates.map((value, index) => (
-                <Button
-                  id={`template-${value}`}
-                  key={value}
-                  autoFocus={index === 0}
-                  onPress={() => {
-                    setTemplate(value);
-                    setStage("features");
-                  }}
-                >
-                  {value}
-                </Button>
-              ))}
-            </>
-          ) : null}
-          {stage === "features" ? (
-            <>
-              <Text>Select optional features</Text>
-              {features.map((feature, index) => (
-                <Button
-                  id={`feature-${feature}`}
-                  key={feature}
-                  autoFocus={index === 0}
-                  prefix={selectedFeatures.includes(feature) ? "[x] " : "[ ] "}
-                  onPress={() => toggleFeature(feature)}
-                >
-                  {feature}
-                </Button>
-              ))}
-              <Button
-                id="create-project"
-                hotkeys={["ctrl+enter"]}
-                onPress={() =>
-                  props.onComplete({
-                    name: name.trim(),
-                    template,
-                    features: selectedFeatures,
-                  })
-                }
-              >
-                Create project
-              </Button>
-            </>
-          ) : null}
-          <Button
-            id="cancel-init"
-            variant="danger"
-            hotkeys={["ctrl+c"]}
-            onPress={props.onCancel}
-          >
-            Cancel
-          </Button>
-        </Stack>
-      </AppShell.Main>
-      <AppShell.StatusBar>
-        <StatusBar>
-          <Text>Tab navigate · Enter select · Ctrl+C cancel</Text>
-        </StatusBar>
-      </AppShell.StatusBar>
-    </AppShell>
-  );
-}
+const initializerPlugin = createPlugin({
+  id: "tuil.initializer",
+  version: "0.1.0",
+  setup(context) {
+    return context.registry.register({
+      id: "tuil.initializer",
+      title: "tuil project initializer",
+    });
+  },
+});
 
 async function promptInit(name: string | undefined): Promise<InitAnswers> {
   let complete: ((answers: InitAnswers) => void) | undefined;
@@ -723,6 +657,14 @@ async function promptInit(name: string | undefined): Promise<InitAnswers> {
         onCancel={() => cancel?.(new Error("Initialization cancelled"))}
       />
     ),
+    plugins: [initializerPlugin],
+    errorHandler(error) {
+      cancel?.(
+        error instanceof Error
+          ? error
+          : new Error("Initialization failed", { cause: error }),
+      );
+    },
     terminal: { mode: "interactive" },
   });
   const instance = await renderTuil(app, { exitOnCtrlC: false });
@@ -768,7 +710,17 @@ async function writeComponentBarrel(
               item.name,
             )
           ? plan.find((candidate) => candidate.name === "dialog")?.files[0]
-          : undefined);
+          : ["menu", "menubar", "breadcrumbs", "stepper"].includes(item.name)
+            ? plan.find((candidate) => candidate.name === "tabs")?.files[0]
+            : [
+                  "operation-list",
+                  "operation-tree",
+                  "splash-screen",
+                  "help-overlay",
+                ].includes(item.name)
+              ? plan.find((candidate) => candidate.name === "workflow")
+                  ?.files[0]
+              : undefined);
     if (!file) return [];
     const modulePath = relative(base, file.target).replaceAll("\\", "/");
     return [
@@ -825,6 +777,10 @@ async function runInit(args: ParsedArguments): Promise<void> {
     ...templateComponents[prompted.template],
     ...(prompted.features.includes("forms")
       ? ["button", "field", "text-input"]
+      : []),
+    ...(prompted.features.includes("router") ? ["tabs", "breadcrumbs"] : []),
+    ...(prompted.features.includes("workflow")
+      ? ["workflow", "operation-list", "stepper"]
       : []),
     themePreset,
   ];

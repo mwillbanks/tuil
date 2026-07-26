@@ -169,10 +169,12 @@ try {
         type: "module",
         dependencies: {
           "@tanstack/react-form": "^1.33.2",
+          "@tanstack/pacer": "^0.21.1",
           ink: "^7.1.1",
           "ink-testing-library": "^4.0.0",
           react: "^19.2.8",
           "react-devtools-core": "^7.0.1",
+          nusm: "^1.1.0",
           "@types/bun": "latest",
           "@types/react": "^19.2.17",
           typescript: "^7.0.2",
@@ -210,7 +212,7 @@ try {
   await Bun.write(
     join(consumer, "smoke.ts"),
     `import {Lifecycle} from "@mwillbanks/tuil-core";
-import {createApp} from "@mwillbanks/tuil";
+import {createApp, createOperation, createRouter, createWorkflow, defineOperation, defineRoutes, defineStep, defineWorkflow, route} from "@mwillbanks/tuil";
 import {Text, renderStatic} from "@mwillbanks/tuil-ink";
 import {createElement} from "react";
 
@@ -224,6 +226,26 @@ if (!(app.lifecycle instanceof Lifecycle)) {
 const frame = await renderStatic(app);
 if (!frame.includes("published runtime")) {
   throw new Error("consumer could not render through the packed packages");
+}
+const operation = createOperation(defineOperation({id: "smoke", title: "Smoke", run: () => "ok"}));
+if (await operation.execute() !== "ok") {
+  throw new Error("consumer could not execute packed operations");
+}
+const router = createRouter(defineRoutes({home: route({})}));
+if ((await router.navigate({to: "home"})).route !== "home") {
+  throw new Error("consumer could not navigate with the packed router");
+}
+const workflow = createWorkflow(defineWorkflow({
+  id: "smoke",
+  version: 1,
+  initialState: {},
+  steps: {only: defineStep({})},
+  transitions: [],
+}));
+await workflow.start();
+await workflow.next();
+if (workflow.snapshot.status !== "completed") {
+  throw new Error("consumer could not execute the packed workflow");
 }
 `,
   );

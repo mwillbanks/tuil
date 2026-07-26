@@ -1,0 +1,19 @@
+{
+  "name": "operation-list",
+  "type": "workflow",
+  "tier": 3,
+  "title": "Operation List",
+  "description": "Observable operation status, progress, attempts, duration, errors, and children.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["status"],
+  "slots": ["root", "item", "title", "metadata"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["workflow"]
+}

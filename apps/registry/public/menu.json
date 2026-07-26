@@ -1,0 +1,19 @@
+{
+  "name": "menu",
+  "type": "navigation",
+  "tier": 3,
+  "title": "Menu",
+  "description": "Keyboard-driven command menu with nested submenu support.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["menu", "menuitem"],
+  "slots": ["root", "list", "item"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["tabs"]
+}

@@ -10,8 +10,10 @@
     ],
     "catalog": {
       "@tanstack/react-form": "^1.33.2",
+      "@tanstack/pacer": "^0.21.1",
       "ink": "^7.1.1",
       "ink-testing-library": "^4.0.0",
+      "nusm": "^1.1.0",
       "react": "^19.2.8"
     }
   },
@@ -31,10 +33,12 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.5",
     "@tanstack/react-form": "catalog:",
+    "@tanstack/pacer": "catalog:",
     "@types/bun": "latest",
     "@types/react": "^19.2.17",
     "ink": "^7.1.1",
     "ink-testing-library": "^4.0.0",
+    "nusm": "catalog:",
     "react": "^19.2.8",
     "react-devtools-core": "^7.0.1",
     "typescript": "^7.0.2"

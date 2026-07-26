@@ -1,0 +1,19 @@
+{
+  "name": "breadcrumbs",
+  "type": "navigation",
+  "tier": 3,
+  "title": "Breadcrumbs",
+  "description": "Semantic route breadcrumbs with keyboard and command activation.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["navigation", "button"],
+  "slots": ["root", "list", "item"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["tabs"]
+}

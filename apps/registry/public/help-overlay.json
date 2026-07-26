@@ -1,0 +1,19 @@
+{
+  "name": "help-overlay",
+  "type": "workflow",
+  "tier": 3,
+  "title": "Help Overlay",
+  "description": "Hotkey-opened searchable help generated from the live command registry.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["dialog", "textbox"],
+  "slots": [],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["workflow"]
+}

@@ -38,6 +38,12 @@
       "description": "Theme-aware Ink layout primitive."
     },
     {
+      "name": "breadcrumbs",
+      "type": "navigation",
+      "title": "Breadcrumbs",
+      "description": "Semantic route breadcrumbs with keyboard and command activation."
+    },
+    {
       "name": "button",
       "type": "component",
       "title": "Button",
@@ -98,6 +104,30 @@
       "description": "Semantic terminal heading."
     },
     {
+      "name": "help-overlay",
+      "type": "workflow",
+      "title": "Help Overlay",
+      "description": "Hotkey-opened searchable help generated from the live command registry."
+    },
+    {
+      "name": "init-wizard",
+      "type": "block",
+      "title": "Project Initializer",
+      "description": "Complete self-hosted tuil init application block."
+    },
+    {
+      "name": "menu",
+      "type": "navigation",
+      "title": "Menu",
+      "description": "Keyboard-driven command menu with nested submenu support."
+    },
+    {
+      "name": "menubar",
+      "type": "navigation",
+      "title": "Menubar",
+      "description": "Terminal menubar with horizontal menu switching and command execution."
+    },
+    {
       "name": "multi-select",
       "type": "form",
       "title": "Multi Select",
@@ -108,6 +138,18 @@
       "type": "form",
       "title": "Number Input",
       "description": "Bounded numeric editor with keyboard stepping."
+    },
+    {
+      "name": "operation-list",
+      "type": "workflow",
+      "title": "Operation List",
+      "description": "Observable operation status, progress, attempts, duration, errors, and children."
+    },
+    {
+      "name": "operation-tree",
+      "type": "workflow",
+      "title": "Operation Tree",
+      "description": "Expandable hierarchical operation display."
     },
     {
       "name": "progress",
@@ -134,6 +176,12 @@
       "description": "Capability-aware activity spinner."
     },
     {
+      "name": "splash-screen",
+      "type": "workflow",
+      "title": "Splash Screen",
+      "description": "Unicode-aware startup status and determinate progress screen."
+    },
+    {
       "name": "stack",
       "type": "primitive",
       "title": "Stack",
@@ -146,10 +194,22 @@
       "description": "Persistent status region."
     },
     {
+      "name": "stepper",
+      "type": "navigation",
+      "title": "Stepper",
+      "description": "Accessible workflow step progress for horizontal and vertical layouts."
+    },
+    {
       "name": "switch",
       "type": "form",
       "title": "Switch",
       "description": "Focusable controlled or uncontrolled boolean switch."
+    },
+    {
+      "name": "tabs",
+      "type": "navigation",
+      "title": "Tabs",
+      "description": "Controlled or uncontrolled terminal tabs with roving keyboard navigation."
     },
     {
       "name": "text-area",
@@ -180,6 +240,12 @@
       "type": "feedback",
       "title": "Tooltip",
       "description": "Delayed focus and explicit-help tooltip with accessible metadata."
+    },
+    {
+      "name": "workflow",
+      "type": "workflow",
+      "title": "Workflow",
+      "description": "Replaceable compound UI for real persistable workflow runners."
     }
   ]
 }

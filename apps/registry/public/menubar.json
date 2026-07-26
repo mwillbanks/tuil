@@ -1,0 +1,19 @@
+{
+  "name": "menubar",
+  "type": "navigation",
+  "tier": 3,
+  "title": "Menubar",
+  "description": "Terminal menubar with horizontal menu switching and command execution.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["menu", "menuitem"],
+  "slots": ["root", "list", "item"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["tabs"]
+}

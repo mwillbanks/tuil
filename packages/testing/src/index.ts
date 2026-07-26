@@ -1,4 +1,49 @@
 import type { SemanticRole } from "@mwillbanks/tuil-core";
+import type { ComponentType } from "react";
+
+export interface TuilStory<TProps> {
+  readonly args: Partial<TProps>;
+  readonly description?: string;
+  readonly terminal?: {
+    readonly width?: number;
+    readonly height?: number;
+    readonly unicode?: boolean;
+    readonly interactive?: boolean;
+  };
+}
+
+export interface TuilStoryDefinition<
+  TProps,
+  TStories extends Readonly<Record<string, TuilStory<TProps>>>,
+> {
+  readonly component: ComponentType<TProps>;
+  readonly stories: TStories;
+}
+
+export function defineTuilStories<
+  TProps,
+  const TStories extends Readonly<Record<string, TuilStory<TProps>>>,
+>(
+  definition: TuilStoryDefinition<TProps, TStories>,
+): TuilStoryDefinition<TProps, TStories> {
+  return Object.freeze({
+    component: definition.component,
+    stories: Object.freeze(
+      Object.fromEntries(
+        Object.entries(definition.stories).map(([name, story]) => [
+          name,
+          Object.freeze({
+            ...story,
+            args: Object.freeze({ ...story.args }),
+            terminal: story.terminal
+              ? Object.freeze({ ...story.terminal })
+              : undefined,
+          }),
+        ]),
+      ) as unknown as TStories,
+    ),
+  });
+}
 
 export interface QueryableSemanticNode {
   readonly key: string;
