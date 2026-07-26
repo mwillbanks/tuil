@@ -1,5 +1,5 @@
 [test]
-onlyFailures = true
+bail = 1
 coverage = true
 # Bun enforces these floors per directly covered file. The thresholds match
 # the current lowest non-generated implementation and therefore turn any
@@ -18,4 +18,5 @@ coveragePathIgnorePatterns = [
   "registry/**/*.stories.tsx",
   "tooling/release/artifacts.ts",
 ]
+onlyFailures = true
 pathIgnorePatterns = ["apps/docs/**"]
