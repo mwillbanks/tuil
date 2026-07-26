@@ -82,6 +82,17 @@ export class FocusManager {
       order: node.order ?? this.#registrationOrder++,
     }) as FocusNode;
     this.#nodes.set(node.id, registered);
+    const trapScopeId = this.#trapScopeIds.at(-1);
+    const focused = this.#focusedId
+      ? this.#nodes.get(this.#focusedId)
+      : undefined;
+    if (
+      trapScopeId &&
+      this.#belongsToScope(registered, trapScopeId) &&
+      (!focused || !this.#belongsToScope(focused, trapScopeId))
+    ) {
+      this.first();
+    }
     return () => {
       this.#nodes.delete(node.id);
       if (this.#focusedId === node.id) {

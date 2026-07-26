@@ -2,76 +2,10 @@
   "name": "tuil",
   "items": [
     {
-      "name": "box",
-      "type": "primitive",
-      "title": "Box",
-      "description": "Theme-aware Ink layout primitive."
-    },
-    {
-      "name": "stack",
-      "type": "primitive",
-      "title": "Stack",
-      "description": "Vertical, horizontal, and configurable stack layouts."
-    },
-    {
-      "name": "container",
-      "type": "primitive",
-      "title": "Container",
-      "description": "Width-constrained terminal container."
-    },
-    {
-      "name": "text",
-      "type": "data-display",
-      "title": "Text",
-      "description": "Semantic terminal text."
-    },
-    {
-      "name": "heading",
-      "type": "data-display",
-      "title": "Heading",
-      "description": "Semantic terminal heading."
-    },
-    {
-      "name": "divider",
-      "type": "data-display",
-      "title": "Divider",
-      "description": "Terminal-safe horizontal or vertical divider."
-    },
-    {
-      "name": "button",
-      "type": "component",
-      "title": "Button",
-      "description": "Focusable command-aware button."
-    },
-    {
-      "name": "badge",
-      "type": "data-display",
-      "title": "Badge",
-      "description": "Semantic status badge."
-    },
-    {
-      "name": "spinner",
-      "type": "feedback",
-      "title": "Spinner",
-      "description": "Capability-aware activity spinner."
-    },
-    {
-      "name": "progress",
-      "type": "feedback",
-      "title": "Progress",
-      "description": "Bounded terminal progress bar."
-    },
-    {
       "name": "alert",
       "type": "feedback",
       "title": "Alert",
       "description": "Semantic terminal alert."
-    },
-    {
-      "name": "app-shell",
-      "type": "component",
-      "title": "App Shell",
-      "description": "Compound application shell."
     },
     {
       "name": "app-bar",
@@ -80,16 +14,172 @@
       "description": "Application header region."
     },
     {
-      "name": "status-bar",
+      "name": "app-shell",
       "type": "component",
-      "title": "Status Bar",
-      "description": "Persistent status region."
+      "title": "App Shell",
+      "description": "Compound application shell."
+    },
+    {
+      "name": "autocomplete",
+      "type": "form",
+      "title": "Autocomplete",
+      "description": "Text input with filtered typed suggestions and keyboard selection."
+    },
+    {
+      "name": "badge",
+      "type": "data-display",
+      "title": "Badge",
+      "description": "Semantic status badge."
+    },
+    {
+      "name": "box",
+      "type": "primitive",
+      "title": "Box",
+      "description": "Theme-aware Ink layout primitive."
+    },
+    {
+      "name": "button",
+      "type": "component",
+      "title": "Button",
+      "description": "Focusable command-aware button."
+    },
+    {
+      "name": "checkbox",
+      "type": "form",
+      "title": "Checkbox",
+      "description": "Focusable controlled or uncontrolled checkbox."
+    },
+    {
+      "name": "command-palette",
+      "type": "navigation",
+      "title": "Command Palette",
+      "description": "Searchable command registry overlay with keyboard execution."
+    },
+    {
+      "name": "confirm-dialog",
+      "type": "feedback",
+      "title": "Confirm Dialog",
+      "description": "Confirmation dialog with cancel, danger, and asynchronous confirm behavior."
+    },
+    {
+      "name": "container",
+      "type": "primitive",
+      "title": "Container",
+      "description": "Width-constrained terminal container."
     },
     {
       "name": "default",
       "type": "theme",
       "title": "Default Theme",
       "description": "Default tuil theme."
+    },
+    {
+      "name": "dialog",
+      "type": "feedback",
+      "title": "Dialog",
+      "description": "Compound modal with focus trapping, input suppression, dismissal, and restoration."
+    },
+    {
+      "name": "divider",
+      "type": "data-display",
+      "title": "Divider",
+      "description": "Terminal-safe divider."
+    },
+    {
+      "name": "field",
+      "type": "form",
+      "title": "Field",
+      "description": "Semantic form field structure with label, description, errors, and hints."
+    },
+    {
+      "name": "heading",
+      "type": "data-display",
+      "title": "Heading",
+      "description": "Semantic terminal heading."
+    },
+    {
+      "name": "multi-select",
+      "type": "form",
+      "title": "Multi Select",
+      "description": "Typed multiple-selection listbox with selection limits."
+    },
+    {
+      "name": "number-input",
+      "type": "form",
+      "title": "Number Input",
+      "description": "Bounded numeric editor with keyboard stepping."
+    },
+    {
+      "name": "progress",
+      "type": "feedback",
+      "title": "Progress",
+      "description": "Bounded terminal progress bar."
+    },
+    {
+      "name": "radio-group",
+      "type": "form",
+      "title": "Radio Group",
+      "description": "Roving single-selection control with disabled-option handling."
+    },
+    {
+      "name": "select",
+      "type": "form",
+      "title": "Select",
+      "description": "Searchable single-selection listbox with typed values."
+    },
+    {
+      "name": "spinner",
+      "type": "feedback",
+      "title": "Spinner",
+      "description": "Capability-aware activity spinner."
+    },
+    {
+      "name": "stack",
+      "type": "primitive",
+      "title": "Stack",
+      "description": "Vertical, horizontal, and configurable stack layouts."
+    },
+    {
+      "name": "status-bar",
+      "type": "component",
+      "title": "Status Bar",
+      "description": "Persistent status region."
+    },
+    {
+      "name": "switch",
+      "type": "form",
+      "title": "Switch",
+      "description": "Focusable controlled or uncontrolled boolean switch."
+    },
+    {
+      "name": "text-area",
+      "type": "form",
+      "title": "Text Area",
+      "description": "Multiline terminal text editor with cursor and validation behavior."
+    },
+    {
+      "name": "text-input",
+      "type": "form",
+      "title": "Text Input",
+      "description": "Controlled or uncontrolled terminal text editor with validation."
+    },
+    {
+      "name": "text",
+      "type": "data-display",
+      "title": "Text",
+      "description": "Semantic terminal text."
+    },
+    {
+      "name": "toast",
+      "type": "feedback",
+      "title": "Toast",
+      "description": "Disposable notification queue with actions, promises, updates, and live semantics."
+    },
+    {
+      "name": "tooltip",
+      "type": "feedback",
+      "title": "Tooltip",
+      "description": "Delayed focus and explicit-help tooltip with accessible metadata."
     }
   ]
 }

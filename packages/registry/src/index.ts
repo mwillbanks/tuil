@@ -369,6 +369,7 @@ interface InstallState {
     string,
     {
       readonly files: Record<string, string>;
+      readonly dependencies?: readonly string[];
       readonly installedAt: string;
     }
   >;
@@ -409,6 +410,15 @@ function hash(content: string): string {
 
 function registryIdentity(item: RegistryItem): string {
   return item.registryName ?? item.name;
+}
+
+function registryDependencyIdentities(item: RegistryItem): readonly string[] {
+  const source = item.registryName?.match(/^@([^/]+)\//)?.[1];
+  return (item.registryDependencies ?? []).map((dependency) =>
+    source && !dependency.startsWith("@")
+      ? `@${source}/${dependency}`
+      : dependency,
+  );
 }
 
 async function transformSource(
@@ -659,6 +669,7 @@ export class RegistryInstaller {
       if (result) {
         nextState.items[identity] = {
           files: result.hashes,
+          dependencies: registryDependencyIdentities(item),
           installedAt: new Date().toISOString(),
         };
       }
@@ -813,6 +824,17 @@ export class RegistryInstaller {
       }
     }
     const removalSet = new Set(names);
+    for (const [survivor, installed] of Object.entries(state.items)) {
+      if (removalSet.has(survivor)) continue;
+      const removedDependency = (installed.dependencies ?? []).find(
+        (dependency) => removalSet.has(dependency),
+      );
+      if (removedDependency) {
+        throw new Error(
+          `Cannot remove registry item "${removedDependency}" while dependent "${survivor}" remains installed`,
+        );
+      }
+    }
     const results = new Map<string, string[]>(names.map((name) => [name, []]));
     const planned: {
       readonly file: string;

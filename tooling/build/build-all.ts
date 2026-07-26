@@ -1,20 +1,11 @@
+import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 
 const packagesDirectory = join(import.meta.dir, "../../packages");
-const packages = [
-  "core",
-  "events",
-  "focus",
-  "hotkeys",
-  "plugin",
-  "theme",
-  "registry",
-  "tuil",
-  "ink",
-  "testing",
-  "testing-ink",
-  "cli",
-] as const;
+const packages = (await readdir(packagesDirectory, { withFileTypes: true }))
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name)
+  .sort();
 
 for (const packageName of packages) {
   const directory = join(packagesDirectory, packageName);

@@ -1,0 +1,19 @@
+{
+  "name": "toast",
+  "type": "feedback",
+  "tier": 3,
+  "title": "Toast",
+  "description": "Disposable notification queue with actions, promises, updates, and live semantics.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["status", "alert"],
+  "slots": ["root", "title", "description", "action", "viewport"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["dialog"]
+}

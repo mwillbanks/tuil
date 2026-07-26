@@ -1,0 +1,19 @@
+{
+  "name": "checkbox",
+  "type": "form",
+  "tier": 3,
+  "title": "Checkbox",
+  "description": "Focusable controlled or uncontrolled checkbox.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["checkbox"],
+  "slots": ["root"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["field"]
+}

@@ -170,6 +170,36 @@ describe("registry installer", () => {
     expect(await installer.remove("owner-b")).toEqual(["src/shared.ts"]);
   });
 
+  test("prevents removal of source owners required by installed aliases", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tuil-registry-"));
+    directories.push(root);
+    const installer = new RegistryInstaller(root);
+    const owner = parseRegistryItem({
+      name: "field",
+      type: "form",
+      files: [
+        {
+          path: "controls.tsx",
+          target: "src/controls.tsx",
+          content: "export const field = true;\n",
+        },
+      ],
+    });
+    const alias = parseRegistryItem({
+      name: "text-input",
+      type: "form",
+      registryDependencies: ["field"],
+      files: [],
+    });
+    await installer.installMany([owner, alias]);
+    await expect(installer.remove("field")).rejects.toThrow(
+      'dependent "text-input" remains installed',
+    );
+    expect(await Bun.file(join(root, "src/controls.tsx")).exists()).toBeTrue();
+    await installer.removeMany(["text-input", "field"]);
+    expect(await Bun.file(join(root, "src/controls.tsx")).exists()).toBeFalse();
+  });
+
   test("removes files dropped by updates without orphaning local changes", async () => {
     const root = await mkdtemp(join(tmpdir(), "tuil-registry-"));
     directories.push(root);

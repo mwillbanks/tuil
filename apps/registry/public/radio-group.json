@@ -1,0 +1,19 @@
+{
+  "name": "radio-group",
+  "type": "form",
+  "tier": 3,
+  "title": "Radio Group",
+  "description": "Roving single-selection control with disabled-option handling.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["radio"],
+  "slots": ["root", "option"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["field"]
+}

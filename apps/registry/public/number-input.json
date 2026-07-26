@@ -1,0 +1,19 @@
+{
+  "name": "number-input",
+  "type": "form",
+  "tier": 3,
+  "title": "Number Input",
+  "description": "Bounded numeric editor with keyboard stepping.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["textbox"],
+  "slots": ["root"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["field"]
+}

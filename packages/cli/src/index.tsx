@@ -124,6 +124,21 @@ const componentExports = {
   "app-shell": "AppShell",
   "app-bar": "AppBar",
   "status-bar": "StatusBar",
+  field: "Field, Form, ValidationSummary",
+  "text-input": "TextInput",
+  "text-area": "TextArea",
+  "number-input": "NumberInput",
+  checkbox: "Checkbox",
+  "radio-group": "RadioGroup",
+  switch: "Switch",
+  select: "Select",
+  "multi-select": "MultiSelect",
+  autocomplete: "Autocomplete",
+  dialog: "Dialog",
+  "confirm-dialog": "ConfirmDialog",
+  tooltip: "Tooltip",
+  toast: "Toast",
+  "command-palette": "CommandPalette",
 } as const;
 
 const templateComponents: Readonly<Record<Template, readonly string[]>> = {
@@ -410,7 +425,7 @@ export function App() {
 `;
   }
   if (template === "component-library") {
-    return `import {Alert, AppBar, AppShell, Badge, Box, Button, Container, Divider, Heading, Progress, Spinner, Stack, StatusBar, Text} from "../components/tuil/index.ts";
+    return `import {Alert, AppBar, AppShell, Badge, Box, Button, Checkbox, Container, Dialog, Divider, Field, Heading, Progress, Select, Spinner, Stack, StatusBar, Text, TextInput, Tooltip} from "../components/tuil/index.ts";
 
 export function App() {
   return (
@@ -425,11 +440,17 @@ export function App() {
             <Progress value={75} />
             <Spinner label="Rendering" />
             <Alert tone="info" title="Portable stories">Components are project-owned source.</Alert>
+            <Field label="Search components"><TextInput id="component-search" label="Search components" /></Field>
+            <Checkbox id="interactive-components">Interactive components</Checkbox>
+            <Select id="component-category" label="Component category" options={[{value: "forms", label: "Forms"}, {value: "feedback", label: "Feedback"}]} />
+            <Tooltip targetId="inspect-component" content="Open the selected component">
             <Button id="inspect-component" autoFocus>Inspect</Button>
+            </Tooltip>
+            <Dialog><Dialog.Trigger>Preview dialog</Dialog.Trigger><Dialog.Content><Dialog.Title>Component preview</Dialog.Title></Dialog.Content></Dialog>
           </Stack>
         </Container>
       </AppShell.Main>
-      <AppShell.StatusBar><StatusBar><Text>14 components</Text></StatusBar></AppShell.StatusBar>
+      <AppShell.StatusBar><StatusBar><Text>${Object.keys(componentExports).length} components</Text></StatusBar></AppShell.StatusBar>
     </AppShell>
   );
 }
@@ -462,6 +483,7 @@ function projectFiles(
 ): Readonly<Record<string, string>> {
   const dependencies: Record<string, string> = {
     "@mwillbanks/tuil": "^0.1.0",
+    "@mwillbanks/tuil-core": "^0.1.0",
     "@mwillbanks/tuil-focus": "^0.1.0",
     "@mwillbanks/tuil-hotkeys": "^0.1.0",
     "@mwillbanks/tuil-ink": "^0.1.0",
@@ -469,6 +491,10 @@ function projectFiles(
     ink: "^7.1.0",
     react: "^19.0.0",
   };
+  if (enabledFeatures.includes("forms") || template === "component-library") {
+    dependencies["@mwillbanks/tuil-form"] = "^0.1.0";
+    dependencies["@tanstack/react-form"] = "^1.33.2";
+  }
   const files: Record<string, string> = {
     "package.json": `${JSON.stringify(
       {
@@ -521,7 +547,7 @@ function projectFiles(
       null,
       2,
     )});\n`,
-    "src/index.tsx": `import {createApp} from "@mwillbanks/tuil";\nimport {render} from "@mwillbanks/tuil-ink";\nimport {App} from "./app/app.tsx";\nimport {theme} from "./lib/theme.ts";\n${template === "plugin" ? 'import {examplePlugin} from "./plugins/example.ts";\n' : ""}\nconst instance = await render(createApp({\n  component: App,\n  theme,\n  ${template === "plugin" ? "plugins: [examplePlugin]," : ""}\n}));\nawait instance.waitUntilExit();\n`,
+    "src/index.tsx": `import {createApp} from "@mwillbanks/tuil";\nimport {render} from "@mwillbanks/tuil-ink";\nimport {App} from "./app/app.tsx";\nimport {FeaturePanels} from "./features/index.tsx";\nimport {theme} from "./lib/theme.ts";\n${template === "plugin" ? 'import {examplePlugin} from "./plugins/example.ts";\n' : ""}\nfunction Root() {\n  return <><App /><FeaturePanels /></>;\n}\n\nconst instance = await render(createApp({\n  component: Root,\n  theme,\n  ${template === "plugin" ? "plugins: [examplePlugin]," : ""}\n}));\nawait instance.waitUntilExit();\n`,
     "src/app/app.tsx": templateAppSource(name, template, enabledFeatures),
     "src/app/commands.ts": `import {defineCommand} from "@mwillbanks/tuil";\n\nexport const quitCommand = defineCommand({\n  id: "app.quit",\n  title: "Quit",\n  hotkeys: ["ctrl+c"],\n  execute() {\n    process.exitCode = 0;\n  },\n});\n`,
     "src/app/events.ts": `import {defineEvents, event} from "@mwillbanks/tuil";\n\nexport const events = defineEvents({\n  "app:message": event<{message: string}>(),\n});\n`,
@@ -529,9 +555,12 @@ function projectFiles(
     "src/app/theme.ts": `export {theme} from "../lib/theme.ts";\n`,
     "tests/app.test.ts": `import {expect, test} from "bun:test";\nimport {routes} from "../src/app/routes.ts";\n\ntest("project is configured", () => {\n  expect(${JSON.stringify(name)}).not.toBeEmpty();\n  expect(routes[0]?.id).toBe("home");\n});\n`,
   };
+  files["src/features/index.tsx"] = enabledFeatures.includes("forms")
+    ? `import {Text} from "../components/tuil/index.ts";\nimport {ProjectForm} from "./project-form.tsx";\n\nexport function FeaturePanels() {\n  return <><Text>Project setup</Text><ProjectForm onSubmit={() => undefined} /></>;\n}\n`
+    : `export function FeaturePanels() {\n  return null;\n}\n`;
   if (enabledFeatures.includes("forms")) {
-    files["src/features/project-form.ts"] =
-      `export interface ProjectFormValues {\n  readonly name: string;\n  readonly description: string;\n}\n\nexport function validateProjectForm(values: ProjectFormValues): readonly string[] {\n  const errors: string[] = [];\n  if (values.name.trim().length === 0) errors.push("Project name is required");\n  if (values.description.length > 200) errors.push("Description must be 200 characters or fewer");\n  return errors;\n}\n`;
+    files["src/features/project-form.tsx"] =
+      `import {adaptTanStackField, useForm} from "@mwillbanks/tuil-form";\nimport {Button, Field, Form, TextInput, ValidationSummary} from "../components/tuil/index.ts";\n\nexport interface ProjectFormValues {\n  readonly name: string;\n  readonly description: string;\n}\n\nexport function ProjectForm(props: {readonly onSubmit: (values: ProjectFormValues) => void | Promise<void>}) {\n  const form = useForm({\n    defaultValues: {name: "", description: ""},\n    onSubmit: ({value}) => props.onSubmit(value),\n  });\n  return (\n    <Form id="project-form" onSubmit={() => form.handleSubmit()}>\n      <form.Field\n        name="name"\n        validators={{onSubmit: ({value}) => value.trim() ? undefined : "Project name is required"}}\n      >\n        {(field) => {\n          const terminalField = adaptTanStackField(field);\n          return (\n            <Field label="Project name" field={terminalField} required>\n              <TextInput\n                id={field.name}\n                label="Project name"\n                field={terminalField}\n                autoFocus\n              />\n            </Field>\n          );\n        }}\n      </form.Field>\n      <ValidationSummary />\n      <Button command="project-form.submit">Create</Button>\n    </Form>\n  );\n}\n`;
   }
   if (enabledFeatures.includes("workflow")) {
     files["src/workflows/main.ts"] =
@@ -721,7 +750,25 @@ async function writeComponentBarrel(
     const exportName =
       componentExports[item.name as keyof typeof componentExports];
     if (!exportName) return [];
-    const file = item.files[0];
+    const file =
+      item.files[0] ??
+      ([
+        "text-input",
+        "text-area",
+        "number-input",
+        "checkbox",
+        "radio-group",
+        "switch",
+        "select",
+        "multi-select",
+        "autocomplete",
+      ].includes(item.name)
+        ? plan.find((candidate) => candidate.name === "field")?.files[0]
+        : ["confirm-dialog", "tooltip", "toast", "command-palette"].includes(
+              item.name,
+            )
+          ? plan.find((candidate) => candidate.name === "dialog")?.files[0]
+          : undefined);
     if (!file) return [];
     const modulePath = relative(base, file.target).replaceAll("\\", "/");
     return [
@@ -776,6 +823,9 @@ async function runInit(args: ParsedArguments): Promise<void> {
   const registryClient = new RegistryClient([new BundledRegistrySource()]);
   const requestedItems = [
     ...templateComponents[prompted.template],
+    ...(prompted.features.includes("forms")
+      ? ["button", "field", "text-input"]
+      : []),
     themePreset,
   ];
   const plan = await registryClient.resolvePlan(requestedItems);

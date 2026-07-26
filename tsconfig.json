@@ -27,6 +27,7 @@
       "@mwillbanks/tuil-theme": ["./packages/theme/src/index.ts"],
       "@mwillbanks/tuil-focus": ["./packages/focus/src/index.ts"],
       "@mwillbanks/tuil-hotkeys": ["./packages/hotkeys/src/index.ts"],
+      "@mwillbanks/tuil-form": ["./packages/form/src/index.tsx"],
       "@mwillbanks/tuil-ink": ["./packages/ink/src/index.ts"],
       "@mwillbanks/tuil-testing": ["./packages/testing/src/index.ts"],
       "@mwillbanks/tuil-testing-ink": ["./packages/testing-ink/src/index.ts"],

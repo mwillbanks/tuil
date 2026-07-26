@@ -15,7 +15,7 @@
     "test": "bun test"
   },
   "peerDependencies": {
-    "react": "^19.0.0"
+    "react": "catalog:"
   },
   "files": [
     "dist"

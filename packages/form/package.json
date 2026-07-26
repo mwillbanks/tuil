@@ -1,11 +1,8 @@
 {
-  "name": "@mwillbanks/tuil",
+  "name": "@mwillbanks/tuil-form",
   "version": "0.1.0",
   "type": "module",
   "sideEffects": false,
-  "bin": {
-    "tuil": "./dist/cli.js"
-  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -17,15 +14,8 @@
     "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
-  "dependencies": {
-    "@mwillbanks/tuil-core": "workspace:*",
-    "@mwillbanks/tuil-events": "workspace:*",
-    "@mwillbanks/tuil-focus": "workspace:*",
-    "@mwillbanks/tuil-hotkeys": "workspace:*",
-    "@mwillbanks/tuil-plugin": "workspace:*",
-    "@mwillbanks/tuil-theme": "workspace:*"
-  },
   "peerDependencies": {
+    "@tanstack/react-form": "catalog:",
     "react": "catalog:"
   },
   "files": [

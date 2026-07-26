@@ -20,9 +20,9 @@
     "@mwillbanks/tuil-testing": "workspace:*"
   },
   "peerDependencies": {
-    "ink": "^7.0.0",
-    "ink-testing-library": "^4.0.0",
-    "react": "^19.0.0"
+    "ink": "catalog:",
+    "ink-testing-library": "catalog:",
+    "react": "catalog:"
   },
   "files": [
     "dist"

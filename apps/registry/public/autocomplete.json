@@ -1,0 +1,19 @@
+{
+  "name": "autocomplete",
+  "type": "form",
+  "tier": 3,
+  "title": "Autocomplete",
+  "description": "Text input with filtered typed suggestions and keyboard selection.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["textbox", "option"],
+  "slots": ["root", "list", "option", "empty"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["field"]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "tooltip",
+  "type": "feedback",
+  "tier": 3,
+  "title": "Tooltip",
+  "description": "Delayed focus and explicit-help tooltip with accessible metadata.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["text"],
+  "slots": ["root", "content"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["dialog"]
+}

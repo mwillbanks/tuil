@@ -1,0 +1,19 @@
+{
+  "name": "text-input",
+  "type": "form",
+  "tier": 3,
+  "title": "Text Input",
+  "description": "Controlled or uncontrolled terminal text editor with validation.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["textbox"],
+  "slots": ["root"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["field"]
+}

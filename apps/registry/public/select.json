@@ -1,0 +1,19 @@
+{
+  "name": "select",
+  "type": "form",
+  "tier": 3,
+  "title": "Select",
+  "description": "Searchable single-selection listbox with typed values.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["listbox", "option"],
+  "slots": ["root", "indicator", "list", "option", "empty"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["field"]
+}

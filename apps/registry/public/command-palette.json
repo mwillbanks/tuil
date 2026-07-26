@@ -1,0 +1,19 @@
+{
+  "name": "command-palette",
+  "type": "navigation",
+  "tier": 3,
+  "title": "Command Palette",
+  "description": "Searchable command registry overlay with keyboard execution.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["dialog", "textbox", "option"],
+  "slots": ["root", "input", "list", "option", "empty"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["dialog"]
+}

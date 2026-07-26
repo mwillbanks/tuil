@@ -2,11 +2,19 @@
   "name": "tuil-workspace",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "packages/*",
-    "apps/*",
-    "examples/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "apps/*",
+      "examples/*"
+    ],
+    "catalog": {
+      "@tanstack/react-form": "^1.33.2",
+      "ink": "^7.1.1",
+      "ink-testing-library": "^4.0.0",
+      "react": "^19.2.8"
+    }
+  },
   "scripts": {
     "build": "bun run registry:build && bun tooling/build/build-all.ts",
     "registry:build": "bun tooling/registry/build.ts",
@@ -22,6 +30,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.5",
+    "@tanstack/react-form": "catalog:",
     "@types/bun": "latest",
     "@types/react": "^19.2.17",
     "ink": "^7.1.1",

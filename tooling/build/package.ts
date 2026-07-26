@@ -1,5 +1,5 @@
 import { existsSync } from "node:fs";
-import { basename, join } from "node:path";
+import { basename, join, resolve } from "node:path";
 
 const directory = process.cwd();
 const entries = ["src/index.ts", "src/index.tsx", "src/bin.ts"]
@@ -48,6 +48,14 @@ if ((await types.exited) !== 0) {
 }
 
 const manifest = await Bun.file(join(directory, "package.json")).json();
+const workspaceManifest = (await Bun.file(
+  resolve(directory, "../../package.json"),
+).json()) as {
+  readonly workspaces?: {
+    readonly catalog?: Readonly<Record<string, string>>;
+  };
+};
+const catalog = workspaceManifest.workspaces?.catalog ?? {};
 const normalizeDependencies = (
   dependencies: Record<string, string> | undefined,
 ) =>
@@ -55,7 +63,16 @@ const normalizeDependencies = (
     ? Object.fromEntries(
         Object.entries(dependencies).map(([name, version]) => [
           name,
-          version.startsWith("workspace:") ? `^${manifest.version}` : version,
+          version.startsWith("workspace:")
+            ? `^${manifest.version}`
+            : version === "catalog:"
+              ? (catalog[name] ??
+                (() => {
+                  throw new Error(
+                    `Catalog has no published version for dependency "${name}"`,
+                  );
+                })())
+              : version,
         ]),
       )
     : undefined;

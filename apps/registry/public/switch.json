@@ -1,0 +1,19 @@
+{
+  "name": "switch",
+  "type": "form",
+  "tier": 3,
+  "title": "Switch",
+  "description": "Focusable controlled or uncontrolled boolean switch.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["switch"],
+  "slots": ["root"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["field"]
+}

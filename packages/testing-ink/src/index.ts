@@ -53,7 +53,7 @@ export class TuilUser {
   async press(keys: string): Promise<void> {
     await this.ready;
     this.write(keySequences[keys] ?? keys);
-    await Bun.sleep(0);
+    await Bun.sleep(10);
   }
 
   async type(value: string): Promise<void> {
@@ -62,6 +62,7 @@ export class TuilUser {
       this.write(character);
       await Bun.sleep(0);
     }
+    await Bun.sleep(10);
   }
 }
 

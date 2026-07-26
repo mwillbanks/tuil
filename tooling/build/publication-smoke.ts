@@ -29,14 +29,18 @@ for (const directory of packageDirectories) {
   ).json()) as {
     readonly name: string;
     readonly dependencies?: Readonly<Record<string, string>>;
+    readonly peerDependencies?: Readonly<Record<string, string>>;
     readonly exports?: Readonly<
       Record<string, string | Readonly<Record<string, string>>>
     >;
     readonly bin?: Readonly<Record<string, string>>;
   };
-  for (const version of Object.values(manifest.dependencies ?? {})) {
-    if (version.startsWith("workspace:")) {
-      throw new Error(`${manifest.name} publishes a workspace dependency`);
+  for (const version of Object.values({
+    ...manifest.dependencies,
+    ...manifest.peerDependencies,
+  })) {
+    if (version.startsWith("workspace:") || version.startsWith("catalog:")) {
+      throw new Error(`${manifest.name} publishes an internal dependency`);
     }
   }
   const exportedPaths = Object.values(manifest.exports ?? {}).flatMap(
@@ -130,8 +134,29 @@ try {
       readFile(join(directory, "dist/package.json"), "utf8"),
     ),
   );
-  if (manifests.some((manifest) => manifest.includes('"workspace:'))) {
-    throw new Error("A packed manifest retained a workspace protocol");
+  if (
+    manifests.some(
+      (manifest) =>
+        manifest.includes('"workspace:') || manifest.includes('"catalog:'),
+    )
+  ) {
+    throw new Error(
+      "A packed manifest retained a workspace or catalog protocol",
+    );
+  }
+  const formManifest = JSON.parse(
+    await readFile(join(packageRoot, "form/dist/package.json"), "utf8"),
+  ) as {
+    readonly dependencies?: Readonly<Record<string, string>>;
+    readonly peerDependencies?: Readonly<Record<string, string>>;
+  };
+  if (
+    formManifest.dependencies?.["@tanstack/react-form"] ||
+    !formManifest.peerDependencies?.["@tanstack/react-form"]
+  ) {
+    throw new Error(
+      "Published form package must expose TanStack React Form as a peer",
+    );
   }
   const consumer = join(destination, "consumer");
   await mkdir(consumer, { recursive: true });
@@ -143,6 +168,7 @@ try {
         private: true,
         type: "module",
         dependencies: {
+          "@tanstack/react-form": "^1.33.2",
           ink: "^7.1.1",
           "ink-testing-library": "^4.0.0",
           react: "^19.2.8",

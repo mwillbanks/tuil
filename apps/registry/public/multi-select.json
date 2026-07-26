@@ -1,0 +1,19 @@
+{
+  "name": "multi-select",
+  "type": "form",
+  "tier": 3,
+  "title": "Multi Select",
+  "description": "Typed multiple-selection listbox with selection limits.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["listbox", "option"],
+  "slots": ["root", "list", "option", "empty"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["field"]
+}

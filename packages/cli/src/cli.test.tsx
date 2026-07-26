@@ -55,10 +55,17 @@ describe("tuil CLI", () => {
     });
     const packageJson = JSON.parse(
       await readFile(join(root, "demo/package.json"), "utf8"),
-    ) as { scripts: Record<string, string> };
+    ) as {
+      scripts: Record<string, string>;
+      dependencies: Record<string, string>;
+    };
     expect(packageJson.scripts).toHaveProperty("typecheck");
+    expect(packageJson.dependencies).toHaveProperty(
+      "@mwillbanks/tuil-form",
+      "^0.1.0",
+    );
     expect(await readFile(join(root, "demo/src/index.tsx"), "utf8")).toContain(
-      "createApp",
+      "FeaturePanels",
     );
     expect(
       await readFile(
@@ -66,9 +73,22 @@ describe("tuil CLI", () => {
         "utf8",
       ),
     ).toContain("export function AppShell");
+    const projectForm = await readFile(
+      join(root, "demo/src/features/project-form.tsx"),
+      "utf8",
+    );
+    expect(projectForm).toContain("adaptTanStackField");
+    expect(projectForm).toContain('command="project-form.submit"');
+    expect(projectForm).not.toContain("onPress={() => form.handleSubmit()}");
     expect(
-      await readFile(join(root, "demo/src/features/project-form.ts"), "utf8"),
-    ).toContain("validateProjectForm");
+      await readFile(join(root, "demo/src/features/index.tsx"), "utf8"),
+    ).toContain("<ProjectForm");
+    expect(
+      await readFile(
+        join(root, "demo/src/components/tuil/forms/controls.tsx"),
+        "utf8",
+      ),
+    ).toContain("export function TextInput");
     expect(
       await readFile(join(root, "demo/src/workflows/main.ts"), "utf8"),
     ).toContain("nextWorkflowStep");
@@ -101,6 +121,34 @@ describe("tuil CLI", () => {
     expect(update.stderr).toContain("locally modified");
   });
 
+  test("updates individually requested aliases through canonical source owners", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tuil-cli-"));
+    directories.push(root);
+    const added = await run(root, [
+      "add",
+      "text-input",
+      "select",
+      "--no-install",
+      "--output",
+      "json",
+    ]);
+    expect(added.exitCode).toBe(0);
+    const updated = await run(root, [
+      "update",
+      "text-input",
+      "--no-install",
+      "--output",
+      "json",
+    ]);
+    expect(updated).toMatchObject({ exitCode: 0, stderr: "" });
+    expect(
+      await readFile(
+        join(root, "src/components/tuil/forms/controls.tsx"),
+        "utf8",
+      ),
+    ).toContain("export function TextInput");
+  });
+
   test("generates every distinct template and rejects unknown templates", async () => {
     const root = await mkdtemp(join(tmpdir(), "tuil-cli-"));
     directories.push(root);
@@ -126,7 +174,20 @@ describe("tuil CLI", () => {
       expect(
         await readFile(join(root, `${template}-demo/src/app/app.tsx`), "utf8"),
       ).toContain(marker);
+      expect(
+        await readFile(
+          join(root, `${template}-demo/src/features/index.tsx`),
+          "utf8",
+        ),
+      ).toContain("FeaturePanels");
     }
+    const librarySource = await readFile(
+      join(root, "component-library-demo/src/app/app.tsx"),
+      "utf8",
+    );
+    expect(librarySource).toContain("TextInput");
+    expect(librarySource).toContain("Select");
+    expect(librarySource).toContain("29 components");
     const invalid = await run(root, [
       "init",
       "invalid-demo",

@@ -1,0 +1,19 @@
+{
+  "name": "confirm-dialog",
+  "type": "feedback",
+  "tier": 3,
+  "title": "Confirm Dialog",
+  "description": "Confirmation dialog with cancel, danger, and asynchronous confirm behavior.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["dialog"],
+  "slots": ["root", "title", "description", "actions"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["dialog"]
+}

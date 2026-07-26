@@ -85,6 +85,7 @@ export interface HotkeyDispatchContext {
     | (() => Partial<Record<HotkeyScope, string | true>>);
   readonly platform?: NodeJS.Platform;
   readonly onError?: (error: unknown) => void;
+  readonly allowApplication?: boolean;
 }
 
 interface PendingHotkey {
@@ -341,7 +342,7 @@ export class HotkeyManager {
         : context.activeScopes;
     const active = activeScopes?.[scope];
     return (
-      scope === "application" ||
+      (scope === "application" && context.allowApplication !== false) ||
       active === true ||
       (typeof active === "string" && active === binding.scopeId)
     );
@@ -381,6 +382,9 @@ export class HotkeyManager {
 }
 
 const HotkeyContext = createContext<HotkeyManager | undefined>(undefined);
+const HotkeyLayerContext = createContext<
+  { readonly scope: "overlay" | "dialog"; readonly scopeId: string } | undefined
+>(undefined);
 
 export function HotkeyProvider(props: {
   readonly manager?: HotkeyManager;
@@ -405,22 +409,38 @@ export function useHotkeyManager(): HotkeyManager {
   return manager;
 }
 
+export function HotkeyLayer(props: {
+  readonly scope: "overlay" | "dialog";
+  readonly scopeId: string;
+  readonly children?: ReactNode;
+}): ReactNode {
+  const value = useMemo(
+    () => ({ scope: props.scope, scopeId: props.scopeId }),
+    [props.scope, props.scopeId],
+  );
+  return createElement(HotkeyLayerContext.Provider, { value }, props.children);
+}
+
 export function useHotkey(
   keys: string,
   handler: HotkeyBinding["handler"],
   options: Omit<HotkeyBinding, "keys" | "handler"> = {},
 ): void {
   const manager = useHotkeyManager();
+  const layer = useContext(HotkeyLayerContext);
   const handlerRef = useRef(handler);
   handlerRef.current = handler;
   useEffect(
     () =>
       manager.register({
         ...options,
+        ...(layer && (!options.scope || options.scope === "application")
+          ? layer
+          : {}),
         keys,
         handler: (event) => handlerRef.current(event),
       }),
-    [keys, manager, options],
+    [keys, layer, manager, options],
   );
 }
 
@@ -429,14 +449,22 @@ export function useHotkeys(
   options: Omit<HotkeyBinding, "keys" | "handler"> = {},
 ): void {
   const manager = useHotkeyManager();
+  const layer = useContext(HotkeyLayerContext);
   useEffect(() => {
     const disposers = Object.entries(bindings).map(([keys, handler]) =>
-      manager.register({ ...options, keys, handler }),
+      manager.register({
+        ...options,
+        ...(layer && (!options.scope || options.scope === "application")
+          ? layer
+          : {}),
+        keys,
+        handler,
+      }),
     );
     return () => {
       for (const dispose of disposers) dispose();
     };
-  }, [bindings, manager, options]);
+  }, [bindings, layer, manager, options]);
 }
 
 export function Hotkey(

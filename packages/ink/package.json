@@ -22,8 +22,8 @@
     "@mwillbanks/tuil-theme": "workspace:*"
   },
   "peerDependencies": {
-    "ink": "^7.0.0",
-    "react": "^19.0.0"
+    "ink": "catalog:",
+    "react": "catalog:"
   },
   "files": [
     "dist"

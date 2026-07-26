@@ -3,6 +3,9 @@ import { join, resolve } from "node:path";
 
 interface RegistryManifest {
   name: string;
+  type: string;
+  title: string;
+  description: string;
   dependencies?: string[];
   registryDependencies?: string[];
   files: {
@@ -109,6 +112,191 @@ const metadata: Record<
     target: "src/lib/theme.ts",
     dependencies: ["@mwillbanks/tuil"],
   },
+  field: {
+    target: "src/components/tuil/forms/controls.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-form",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
+  "text-input": {
+    target: "src/components/tuil/forms/controls.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-form",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
+  "text-area": {
+    target: "src/components/tuil/forms/controls.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-form",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
+  "number-input": {
+    target: "src/components/tuil/forms/controls.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-form",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
+  checkbox: {
+    target: "src/components/tuil/forms/controls.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-form",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
+  "radio-group": {
+    target: "src/components/tuil/forms/controls.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-form",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
+  switch: {
+    target: "src/components/tuil/forms/controls.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-form",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
+  select: {
+    target: "src/components/tuil/forms/controls.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-form",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
+  "multi-select": {
+    target: "src/components/tuil/forms/controls.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-form",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
+  autocomplete: {
+    target: "src/components/tuil/forms/controls.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-form",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
+  dialog: {
+    target: "src/components/tuil/feedback/overlays.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-core",
+      "@mwillbanks/tuil-hotkeys",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+    registryDependencies: ["button", "text-input"],
+  },
+  "confirm-dialog": {
+    target: "src/components/tuil/feedback/overlays.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-core",
+      "@mwillbanks/tuil-hotkeys",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+    registryDependencies: ["button", "text-input"],
+  },
+  tooltip: {
+    target: "src/components/tuil/feedback/overlays.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-core",
+      "@mwillbanks/tuil-hotkeys",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+    registryDependencies: ["button", "text-input"],
+  },
+  toast: {
+    target: "src/components/tuil/feedback/overlays.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-core",
+      "@mwillbanks/tuil-hotkeys",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+    registryDependencies: ["button", "text-input"],
+  },
+  "command-palette": {
+    target: "src/components/tuil/feedback/overlays.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-core",
+      "@mwillbanks/tuil-hotkeys",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+    registryDependencies: ["button", "text-input"],
+  },
 };
 
 const publicDirectory = resolve(import.meta.dir, "../../apps/registry/public");
@@ -117,6 +305,25 @@ const manifests = (await readdir(publicDirectory))
   .sort();
 const generatedItems: RegistryManifest[] = [];
 const generatedPaths: string[] = [];
+const formSourceOwner = "field";
+const formAliases = new Set([
+  "text-input",
+  "text-area",
+  "number-input",
+  "checkbox",
+  "radio-group",
+  "switch",
+  "select",
+  "multi-select",
+  "autocomplete",
+]);
+const overlaySourceOwner = "dialog";
+const overlayAliases = new Set([
+  "confirm-dialog",
+  "tooltip",
+  "toast",
+  "command-palette",
+]);
 
 for (const manifestName of manifests) {
   const manifestPath = join(publicDirectory, manifestName);
@@ -127,21 +334,47 @@ for (const manifestName of manifests) {
   if (!itemMetadata) {
     throw new Error(`Missing registry build metadata for "${manifest.name}"`);
   }
-  manifest.dependencies = [...itemMetadata.dependencies];
-  manifest.registryDependencies = [
-    ...(itemMetadata.registryDependencies ?? []),
-  ];
-  manifest.files = await Promise.all(
-    manifest.files.map(async (file) => ({
-      ...file,
-      target: itemMetadata.target,
-      content: await readFile(resolve(publicDirectory, file.path), "utf8"),
-    })),
-  );
+  const sourceOwner = formAliases.has(manifest.name)
+    ? formSourceOwner
+    : overlayAliases.has(manifest.name)
+      ? overlaySourceOwner
+      : undefined;
+  manifest.dependencies = sourceOwner ? [] : [...itemMetadata.dependencies];
+  manifest.registryDependencies = sourceOwner
+    ? [sourceOwner]
+    : [...(itemMetadata.registryDependencies ?? [])];
+  manifest.files = sourceOwner
+    ? []
+    : await Promise.all(
+        manifest.files.map(async (file) => ({
+          ...file,
+          target: itemMetadata.target,
+          content: await readFile(resolve(publicDirectory, file.path), "utf8"),
+        })),
+      );
   await Bun.write(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   generatedPaths.push(manifestPath);
   generatedItems.push(manifest);
 }
+
+const registryIndexPath = join(publicDirectory, "registry.json");
+await Bun.write(
+  registryIndexPath,
+  `${JSON.stringify(
+    {
+      name: "tuil",
+      items: generatedItems.map(({ name, type, title, description }) => ({
+        name,
+        type,
+        title,
+        description,
+      })),
+    },
+    null,
+    2,
+  )}\n`,
+);
+generatedPaths.push(registryIndexPath);
 
 const generatedModule = `import type { RegistryItem } from "@mwillbanks/tuil-registry";
 
