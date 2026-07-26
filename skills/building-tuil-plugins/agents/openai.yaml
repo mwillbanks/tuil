@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build tuil Plugins"
+  short_description: "Build capability-safe disposable tuil plugins"
+  default_prompt: "Use $building-tuil-plugins to implement this tuil plugin."

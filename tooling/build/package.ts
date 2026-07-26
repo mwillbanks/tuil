@@ -1,8 +1,10 @@
 import { existsSync } from "node:fs";
+import { cp, rm } from "node:fs/promises";
 import { basename, join, resolve } from "node:path";
+import { normalizePublishedDependencies } from "./publication-manifest.ts";
 
 const directory = process.cwd();
-const entries = ["src/index.ts", "src/index.tsx", "src/bin.ts"]
+const entries = ["src/index.ts", "src/index.tsx", "src/static.ts", "src/bin.ts"]
   .map((candidate) => join(directory, candidate))
   .filter(existsSync);
 
@@ -34,6 +36,36 @@ if ((await build.exited) !== 0) {
   throw new Error(`JavaScript build failed for ${basename(directory)}`);
 }
 
+const browserEntries = ["src/browser.tsx", "src/storybook.tsx"]
+  .map((candidate) => join(directory, candidate))
+  .filter(existsSync);
+for (const browserEntry of browserEntries) {
+  const browserBuild = Bun.spawn(
+    [
+      "bun",
+      "build",
+      browserEntry,
+      "--outdir",
+      join(directory, "dist"),
+      "--target",
+      "browser",
+      "--format",
+      "esm",
+      "--sourcemap=external",
+      "--packages",
+      "external",
+      "--external",
+      "@mwillbanks/*",
+      "--banner",
+      '"use client";',
+    ],
+    { cwd: directory, stdout: "inherit", stderr: "inherit" },
+  );
+  if ((await browserBuild.exited) !== 0) {
+    throw new Error(`Browser build failed for ${basename(directory)}`);
+  }
+}
+
 const types = Bun.spawn(
   ["bun", "x", "tsc", "--project", "tsconfig.build.json"],
   {
@@ -56,26 +88,25 @@ const workspaceManifest = (await Bun.file(
   };
 };
 const catalog = workspaceManifest.workspaces?.catalog ?? {};
+const workspaceRoot = resolve(directory, "../..");
+const workspaceVersions = new Map<string, string>();
+for await (const path of new Bun.Glob("packages/*/package.json").scan({
+  cwd: workspaceRoot,
+  absolute: true,
+})) {
+  const packageManifest = (await Bun.file(path).json()) as {
+    readonly name: string;
+    readonly version: string;
+  };
+  workspaceVersions.set(packageManifest.name, packageManifest.version);
+}
 const normalizeDependencies = (
   dependencies: Record<string, string> | undefined,
 ) =>
-  dependencies
-    ? Object.fromEntries(
-        Object.entries(dependencies).map(([name, version]) => [
-          name,
-          version.startsWith("workspace:")
-            ? `^${manifest.version}`
-            : version === "catalog:"
-              ? (catalog[name] ??
-                (() => {
-                  throw new Error(
-                    `Catalog has no published version for dependency "${name}"`,
-                  );
-                })())
-              : version,
-        ]),
-      )
-    : undefined;
+  normalizePublishedDependencies(dependencies, {
+    catalog,
+    workspaceVersions,
+  });
 const published = {
   name: manifest.name,
   version: manifest.version,
@@ -93,6 +124,8 @@ const published = {
     : undefined,
   dependencies: normalizeDependencies(manifest.dependencies),
   peerDependencies: normalizeDependencies(manifest.peerDependencies),
+  peerDependenciesMeta: manifest.peerDependenciesMeta,
+  tuil: manifest.tuil,
 };
 await Bun.write(
   join(directory, "dist/package.json"),
@@ -125,4 +158,15 @@ if (basename(directory) === "tuil") {
   if ((await cli.exited) !== 0) {
     throw new Error("Standalone tuil CLI build failed");
   }
+  const skillsDestination = join(directory, "dist/skills");
+  await rm(skillsDestination, { recursive: true, force: true });
+  await cp(join(workspaceRoot, "skills"), skillsDestination, {
+    recursive: true,
+  });
+} else if (basename(directory) === "cli") {
+  const skillsDestination = join(directory, "dist/skills");
+  await rm(skillsDestination, { recursive: true, force: true });
+  await cp(join(workspaceRoot, "skills"), skillsDestination, {
+    recursive: true,
+  });
 }

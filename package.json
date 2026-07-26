@@ -2,6 +2,7 @@
   "name": "tuil-workspace",
   "private": true,
   "type": "module",
+  "packageManager": "bun@1.3.14",
   "workspaces": {
     "packages": [
       "packages/*",
@@ -24,7 +25,7 @@
     }
   },
   "scripts": {
-    "build": "bun run registry:build && bun tooling/build/build-all.ts",
+    "build": "bun run registry:build && bun tooling/build/build-all.ts && bun tooling/build/build-ecosystem.ts",
     "registry:build": "bun tooling/registry/build.ts",
     "test": "bun test --bail",
     "test:publication": "bun run build && bun tooling/build/publication-smoke.ts",
@@ -32,11 +33,18 @@
     "check": "bun run typecheck && bun run test && bun run build",
     "lint": "bun biome check . --reporter concise",
     "format": "bun biome check . --unsafe --write --reporter concise",
+    "changeset": "changeset",
+    "release:version": "changeset version",
+    "release": "bun run check && bun tooling/build/publication-smoke.ts && bun tooling/release/publish.ts",
     "playground": "bun --cwd apps/playground start",
     "showcase": "bun --cwd apps/showcase start",
+    "storybook": "bun --cwd apps/showcase storybook",
+    "docs": "bun --cwd apps/docs dev",
     "tuil": "bun packages/cli/src/bin.ts"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.5.2",
+    "@changesets/cli": "^2.31.1",
     "@biomejs/biome": "^2.5.5",
     "@tanstack/pacer": "catalog:",
     "@tanstack/react-form": "catalog:",

@@ -20,6 +20,8 @@
     "noUnusedParameters": true,
     "noPropertyAccessFromIndexSignature": true,
     "paths": {
+      "@/*": ["./apps/docs/src/*"],
+      "@/.source": ["./apps/docs/.source/server.ts"],
       "@mwillbanks/tuil": ["./packages/tuil/src/index.ts"],
       "@mwillbanks/tuil-core": ["./packages/core/src/index.ts"],
       "@mwillbanks/tuil-events": ["./packages/events/src/index.ts"],
@@ -35,7 +37,14 @@
       "@mwillbanks/tuil-ink": ["./packages/ink/src/index.ts"],
       "@mwillbanks/tuil-testing": ["./packages/testing/src/index.ts"],
       "@mwillbanks/tuil-testing-ink": ["./packages/testing-ink/src/index.ts"],
-      "@mwillbanks/tuil-registry": ["./packages/registry/src/index.ts"]
+      "@mwillbanks/tuil-registry": ["./packages/registry/src/index.ts"],
+      "@mwillbanks/tuil-story": ["./packages/story/src/index.tsx"],
+      "@mwillbanks/tuil-story/browser": ["./packages/story/src/browser.tsx"],
+      "@mwillbanks/tuil-story/storybook": [
+        "./packages/story/src/storybook.tsx"
+      ],
+      "@mwillbanks/tuil-story/static": ["./packages/story/src/static.ts"],
+      "@mwillbanks/tuil-devtools": ["./packages/devtools/src/index.tsx"]
     }
   },
   "include": [

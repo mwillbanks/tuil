@@ -4,7 +4,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { renderTuil } from "@mwillbanks/tuil-testing-ink";
 import { initWizardStories } from "../../../registry/blocks/init-wizard.stories.tsx";
-import { type InitAnswers, InitWizard } from "./index.tsx";
+import {
+  type InitAnswers,
+  InitWizard,
+  installBundledSkills,
+} from "./index.tsx";
 
 const directories: string[] = [];
 const cli = join(import.meta.dir, "bin.ts");
@@ -392,8 +396,8 @@ describe("tuil CLI", () => {
     const view = renderTuil(
       <InitWizard
         initialName={story.args.initialName ?? "static-tuil-app"}
-        onComplete={story.args.onComplete ?? (() => undefined)}
-        onCancel={story.args.onCancel ?? (() => undefined)}
+        onComplete={() => undefined}
+        onCancel={() => undefined}
       />,
       {
         terminal: {
@@ -591,6 +595,61 @@ describe("tuil CLI", () => {
     expect(packageJson.dependencies?.["kleur"]).toBeDefined();
     expect(await readFile(join(root, "src/evolving.ts"), "utf8")).toContain(
       "version = 2",
+    );
+  });
+
+  test("installs bundled skills transactionally and rejects overlap", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tuil-skills-"));
+    directories.push(root);
+    const source = join(root, "source");
+    const destination = join(root, "destination");
+    await mkdir(join(source, "alpha"), { recursive: true });
+    await mkdir(join(source, "beta"), { recursive: true });
+    await writeFile(join(source, "alpha/SKILL.md"), "alpha\n");
+    await writeFile(join(source, "beta/SKILL.md"), "beta\n");
+    await mkdir(join(destination, "beta"), { recursive: true });
+    await writeFile(join(destination, "beta/SKILL.md"), "existing\n");
+    await writeFile(join(destination, "unrelated.txt"), "preserve\n");
+
+    await expect(installBundledSkills(source, destination)).rejects.toThrow(
+      "Refusing to overwrite",
+    );
+    expect(
+      await Bun.file(join(destination, "alpha/SKILL.md")).exists(),
+    ).toBeFalse();
+    expect(await readFile(join(destination, "beta/SKILL.md"), "utf8")).toBe(
+      "existing\n",
+    );
+    await expect(
+      installBundledSkills(source, source, { force: true }),
+    ).rejects.toThrow("must not overlap");
+    expect(await readFile(join(source, "alpha/SKILL.md"), "utf8")).toBe(
+      "alpha\n",
+    );
+
+    expect(
+      await installBundledSkills(source, destination, { force: true }),
+    ).toEqual(["alpha", "beta"]);
+    expect(await readFile(join(destination, "alpha/SKILL.md"), "utf8")).toBe(
+      "alpha\n",
+    );
+    expect(await readFile(join(destination, "unrelated.txt"), "utf8")).toBe(
+      "preserve\n",
+    );
+
+    const controller = new AbortController();
+    controller.abort();
+    await expect(
+      installBundledSkills(source, destination, {
+        force: true,
+        signal: controller.signal,
+      }),
+    ).rejects.toThrow();
+    expect(await readFile(join(destination, "beta/SKILL.md"), "utf8")).toBe(
+      "beta\n",
+    );
+    expect(await readFile(join(destination, "unrelated.txt"), "utf8")).toBe(
+      "preserve\n",
     );
   });
 });

@@ -9,17 +9,17 @@ import {
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, isAbsolute, join, resolve } from "node:path";
+import {
+  discoverPublishArtifacts,
+  npmPackArguments,
+} from "../release/artifacts.ts";
 
 const workspace = resolve(import.meta.dir, "../..");
 const packageRoot = join(workspace, "packages");
-const packageDirectories = (
-  await readdir(packageRoot, {
-    withFileTypes: true,
-  })
-)
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => join(packageRoot, entry.name))
-  .sort();
+const publishArtifacts = await discoverPublishArtifacts(workspace);
+const packageDirectories = publishArtifacts.map(
+  (artifact) => artifact.sourceDirectory,
+);
 
 for (const directory of packageDirectories) {
   const sourceManifest = Bun.file(join(directory, "package.json"));
@@ -30,6 +30,9 @@ for (const directory of packageDirectories) {
     readonly name: string;
     readonly dependencies?: Readonly<Record<string, string>>;
     readonly peerDependencies?: Readonly<Record<string, string>>;
+    readonly peerDependenciesMeta?: Readonly<
+      Record<string, { readonly optional?: boolean }>
+    >;
     readonly exports?: Readonly<
       Record<string, string | Readonly<Record<string, string>>>
     >;
@@ -51,6 +54,12 @@ for (const directory of packageDirectories) {
       throw new Error(`${manifest.name} publishes missing path "${path}"`);
     }
   }
+  if (
+    manifest.name === "@mwillbanks/tuil-story" &&
+    !manifest.peerDependenciesMeta?.["@storybook/react"]?.optional
+  ) {
+    throw new Error("Published story package must keep Storybook optional");
+  }
 }
 
 const tuilBundle = await readFile(
@@ -62,6 +71,34 @@ if (
   tuilBundle.includes("class Lifecycle")
 ) {
   throw new Error("Published tuil runtime bundles a duplicate core runtime");
+}
+const bundledSkills = await readdir(join(packageRoot, "tuil/dist/skills"));
+if (bundledSkills.length !== 7) {
+  throw new Error(
+    `Published tuil package must contain seven Agent Skills, found ${bundledSkills.length}`,
+  );
+}
+for (const packageName of ["tuil", "cli"]) {
+  const manifest = (await Bun.file(
+    join(packageRoot, packageName, "dist/package.json"),
+  ).json()) as { readonly tuil?: { readonly skills?: string } };
+  const skillsPath = manifest.tuil?.skills;
+  if (
+    !skillsPath ||
+    !(await Bun.file(
+      join(
+        packageRoot,
+        packageName,
+        "dist",
+        skillsPath,
+        "building-tuil-applications/SKILL.md",
+      ),
+    ).exists())
+  ) {
+    throw new Error(
+      `Published ${packageName} manifest must resolve its bundled Agent Skills`,
+    );
+  }
 }
 
 const cli = Bun.spawn(
@@ -83,29 +120,16 @@ if (
 const destination = await mkdtemp(join(tmpdir(), "tuil-publication-"));
 try {
   const archiveByPackage = new Map<string, string>();
-  for (const directory of packageDirectories) {
-    if (!(await Bun.file(join(directory, "dist/package.json")).exists())) {
-      continue;
-    }
+  for (const artifact of publishArtifacts) {
+    const directory = artifact.sourceDirectory;
     const manifest = (await Bun.file(
       join(directory, "dist/package.json"),
     ).json()) as { readonly name: string };
-    const pack = Bun.spawn(
-      [
-        "bun",
-        "pm",
-        "pack",
-        "--destination",
-        destination,
-        "--ignore-scripts",
-        "--quiet",
-      ],
-      {
-        cwd: join(directory, "dist"),
-        stdout: "pipe",
-        stderr: "pipe",
-      },
-    );
+    const pack = Bun.spawn([...npmPackArguments(destination)], {
+      cwd: artifact.artifactDirectory,
+      stdout: "pipe",
+      stderr: "pipe",
+    });
     const packedOutput = await new Response(pack.stdout).text();
     const error = await new Response(pack.stderr).text();
     if ((await pack.exited) !== 0) {
@@ -157,6 +181,34 @@ try {
     throw new Error(
       "Published form package must expose TanStack React Form as a peer",
     );
+  }
+  const sourceVersions = new Map<string, string>();
+  for (const directory of packageDirectories) {
+    const source = (await Bun.file(join(directory, "package.json")).json()) as {
+      readonly name: string;
+      readonly version: string;
+    };
+    sourceVersions.set(source.name, source.version);
+  }
+  for (const directory of packageDirectories) {
+    const published = (await Bun.file(
+      join(directory, "dist/package.json"),
+    ).json()) as {
+      readonly name: string;
+      readonly dependencies?: Readonly<Record<string, string>>;
+      readonly peerDependencies?: Readonly<Record<string, string>>;
+    };
+    for (const [name, version] of Object.entries({
+      ...published.dependencies,
+      ...published.peerDependencies,
+    })) {
+      const workspaceVersion = sourceVersions.get(name);
+      if (workspaceVersion && version !== `^${workspaceVersion}`) {
+        throw new Error(
+          `${published.name} points at ${name}@${version}, expected ^${workspaceVersion}`,
+        );
+      }
+    }
   }
   const consumer = join(destination, "consumer");
   await mkdir(consumer, { recursive: true });
@@ -284,6 +336,68 @@ if (workflow.snapshot.status !== "completed") {
     "@mwillbanks/tuil"
   ) {
     throw new Error("Packed CLI returned invalid package information");
+  }
+  const standaloneSkills = Bun.spawn(
+    [
+      "bun",
+      join(consumer, "node_modules/@mwillbanks/tuil-cli/bin.js"),
+      "skills",
+      "list",
+      "--output",
+      "json",
+    ],
+    { cwd: consumer, stdout: "pipe", stderr: "pipe" },
+  );
+  const standaloneSkillsOutput = await new Response(
+    standaloneSkills.stdout,
+  ).text();
+  const standaloneSkillsError = await new Response(
+    standaloneSkills.stderr,
+  ).text();
+  if (
+    (await standaloneSkills.exited) !== 0 ||
+    (JSON.parse(standaloneSkillsOutput) as readonly unknown[]).length !== 7
+  ) {
+    throw new Error(
+      `Standalone packed CLI has no complete Agent Skills bundle: ${standaloneSkillsError.trim()}`,
+    );
+  }
+  const installedSkills = Bun.spawn(
+    [
+      "bun",
+      join(consumer, "node_modules/@mwillbanks/tuil/cli.js"),
+      "skills",
+      "install",
+      "--target",
+      "installed-skills",
+      "--output",
+      "json",
+    ],
+    { cwd: consumer, stdout: "pipe", stderr: "pipe" },
+  );
+  const installedSkillsOutput = await new Response(
+    installedSkills.stdout,
+  ).text();
+  const installedSkillsError = await new Response(
+    installedSkills.stderr,
+  ).text();
+  if ((await installedSkills.exited) !== 0) {
+    throw new Error(
+      `Packed CLI could not install Agent Skills: ${installedSkillsError.trim()}`,
+    );
+  }
+  const installedSkillNames = (
+    JSON.parse(installedSkillsOutput) as {
+      readonly installed: readonly string[];
+    }
+  ).installed;
+  if (
+    installedSkillNames.length !== 7 ||
+    !(await Bun.file(
+      join(consumer, "installed-skills/building-tuil-applications/SKILL.md"),
+    ).exists())
+  ) {
+    throw new Error("Packed CLI installed an incomplete Agent Skills bundle");
   }
   const generatedTemplates = [
     "minimal",

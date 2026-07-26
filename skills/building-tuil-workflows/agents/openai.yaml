@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build tuil Workflows"
+  short_description: "Build resumable workflows and operations"
+  default_prompt: "Use $building-tuil-workflows to implement this versioned tuil workflow."

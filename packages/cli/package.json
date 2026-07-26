@@ -2,6 +2,9 @@
   "name": "@mwillbanks/tuil-cli",
   "version": "0.1.0",
   "type": "module",
+  "tuil": {
+    "skills": "./skills"
+  },
   "bin": {
     "tuil": "./dist/bin.js"
   },

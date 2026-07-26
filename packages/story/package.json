@@ -1,0 +1,52 @@
+{
+  "name": "@mwillbanks/tuil-story",
+  "version": "0.1.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./browser": {
+      "types": "./dist/browser.d.ts",
+      "import": "./dist/browser.js"
+    },
+    "./storybook": {
+      "types": "./dist/storybook.d.ts",
+      "import": "./dist/storybook.js"
+    },
+    "./static": {
+      "types": "./dist/static.d.ts",
+      "import": "./dist/static.js"
+    }
+  },
+  "scripts": {
+    "build": "bun ../../tooling/build/package.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@mwillbanks/tuil": "workspace:*",
+    "@mwillbanks/tuil-core": "workspace:*",
+    "@mwillbanks/tuil-testing": "workspace:*",
+    "@mwillbanks/tuil-testing-ink": "workspace:*",
+    "@mwillbanks/tuil-theme": "workspace:*",
+    "ansi-to-html": "^0.7.2",
+    "chalk": "^5.6.2"
+  },
+  "peerDependencies": {
+    "@storybook/react": "^10.5.4",
+    "ink": "catalog:",
+    "ink-testing-library": "catalog:",
+    "react": "catalog:"
+  },
+  "peerDependenciesMeta": {
+    "@storybook/react": {
+      "optional": true
+    }
+  },
+  "files": [
+    "dist"
+  ]
+}

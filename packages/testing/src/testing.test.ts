@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test";
 import {
+  defaultTerminalStoryControls,
   defineTuilStories,
   normalizeTerminalFrame,
   SemanticScreen,
@@ -52,4 +53,6 @@ test("portable story definitions preserve typed, immutable variants", () => {
   expect(stories.stories.Default.args.label).toBe("Ready");
   expect(Object.isFrozen(stories.stories.Default)).toBeTrue();
   expect(Object.isFrozen(stories.stories.Default.args)).toBeTrue();
+  expect(defaultTerminalStoryControls.colorDepth).toBe(24);
+  expect(Object.isFrozen(defaultTerminalStoryControls)).toBeTrue();
 });

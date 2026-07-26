@@ -1,0 +1,4 @@
+interface:
+  display_name: "Publish tuil Registry Items"
+  short_description: "Publish safe validated tuil registry items"
+  default_prompt: "Use $publishing-tuil-registry-items to publish this tuil registry item safely."

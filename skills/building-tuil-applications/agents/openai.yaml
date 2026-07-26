@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build tuil Applications"
+  short_description: "Build complete terminal applications with tuil"
+  default_prompt: "Use $building-tuil-applications to build a complete tuil application."

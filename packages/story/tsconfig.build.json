@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "paths": {}
+  },
+  "include": [
+    "src/index.ts",
+    "src/index.tsx",
+    "src/browser.tsx",
+    "src/storybook.tsx",
+    "src/static.ts",
+    "src/bin.ts"
+  ]
+}

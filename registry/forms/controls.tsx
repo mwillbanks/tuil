@@ -47,7 +47,7 @@ export interface FieldProps
   readonly field?: { readonly errors: readonly string[] };
   readonly hint?: string;
   readonly required?: boolean;
-  readonly children: ReactNode;
+  readonly children?: ReactNode;
 }
 
 function useRuntimeAsync(): (work: Promise<unknown>, phase: string) => void {

@@ -1,4 +1,8 @@
-import type { TerminalCapabilities } from "@mwillbanks/tuil-core";
+import {
+  type Disposable,
+  type TerminalCapabilities,
+  toDisposable,
+} from "@mwillbanks/tuil-core";
 import {
   createContext,
   createElement,
@@ -70,6 +74,64 @@ export type ThemeInput = Partial<{
     ? Partial<Theme[TKey]>
     : Theme[TKey];
 }>;
+
+export interface ThemeRegistryEntry {
+  readonly theme: Theme;
+  readonly description?: string;
+  readonly tags?: readonly string[];
+}
+
+export class ThemeRegistry {
+  readonly #entries = new Map<string, ThemeRegistryEntry>();
+  #defaultId?: string;
+
+  register(
+    entry: ThemeRegistryEntry,
+    options: { readonly default?: boolean } = {},
+  ): Disposable {
+    if (this.#entries.has(entry.theme.id)) {
+      throw new Error(`Theme "${entry.theme.id}" is already registered`);
+    }
+    const registered = Object.freeze({
+      ...entry,
+      tags: Object.freeze([...new Set(entry.tags ?? [])]),
+    });
+    this.#entries.set(entry.theme.id, registered);
+    if (options.default || this.#defaultId === undefined) {
+      this.#defaultId = entry.theme.id;
+    }
+    return toDisposable(() => {
+      if (this.#entries.get(entry.theme.id) !== registered) return;
+      this.#entries.delete(entry.theme.id);
+      if (this.#defaultId === entry.theme.id) {
+        this.#defaultId = this.list()[0]?.theme.id;
+      }
+    });
+  }
+
+  get(id: string): ThemeRegistryEntry | undefined {
+    return this.#entries.get(id);
+  }
+
+  resolve(id?: string): Theme {
+    const selected = id ?? this.#defaultId;
+    const theme = selected ? this.#entries.get(selected)?.theme : undefined;
+    if (!theme) {
+      throw new Error(
+        selected
+          ? `Theme "${selected}" is not registered`
+          : "No theme is registered",
+      );
+    }
+    return theme;
+  }
+
+  list(options: { readonly tag?: string } = {}): readonly ThemeRegistryEntry[] {
+    return [...this.#entries.values()]
+      .filter((entry) => !options.tag || entry.tags?.includes(options.tag))
+      .sort((left, right) => left.theme.id.localeCompare(right.theme.id));
+  }
+}
 
 const semantic = (
   foreground: string,
@@ -149,6 +211,43 @@ export function createTheme(...inputs: readonly ThemeInput[]): Theme {
     theme = mergeRecord(theme, input as unknown as Partial<Theme>) as Theme;
   }
   return deepFreeze(theme);
+}
+
+export const defaultLightTheme: Theme = createTheme(defaultTheme, {
+  id: "default-light",
+  colorScheme: "light",
+  colors: {
+    background: "white",
+    foreground: "black",
+    muted: "gray",
+    subtle: "gray",
+    border: "gray",
+    primary: semantic("blue", "white"),
+    secondary: semantic("magenta", "white"),
+    success: semantic("green", "white"),
+    warning: semantic("yellow", "white"),
+    danger: semantic("red", "white"),
+    info: semantic("cyan", "white"),
+  },
+  typography: { headingBold: true, codeColor: "blue" },
+});
+
+export function createDefaultThemeRegistry(): ThemeRegistry {
+  const registry = new ThemeRegistry();
+  registry.register(
+    {
+      theme: defaultTheme,
+      description: "Default dark terminal theme",
+      tags: ["default", "dark"],
+    },
+    { default: true },
+  );
+  registry.register({
+    theme: defaultLightTheme,
+    description: "Default light terminal theme",
+    tags: ["default", "light"],
+  });
+  return registry;
 }
 
 export function normalizeTheme(

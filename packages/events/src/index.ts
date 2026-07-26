@@ -131,6 +131,7 @@ export class EventBus<TEvents extends EventMap = EventMap> {
   readonly #definitions: Record<string, EventDefinition<unknown>>;
   readonly #subscriptions = new Set<Subscription>();
   readonly #observers = new Set<(event: ObservedEvent) => void>();
+  readonly #history: ObservedEvent[] = [];
   #disposed = false;
 
   constructor(definitions: Partial<EventDefinitions<TEvents>> = {}) {
@@ -184,6 +185,10 @@ export class EventBus<TEvents extends EventMap = EventMap> {
     return () => this.#observers.delete(observer);
   }
 
+  history(): readonly ObservedEvent[] {
+    return Object.freeze([...this.#history]);
+  }
+
   async emit<TType extends keyof TEvents & string>(
     type: TType,
     payload: TEvents[TType],
@@ -229,6 +234,8 @@ export class EventBus<TEvents extends EventMap = EventMap> {
       priority,
       defaultPrevented: emitted.defaultPrevented,
     });
+    this.#history.push(observed);
+    if (this.#history.length > 200) this.#history.shift();
     for (const observer of this.#observers) {
       observer(observed);
     }
@@ -239,6 +246,7 @@ export class EventBus<TEvents extends EventMap = EventMap> {
     this.#disposed = true;
     this.#subscriptions.clear();
     this.#observers.clear();
+    this.#history.length = 0;
   }
 
   async #dispatchRouted(

@@ -5,6 +5,7 @@ import {
   createPlugin,
   type ExtensionRegistry,
   PluginManager,
+  PluginRegistry,
 } from "./index.ts";
 
 const extension: ExtensionRegistry = {
@@ -106,5 +107,63 @@ describe("plugin manager", () => {
       }),
     );
     await expect(cyclic.initialize()).rejects.toThrow("cycle");
+  });
+});
+
+describe("plugin registry", () => {
+  test("resolves dependencies and disposes catalog entries", () => {
+    const registry = new PluginRegistry();
+    const core = createPlugin({ id: "core", version: "1.0.0", setup() {} });
+    const extensionPlugin = createPlugin({
+      id: "extension",
+      version: "1.0.0",
+      dependsOn: ["core"],
+      requires: { capabilities: ["network.request"] },
+      setup() {},
+    });
+    const coreRegistration = registry.register({
+      plugin: core,
+      tags: ["official"],
+    });
+    registry.register({
+      plugin: extensionPlugin,
+      tags: ["official", "network"],
+    });
+
+    expect(registry.resolve(["extension"]).map((plugin) => plugin.id)).toEqual([
+      "core",
+      "extension",
+    ]);
+    expect(registry.list({ tag: "network" })[0]?.plugin.id).toBe("extension");
+    expect(registry.list({ capability: "network.request" })[0]?.plugin.id).toBe(
+      "extension",
+    );
+
+    coreRegistration.dispose();
+    expect(() => registry.resolve(["extension"])).toThrow(
+      'depends on unavailable plugin "core"',
+    );
+  });
+
+  test("rejects duplicate entries and dependency cycles", () => {
+    const registry = new PluginRegistry();
+    const first = createPlugin({
+      id: "first",
+      version: "1",
+      dependsOn: ["second"],
+      setup() {},
+    });
+    const second = createPlugin({
+      id: "second",
+      version: "1",
+      dependsOn: ["first"],
+      setup() {},
+    });
+    registry.register({ plugin: first });
+    registry.register({ plugin: second });
+    expect(() => registry.register({ plugin: first })).toThrow(
+      "already in the registry",
+    );
+    expect(() => registry.resolve(["first"])).toThrow("dependency cycle");
   });
 });

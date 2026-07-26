@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build tuil Forms"
+  short_description: "Build validated terminal forms with tuil"
+  default_prompt: "Use $building-tuil-forms to implement this tuil form workflow."

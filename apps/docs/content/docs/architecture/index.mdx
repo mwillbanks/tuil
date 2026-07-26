@@ -1,0 +1,19 @@
+---
+title: Architecture
+description: Runtime ownership, rendering boundaries, and extension topology.
+---
+
+`createApp` owns one `TuilRuntime`. The runtime composes capabilities, theme,
+events, commands, hotkeys, focus, routing, plugins, operations, and extensions.
+The Ink adapter provides rendering and input without becoming the public
+application model.
+
+Portable stories sit above the runtime boundary. A story request creates an
+isolated application, applies terminal capabilities and theme, replays bounded
+input, captures semantic and ANSI frames, and always closes the renderer.
+Fumadocs, Storybook, the showcase, and the playground consume that same story
+catalog.
+
+Plugins register through disposable, keyed registries. Applications retain
+ownership of plugin activation and teardown; plugins do not mutate global
+framework state.

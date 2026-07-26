@@ -1,9 +1,11 @@
 import {
   access,
   cp,
+  lstat,
   mkdir,
   readdir,
   readFile,
+  realpath,
   rename,
   rm,
   stat,
@@ -14,6 +16,7 @@ import {
   dirname,
   isAbsolute,
   join,
+  parse,
   relative,
   resolve,
 } from "node:path";
@@ -1196,6 +1199,185 @@ async function copyTheme(args: ParsedArguments): Promise<void> {
   output({ preset, result }, outputMode(args));
 }
 
+async function bundledSkillsDirectory(): Promise<string> {
+  const candidates = [
+    join(import.meta.dir, "skills"),
+    resolve(import.meta.dir, "../../../skills"),
+  ];
+  for (const candidate of candidates) {
+    if (await pathExists(candidate)) return candidate;
+  }
+  throw new Error(
+    "This tuil installation does not contain bundled Agent Skills",
+  );
+}
+
+async function canonicalFuturePath(path: string): Promise<string> {
+  let existing = path;
+  const missing: string[] = [];
+  while (!(await pathExists(existing))) {
+    const parent = dirname(existing);
+    if (parent === existing) break;
+    missing.unshift(basename(existing));
+    existing = parent;
+  }
+  return resolve(await realpath(existing), ...missing);
+}
+
+function overlaps(left: string, right: string): boolean {
+  const leftToRight = relative(left, right);
+  const rightToLeft = relative(right, left);
+  return (
+    leftToRight === "" ||
+    (!leftToRight.startsWith("..") && !isAbsolute(leftToRight)) ||
+    (!rightToLeft.startsWith("..") && !isAbsolute(rightToLeft))
+  );
+}
+
+export async function installBundledSkills(
+  source: string,
+  destination: string,
+  options: {
+    readonly force?: boolean;
+    readonly signal?: AbortSignal;
+  } = {},
+): Promise<readonly string[]> {
+  const checkAborted = () => options.signal?.throwIfAborted();
+  checkAborted();
+  const sourcePath = await realpath(source);
+  checkAborted();
+  const destinationPath = await canonicalFuturePath(destination);
+  checkAborted();
+  if (
+    destinationPath === parse(destinationPath).root ||
+    destinationPath === resolve(process.cwd())
+  ) {
+    throw new Error(`Refusing unsafe skills destination "${destination}"`);
+  }
+  if (overlaps(sourcePath, destinationPath)) {
+    throw new Error("Bundled skills source and destination must not overlap");
+  }
+  if (await pathExists(destinationPath)) {
+    checkAborted();
+    const destinationStats = await lstat(destinationPath);
+    if (destinationStats.isSymbolicLink()) {
+      throw new Error("Skills destination must not be a symbolic link");
+    }
+    if (!destinationStats.isDirectory()) {
+      throw new Error("Skills destination must be a directory");
+    }
+  }
+  checkAborted();
+  const skillNames = (await readdir(sourcePath, { withFileTypes: true }))
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+  const collisions = (
+    await Promise.all(
+      skillNames.map(async (name) => ({
+        name,
+        exists: await pathExists(join(destinationPath, name)),
+      })),
+    )
+  ).filter((entry) => entry.exists);
+  checkAborted();
+  if (!options.force && collisions.length > 0) {
+    throw new Error(
+      `Refusing to overwrite installed skills: ${collisions
+        .map((entry) => entry.name)
+        .join(", ")}; use --force`,
+    );
+  }
+  const parent = dirname(destinationPath);
+  await mkdir(parent, { recursive: true });
+  checkAborted();
+  const transaction = crypto.randomUUID();
+  const staging = join(
+    parent,
+    `.${basename(destinationPath)}.tuil-skills-stage-${transaction}`,
+  );
+  const backup = join(
+    parent,
+    `.${basename(destinationPath)}.tuil-skills-backup-${transaction}`,
+  );
+  let movedOriginal = false;
+  try {
+    if (await pathExists(destinationPath)) {
+      checkAborted();
+      await cp(destinationPath, staging, { recursive: true });
+    } else {
+      await mkdir(staging, { recursive: true });
+    }
+    checkAborted();
+    for (const name of skillNames) {
+      checkAborted();
+      const target = join(staging, name);
+      await rm(target, { recursive: true, force: true });
+      checkAborted();
+      await cp(join(sourcePath, name), target, { recursive: true });
+      checkAborted();
+    }
+    if (await pathExists(destinationPath)) {
+      checkAborted();
+      await rename(destinationPath, backup);
+      movedOriginal = true;
+    }
+    try {
+      checkAborted();
+      await rename(staging, destinationPath);
+    } catch (error) {
+      if (movedOriginal) {
+        await rename(backup, destinationPath);
+        movedOriginal = false;
+      }
+      throw error;
+    }
+    if (movedOriginal) {
+      await rm(backup, { recursive: true, force: true });
+      movedOriginal = false;
+    }
+    return Object.freeze(skillNames);
+  } catch (error) {
+    await rm(staging, { recursive: true, force: true });
+    if (movedOriginal && !(await pathExists(destinationPath))) {
+      await rename(backup, destinationPath);
+    }
+    throw error;
+  }
+}
+
+async function skillCommand(args: ParsedArguments): Promise<void> {
+  const source = await bundledSkillsDirectory();
+  const skillNames = (await readdir(source, { withFileTypes: true }))
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+  const action = args.operands[0] ?? "list";
+  if (action === "list") {
+    output(
+      skillNames.map((name) => ({
+        name,
+        path: join(source, name),
+      })),
+      outputMode(args),
+    );
+    return;
+  }
+  if (action !== "install") {
+    throw new Error(
+      `Unknown skills action "${action}". Expected list or install`,
+    );
+  }
+  const destination = resolve(
+    process.cwd(),
+    String(flag(args, "target") ?? ".agents/skills"),
+  );
+  const installed = await installBundledSkills(source, destination, {
+    force: Boolean(flag(args, "force")),
+  });
+  output({ installed, destination }, outputMode(args));
+}
+
 function help(): string {
   return `tuil
 
@@ -1212,6 +1394,8 @@ Commands:
   theme [preset]       Install a theme preset
   plugin               List registry plugins
   registry             Show registry configuration
+  skills list          List bundled Agent Skills
+  skills install       Install Agent Skills into .agents/skills
 
 Global options:
   --output interactive|static|json|silent
@@ -1241,6 +1425,8 @@ export async function main(argv = process.argv.slice(2)): Promise<void> {
       (await client.list()).filter((entry) => entry.type === "plugin"),
       outputMode(args),
     );
+  } else if (args.command === "skills") {
+    await skillCommand(args);
   } else {
     output(help(), outputMode(args));
   }

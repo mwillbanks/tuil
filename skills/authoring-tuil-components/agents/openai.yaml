@@ -1,0 +1,4 @@
+interface:
+  display_name: "Author tuil Components"
+  short_description: "Create accessible composable tuil components"
+  default_prompt: "Use $authoring-tuil-components to create a production-ready tuil component."

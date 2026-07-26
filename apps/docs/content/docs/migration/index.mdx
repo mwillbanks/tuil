@@ -1,0 +1,17 @@
+---
+title: Migrate from a raw Ink application
+description: Adopt tuil incrementally while preserving terminal behavior.
+---
+
+1. Wrap the root component with `createApp` and render it through
+   `@mwillbanks/tuil-ink`.
+2. Move direct stdin handling into `useTerminalInput`, commands, and hotkeys.
+3. Replace coordinate-based focus code with registered focus nodes and scopes.
+4. Move navigation, async work, and multi-step state into router, operation,
+   and workflow services.
+5. Add semantic labels and roles, then port tests to `renderTuil`.
+6. Define portable stories for interactive and static terminal modes.
+
+Keep the old entry point until the equivalent tuil path passes keyboard,
+resize, redirected-output, and cleanup tests. Remove compatibility code only
+after consumers import public tuil package exports.

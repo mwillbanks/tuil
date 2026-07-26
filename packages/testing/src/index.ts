@@ -1,15 +1,37 @@
 import type { SemanticRole } from "@mwillbanks/tuil-core";
 import type { ComponentType } from "react";
 
+export interface TerminalStoryControls {
+  readonly width: number;
+  readonly height: number;
+  readonly colorDepth: 1 | 4 | 8 | 24;
+  readonly unicode: boolean;
+  readonly theme: string;
+  readonly platform: NodeJS.Platform;
+  readonly interactive: boolean;
+  readonly reducedMotion: boolean;
+  readonly mouse: boolean;
+  readonly hyperlinks: boolean;
+}
+
+export const defaultTerminalStoryControls: TerminalStoryControls =
+  Object.freeze({
+    width: 80,
+    height: 24,
+    colorDepth: 24,
+    unicode: true,
+    theme: "default-dark",
+    platform: "linux",
+    interactive: true,
+    reducedMotion: false,
+    mouse: false,
+    hyperlinks: true,
+  });
+
 export interface TuilStory<TProps> {
   readonly args: Partial<TProps>;
   readonly description?: string;
-  readonly terminal?: {
-    readonly width?: number;
-    readonly height?: number;
-    readonly unicode?: boolean;
-    readonly interactive?: boolean;
-  };
+  readonly terminal?: Partial<TerminalStoryControls>;
 }
 
 export interface TuilStoryDefinition<

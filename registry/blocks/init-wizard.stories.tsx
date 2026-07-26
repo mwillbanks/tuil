@@ -1,38 +1,21 @@
 import { defineTuilStories } from "@mwillbanks/tuil-testing";
+import type { ReactNode } from "react";
 import { InitWizard } from "./init-wizard.tsx";
+import { initWizardStoryVariants } from "./init-wizard-story-data.ts";
+
+function DocumentedInitWizard(props: {
+  readonly initialName: string;
+}): ReactNode {
+  return (
+    <InitWizard
+      initialName={props.initialName}
+      onComplete={() => undefined}
+      onCancel={() => undefined}
+    />
+  );
+}
 
 export const initWizardStories = defineTuilStories({
-  component: InitWizard,
-  stories: {
-    Default: {
-      description:
-        "Complete self-hosted project initialization with routing, forms, workflow, operations, and confirmation.",
-      args: {
-        initialName: "my-tuil-app",
-        onComplete: () => undefined,
-        onCancel: () => undefined,
-      },
-      terminal: {
-        width: 80,
-        height: 24,
-        unicode: true,
-        interactive: true,
-      },
-    },
-    StaticFallback: {
-      description:
-        "Non-interactive documentation rendering of the initializer.",
-      args: {
-        initialName: "static-tuil-app",
-        onComplete: () => undefined,
-        onCancel: () => undefined,
-      },
-      terminal: {
-        width: 80,
-        height: 24,
-        unicode: false,
-        interactive: false,
-      },
-    },
-  },
+  component: DocumentedInitWizard,
+  stories: initWizardStoryVariants,
 });

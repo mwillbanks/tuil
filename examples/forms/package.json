@@ -1,0 +1,28 @@
+{
+  "name": "@mwillbanks/tuil-example-forms",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun src/index.tsx",
+    "build": "bun build src/index.tsx --outdir dist --target bun --packages external",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test ../examples.test.tsx"
+  },
+  "dependencies": {
+    "@mwillbanks/tuil": "workspace:*",
+    "@mwillbanks/tuil-focus": "workspace:*",
+    "@mwillbanks/tuil-form": "workspace:*",
+    "@mwillbanks/tuil-hotkeys": "workspace:*",
+    "@mwillbanks/tuil-ink": "workspace:*",
+    "@mwillbanks/tuil-operations": "workspace:*",
+    "@mwillbanks/tuil-router": "workspace:*",
+    "@mwillbanks/tuil-theme": "workspace:*",
+    "@mwillbanks/tuil-virtual": "workspace:*",
+    "@mwillbanks/tuil-workflow": "workspace:*",
+    "@tanstack/react-form": "catalog:",
+    "@tanstack/react-virtual": "catalog:",
+    "ink": "catalog:",
+    "react": "catalog:"
+  }
+}

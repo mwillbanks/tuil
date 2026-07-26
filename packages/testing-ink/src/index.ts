@@ -1,8 +1,4 @@
-import {
-  createApp,
-  type TuilAppOptions,
-  type TuilRuntime,
-} from "@mwillbanks/tuil";
+import { createApp, type TuilApp, type TuilAppOptions } from "@mwillbanks/tuil";
 import { createRuntimeElement, SemanticRegistry } from "@mwillbanks/tuil-ink";
 import {
   normalizeTerminalFrame,
@@ -17,7 +13,7 @@ import type { ReactElement } from "react";
 export { normalizeTerminalFrame, SemanticScreen };
 
 export interface TuilTestInstance {
-  readonly app: TuilRuntime;
+  readonly app: TuilApp;
   readonly ready: Promise<void>;
   readonly screen: SemanticScreen;
   readonly user: TuilUser;
@@ -139,6 +135,10 @@ export function renderTuil(
     createRuntimeElement(app, registry, markRendered) as ReactElement,
   );
   const ready = Promise.all([runtimeReady, rendered]).then(() => undefined);
+  let readyFailure: unknown;
+  void ready.catch((error: unknown) => {
+    readyFailure = error;
+  });
   const semanticScreen = new SemanticScreen(() => ({
     nodes: registry.nodes(),
     frame: normalizeTerminalFrame(instance.lastFrame() ?? ""),
@@ -164,13 +164,9 @@ export function renderTuil(
       instance.stdout.emit("resize", { width, height });
     },
     async cleanup() {
-      let readyError: unknown;
       try {
-        await ready;
-      } catch (error) {
-        readyError = error;
-      } finally {
         instance.cleanup();
+      } finally {
         await app.stop();
       }
       activeInstances.delete(result);
@@ -178,7 +174,7 @@ export function renderTuil(
         activeScreen = undefined;
         activeUser = undefined;
       }
-      if (readyError) throw readyError;
+      if (readyFailure) throw readyFailure;
     },
   };
   activeInstances.add(result);

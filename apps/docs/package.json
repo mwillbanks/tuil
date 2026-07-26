@@ -1,0 +1,34 @@
+{
+  "name": "@mwillbanks/tuil-docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun ../showcase/src/with-story-server.ts docs",
+    "build": "next build",
+    "typecheck": "fumadocs-mdx && tsc --noEmit",
+    "test": "bun test",
+    "postinstall": "fumadocs-mdx"
+  },
+  "dependencies": {
+    "@fumadocs/story": "^1.2.0",
+    "@mwillbanks/tuil": "workspace:*",
+    "@mwillbanks/tuil-ink": "workspace:*",
+    "@mwillbanks/tuil-story": "workspace:*",
+    "@mwillbanks/tuil-testing": "workspace:*",
+    "@mwillbanks/tuil-testing-ink": "workspace:*",
+    "fumadocs-core": "^16.12.1",
+    "fumadocs-mdx": "^15.2.0",
+    "fumadocs-ui": "^16.12.1",
+    "ink": "catalog:",
+    "ink-testing-library": "catalog:",
+    "next": "^16.2.12",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@types/mdx": "^2.0.14",
+    "@types/node": "^24.10.1"
+  }
+}

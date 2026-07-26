@@ -43,6 +43,7 @@ import {
 } from "react";
 
 export * from "@mwillbanks/tuil-core";
+export type { ObservedEvent } from "@mwillbanks/tuil-events";
 export type {
   OperationDefinition,
   OperationProgress,
@@ -135,8 +136,22 @@ export interface TuilRuntime {
   readonly lifecycle: Lifecycle;
   readonly services: ServiceContainer;
   readonly commands: CommandRegistry;
+  readonly events: {
+    observe(
+      observer: (
+        event: import("@mwillbanks/tuil-events").ObservedEvent,
+      ) => void,
+    ): () => void;
+    history(): readonly import("@mwillbanks/tuil-events").ObservedEvent[];
+  };
   readonly focus: FocusManager;
   readonly hotkeys: HotkeyManager;
+  readonly plugins: {
+    health(): readonly import("@mwillbanks/tuil-plugin").PluginHealth[];
+  };
+  readonly extensions: Readonly<
+    Record<string, { values(): readonly unknown[] }>
+  >;
   readonly capabilities: TerminalCapabilities;
   readonly mode: RenderMode;
   readonly theme: Theme;

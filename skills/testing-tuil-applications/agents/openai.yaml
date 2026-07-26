@@ -1,0 +1,4 @@
+interface:
+  display_name: "Test tuil Applications"
+  short_description: "Test terminal behavior through stable tuil APIs"
+  default_prompt: "Use $testing-tuil-applications to test this tuil behavior comprehensively."

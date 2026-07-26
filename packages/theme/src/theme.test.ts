@@ -1,10 +1,14 @@
 import { expect, test } from "bun:test";
 import {
   compileUtilities,
+  createDefaultThemeRegistry,
   createTheme,
+  defaultLightTheme,
+  defaultTheme,
   normalizeTheme,
   resolveComponentProps,
   resolveSlotProps,
+  ThemeRegistry,
 } from "./index.ts";
 
 test("themes merge tokens and degrade terminal capabilities", () => {
@@ -32,6 +36,13 @@ test("themes merge tokens and degrade terminal capabilities", () => {
   expect(normalized.colors.primary.foreground).toBe("white");
   expect(normalized.motion.enabled).toBeFalse();
   expect(normalized.borders.round[2]).toBe("+");
+});
+
+test("ships resolvable dark and light defaults", () => {
+  const registry = createDefaultThemeRegistry();
+  expect(registry.resolve().id).toBe("default-dark");
+  expect(registry.resolve("default-light")).toBe(defaultLightTheme);
+  expect(defaultLightTheme.colorScheme).toBe("light");
 });
 
 test("slot factories and utilities resolve from state and theme", () => {
@@ -104,4 +115,27 @@ test("component defaults, variants, sizes, utilities, and unstyled mode resolve"
       theme,
     ),
   ).toEqual({ flexGrow: 1 });
+});
+
+test("theme registry resolves defaults, filters, and disposes registrations", () => {
+  const registry = new ThemeRegistry();
+  const dark = registry.register({
+    theme: defaultTheme,
+    tags: ["dark", "official"],
+  });
+  const light = createTheme({
+    id: "default-light",
+    colorScheme: "light",
+  });
+  registry.register(
+    { theme: light, tags: ["light", "official"] },
+    { default: true },
+  );
+  expect(registry.resolve()).toBe(light);
+  expect(registry.list({ tag: "dark" })[0]?.theme).toBe(defaultTheme);
+  dark.dispose();
+  expect(registry.get(defaultTheme.id)).toBeUndefined();
+  expect(() => registry.register({ theme: light })).toThrow(
+    "already registered",
+  );
 });

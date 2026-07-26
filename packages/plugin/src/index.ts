@@ -55,6 +55,93 @@ export interface Plugin<TEvents extends EventMap = EventMap> {
     | Promise<undefined | Disposable | Disposer>;
 }
 
+export interface PluginRegistryEntry<TEvents extends EventMap = EventMap> {
+  readonly plugin: Plugin<TEvents>;
+  readonly description?: string;
+  readonly tags?: readonly string[];
+}
+
+export interface PluginRegistryQuery {
+  readonly capability?: PluginCapability;
+  readonly tag?: string;
+}
+
+/**
+ * Host-owned catalog for discovering plugins before they enter a PluginManager.
+ * Resolution validates and orders the complete dependency graph.
+ */
+export class PluginRegistry<TEvents extends EventMap = EventMap> {
+  readonly #entries = new Map<string, PluginRegistryEntry<TEvents>>();
+
+  register(entry: PluginRegistryEntry<TEvents>): Disposable {
+    const { plugin } = entry;
+    if (this.#entries.has(plugin.id)) {
+      throw new Error(`Plugin "${plugin.id}" is already in the registry`);
+    }
+    const registered = Object.freeze({
+      ...entry,
+      tags: Object.freeze([...new Set(entry.tags ?? [])]),
+    });
+    this.#entries.set(plugin.id, registered);
+    return {
+      dispose: () => {
+        if (this.#entries.get(plugin.id) === registered) {
+          this.#entries.delete(plugin.id);
+        }
+      },
+    };
+  }
+
+  get(id: string): PluginRegistryEntry<TEvents> | undefined {
+    return this.#entries.get(id);
+  }
+
+  list(
+    query: PluginRegistryQuery = {},
+  ): readonly PluginRegistryEntry<TEvents>[] {
+    return [...this.#entries.values()]
+      .filter(
+        (entry) =>
+          (!query.tag || entry.tags?.includes(query.tag)) &&
+          (!query.capability ||
+            entry.plugin.requires?.capabilities?.includes(query.capability)),
+      )
+      .sort((left, right) => left.plugin.id.localeCompare(right.plugin.id));
+  }
+
+  resolve(ids: readonly string[]): readonly Plugin<TEvents>[] {
+    const permanent = new Set<string>();
+    const temporary = new Set<string>();
+    const resolved: Plugin<TEvents>[] = [];
+    const visit = (id: string, path: readonly string[]): void => {
+      if (permanent.has(id)) return;
+      if (temporary.has(id)) {
+        throw new Error(
+          `Plugin registry dependency cycle: ${[...path, id].join(" → ")}`,
+        );
+      }
+      const entry = this.#entries.get(id);
+      if (!entry) {
+        const owner = path.at(-1);
+        throw new Error(
+          owner
+            ? `Plugin "${owner}" depends on unavailable plugin "${id}"`
+            : `Plugin "${id}" is not available in the registry`,
+        );
+      }
+      temporary.add(id);
+      for (const dependency of entry.plugin.dependsOn ?? []) {
+        visit(dependency, [...path, id]);
+      }
+      temporary.delete(id);
+      permanent.add(id);
+      resolved.push(entry.plugin);
+    };
+    for (const id of ids) visit(id, []);
+    return Object.freeze(resolved);
+  }
+}
+
 export interface PluginHealth {
   readonly id: string;
   readonly version: string;

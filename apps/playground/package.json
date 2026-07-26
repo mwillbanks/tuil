@@ -1,0 +1,36 @@
+{
+  "name": "@mwillbanks/tuil-playground",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun src/index.tsx",
+    "dev": "bun src/index.tsx",
+    "build": "bun build src/index.tsx --outdir dist --target bun --packages external",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@mwillbanks/tuil": "workspace:*",
+    "@mwillbanks/tuil-devtools": "workspace:*",
+    "@mwillbanks/tuil-focus": "workspace:*",
+    "@mwillbanks/tuil-form": "workspace:*",
+    "@mwillbanks/tuil-ink": "workspace:*",
+    "@mwillbanks/tuil-operations": "workspace:*",
+    "@mwillbanks/tuil-router": "workspace:*",
+    "@mwillbanks/tuil-story": "workspace:*",
+    "@mwillbanks/tuil-testing": "workspace:*",
+    "@mwillbanks/tuil-theme": "workspace:*",
+    "@mwillbanks/tuil-virtual": "workspace:*",
+    "@mwillbanks/tuil-workflow": "workspace:*",
+    "@tanstack/pacer": "catalog:",
+    "@tanstack/react-form": "catalog:",
+    "@tanstack/react-table": "catalog:",
+    "@tanstack/react-virtual": "catalog:",
+    "diff": "catalog:",
+    "ink": "catalog:",
+    "react": "catalog:",
+    "slice-ansi": "catalog:",
+    "string-width": "catalog:"
+  }
+}

@@ -85,4 +85,22 @@ describe("event bus", () => {
     await bus.emit("auth:token", { token: "secret" });
     expect(observed).toBe("[REDACTED]");
   });
+
+  test("retains a bounded observable history and clears it on disposal", async () => {
+    const bus = new EventBus<TestEvents>(
+      defineEvents({
+        "project:create": event<{ name: string }>(),
+        "auth:token": event<{ token: string }>(),
+      }),
+    );
+    for (let index = 0; index < 201; index += 1) {
+      await bus.emit("project:create", { name: `project-${index}` });
+    }
+    const history = bus.history();
+    expect(history).toHaveLength(200);
+    expect(history[0]?.payload).toEqual({ name: "project-1" });
+    expect(history.at(-1)?.payload).toEqual({ name: "project-200" });
+    bus.dispose();
+    expect(bus.history()).toEqual([]);
+  });
 });
