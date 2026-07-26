@@ -12,6 +12,7 @@ import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 export type RegistryItemType =
   | "primitive"
   | "component"
+  | "layout"
   | "form"
   | "navigation"
   | "feedback"
@@ -66,6 +67,7 @@ export interface RegistrySource {
 const itemTypes = new Set<RegistryItemType>([
   "primitive",
   "component",
+  "layout",
   "form",
   "navigation",
   "feedback",

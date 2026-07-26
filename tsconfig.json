@@ -31,6 +31,7 @@
       "@mwillbanks/tuil-operations": ["./packages/operations/src/index.ts"],
       "@mwillbanks/tuil-router": ["./packages/router/src/index.ts"],
       "@mwillbanks/tuil-workflow": ["./packages/workflow/src/index.ts"],
+      "@mwillbanks/tuil-virtual": ["./packages/virtual/src/index.ts"],
       "@mwillbanks/tuil-ink": ["./packages/ink/src/index.ts"],
       "@mwillbanks/tuil-testing": ["./packages/testing/src/index.ts"],
       "@mwillbanks/tuil-testing-ink": ["./packages/testing-ink/src/index.ts"],

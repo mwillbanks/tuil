@@ -138,6 +138,16 @@ const componentExports = {
   "splash-screen": "SplashScreen",
   "help-overlay": "HelpOverlay",
   "init-wizard": "InitWizard",
+  table: "Table",
+  "data-table": "DataTable",
+  tree: "Tree",
+  "transfer-list": "TransferList",
+  "log-viewer": "LogViewer",
+  "diff-viewer": "DiffViewer",
+  "json-viewer": "JsonViewer",
+  "virtual-list": "VirtualList",
+  "split-pane": "SplitPane",
+  "resizable-pane": "ResizablePane",
 } as const;
 
 const templateComponents: Readonly<Record<Template, readonly string[]>> = {
@@ -424,11 +434,15 @@ export function App() {
 `;
   }
   if (template === "component-library") {
-    return `import {Alert, AppBar, AppShell, Badge, Box, Breadcrumbs, Button, Checkbox, Container, Dialog, Divider, Field, Heading, Progress, Select, Spinner, Stack, StatusBar, Stepper, Tabs, Text, TextInput, Tooltip} from "../components/tuil/index.ts";
+    return `import {Alert, AppBar, AppShell, Badge, Box, Breadcrumbs, Button, Checkbox, Container, Dialog, Divider, Field, Heading, JsonViewer, Progress, Select, Spinner, SplitPane, Stack, StatusBar, Stepper, Table, Tabs, Text, TextInput, Tooltip, Tree, VirtualList} from "../components/tuil/index.ts";
 
 const catalogSections = [
   {id: "foundation", label: "Foundation", content: "Layout and typography"},
   {id: "forms", label: "Forms", content: "Validated terminal input"},
+] as const;
+const componentRows = [
+  {id: "table", category: "data"},
+  {id: "tree", category: "data"},
 ] as const;
 
 export function App() {
@@ -450,6 +464,11 @@ export function App() {
             <Breadcrumbs items={[{id: "catalog", label: "Catalog"}, {id: "components", label: "Components"}]} />
             <Tabs id="catalog-sections" items={catalogSections} />
             <Stepper steps={[{id: "install", label: "Install", status: "completed"}, {id: "customize", label: "Customize", status: "current"}, {id: "ship", label: "Ship"}]} current="customize" />
+            <Table id="component-table" label="Components" rows={componentRows} getRowKey={(row) => row.id} columns={[{id: "id", header: "Component", accessor: (row) => row.id}, {id: "category", header: "Category", accessor: (row) => row.category}]} />
+            <Tree id="component-tree" label="Component groups" items={[{id: "display", label: "Data display", children: [{id: "table", label: "Table"}, {id: "tree", label: "Tree"}]}]} defaultExpandedIds={["display"]} />
+            <VirtualList id="component-list" label="Virtualized component list" items={componentRows} getItemKey={(item) => item.id} getItemLabel={(item) => item.id} renderItem={(item) => item.id} height={2} />
+            <JsonViewer id="component-metadata" label="Component metadata" value={{count: ${Object.keys(componentExports).length}, ownership: "project"}} height={4} />
+            <SplitPane id="catalog-panes" label="Catalog panes" defaultSizes={[50, 50]} panes={[{id: "preview", content: <Text>Preview</Text>}, {id: "source", content: <Text>Source</Text>}]} />
             <Tooltip targetId="inspect-component" content="Open the selected component">
             <Button id="inspect-component" autoFocus>Inspect</Button>
             </Tooltip>
@@ -514,6 +533,12 @@ function projectFiles(
   if (workflowEnabled) {
     dependencies["@mwillbanks/tuil-operations"] = "^0.1.0";
     dependencies["@mwillbanks/tuil-workflow"] = "^0.1.0";
+  }
+  if (template === "component-library") {
+    dependencies["@tanstack/react-table"] = "^8.21.3";
+    dependencies["@mwillbanks/tuil-virtual"] = "^0.1.0";
+    dependencies["diff"] = "^9.0.0";
+    dependencies["react-dom"] = "^19.2.8";
   }
   const files: Record<string, string> = {
     "package.json": `${JSON.stringify(
@@ -712,15 +737,17 @@ async function writeComponentBarrel(
           ? plan.find((candidate) => candidate.name === "dialog")?.files[0]
           : ["menu", "menubar", "breadcrumbs", "stepper"].includes(item.name)
             ? plan.find((candidate) => candidate.name === "tabs")?.files[0]
-            : [
-                  "operation-list",
-                  "operation-tree",
-                  "splash-screen",
-                  "help-overlay",
-                ].includes(item.name)
-              ? plan.find((candidate) => candidate.name === "workflow")
-                  ?.files[0]
-              : undefined);
+            : ["data-table"].includes(item.name)
+              ? plan.find((candidate) => candidate.name === "table")?.files[0]
+              : [
+                    "operation-list",
+                    "operation-tree",
+                    "splash-screen",
+                    "help-overlay",
+                  ].includes(item.name)
+                ? plan.find((candidate) => candidate.name === "workflow")
+                    ?.files[0]
+                : undefined);
     if (!file) return [];
     const modulePath = relative(base, file.target).replaceAll("\\", "/");
     return [

@@ -169,11 +169,17 @@ try {
         type: "module",
         dependencies: {
           "@tanstack/react-form": "^1.33.2",
+          "@tanstack/react-table": "^8.21.3",
+          "@tanstack/react-virtual": "^3.14.8",
           "@tanstack/pacer": "^0.21.1",
+          diff: "^9.0.0",
           ink: "^7.1.1",
           "ink-testing-library": "^4.0.0",
           react: "^19.2.8",
           "react-devtools-core": "^7.0.1",
+          "react-dom": "^19.2.8",
+          "slice-ansi": "^9.0.0",
+          "string-width": "^8.2.2",
           nusm: "^1.1.0",
           "@types/bun": "latest",
           "@types/react": "^19.2.17",
@@ -330,6 +336,29 @@ if (workflow.snapshot.status !== "completed") {
     if ((await generatedTypecheck.exited) !== 0) {
       throw new Error(
         `Generated ${template} typecheck failed: ${generatedTypecheckOutput}${generatedTypecheckError}`,
+      );
+    }
+    if (template === "component-library") {
+      await Bun.write(
+        join(generatedProject, "tests/phase4-runtime.test.tsx"),
+        `import {expect, test} from "bun:test";
+import {createApp} from "@mwillbanks/tuil";
+import {renderStatic} from "@mwillbanks/tuil-ink";
+import {defaultTheme, ThemeProvider} from "@mwillbanks/tuil-theme";
+import {App} from "../src/app/app.tsx";
+
+test("generated component library renders Phase 4 source", async () => {
+  const app = createApp({
+    component: () => <ThemeProvider theme={defaultTheme}><App /></ThemeProvider>,
+    terminal: {mode: "static"},
+    theme: defaultTheme,
+  });
+  const frame = await renderStatic(app);
+  expect(frame).toContain("Component Library");
+  expect(frame).toContain("Component");
+  expect(frame).toContain("Data display");
+});
+`,
       );
     }
     const generatedTests = Bun.spawn(["bun", "test", "--bail"], {

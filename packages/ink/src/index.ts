@@ -30,6 +30,7 @@ import { SemanticProvider, type SemanticRegistry } from "./semantics.ts";
 export * from "./components.tsx";
 export * from "./overlay.tsx";
 export * from "./semantics.ts";
+export * from "./terminal-text.ts";
 
 export type TerminalInputHandler = (
   input: string,

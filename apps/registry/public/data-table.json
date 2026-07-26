@@ -1,0 +1,28 @@
+{
+  "name": "data-table",
+  "type": "data-display",
+  "tier": 3,
+  "title": "Data Table",
+  "description": "TanStack Table adapter for sortable and selectable terminal data grids.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["table", "row", "cell"],
+  "slots": [
+    "root",
+    "header",
+    "headerCell",
+    "body",
+    "row",
+    "cell",
+    "overflow",
+    "empty"
+  ],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["table"]
+}

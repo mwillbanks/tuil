@@ -10,11 +10,17 @@
     ],
     "catalog": {
       "@tanstack/react-form": "^1.33.2",
+      "@tanstack/react-table": "^8.21.3",
+      "@tanstack/react-virtual": "^3.14.8",
       "@tanstack/pacer": "^0.21.1",
+      "diff": "^9.0.0",
       "ink": "^7.1.1",
       "ink-testing-library": "^4.0.0",
       "nusm": "^1.1.0",
-      "react": "^19.2.8"
+      "react": "^19.2.8",
+      "react-dom": "^19.2.8",
+      "slice-ansi": "^9.0.0",
+      "string-width": "^8.2.2"
     }
   },
   "scripts": {
@@ -32,15 +38,22 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.5",
-    "@tanstack/react-form": "catalog:",
     "@tanstack/pacer": "catalog:",
+    "@tanstack/react-form": "catalog:",
+    "@tanstack/react-table": "catalog:",
+    "@tanstack/react-virtual": "catalog:",
     "@types/bun": "latest",
     "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "diff": "catalog:",
     "ink": "^7.1.1",
     "ink-testing-library": "^4.0.0",
     "nusm": "catalog:",
     "react": "^19.2.8",
     "react-devtools-core": "^7.0.1",
+    "react-dom": "catalog:",
+    "slice-ansi": "catalog:",
+    "string-width": "catalog:",
     "typescript": "^7.0.2"
   }
 }

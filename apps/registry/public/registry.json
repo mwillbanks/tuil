@@ -74,6 +74,12 @@
       "description": "Width-constrained terminal container."
     },
     {
+      "name": "data-table",
+      "type": "data-display",
+      "title": "Data Table",
+      "description": "TanStack Table adapter for sortable and selectable terminal data grids."
+    },
+    {
       "name": "default",
       "type": "theme",
       "title": "Default Theme",
@@ -84,6 +90,12 @@
       "type": "feedback",
       "title": "Dialog",
       "description": "Compound modal with focus trapping, input suppression, dismissal, and restoration."
+    },
+    {
+      "name": "diff-viewer",
+      "type": "data-display",
+      "title": "Diff Viewer",
+      "description": "Virtualized line diff with context filtering and old/new line coordinates."
     },
     {
       "name": "divider",
@@ -114,6 +126,18 @@
       "type": "block",
       "title": "Project Initializer",
       "description": "Complete self-hosted tuil init application block."
+    },
+    {
+      "name": "json-viewer",
+      "type": "data-display",
+      "title": "JSON Viewer",
+      "description": "Expandable virtual JSON tree with circular-reference safety and key redaction."
+    },
+    {
+      "name": "log-viewer",
+      "type": "data-display",
+      "title": "Log Viewer",
+      "description": "Bounded virtual log stream with filtering, severity styling, and follow mode."
     },
     {
       "name": "menu",
@@ -164,6 +188,12 @@
       "description": "Roving single-selection control with disabled-option handling."
     },
     {
+      "name": "resizable-pane",
+      "type": "layout",
+      "title": "Resizable Pane",
+      "description": "Single constrained pane with controlled or uncontrolled keyboard resizing."
+    },
+    {
       "name": "select",
       "type": "form",
       "title": "Select",
@@ -180,6 +210,12 @@
       "type": "workflow",
       "title": "Splash Screen",
       "description": "Unicode-aware startup status and determinate progress screen."
+    },
+    {
+      "name": "split-pane",
+      "type": "layout",
+      "title": "Split Pane",
+      "description": "Constrained multi-pane terminal layout with keyboard-resizable separators."
     },
     {
       "name": "stack",
@@ -204,6 +240,12 @@
       "type": "form",
       "title": "Switch",
       "description": "Focusable controlled or uncontrolled boolean switch."
+    },
+    {
+      "name": "table",
+      "type": "data-display",
+      "title": "Table",
+      "description": "Virtualized terminal table with cell focus, frozen columns, horizontal navigation, and static output."
     },
     {
       "name": "tabs",
@@ -240,6 +282,24 @@
       "type": "feedback",
       "title": "Tooltip",
       "description": "Delayed focus and explicit-help tooltip with accessible metadata."
+    },
+    {
+      "name": "transfer-list",
+      "type": "form",
+      "title": "Transfer List",
+      "description": "Dual-pane controlled or uncontrolled item transfer with keyboard navigation."
+    },
+    {
+      "name": "tree",
+      "type": "data-display",
+      "title": "Tree",
+      "description": "Virtualized hierarchical tree with expansion, selection, and keyboard traversal."
+    },
+    {
+      "name": "virtual-list",
+      "type": "data-display",
+      "title": "Virtual List",
+      "description": "Fixed-cell terminal virtual list with focus-driven scrolling and bounded static output."
     },
     {
       "name": "workflow",

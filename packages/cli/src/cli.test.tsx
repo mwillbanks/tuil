@@ -191,6 +191,75 @@ describe("tuil CLI", () => {
     ).toContain("export function TextInput");
   });
 
+  test("installs complex-data aliases through canonical source owners", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tuil-cli-"));
+    directories.push(root);
+    const added = await run(root, [
+      "add",
+      "data-table",
+      "json-viewer",
+      "resizable-pane",
+      "--no-install",
+      "--output",
+      "json",
+    ]);
+    expect(added.exitCode).toBe(0);
+    const updated = await run(root, [
+      "update",
+      "data-table",
+      "resizable-pane",
+      "--no-install",
+      "--output",
+      "json",
+    ]);
+    expect(updated).toMatchObject({ exitCode: 0, stderr: "" });
+    expect(
+      await readFile(
+        join(root, "src/components/tuil/data-display/complex-data.tsx"),
+        "utf8",
+      ),
+    ).toContain("export function DataTable");
+    expect(
+      await readFile(
+        join(root, "src/components/tuil/data-display/json-viewer.tsx"),
+        "utf8",
+      ),
+    ).toContain("export function JsonViewer");
+    expect(
+      await readFile(
+        join(root, "src/components/tuil/layout/resizable-pane.tsx"),
+        "utf8",
+      ),
+    ).toContain("export function ResizablePane");
+  });
+
+  test("keeps unrelated complex-data source independently customizable", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tuil-cli-"));
+    directories.push(root);
+    const tree = await run(root, [
+      "add",
+      "tree",
+      "--no-install",
+      "--output",
+      "json",
+    ]);
+    expect(tree.exitCode).toBe(0);
+    const treePath = join(root, "src/components/tuil/data-display/tree.tsx");
+    await writeFile(
+      treePath,
+      `${await readFile(treePath, "utf8")}\n// project customization\n`,
+    );
+    const json = await run(root, [
+      "add",
+      "json-viewer",
+      "--no-install",
+      "--output",
+      "json",
+    ]);
+    expect(json).toMatchObject({ exitCode: 0, stderr: "" });
+    expect(await readFile(treePath, "utf8")).toContain("project customization");
+  });
+
   test("generates every distinct template and rejects unknown templates", async () => {
     const root = await mkdtemp(join(tmpdir(), "tuil-cli-"));
     directories.push(root);
@@ -231,6 +300,11 @@ describe("tuil CLI", () => {
     expect(librarySource).toContain("Select");
     expect(librarySource).toContain("Breadcrumbs");
     expect(librarySource).toContain("Stepper");
+    expect(librarySource).toContain("<Table");
+    expect(librarySource).toContain("<Tree");
+    expect(librarySource).toContain("<VirtualList");
+    expect(librarySource).toContain("<JsonViewer");
+    expect(librarySource).toContain("<SplitPane");
     expect(
       await readFile(
         join(root, "component-library-demo/src/features/router-panel.tsx"),
@@ -243,7 +317,16 @@ describe("tuil CLI", () => {
         "utf8",
       ),
     ).toContain("defineOperation");
-    expect(librarySource).toContain("40 components");
+    expect(librarySource).toContain("50 components");
+    const libraryPackage = JSON.parse(
+      await readFile(join(root, "component-library-demo/package.json"), "utf8"),
+    ) as { dependencies: Record<string, string> };
+    expect(libraryPackage.dependencies).toMatchObject({
+      "@mwillbanks/tuil-virtual": "^0.1.0",
+      "@tanstack/react-table": "^8.21.3",
+      diff: "^9.0.0",
+      "react-dom": "^19.2.8",
+    });
     const invalid = await run(root, [
       "init",
       "invalid-demo",

@@ -1,0 +1,29 @@
+{
+  "name": "@mwillbanks/tuil-virtual",
+  "version": "0.1.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "bun ../../tooling/build/package.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@tanstack/react-virtual": "catalog:",
+    "slice-ansi": "catalog:",
+    "string-width": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "files": [
+    "dist"
+  ]
+}

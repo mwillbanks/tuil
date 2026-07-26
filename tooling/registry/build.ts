@@ -365,6 +365,117 @@ const metadata: Record<
     ],
     registryDependencies: ["field", "workflow"],
   },
+  table: {
+    target: "src/components/tuil/data-display/complex-data.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "@mwillbanks/tuil-virtual",
+      "@tanstack/react-table",
+      "ink",
+      "react",
+    ],
+  },
+  "data-table": {
+    target: "src/components/tuil/data-display/complex-data.tsx",
+    dependencies: [],
+  },
+  tree: {
+    target: "src/components/tuil/data-display/tree.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "@mwillbanks/tuil-virtual",
+      "ink",
+      "react",
+    ],
+  },
+  "log-viewer": {
+    target: "src/components/tuil/data-display/log-viewer.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "@mwillbanks/tuil-virtual",
+      "ink",
+      "react",
+    ],
+  },
+  "diff-viewer": {
+    target: "src/components/tuil/data-display/diff-viewer.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "@mwillbanks/tuil-virtual",
+      "diff",
+      "ink",
+      "react",
+    ],
+  },
+  "json-viewer": {
+    target: "src/components/tuil/data-display/json-viewer.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "@mwillbanks/tuil-virtual",
+      "ink",
+      "react",
+    ],
+  },
+  "virtual-list": {
+    target: "src/components/tuil/data-display/virtual-list.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "@mwillbanks/tuil-virtual",
+      "ink",
+      "react",
+    ],
+  },
+  "transfer-list": {
+    target: "src/components/tuil/forms/transfer-list.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
+  "split-pane": {
+    target: "src/components/tuil/layout/panes.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
+  "resizable-pane": {
+    target: "src/components/tuil/layout/resizable-pane.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
 };
 
 const publicDirectory = resolve(import.meta.dir, "../../apps/registry/public");
@@ -406,6 +517,8 @@ const workflowAliases = new Set([
   "splash-screen",
   "help-overlay",
 ]);
+const tableSourceOwner = "table";
+const tableAliases = new Set(["data-table"]);
 
 for (const manifestName of manifests) {
   const manifestPath = join(publicDirectory, manifestName);
@@ -424,7 +537,9 @@ for (const manifestName of manifests) {
         ? navigationSourceOwner
         : workflowAliases.has(manifest.name)
           ? workflowSourceOwner
-          : undefined;
+          : tableAliases.has(manifest.name)
+            ? tableSourceOwner
+            : undefined;
   manifest.dependencies = sourceOwner ? [] : [...itemMetadata.dependencies];
   manifest.registryDependencies = sourceOwner
     ? [sourceOwner]
