@@ -1,0 +1,33 @@
+{
+  "name": "button",
+  "type": "component",
+  "tier": 3,
+  "title": "Button",
+  "description": "Focusable command-aware button.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["button"],
+  "dependencies": [
+    "@mwillbanks/tuil",
+    "@mwillbanks/tuil-focus",
+    "@mwillbanks/tuil-hotkeys",
+    "@mwillbanks/tuil-ink",
+    "@mwillbanks/tuil-theme",
+    "ink",
+    "react"
+  ],
+  "slots": ["root", "label", "prefix", "suffix"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [
+    {
+      "path": "../../../registry/components/button.tsx",
+      "target": "src/components/tuil/components/button.tsx",
+      "content": "import { useApp } from \"@mwillbanks/tuil\";\nimport { useFocusable } from \"@mwillbanks/tuil-focus\";\nimport { useHotkey, useHotkeys } from \"@mwillbanks/tuil-hotkeys\";\nimport {\n  type ButtonProps as TuilButtonProps,\n  useSemanticNode,\n} from \"@mwillbanks/tuil-ink\";\nimport {\n  resolveComponentProps,\n  resolveSlotProps,\n  useTheme,\n} from \"@mwillbanks/tuil-theme\";\nimport {\n  Box as InkBox,\n  type BoxProps as InkBoxProps,\n  Text as InkText,\n} from \"ink\";\nimport { type ReactNode, useEffect, useId, useMemo } from \"react\";\n\nexport type ButtonProps = TuilButtonProps;\n\nexport function Button({\n  children,\n  onPress,\n  command,\n  hotkeys = [],\n  autoFocus,\n  focusOrder,\n  focusScopeId,\n  slots,\n  slotProps,\n  disabled = false,\n  readOnly = false,\n  prefix,\n  suffix,\n  variant = \"solid\",\n  size,\n  unstyled,\n  className,\n  ...props\n}: ButtonProps): ReactNode {\n  const app = useApp();\n  const theme = useTheme();\n  const generated = useId();\n  const id = props.id ?? generated;\n  const label = props.label ?? (typeof children === \"string\" ? children : id);\n  const focusable = useMemo(\n    () => ({\n      id,\n      scopeId: focusScopeId,\n      disabled,\n      hidden: false,\n      order: focusOrder,\n      role: \"button\",\n      label,\n    }),\n    [disabled, focusOrder, focusScopeId, id, label],\n  );\n  const { focused, focus } = useFocusable(focusable);\n  useEffect(() => {\n    if (autoFocus) focus();\n  }, [autoFocus, focus]);\n  const activate = async () => {\n    if (disabled || readOnly) return;\n    if (command) {\n      await app.commands.execute(command, { source: id });\n    }\n    await onPress?.();\n  };\n  useHotkey(\"enter\", activate, {\n    scope: \"application\",\n    priority: 100,\n    enabled: () => app.focus.focusedId === id && !disabled && !readOnly,\n    title: label,\n    commandId: command,\n  });\n  useHotkey(\"space\", activate, {\n    scope: \"application\",\n    priority: 100,\n    enabled: () => app.focus.focusedId === id && !disabled && !readOnly,\n    title: label,\n    commandId: command,\n  });\n  useHotkeys(Object.fromEntries(hotkeys.map((keys) => [keys, activate])), {\n    scope: \"application\",\n    enabled: () => !disabled && !readOnly,\n    title: label,\n    commandId: command,\n  });\n  const semanticNode = useMemo(\n    () => ({\n      key: id,\n      id,\n      testId: props.testId,\n      role: \"button\" as const,\n      label,\n      description: props.description,\n      disabled,\n      readOnly,\n    }),\n    [disabled, id, label, props.description, props.testId, readOnly],\n  );\n  useSemanticNode(semanticNode);\n  const state = { focused, disabled };\n  const Root = slots?.root ?? InkBox;\n  const Label = slots?.label ?? InkText;\n  const Prefix = slots?.prefix ?? InkText;\n  const Suffix = slots?.suffix ?? InkText;\n  const color =\n    variant === \"danger\"\n      ? theme.colors.danger.foreground\n      : theme.colors.primary.foreground;\n  const marker =\n    app.mode === \"interactive\"\n      ? focused\n        ? app.capabilities.unicode\n          ? \"▶\"\n          : \">\"\n        : \" \"\n      : \"-\";\n  const customization = resolveComponentProps(\n    \"Button\",\n    { variant, size, unstyled, className },\n    state,\n    theme,\n  );\n  return (\n    <Root\n      {...(customization as InkBoxProps)}\n      {...resolveSlotProps(slotProps?.root, state, theme)}\n    >\n      <Prefix {...resolveSlotProps(slotProps?.prefix, state, theme)}>\n        {prefix ?? marker}\n      </Prefix>\n      <Label\n        color={disabled ? theme.colors.muted : color}\n        bold={focused}\n        dimColor={disabled}\n        {...resolveSlotProps(slotProps?.label, state, theme)}\n      >\n        {app.mode === \"interactive\"\n          ? `[ ${children} ]`\n          : String(children ?? label)}\n      </Label>\n      {suffix ? (\n        <Suffix {...resolveSlotProps(slotProps?.suffix, state, theme)}>\n          {suffix}\n        </Suffix>\n      ) : null}\n    </Root>\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": []
+}

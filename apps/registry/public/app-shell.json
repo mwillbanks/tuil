@@ -1,0 +1,25 @@
+{
+  "name": "app-shell",
+  "type": "component",
+  "tier": 3,
+  "title": "App Shell",
+  "description": "Compound application shell.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["application"],
+  "dependencies": ["react"],
+  "slots": ["root"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [
+    {
+      "path": "../../../registry/components/app-shell.tsx",
+      "target": "src/components/tuil/components/app-shell.tsx",
+      "content": "import type { ReactNode } from \"react\";\nimport { Box, type BoxProps } from \"../primitives/box\";\nimport { AppBar } from \"./app-bar\";\nimport { StatusBar } from \"./status-bar\";\n\nfunction Main(props: BoxProps): ReactNode {\n  return <Box flexGrow={1} {...props} />;\n}\n\nexport function AppShell(props: BoxProps): ReactNode {\n  return <Box flexDirection=\"column\" role=\"application\" {...props} />;\n}\n\nAppShell.AppBar = AppBar;\nAppShell.Main = Main;\nAppShell.StatusBar = StatusBar;\n"
+    }
+  ],
+  "registryDependencies": ["box", "app-bar", "status-bar"]
+}

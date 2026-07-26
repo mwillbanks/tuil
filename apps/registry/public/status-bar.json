@@ -1,0 +1,25 @@
+{
+  "name": "status-bar",
+  "type": "component",
+  "tier": 3,
+  "title": "Status Bar",
+  "description": "Persistent status region.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["status"],
+  "dependencies": ["react"],
+  "slots": ["root"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [
+    {
+      "path": "../../../registry/components/status-bar.tsx",
+      "target": "src/components/tuil/components/status-bar.tsx",
+      "content": "import type { ReactNode } from \"react\";\nimport { Box, type BoxProps } from \"../primitives/box\";\n\nexport function StatusBar(props: BoxProps): ReactNode {\n  return <Box flexDirection=\"row\" role=\"status\" {...props} />;\n}\n"
+    }
+  ],
+  "registryDependencies": ["box"]
+}

@@ -1,0 +1,95 @@
+{
+  "name": "tuil",
+  "items": [
+    {
+      "name": "box",
+      "type": "primitive",
+      "title": "Box",
+      "description": "Theme-aware Ink layout primitive."
+    },
+    {
+      "name": "stack",
+      "type": "primitive",
+      "title": "Stack",
+      "description": "Vertical, horizontal, and configurable stack layouts."
+    },
+    {
+      "name": "container",
+      "type": "primitive",
+      "title": "Container",
+      "description": "Width-constrained terminal container."
+    },
+    {
+      "name": "text",
+      "type": "data-display",
+      "title": "Text",
+      "description": "Semantic terminal text."
+    },
+    {
+      "name": "heading",
+      "type": "data-display",
+      "title": "Heading",
+      "description": "Semantic terminal heading."
+    },
+    {
+      "name": "divider",
+      "type": "data-display",
+      "title": "Divider",
+      "description": "Terminal-safe horizontal or vertical divider."
+    },
+    {
+      "name": "button",
+      "type": "component",
+      "title": "Button",
+      "description": "Focusable command-aware button."
+    },
+    {
+      "name": "badge",
+      "type": "data-display",
+      "title": "Badge",
+      "description": "Semantic status badge."
+    },
+    {
+      "name": "spinner",
+      "type": "feedback",
+      "title": "Spinner",
+      "description": "Capability-aware activity spinner."
+    },
+    {
+      "name": "progress",
+      "type": "feedback",
+      "title": "Progress",
+      "description": "Bounded terminal progress bar."
+    },
+    {
+      "name": "alert",
+      "type": "feedback",
+      "title": "Alert",
+      "description": "Semantic terminal alert."
+    },
+    {
+      "name": "app-shell",
+      "type": "component",
+      "title": "App Shell",
+      "description": "Compound application shell."
+    },
+    {
+      "name": "app-bar",
+      "type": "component",
+      "title": "App Bar",
+      "description": "Application header region."
+    },
+    {
+      "name": "status-bar",
+      "type": "component",
+      "title": "Status Bar",
+      "description": "Persistent status region."
+    },
+    {
+      "name": "default",
+      "type": "theme",
+      "title": "Default Theme",
+      "description": "Default tuil theme."
+    }
+  ]
+}

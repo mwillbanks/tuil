@@ -1,0 +1,30 @@
+{
+  "name": "@mwillbanks/tuil-testing-ink",
+  "version": "0.1.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "bun ../../tooling/build/package.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@mwillbanks/tuil": "workspace:*",
+    "@mwillbanks/tuil-ink": "workspace:*",
+    "@mwillbanks/tuil-testing": "workspace:*"
+  },
+  "peerDependencies": {
+    "ink": "^7.0.0",
+    "ink-testing-library": "^4.0.0",
+    "react": "^19.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}

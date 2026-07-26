@@ -1,30 +1,51 @@
 {
   "compilerOptions": {
-    // Environment setup & latest features
     "lib": ["ESNext"],
     "target": "ESNext",
-    "module": "Preserve",
+    "module": "ESNext",
     "moduleDetection": "force",
     "jsx": "react-jsx",
-    "allowJs": true,
-    "types": ["bun"],
-
-    // Bundler mode
+    "allowJs": false,
+    "types": ["bun", "react"],
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "noEmit": true,
-
-    // Best practices
     "strict": true,
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-
-    // Some stricter flags (disabled by default)
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false
-  }
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "paths": {
+      "@mwillbanks/tuil": ["./packages/tuil/src/index.ts"],
+      "@mwillbanks/tuil-core": ["./packages/core/src/index.ts"],
+      "@mwillbanks/tuil-events": ["./packages/events/src/index.ts"],
+      "@mwillbanks/tuil-plugin": ["./packages/plugin/src/index.ts"],
+      "@mwillbanks/tuil-theme": ["./packages/theme/src/index.ts"],
+      "@mwillbanks/tuil-focus": ["./packages/focus/src/index.ts"],
+      "@mwillbanks/tuil-hotkeys": ["./packages/hotkeys/src/index.ts"],
+      "@mwillbanks/tuil-ink": ["./packages/ink/src/index.ts"],
+      "@mwillbanks/tuil-testing": ["./packages/testing/src/index.ts"],
+      "@mwillbanks/tuil-testing-ink": ["./packages/testing-ink/src/index.ts"],
+      "@mwillbanks/tuil-registry": ["./packages/registry/src/index.ts"]
+    }
+  },
+  "include": [
+    "packages/**/*.ts",
+    "packages/**/*.tsx",
+    "registry/**/*.ts",
+    "registry/**/*.tsx",
+    "tooling/**/*.ts",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "apps/**/*.ts",
+    "apps/**/*.tsx",
+    "examples/**/*.ts",
+    "examples/**/*.tsx",
+    "tuil.workspace.ts"
+  ],
+  "exclude": ["**/dist/**", "**/node_modules/**"]
 }

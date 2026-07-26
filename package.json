@@ -1,5 +1,33 @@
 {
+  "name": "tuil-workspace",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "build": "bun run registry:build && bun tooling/build/build-all.ts",
+    "registry:build": "bun tooling/registry/build.ts",
+    "test": "bun test --bail",
+    "test:publication": "bun run build && bun tooling/build/publication-smoke.ts",
+    "typecheck": "tsc --noEmit",
+    "check": "bun run typecheck && bun run test && bun run build",
+    "lint": "bun biome check . --reporter concise",
+    "format": "bun biome check . --unsafe --write --reporter concise",
+    "playground": "bun --cwd apps/playground start",
+    "showcase": "bun --cwd apps/showcase start",
+    "tuil": "bun packages/cli/src/bin.ts"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@biomejs/biome": "^2.5.5",
+    "@types/bun": "latest",
+    "@types/react": "^19.2.17",
+    "ink": "^7.1.1",
+    "ink-testing-library": "^4.0.0",
+    "react": "^19.2.8",
+    "react-devtools-core": "^7.0.1",
+    "typescript": "^7.0.2"
   }
 }

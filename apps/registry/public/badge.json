@@ -1,0 +1,24 @@
+{
+  "name": "badge",
+  "type": "data-display",
+  "tier": 3,
+  "title": "Badge",
+  "description": "Semantic status badge.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "dependencies": ["@mwillbanks/tuil-theme", "react"],
+  "slots": ["root"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [
+    {
+      "path": "../../../registry/data-display/badge.tsx",
+      "target": "src/components/tuil/data-display/badge.tsx",
+      "content": "import { useTheme } from \"@mwillbanks/tuil-theme\";\nimport type { ReactNode } from \"react\";\nimport { Text, type TextProps } from \"./text\";\n\nexport interface BadgeProps extends TextProps {\n  readonly tone?: \"neutral\" | \"success\" | \"warning\" | \"danger\" | \"info\";\n}\n\nexport function Badge({\n  tone = \"neutral\",\n  children,\n  ...props\n}: BadgeProps): ReactNode {\n  const theme = useTheme();\n  const color =\n    tone === \"neutral\" ? theme.colors.muted : theme.colors[tone].foreground;\n  return (\n    <Text color={color} {...props}>\n      [{children}]\n    </Text>\n  );\n}\n"
+    }
+  ],
+  "registryDependencies": ["text"]
+}

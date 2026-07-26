@@ -1,0 +1,24 @@
+{
+  "name": "stack",
+  "type": "primitive",
+  "tier": 1,
+  "title": "Stack",
+  "description": "Vertical, horizontal, and configurable stack layouts.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "dependencies": ["@mwillbanks/tuil-theme", "react"],
+  "slots": ["root"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "adapt"
+  },
+  "files": [
+    {
+      "path": "../../../registry/primitives/stack.tsx",
+      "target": "src/components/tuil/primitives/stack.tsx",
+      "content": "import { type SpacingToken, useTheme } from \"@mwillbanks/tuil-theme\";\nimport type { ReactNode } from \"react\";\nimport { Box, type BoxProps } from \"./box\";\n\nexport interface StackProps extends Omit<BoxProps, \"gap\"> {\n  readonly direction?: \"row\" | \"column\";\n  readonly gap?: number | SpacingToken;\n}\n\nexport function Stack({\n  direction = \"column\",\n  gap,\n  ...props\n}: StackProps): ReactNode {\n  const theme = useTheme();\n  return (\n    <Box\n      flexDirection={direction}\n      gap={typeof gap === \"string\" ? theme.spacing[gap] : gap}\n      {...props}\n    />\n  );\n}\n\nexport function HStack(props: Omit<StackProps, \"direction\">): ReactNode {\n  return <Stack direction=\"row\" {...props} />;\n}\n\nexport function VStack(props: Omit<StackProps, \"direction\">): ReactNode {\n  return <Stack direction=\"column\" {...props} />;\n}\n"
+    }
+  ],
+  "registryDependencies": ["box"]
+}

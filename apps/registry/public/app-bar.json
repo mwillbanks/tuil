@@ -1,0 +1,24 @@
+{
+  "name": "app-bar",
+  "type": "component",
+  "tier": 3,
+  "title": "App Bar",
+  "description": "Application header region.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "dependencies": ["react"],
+  "slots": ["root"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [
+    {
+      "path": "../../../registry/components/app-bar.tsx",
+      "target": "src/components/tuil/components/app-bar.tsx",
+      "content": "import type { ReactNode } from \"react\";\nimport { Box, type BoxProps } from \"../primitives/box\";\n\nexport function AppBar(props: BoxProps): ReactNode {\n  return <Box flexDirection=\"row\" {...props} />;\n}\n"
+    }
+  ],
+  "registryDependencies": ["box"]
+}

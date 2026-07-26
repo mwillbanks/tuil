@@ -1,0 +1,23 @@
+{
+  "name": "default",
+  "type": "theme",
+  "tier": 3,
+  "title": "Default Theme",
+  "description": "Default tuil theme.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "dependencies": ["@mwillbanks/tuil"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "files": [
+    {
+      "path": "../../../registry/themes/default.ts",
+      "target": "src/lib/theme.ts",
+      "content": "import { createTheme } from \"@mwillbanks/tuil\";\n\nexport const theme = createTheme({\n  id: \"tuil-default\",\n  colorScheme: \"dark\",\n});\n"
+    }
+  ],
+  "registryDependencies": []
+}

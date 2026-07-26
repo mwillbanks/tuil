@@ -1,0 +1,24 @@
+{
+  "name": "container",
+  "type": "primitive",
+  "tier": 1,
+  "title": "Container",
+  "description": "Width-constrained terminal container.",
+  "renderer": "ink",
+  "capabilities": ["interactive", "static"],
+  "dependencies": ["react"],
+  "slots": ["root"],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "adapt"
+  },
+  "files": [
+    {
+      "path": "../../../registry/primitives/container.tsx",
+      "target": "src/components/tuil/primitives/container.tsx",
+      "content": "import type { ReactNode } from \"react\";\nimport { Box, type BoxProps } from \"./box\";\n\nexport interface ContainerProps extends BoxProps {\n  readonly maxWidth?: number;\n}\n\nexport function Container({\n  maxWidth = 80,\n  width = \"100%\",\n  ...props\n}: ContainerProps): ReactNode {\n  return <Box width={width} maxWidth={maxWidth} {...props} />;\n}\n"
+    }
+  ],
+  "registryDependencies": ["box"]
+}

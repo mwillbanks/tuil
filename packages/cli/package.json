@@ -1,0 +1,27 @@
+{
+  "name": "@mwillbanks/tuil-cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "tuil": "./dist/bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "bun ../../tooling/build/package.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@mwillbanks/tuil": "workspace:*",
+    "@mwillbanks/tuil-ink": "workspace:*",
+    "@mwillbanks/tuil-registry": "workspace:*"
+  },
+  "files": [
+    "dist"
+  ]
+}
