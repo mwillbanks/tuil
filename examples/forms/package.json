@@ -1,6 +1,27 @@
 {
   "name": "@mwillbanks/tuil-example-forms",
   "version": "0.1.0",
+  "description": "A tuil example demonstrating typed terminal forms and validation.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "examples/forms"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "typescript",
+    "bun",
+    "example",
+    "forms"
+  ],
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,19 +31,6 @@
     "test": "bun test ../examples.test.tsx"
   },
   "dependencies": {
-    "@mwillbanks/tuil": "workspace:*",
-    "@mwillbanks/tuil-focus": "workspace:*",
-    "@mwillbanks/tuil-form": "workspace:*",
-    "@mwillbanks/tuil-hotkeys": "workspace:*",
-    "@mwillbanks/tuil-ink": "workspace:*",
-    "@mwillbanks/tuil-operations": "workspace:*",
-    "@mwillbanks/tuil-router": "workspace:*",
-    "@mwillbanks/tuil-theme": "workspace:*",
-    "@mwillbanks/tuil-virtual": "workspace:*",
-    "@mwillbanks/tuil-workflow": "workspace:*",
-    "@tanstack/react-form": "catalog:",
-    "@tanstack/react-virtual": "catalog:",
-    "ink": "catalog:",
     "react": "catalog:"
   }
 }

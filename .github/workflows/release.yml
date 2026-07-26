@@ -1,35 +1,71 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
+    secrets:
+      NPM_TOKEN:
+        required: true
+      RELEASE_PLEASE_TOKEN:
+        required: true
+  workflow_dispatch:
+    inputs:
+      release_sha:
+        description: Full commit SHA containing the existing release tags
+        required: true
+        type: string
+
+permissions: {}
 
 concurrency:
   group: release
   cancel-in-progress: false
 
-permissions:
-  contents: write
-  id-token: write
-  pull-requests: write
-
 jobs:
   release:
+    if: ${{ github.event_name == 'workflow_call' }}
     runs-on: ubuntu-latest
+    outputs:
+      releases_created: ${{ steps.release.outputs.releases_created }}
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: googleapis/release-please-action@v5.0.0
+        id: release
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+
+  publish:
+    needs: release
+    if: ${{ always() && ((github.event_name == 'workflow_call' && needs.release.outputs.releases_created == 'true') || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7.0.0
         with:
           fetch-depth: 0
-      - uses: oven-sh/setup-bun@v2
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.release_sha || github.sha }}
+      - uses: oven-sh/setup-bun@v2.2.0
         with:
           bun-version: 1.3.14
-      - run: bun install --frozen-lockfile
-      - uses: changesets/action@v1
+      - uses: actions/setup-node@v7.0.0
         with:
-          publish: bun run release
-          version: bun run release:version
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - name: Install dependencies
+        run: bun ci
+      - name: Verify recovery release commit
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          RELEASE_SHA: ${{ inputs.release_sha }}
+        run: bun tooling/release/verify-recovery.ts
+      - name: Build and publish unpublished packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "true"
+        run: bun run release

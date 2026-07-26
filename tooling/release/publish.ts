@@ -1,20 +1,10 @@
-import { appendFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import {
-  discoverPublishArtifacts,
-  npmPublishArguments,
-  resolveReleaseTag,
-} from "./artifacts.ts";
+import { discoverPublishArtifacts, npmPublishArguments } from "./artifacts.ts";
 
 const workspace = resolve(import.meta.dir, "../..");
 const artifacts = await discoverPublishArtifacts(workspace);
-const releaseTag = await resolveReleaseTag(workspace);
+const releaseTag = process.env["NPM_CONFIG_TAG"] ?? "latest";
 const published: string[] = [];
-const releaseEvents: Array<{
-  readonly type: "git-tag";
-  readonly tag: string;
-  readonly packageName: string;
-}> = [];
 
 async function isPublished(name: string, version: string): Promise<boolean> {
   const response = await fetch(
@@ -58,48 +48,4 @@ for (const artifact of artifacts) {
   }
 }
 
-for (const artifact of artifacts) {
-  const tag = `${artifact.name}@${artifact.version}`;
-  const existing = Bun.spawn(["git", "tag", "--list", tag], {
-    cwd: workspace,
-    stdout: "pipe",
-    stderr: "pipe",
-  });
-  const output = (await new Response(existing.stdout).text()).trim();
-  const error = await new Response(existing.stderr).text();
-  if ((await existing.exited) !== 0) {
-    throw new Error(`Could not inspect release tag ${tag}: ${error.trim()}`);
-  }
-  if (!output) {
-    releaseEvents.push({
-      type: "git-tag",
-      tag,
-      packageName: artifact.name,
-    });
-  }
-}
-
-const changesetsOutput = process.env["CHANGESETS_OUTPUT"];
-if (changesetsOutput) {
-  await appendFile(
-    changesetsOutput,
-    releaseEvents.map((event) => JSON.stringify(event)).join("\n") +
-      (releaseEvents.length > 0 ? "\n" : ""),
-    "utf8",
-  );
-} else {
-  for (const event of releaseEvents) {
-    const create = Bun.spawn(["git", "tag", event.tag], {
-      cwd: workspace,
-      stdout: "inherit",
-      stderr: "inherit",
-    });
-    if ((await create.exited) !== 0) {
-      throw new Error(`Could not create release tag ${event.tag}`);
-    }
-  }
-}
-
-process.stdout.write(
-  `${JSON.stringify({ published, releaseTag, releaseEvents })}\n`,
-);
+process.stdout.write(`${JSON.stringify({ published, releaseTag })}\n`);

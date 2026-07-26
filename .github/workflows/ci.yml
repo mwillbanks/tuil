@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  quality:
+    name: Workspace validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.0
+        with:
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.3.14
+      - name: Install dependencies
+        run: bun ci
+      - name: Verify workspace
+        run: bun run check
+      - name: Audit pull request changes
+        if: ${{ github.event_name == 'pull_request' }}
+        run: bun run fallow:audit -- --base "${{ github.event.pull_request.base.sha }}"
+      - name: Verify publication contents
+        run: bun run test:publication
+
+  documentation:
+    name: Documentation validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.0
+      - uses: oven-sh/setup-bun@v2.2.0
+        with:
+          bun-version: 1.3.14
+      - name: Install dependencies
+        run: bun ci
+      - name: Verify documentation
+        env:
+          NEXT_PUBLIC_BASE_PATH: /tuil
+        run: bun run docs:check
+
+  dependencies:
+    name: Dependency security
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.3.8
+    permissions:
+      contents: read
+    with:
+      scan-args: |-
+        --config=./osv-scanner.toml
+        --lockfile=./bun.lock
+      upload-sarif: false
+      fail-on-vuln: true
+
+  release:
+    name: Release
+    needs: [quality, documentation, dependencies]
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    uses: ./.github/workflows/release.yml
+    secrets: inherit
+    permissions:
+      contents: write
+      id-token: write
+      issues: write
+      pull-requests: write

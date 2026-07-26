@@ -1,6 +1,26 @@
 {
   "name": "@mwillbanks/tuil-events",
   "version": "0.1.0",
+  "description": "Typed observable events and lifecycle signals for tuil applications.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/events"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "typescript",
+    "bun",
+    "events"
+  ],
   "type": "module",
   "sideEffects": false,
   "exports": {

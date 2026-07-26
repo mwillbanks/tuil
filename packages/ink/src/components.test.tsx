@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, test } from "bun:test";
+import { createApp } from "@mwillbanks/tuil";
 import { FocusScope, FocusTrap } from "@mwillbanks/tuil-focus";
 import { cleanup, renderTuil } from "@mwillbanks/tuil-testing-ink";
 import { useState } from "react";
@@ -9,6 +10,8 @@ import {
   Button,
   Heading,
   Progress,
+  render,
+  renderStatic,
   Stack,
   StatusBar,
   Text,
@@ -18,6 +21,27 @@ import {
 afterEach(cleanup);
 
 describe("foundational Ink components", () => {
+  test("renders static and silent applications through their complete lifecycle", async () => {
+    const staticApp = createApp({
+      component: () => <Text>Static frame</Text>,
+      terminal: { mode: "static" },
+    });
+    expect(await renderStatic(staticApp, { columns: 40 })).toContain(
+      "Static frame",
+    );
+    expect(staticApp.lifecycle.state).toBe("disposed");
+
+    const silentApp = createApp({
+      component: () => <Text>Silent frame</Text>,
+      terminal: { mode: "silent" },
+    });
+    const instance = await render(silentApp);
+    expect(instance.ink).toBeUndefined();
+    await instance.unmount();
+    await instance.unmount();
+    expect(silentApp.lifecycle.state).toBe("disposed");
+  });
+
   test("renders semantic application primitives and static content", async () => {
     const view = renderTuil(
       <AppShell>

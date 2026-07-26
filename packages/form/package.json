@@ -1,6 +1,26 @@
 {
   "name": "@mwillbanks/tuil-form",
   "version": "0.1.0",
+  "description": "Typed form state, validation, and controlled field adapters for tuil.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/form"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "typescript",
+    "bun",
+    "form"
+  ],
   "type": "module",
   "sideEffects": false,
   "exports": {

@@ -110,6 +110,12 @@ const normalizeDependencies = (
 const published = {
   name: manifest.name,
   version: manifest.version,
+  description: manifest.description,
+  license: manifest.license,
+  homepage: manifest.homepage,
+  repository: manifest.repository,
+  bugs: manifest.bugs,
+  keywords: manifest.keywords,
   type: manifest.type,
   sideEffects: manifest.sideEffects,
   exports: manifest.exports
@@ -137,6 +143,8 @@ await Bun.write(
     2,
   )}\n`,
 );
+await cp(join(workspaceRoot, "LICENSE"), join(directory, "dist/LICENSE"));
+await cp(join(workspaceRoot, "README.md"), join(directory, "dist/README.md"));
 
 if (basename(directory) === "tuil") {
   const cli = Bun.spawn(

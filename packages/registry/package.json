@@ -1,6 +1,26 @@
 {
   "name": "@mwillbanks/tuil-registry",
   "version": "0.1.0",
+  "description": "Source-owned component and block registry contracts for tuil.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/registry"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "typescript",
+    "bun",
+    "registry"
+  ],
   "type": "module",
   "sideEffects": false,
   "exports": {

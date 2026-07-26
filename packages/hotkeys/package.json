@@ -1,6 +1,26 @@
 {
   "name": "@mwillbanks/tuil-hotkeys",
   "version": "0.1.0",
+  "description": "Scoped terminal hotkeys, chords, and key sequences for tuil.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/hotkeys"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "typescript",
+    "bun",
+    "hotkeys"
+  ],
   "type": "module",
   "sideEffects": false,
   "exports": {

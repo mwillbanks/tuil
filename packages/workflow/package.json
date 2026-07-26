@@ -1,6 +1,26 @@
 {
   "name": "@mwillbanks/tuil-workflow",
   "version": "0.1.0",
+  "description": "Persistent, resumable, observable multi-step workflows for tuil applications.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/workflow"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "typescript",
+    "bun",
+    "workflow"
+  ],
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -15,8 +35,6 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@mwillbanks/tuil-core": "workspace:*",
-    "@mwillbanks/tuil-events": "workspace:*",
     "@mwillbanks/tuil-operations": "workspace:*",
     "nusm": "catalog:"
   },

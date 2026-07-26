@@ -1,0 +1,32 @@
+name: Documentation improvement
+description: Report missing, inaccurate, or confusing documentation.
+title: "docs: "
+labels: ["documentation", "needs-triage"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page or source
+      description: Link the deployed page or identify the repository path.
+      placeholder: https://mwillbanks.github.io/tuil/docs/guides/
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is unclear or incorrect?
+      description: Quote only the smallest relevant fragment.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Suggested improvement
+      description: Describe the concept, example, or navigation change that would resolve the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Reader context
+      description: Explain the task you were attempting and your familiarity with React, Ink, Bun, and terminal UI development.

@@ -8,7 +8,7 @@ import {
   useMemo,
   useSyncExternalStore,
 } from "react";
-import { TerminalInputLayer, useTerminalInput } from "./index.ts";
+import { TerminalInputLayer, useTerminalInput } from "./input.ts";
 
 interface OverlaySnapshot {
   readonly ids: readonly string[];

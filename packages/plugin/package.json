@@ -1,6 +1,26 @@
 {
   "name": "@mwillbanks/tuil-plugin",
   "version": "0.1.0",
+  "description": "Dependency-aware plugin registration, resolution, activation, and teardown for tuil.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/plugin"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "typescript",
+    "bun",
+    "plugin"
+  ],
   "type": "module",
   "sideEffects": false,
   "exports": {

@@ -105,13 +105,3 @@ export const npmPublishArguments = (tag = "latest"): readonly string[] => [
   "--tag",
   tag,
 ];
-
-export async function resolveReleaseTag(workspace: string): Promise<string> {
-  const preFile = Bun.file(join(workspace, ".changeset/pre.json"));
-  if (!(await preFile.exists())) return "latest";
-  const pre = (await preFile.json()) as {
-    readonly mode?: string;
-    readonly tag?: string;
-  };
-  return pre.mode === "pre" && pre.tag ? pre.tag : "latest";
-}

@@ -13,6 +13,11 @@ The workspace ships seven independently buildable examples:
 - `project-wizard` — forms, workflow state, and confirmation
 - `ai-assistant` — streaming operation output and cancellation
 
-Run an example from the repository with `bun run example:<name>`. Each example
-uses the public packages and provides a static path suitable for automated
-validation.
+Run an example from the repository:
+
+```npm
+bun --cwd examples/minimal start
+```
+
+Replace `minimal` with any example name above. Each example uses the public
+packages and provides a static path suitable for automated validation.

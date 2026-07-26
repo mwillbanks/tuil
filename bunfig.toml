@@ -1,0 +1,21 @@
+[test]
+onlyFailures = true
+coverage = true
+# Bun enforces these floors per directly covered file. The thresholds match
+# the current lowest non-generated implementation and therefore turn any
+# coverage regression into a failing gate.
+coverageThreshold = { lines = 0.68, functions = 0.39 }
+coverageSkipTestFiles = true
+
+# The documentation has its own package-level test and build gate. Generated
+# registry mirrors are byte-validated against their source owners.
+coveragePathIgnorePatterns = [
+  "apps/docs/**",
+  "packages/cli/src/index.tsx",
+  "packages/cli/src/generated-registry.ts",
+  "packages/cli/src/generated-ui/**",
+  "packages/story/src/browser.tsx",
+  "registry/**/*.stories.tsx",
+  "tooling/release/artifacts.ts",
+]
+pathIgnorePatterns = ["apps/docs/**"]

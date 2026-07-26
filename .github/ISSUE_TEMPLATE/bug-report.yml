@@ -1,0 +1,85 @@
+name: Bug report
+description: Report reproducible incorrect behavior in tuil.
+title: "bug: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve tuil. Remove secrets and sensitive data from every example, log, and screenshot.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Preflight
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true
+        - label: I reproduced this with a currently supported tuil version.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true
+  - type: input
+    id: version
+    attributes:
+      label: Affected package and version
+      description: Include every relevant @mwillbanks/tuil package.
+      placeholder: "@mwillbanks/tuil-router@0.1.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Terminal mode
+      options:
+        - Interactive TTY
+        - Static or redirected output
+        - JSON output
+        - Test renderer
+        - Storybook or documentation story
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, terminal, shell, Bun, React, Ink, color depth, dimensions, and relevant configuration.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Provide a repository link or complete minimal code and exact commands.
+      render: tsx
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      placeholder: |
+        1. Start the application with ...
+        2. Press ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include sanitized output, stack traces, frames, or screenshots.
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Include regressions, workarounds, suspected packages, and whether cleanup completes.

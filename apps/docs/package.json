@@ -1,33 +1,51 @@
 {
   "name": "@mwillbanks/tuil-docs",
   "version": "0.1.0",
+  "description": "Documentation and interactive guides for the tuil terminal UI framework.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "apps/docs"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "typescript",
+    "bun",
+    "docs"
+  ],
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun ../showcase/src/with-story-server.ts docs",
-    "build": "next build",
-    "typecheck": "fumadocs-mdx && tsc --noEmit",
-    "test": "bun test",
+    "prepare:assets": "bun ../../tooling/docs/prepare-assets.ts",
+    "dev": "bun run prepare:assets && next dev",
+    "build": "bun run prepare:assets && next build && bun ../../tooling/docs/validate-static.ts",
+    "typecheck": "bun run prepare:assets && fumadocs-mdx && tsc --noEmit",
+    "lint": "bun biome check . --reporter concise --error-on-warnings",
+    "test": "bun test --bail",
+    "check": "bun run lint && bun run typecheck && bun run test && bun run build",
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
-    "@fumadocs/story": "^1.2.0",
-    "@mwillbanks/tuil": "workspace:*",
-    "@mwillbanks/tuil-ink": "workspace:*",
-    "@mwillbanks/tuil-story": "workspace:*",
-    "@mwillbanks/tuil-testing": "workspace:*",
-    "@mwillbanks/tuil-testing-ink": "workspace:*",
+    "@orama/orama": "^3.1.18",
     "fumadocs-core": "^16.12.1",
     "fumadocs-mdx": "^15.2.0",
     "fumadocs-ui": "^16.12.1",
-    "ink": "catalog:",
-    "ink-testing-library": "catalog:",
+    "lucide-react": "^1.27.0",
     "next": "^16.2.12",
     "react": "catalog:",
     "react-dom": "catalog:",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/mdx": "^2.0.14",
     "@types/node": "^24.10.1"
   }

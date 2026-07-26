@@ -1,0 +1,115 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "bootstrap-sha": "40eb97ae61f06aafaed257e4ee8736aff7d0940b",
+  "always-update": true,
+  "separate-pull-requests": false,
+  "group-pull-request-title-pattern": "chore: release tuil packages",
+  "pull-request-header": "## Release summary",
+  "pull-request-footer": "Automated from Conventional Commits by Release Please.",
+  "release-label": "autorelease: pending",
+  "plugins": [
+    {
+      "type": "linked-versions",
+      "groupName": "tuil",
+      "components": [
+        "tuil-cli",
+        "tuil-core",
+        "tuil-devtools",
+        "tuil-events",
+        "tuil-focus",
+        "tuil-form",
+        "tuil-hotkeys",
+        "tuil-ink",
+        "tuil-operations",
+        "tuil-plugin",
+        "tuil-registry",
+        "tuil-router",
+        "tuil-story",
+        "tuil-testing-ink",
+        "tuil-testing",
+        "tuil-theme",
+        "tuil",
+        "tuil-virtual",
+        "tuil-workflow"
+      ]
+    }
+  ],
+  "packages": {
+    "packages/cli": {
+      "component": "tuil-cli",
+      "release-type": "node"
+    },
+    "packages/core": {
+      "component": "tuil-core",
+      "release-type": "node"
+    },
+    "packages/devtools": {
+      "component": "tuil-devtools",
+      "release-type": "node"
+    },
+    "packages/events": {
+      "component": "tuil-events",
+      "release-type": "node"
+    },
+    "packages/focus": {
+      "component": "tuil-focus",
+      "release-type": "node"
+    },
+    "packages/form": {
+      "component": "tuil-form",
+      "release-type": "node"
+    },
+    "packages/hotkeys": {
+      "component": "tuil-hotkeys",
+      "release-type": "node"
+    },
+    "packages/ink": {
+      "component": "tuil-ink",
+      "release-type": "node"
+    },
+    "packages/operations": {
+      "component": "tuil-operations",
+      "release-type": "node"
+    },
+    "packages/plugin": {
+      "component": "tuil-plugin",
+      "release-type": "node"
+    },
+    "packages/registry": {
+      "component": "tuil-registry",
+      "release-type": "node"
+    },
+    "packages/router": {
+      "component": "tuil-router",
+      "release-type": "node"
+    },
+    "packages/story": {
+      "component": "tuil-story",
+      "release-type": "node"
+    },
+    "packages/testing-ink": {
+      "component": "tuil-testing-ink",
+      "release-type": "node"
+    },
+    "packages/testing": {
+      "component": "tuil-testing",
+      "release-type": "node"
+    },
+    "packages/theme": {
+      "component": "tuil-theme",
+      "release-type": "node"
+    },
+    "packages/tuil": {
+      "component": "tuil",
+      "release-type": "node"
+    },
+    "packages/virtual": {
+      "component": "tuil-virtual",
+      "release-type": "node"
+    },
+    "packages/workflow": {
+      "component": "tuil-workflow",
+      "release-type": "node"
+    }
+  }
+}

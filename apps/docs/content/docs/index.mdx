@@ -9,8 +9,24 @@ portable component stories.
 
 ## Start here
 
-Run `tuil init` to create a project, or use `createApp` and
-`@mwillbanks/tuil-ink` directly for a custom runtime.
+Install the runtime and Ink adapter:
 
-The native `bun run playground` environment is authoritative for input, focus,
-resizing, terminal capability, and theme behavior.
+```npm
+npm install @mwillbanks/tuil @mwillbanks/tuil-ink ink react
+```
+
+Create a project with the self-hosted initializer:
+
+```npm
+npx @mwillbanks/tuil init
+```
+
+You can also use `createApp` and `@mwillbanks/tuil-ink` directly for a custom
+runtime.
+
+From a source checkout, the native playground is authoritative for input,
+focus, resizing, terminal capability, and theme behavior:
+
+```npm
+bun run playground
+```

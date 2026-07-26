@@ -1,0 +1,57 @@
+# Every published workspace package exposes a public API consumed outside this
+# repository, so package entry exports are intentional reachability roots.
+publicPackages = ["@mwillbanks/tuil*"]
+
+# Registry items, generated CLI mirrors, shared examples, and programmatic build
+# scripts are runtime roots reached through catalogs or package scripts.
+entry = [
+  "apps/showcase/src/story-server.ts",
+  "examples/_shared.tsx",
+  "packages/cli/src/generated-registry.ts",
+  "packages/cli/src/generated-ui/**/*.tsx",
+  "registry/**/*.ts",
+  "registry/**/*.tsx",
+  "tooling/build/package.ts",
+  "tooling/docs/prepare-assets.ts",
+  "tooling/docs/validate-static.ts",
+  "tooling/release/verify-recovery.ts",
+  "tuil.workspace.ts",
+]
+
+# Registry source is authoritative. The CLI mirror is generated and validated
+# byte-for-byte by the CLI test suite.
+ignorePatterns = [
+  "apps/docs/.next/**",
+  "apps/docs/.source/**",
+  "apps/docs/out/**",
+  "apps/registry/**",
+]
+
+# Fumadocs generates these aliases during documentation builds.
+ignoreUnresolvedImports = ["collections/browser", "collections/server"]
+
+# Source generation and package scripts use these dependencies indirectly.
+ignoreDependencies = ["collections"]
+
+[duplicates]
+minOccurrences = 2
+threshold = 12
+ignore = [
+  "apps/registry/**",
+  "packages/cli/src/generated-registry.ts",
+  "packages/cli/src/generated-ui/**",
+]
+
+[health]
+maxCyclomatic = 20
+maxCognitive = 15
+maxCrap = 30
+maxUnitSize = 100
+ignore = [
+  "packages/cli/src/generated-registry.ts",
+  "packages/cli/src/generated-ui/**",
+]
+
+[rules]
+stale-suppressions = "warn"
+require-suppression-reason = "error"

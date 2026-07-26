@@ -1,0 +1,2 @@
+# Dependency vulnerability exceptions belong here only after reachability has
+# been verified. Every exception must include a reason and an expiration date.

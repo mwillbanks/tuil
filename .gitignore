@@ -6,3 +6,6 @@ coverage
 .tuil
 .next
 .source
+out
+apps/docs/public/.nojekyll
+apps/docs/public/logo.svg

@@ -106,6 +106,12 @@ const skills = [
 
 async function manifest(path: string) {
   return (await Bun.file(path).json()) as {
+    readonly bugs?: { readonly url?: string };
+    readonly description?: string;
+    readonly homepage?: string;
+    readonly keywords?: readonly string[];
+    readonly license?: string;
+    readonly private?: boolean;
     readonly scripts?: Readonly<Record<string, string>>;
   };
 }
@@ -161,11 +167,17 @@ test("phase five ships every ecosystem surface with executable validation", asyn
     "packages/story/src/browser.tsx",
     "packages/story/src/static.ts",
     "apps/docs/source.config.ts",
-    "apps/docs/content/docs/components/initializer.story.tsx",
+    "apps/docs/content/docs/components/initializer-preview.tsx",
     "apps/showcase/.storybook/main.ts",
     "packages/devtools/src/index.tsx",
-    ".changeset/config.json",
+    ".release-please-manifest.json",
+    "release-please-config.json",
+    ".github/workflows/ci.yml",
+    ".github/workflows/docs.yml",
     ".github/workflows/release.yml",
+    ".github/workflows/security.yml",
+    "tooling/docs/validate-static.ts",
+    "tooling/release/verify-recovery.ts",
   ]) {
     expect(await Bun.file(join(root, path)).exists()).toBeTrue();
   }
@@ -195,6 +207,71 @@ test("phase five ships every ecosystem surface with executable validation", asyn
       ).exists(),
     ).toBeTrue();
   }
+});
+
+test("package metadata and coordinated release coverage stay complete", async () => {
+  const paths = [
+    "package.json",
+    ...(await Array.fromAsync(
+      new Bun.Glob("{apps,examples,packages}/*/package.json").scan({
+        cwd: root,
+      }),
+    )),
+  ].sort();
+  const publicPackagePaths: string[] = [];
+  for (const path of paths) {
+    const packageManifest = await manifest(join(root, path));
+    expect(packageManifest.description?.trim()).not.toBe("");
+    expect(packageManifest.license).toBe("MIT");
+    expect(packageManifest.homepage).toBe("https://mwillbanks.github.io/tuil/");
+    expect(packageManifest.bugs?.url).toBe(
+      "https://github.com/mwillbanks/tuil/issues",
+    );
+    expect(packageManifest.keywords?.length).toBeGreaterThanOrEqual(5);
+    if (path.startsWith("packages/") && packageManifest.private !== true) {
+      publicPackagePaths.push(path.replace(/\/package\.json$/, ""));
+    }
+  }
+
+  const releaseConfig = (await Bun.file(
+    join(root, "release-please-config.json"),
+  ).json()) as { readonly packages: Readonly<Record<string, unknown>> };
+  const releaseManifest = (await Bun.file(
+    join(root, ".release-please-manifest.json"),
+  ).json()) as Readonly<Record<string, string>>;
+  expect(Object.keys(releaseConfig.packages).sort()).toEqual(
+    publicPackagePaths.sort(),
+  );
+  expect(Object.keys(releaseManifest).sort()).toEqual(
+    publicPackagePaths.sort(),
+  );
+});
+
+test("release automation preserves review and recovery contracts", async () => {
+  const ci = await Bun.file(join(root, ".github/workflows/ci.yml")).text();
+  const release = await Bun.file(
+    join(root, ".github/workflows/release.yml"),
+  ).text();
+  expect(ci).toContain("secrets: inherit");
+  expect(ci).toContain("issues: write");
+  expect(release).toContain("RELEASE_PLEASE_TOKEN");
+  expect(release).toContain("workflow_dispatch:");
+  expect(release).toContain("release_sha");
+  expect(release).toContain("issues: write");
+  expect(release).toContain("always()");
+  expect(release).toContain("cancel-in-progress: false");
+});
+
+test("repository package-manager commands use npm code fences", async () => {
+  const nonTranslatable: string[] = [];
+  const commandFence =
+    /```(?:bash|sh|shell|zsh)\n[\s\S]*?(?:\bnpm\b|\bnpx\b|\bbun\b|\bbunx\b|\byarn\b|\bpnpm\b)[\s\S]*?```/g;
+  for (const path of ["CONTRIBUTING.md", "README.md"]) {
+    if (commandFence.test(await Bun.file(join(root, path)).text())) {
+      nonTranslatable.push(path);
+    }
+  }
+  expect(nonTranslatable).toEqual([]);
 });
 
 test("implementation sources contain no deferred placeholders", async () => {

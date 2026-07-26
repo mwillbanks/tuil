@@ -1,6 +1,26 @@
 {
   "name": "@mwillbanks/tuil-virtual",
   "version": "0.1.0",
+  "description": "Terminal-aware virtual lists and viewport primitives for tuil.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/virtual"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "typescript",
+    "bun",
+    "virtual"
+  ],
   "type": "module",
   "sideEffects": false,
   "exports": {

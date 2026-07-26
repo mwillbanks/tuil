@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1024 768"
+     role="img"
+     aria-labelledby="title desc">
+  <title id="title">tuil terminal interface logo</title>
+  <desc id="desc">A rounded terminal window with a cyan-to-magenta border, command prompt, and interface lines.</desc>
+
+  <defs>
+    <linearGradient id="frameGradient" x1="164" y1="104" x2="862" y2="664" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#16E0E6"/>
+      <stop offset="0.34" stop-color="#2AA7F4"/>
+      <stop offset="0.68" stop-color="#7757EA"/>
+      <stop offset="1" stop-color="#EB3EBA"/>
+    </linearGradient>
+
+    <linearGradient id="lineGradientA" x1="612" y1="302" x2="848" y2="302" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#16E0E6"/>
+      <stop offset="1" stop-color="#2AA7F4"/>
+    </linearGradient>
+
+    <linearGradient id="lineGradientB" x1="612" y1="382" x2="792" y2="382" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2AA7F4"/>
+      <stop offset="1" stop-color="#7757EA"/>
+    </linearGradient>
+
+    <linearGradient id="lineGradientC" x1="612" y1="462" x2="848" y2="462" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7757EA"/>
+      <stop offset="1" stop-color="#EB3EBA"/>
+    </linearGradient>
+
+    <linearGradient id="lineGradientD" x1="612" y1="542" x2="730" y2="542" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A44AE3"/>
+      <stop offset="1" stop-color="#EB3EBA"/>
+    </linearGradient>
+
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="116" y="88" width="792" height="592" rx="82"
+          stroke="url(#frameGradient)" stroke-width="28"/>
+
+    <circle cx="206" cy="172" r="18" fill="#16E0E6" stroke="none"/>
+    <circle cx="270" cy="172" r="18" fill="#2AA7F4" stroke="none"/>
+    <circle cx="334" cy="172" r="18" fill="#A44AE3" stroke="none"/>
+
+    <path d="M222 304 L306 388 L222 472"
+          stroke="#FFFFFF" stroke-width="34"/>
+    <path d="M338 490 H430"
+          stroke="#FFFFFF" stroke-width="28"/>
+
+    <path d="M616 304 H836"
+          stroke="url(#lineGradientA)" stroke-width="28"/>
+    <path d="M616 384 H782"
+          stroke="url(#lineGradientB)" stroke-width="28"/>
+    <path d="M616 464 H836"
+          stroke="url(#lineGradientC)" stroke-width="28"/>
+    <path d="M616 544 H716"
+          stroke="url(#lineGradientD)" stroke-width="28"/>
+  </g>
+</svg>

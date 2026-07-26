@@ -1,6 +1,25 @@
 {
   "name": "@mwillbanks/tuil",
   "version": "0.1.0",
+  "description": "A production-ready React and Ink framework for composable terminal applications.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/tuil"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "typescript",
+    "bun"
+  ],
   "type": "module",
   "sideEffects": false,
   "tuil": {

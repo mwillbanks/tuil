@@ -1,6 +1,26 @@
 {
   "name": "@mwillbanks/tuil-cli",
   "version": "0.1.0",
+  "description": "CLI for initializing tuil applications and installing source-owned registry items and skills.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "typescript",
+    "bun",
+    "cli"
+  ],
   "type": "module",
   "tuil": {
     "skills": "./skills"

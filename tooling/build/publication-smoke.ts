@@ -28,6 +28,16 @@ for (const directory of packageDirectories) {
     join(directory, "dist/package.json"),
   ).json()) as {
     readonly name: string;
+    readonly description?: string;
+    readonly license?: string;
+    readonly homepage?: string;
+    readonly repository?: {
+      readonly type?: string;
+      readonly url?: string;
+      readonly directory?: string;
+    };
+    readonly bugs?: { readonly url?: string };
+    readonly keywords?: readonly string[];
     readonly dependencies?: Readonly<Record<string, string>>;
     readonly peerDependencies?: Readonly<Record<string, string>>;
     readonly peerDependenciesMeta?: Readonly<
@@ -38,6 +48,23 @@ for (const directory of packageDirectories) {
     >;
     readonly bin?: Readonly<Record<string, string>>;
   };
+  if (
+    !manifest.description ||
+    manifest.license !== "MIT" ||
+    manifest.homepage !== "https://mwillbanks.github.io/tuil/" ||
+    manifest.repository?.type !== "git" ||
+    manifest.repository.url !== "git+https://github.com/mwillbanks/tuil.git" ||
+    manifest.bugs?.url !== "https://github.com/mwillbanks/tuil/issues" ||
+    (manifest.keywords?.length ?? 0) < 5
+  ) {
+    throw new Error(`${manifest.name} publishes incomplete package metadata`);
+  }
+  if (!(await Bun.file(join(directory, "dist/LICENSE")).exists())) {
+    throw new Error(`${manifest.name} does not publish its MIT license`);
+  }
+  if (!(await Bun.file(join(directory, "dist/README.md")).exists())) {
+    throw new Error(`${manifest.name} does not publish usage documentation`);
+  }
   for (const version of Object.values({
     ...manifest.dependencies,
     ...manifest.peerDependencies,

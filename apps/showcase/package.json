@@ -1,6 +1,26 @@
 {
   "name": "@mwillbanks/tuil-showcase",
   "version": "0.1.0",
+  "description": "Portable story showcase and browser bridge for tuil terminal applications.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "apps/showcase"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "typescript",
+    "bun",
+    "showcase"
+  ],
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,27 +33,11 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@mwillbanks/tuil": "workspace:*",
-    "@mwillbanks/tuil-focus": "workspace:*",
-    "@mwillbanks/tuil-form": "workspace:*",
-    "@mwillbanks/tuil-ink": "workspace:*",
-    "@mwillbanks/tuil-operations": "workspace:*",
-    "@mwillbanks/tuil-router": "workspace:*",
     "@mwillbanks/tuil-story": "workspace:*",
-    "@mwillbanks/tuil-testing": "workspace:*",
     "@mwillbanks/tuil-theme": "workspace:*",
-    "@mwillbanks/tuil-virtual": "workspace:*",
-    "@mwillbanks/tuil-workflow": "workspace:*",
-    "@tanstack/pacer": "catalog:",
-    "@tanstack/react-form": "catalog:",
-    "@tanstack/react-table": "catalog:",
-    "@tanstack/react-virtual": "catalog:",
-    "diff": "catalog:",
-    "ink": "catalog:",
-    "ink-testing-library": "catalog:",
     "react": "catalog:",
-    "slice-ansi": "catalog:",
-    "string-width": "catalog:"
+    "ink": "catalog:",
+    "ink-testing-library": "catalog:"
   },
   "devDependencies": {
     "@storybook/react": "^10.5.4",

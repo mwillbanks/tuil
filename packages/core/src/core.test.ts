@@ -1,12 +1,49 @@
 import { describe, expect, test } from "bun:test";
 import {
   CommandRegistry,
+  DisposableStack,
   defineCommand,
   defineService,
   detectTerminalCapabilities,
   resolveRenderMode,
   ServiceContainer,
+  toDisposable,
 } from "./index.ts";
+
+test("disposable stacks release resources once in reverse order", async () => {
+  const events: string[] = [];
+  const stack = new DisposableStack();
+  const resource = stack.use(
+    toDisposable(() => {
+      events.push("resource");
+    }),
+  );
+  expect(resource.dispose).toBeFunction();
+  stack.defer(async () => {
+    await Promise.resolve();
+    events.push("deferred");
+  });
+  expect(stack.disposed).toBeFalse();
+  await stack.dispose();
+  await stack.dispose();
+  expect(stack.disposed).toBeTrue();
+  expect(events).toEqual(["deferred", "resource"]);
+  expect(() => stack.defer(() => undefined)).toThrow("disposed stack");
+  expect(() => stack.use(toDisposable(() => undefined))).toThrow(
+    "disposed stack",
+  );
+});
+
+test("disposable stacks aggregate teardown failures", async () => {
+  const stack = new DisposableStack();
+  stack.defer(() => {
+    throw new Error("first");
+  });
+  stack.defer(() => {
+    throw new Error("second");
+  });
+  await expect(stack.dispose()).rejects.toBeInstanceOf(AggregateError);
+});
 
 describe("service container", () => {
   test("initializes and disposes services in reverse order", async () => {
