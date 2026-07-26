@@ -145,4 +145,41 @@ describe("hotkeys", () => {
     expect(errors).toHaveLength(1);
     expect(failing.drainErrors()).toEqual([]);
   });
+
+  test("expires incomplete sequences and preserves deferred reporting failures", async () => {
+    const manager = new HotkeyManager(5);
+    const calls: string[] = [];
+    const stopObserving = manager.observe(() => {
+      calls.push("observed");
+    });
+    manager.register({
+      keys: "g g",
+      handler() {
+        calls.push("sequence");
+      },
+    });
+    await manager.dispatch("g");
+    await Bun.sleep(10);
+    expect(calls).toEqual([]);
+
+    manager.register({
+      keys: "x",
+      async handler() {
+        throw new Error("handler failed");
+      },
+    });
+    manager.register({ keys: "x x", handler() {} });
+    await manager.dispatch(
+      "x",
+      {},
+      {
+        onError() {
+          throw new Error("reporter failed");
+        },
+      },
+    );
+    await Bun.sleep(10);
+    expect(manager.drainErrors()[0]).toBeInstanceOf(AggregateError);
+    stopObserving();
+  });
 });

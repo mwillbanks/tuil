@@ -17,6 +17,10 @@ jobs:
   quality:
     name: Workspace validation
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: read
     steps:
       - uses: actions/checkout@v7.0.0
         with:
@@ -28,6 +32,12 @@ jobs:
         run: bun ci
       - name: Verify workspace
         run: bun run check
+      - name: Publish coverage
+        uses: codecov/codecov-action@v5
+        with:
+          fail_ci_if_error: true
+          files: ./coverage/lcov.info
+          use_oidc: true
       - name: Audit pull request changes
         if: ${{ github.event_name == 'pull_request' }}
         run: bun run fallow:audit -- --base "${{ github.event.pull_request.base.sha }}"

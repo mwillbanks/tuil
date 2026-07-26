@@ -14,6 +14,13 @@ import {
   npmPackArguments,
 } from "../release/artifacts.ts";
 
+export function assertPublication(
+  condition: unknown,
+  message: string,
+): asserts condition {
+  if (!condition) throw new Error(message);
+}
+
 const workspace = resolve(import.meta.dir, "../..");
 const packageRoot = join(workspace, "packages");
 const publishArtifacts = await discoverPublishArtifacts(workspace);
@@ -48,84 +55,82 @@ for (const directory of packageDirectories) {
     >;
     readonly bin?: Readonly<Record<string, string>>;
   };
-  if (
-    !manifest.description ||
-    manifest.license !== "MIT" ||
-    manifest.homepage !== "https://mwillbanks.github.io/tuil/" ||
-    manifest.repository?.type !== "git" ||
-    manifest.repository.url !== "git+https://github.com/mwillbanks/tuil.git" ||
-    manifest.bugs?.url !== "https://github.com/mwillbanks/tuil/issues" ||
-    (manifest.keywords?.length ?? 0) < 5
-  ) {
-    throw new Error(`${manifest.name} publishes incomplete package metadata`);
-  }
-  if (!(await Bun.file(join(directory, "dist/LICENSE")).exists())) {
-    throw new Error(`${manifest.name} does not publish its MIT license`);
-  }
-  if (!(await Bun.file(join(directory, "dist/README.md")).exists())) {
-    throw new Error(`${manifest.name} does not publish usage documentation`);
-  }
+  assertPublication(
+    manifest.description &&
+      manifest.license === "MIT" &&
+      manifest.homepage === "https://mwillbanks.github.io/tuil/" &&
+      manifest.repository?.type === "git" &&
+      manifest.repository.url ===
+        "git+https://github.com/mwillbanks/tuil.git" &&
+      manifest.bugs?.url === "https://github.com/mwillbanks/tuil/issues" &&
+      (manifest.keywords?.length ?? 0) >= 5,
+    `${manifest.name} publishes incomplete package metadata`,
+  );
+  assertPublication(
+    await Bun.file(join(directory, "dist/LICENSE")).exists(),
+    `${manifest.name} does not publish its MIT license`,
+  );
+  assertPublication(
+    await Bun.file(join(directory, "dist/README.md")).exists(),
+    `${manifest.name} does not publish usage documentation`,
+  );
   for (const version of Object.values({
     ...manifest.dependencies,
     ...manifest.peerDependencies,
   })) {
-    if (version.startsWith("workspace:") || version.startsWith("catalog:")) {
-      throw new Error(`${manifest.name} publishes an internal dependency`);
-    }
+    assertPublication(
+      !version.startsWith("workspace:") && !version.startsWith("catalog:"),
+      `${manifest.name} publishes an internal dependency`,
+    );
   }
   const exportedPaths = Object.values(manifest.exports ?? {}).flatMap(
     (value) => (typeof value === "string" ? [value] : Object.values(value)),
   );
   for (const path of [...exportedPaths, ...Object.values(manifest.bin ?? {})]) {
-    if (!(await Bun.file(join(directory, "dist", path)).exists())) {
-      throw new Error(`${manifest.name} publishes missing path "${path}"`);
-    }
+    assertPublication(
+      await Bun.file(join(directory, "dist", path)).exists(),
+      `${manifest.name} publishes missing path "${path}"`,
+    );
   }
-  if (
-    manifest.name === "@mwillbanks/tuil-story" &&
-    !manifest.peerDependenciesMeta?.["@storybook/react"]?.optional
-  ) {
-    throw new Error("Published story package must keep Storybook optional");
-  }
+  assertPublication(
+    manifest.name !== "@mwillbanks/tuil-story" ||
+      manifest.peerDependenciesMeta?.["@storybook/react"]?.optional,
+    "Published story package must keep Storybook optional",
+  );
 }
 
 const tuilBundle = await readFile(
   join(packageRoot, "tuil/dist/index.js"),
   "utf8",
 );
-if (
-  !tuilBundle.includes('from "@mwillbanks/tuil-core"') ||
-  tuilBundle.includes("class Lifecycle")
-) {
-  throw new Error("Published tuil runtime bundles a duplicate core runtime");
-}
+assertPublication(
+  tuilBundle.includes('from "@mwillbanks/tuil-core"') &&
+    !tuilBundle.includes("class Lifecycle"),
+  "Published tuil runtime bundles a duplicate core runtime",
+);
 const bundledSkills = await readdir(join(packageRoot, "tuil/dist/skills"));
-if (bundledSkills.length !== 7) {
-  throw new Error(
-    `Published tuil package must contain seven Agent Skills, found ${bundledSkills.length}`,
-  );
-}
+assertPublication(
+  bundledSkills.length === 7,
+  `Published tuil package must contain seven Agent Skills, found ${bundledSkills.length}`,
+);
 for (const packageName of ["tuil", "cli"]) {
   const manifest = (await Bun.file(
     join(packageRoot, packageName, "dist/package.json"),
   ).json()) as { readonly tuil?: { readonly skills?: string } };
   const skillsPath = manifest.tuil?.skills;
-  if (
-    !skillsPath ||
-    !(await Bun.file(
-      join(
-        packageRoot,
-        packageName,
-        "dist",
-        skillsPath,
-        "building-tuil-applications/SKILL.md",
-      ),
-    ).exists())
-  ) {
-    throw new Error(
-      `Published ${packageName} manifest must resolve its bundled Agent Skills`,
-    );
-  }
+  assertPublication(
+    skillsPath &&
+      (await Bun.file(
+        join(
+          packageRoot,
+          packageName,
+          "dist",
+          skillsPath,
+          "building-tuil-applications/SKILL.md",
+        ),
+      ).exists()),
+    `Published ${packageName} manifest must resolve its bundled Agent Skills`,
+  );
 }
 
 const cli = Bun.spawn(
@@ -134,15 +139,15 @@ const cli = Bun.spawn(
 );
 const cliOutput = await new Response(cli.stdout).text();
 const cliError = await new Response(cli.stderr).text();
-if ((await cli.exited) !== 0) {
-  throw new Error(`Published tuil CLI failed: ${cliError.trim()}`);
-}
-if (
-  (JSON.parse(cliOutput) as { readonly name?: string }).name !==
-  "@mwillbanks/tuil"
-) {
-  throw new Error("Published tuil CLI returned invalid package information");
-}
+assertPublication(
+  (await cli.exited) === 0,
+  `Published tuil CLI failed: ${cliError.trim()}`,
+);
+assertPublication(
+  (JSON.parse(cliOutput) as { readonly name?: string }).name ===
+    "@mwillbanks/tuil",
+  "Published tuil CLI returned invalid package information",
+);
 
 const destination = await mkdtemp(join(tmpdir(), "tuil-publication-"));
 try {
@@ -159,56 +164,52 @@ try {
     });
     const packedOutput = await new Response(pack.stdout).text();
     const error = await new Response(pack.stderr).text();
-    if ((await pack.exited) !== 0) {
-      throw new Error(`${manifest.name} could not be packed: ${error.trim()}`);
-    }
+    assertPublication(
+      (await pack.exited) === 0,
+      `${manifest.name} could not be packed: ${error.trim()}`,
+    );
     const packedName = packedOutput.trim().split("\n").at(-1);
-    if (!packedName) {
-      throw new Error(`${manifest.name} did not report a package archive`);
-    }
+    assertPublication(
+      packedName,
+      `${manifest.name} did not report a package archive`,
+    );
     const archive = isAbsolute(packedName)
       ? packedName
       : join(destination, basename(packedName));
-    if ((await stat(archive)).size === 0) {
-      throw new Error(`${manifest.name} produced an empty package archive`);
-    }
+    assertPublication(
+      (await stat(archive)).size > 0,
+      `${manifest.name} produced an empty package archive`,
+    );
     archiveByPackage.set(manifest.name, archive);
   }
   const archives = await readdir(destination);
-  if (archives.length !== packageDirectories.length) {
-    throw new Error(
-      `Expected ${packageDirectories.length} package archives, found ${archives.length}`,
-    );
-  }
+  assertPublication(
+    archives.length === packageDirectories.length,
+    `Expected ${packageDirectories.length} package archives, found ${archives.length}`,
+  );
   const manifests = await Promise.all(
     packageDirectories.map((directory) =>
       readFile(join(directory, "dist/package.json"), "utf8"),
     ),
   );
-  if (
-    manifests.some(
+  assertPublication(
+    !manifests.some(
       (manifest) =>
         manifest.includes('"workspace:') || manifest.includes('"catalog:'),
-    )
-  ) {
-    throw new Error(
-      "A packed manifest retained a workspace or catalog protocol",
-    );
-  }
+    ),
+    "A packed manifest retained a workspace or catalog protocol",
+  );
   const formManifest = JSON.parse(
     await readFile(join(packageRoot, "form/dist/package.json"), "utf8"),
   ) as {
     readonly dependencies?: Readonly<Record<string, string>>;
     readonly peerDependencies?: Readonly<Record<string, string>>;
   };
-  if (
-    formManifest.dependencies?.["@tanstack/react-form"] ||
-    !formManifest.peerDependencies?.["@tanstack/react-form"]
-  ) {
-    throw new Error(
-      "Published form package must expose TanStack React Form as a peer",
-    );
-  }
+  assertPublication(
+    !formManifest.dependencies?.["@tanstack/react-form"] &&
+      formManifest.peerDependencies?.["@tanstack/react-form"],
+    "Published form package must expose TanStack React Form as a peer",
+  );
   const sourceVersions = new Map<string, string>();
   for (const directory of packageDirectories) {
     const source = (await Bun.file(join(directory, "package.json")).json()) as {
@@ -230,11 +231,10 @@ try {
       ...published.peerDependencies,
     })) {
       const workspaceVersion = sourceVersions.get(name);
-      if (workspaceVersion && version !== `^${workspaceVersion}`) {
-        throw new Error(
-          `${published.name} points at ${name}@${version}, expected ^${workspaceVersion}`,
-        );
-      }
+      assertPublication(
+        !workspaceVersion || version === `^${workspaceVersion}`,
+        `${published.name} points at ${name}@${version}, expected ^${workspaceVersion}`,
+      );
     }
   }
   const consumer = join(destination, "consumer");
@@ -275,11 +275,10 @@ try {
     stderr: "pipe",
   });
   const installError = await new Response(install.stderr).text();
-  if ((await install.exited) !== 0) {
-    throw new Error(
-      `Packed package consumer installation failed: ${installError.trim()}`,
-    );
-  }
+  assertPublication(
+    (await install.exited) === 0,
+    `Packed package consumer installation failed: ${installError.trim()}`,
+  );
   for (const [name, archive] of archiveByPackage) {
     const packageDirectory = join(consumer, "node_modules", ...name.split("/"));
     await mkdir(packageDirectory, { recursive: true });
@@ -288,11 +287,10 @@ try {
       { stdout: "pipe", stderr: "pipe" },
     );
     const extractError = await new Response(extract.stderr).text();
-    if ((await extract.exited) !== 0) {
-      throw new Error(
-        `Could not extract packed package ${name}: ${extractError.trim()}`,
-      );
-    }
+    assertPublication(
+      (await extract.exited) === 0,
+      `Could not extract packed package ${name}: ${extractError.trim()}`,
+    );
   }
   await Bun.write(
     join(consumer, "smoke.ts"),
@@ -340,9 +338,10 @@ if (workflow.snapshot.status !== "completed") {
     stderr: "pipe",
   });
   const smokeError = await new Response(consumerSmoke.stderr).text();
-  if ((await consumerSmoke.exited) !== 0) {
-    throw new Error(`Packed package consumer failed: ${smokeError.trim()}`);
-  }
+  assertPublication(
+    (await consumerSmoke.exited) === 0,
+    `Packed package consumer failed: ${smokeError.trim()}`,
+  );
   const installedCli = Bun.spawn(
     [
       "bun",
@@ -355,15 +354,15 @@ if (workflow.snapshot.status !== "completed") {
   );
   const installedCliOutput = await new Response(installedCli.stdout).text();
   const installedCliError = await new Response(installedCli.stderr).text();
-  if ((await installedCli.exited) !== 0) {
-    throw new Error(`Packed CLI failed: ${installedCliError.trim()}`);
-  }
-  if (
-    (JSON.parse(installedCliOutput) as { readonly name?: string }).name !==
-    "@mwillbanks/tuil"
-  ) {
-    throw new Error("Packed CLI returned invalid package information");
-  }
+  assertPublication(
+    (await installedCli.exited) === 0,
+    `Packed CLI failed: ${installedCliError.trim()}`,
+  );
+  assertPublication(
+    (JSON.parse(installedCliOutput) as { readonly name?: string }).name ===
+      "@mwillbanks/tuil",
+    "Packed CLI returned invalid package information",
+  );
   const standaloneSkills = Bun.spawn(
     [
       "bun",
@@ -381,14 +380,11 @@ if (workflow.snapshot.status !== "completed") {
   const standaloneSkillsError = await new Response(
     standaloneSkills.stderr,
   ).text();
-  if (
-    (await standaloneSkills.exited) !== 0 ||
-    (JSON.parse(standaloneSkillsOutput) as readonly unknown[]).length !== 7
-  ) {
-    throw new Error(
-      `Standalone packed CLI has no complete Agent Skills bundle: ${standaloneSkillsError.trim()}`,
-    );
-  }
+  assertPublication(
+    (await standaloneSkills.exited) === 0 &&
+      (JSON.parse(standaloneSkillsOutput) as readonly unknown[]).length === 7,
+    `Standalone packed CLI has no complete Agent Skills bundle: ${standaloneSkillsError.trim()}`,
+  );
   const installedSkills = Bun.spawn(
     [
       "bun",
@@ -408,24 +404,22 @@ if (workflow.snapshot.status !== "completed") {
   const installedSkillsError = await new Response(
     installedSkills.stderr,
   ).text();
-  if ((await installedSkills.exited) !== 0) {
-    throw new Error(
-      `Packed CLI could not install Agent Skills: ${installedSkillsError.trim()}`,
-    );
-  }
+  assertPublication(
+    (await installedSkills.exited) === 0,
+    `Packed CLI could not install Agent Skills: ${installedSkillsError.trim()}`,
+  );
   const installedSkillNames = (
     JSON.parse(installedSkillsOutput) as {
       readonly installed: readonly string[];
     }
   ).installed;
-  if (
-    installedSkillNames.length !== 7 ||
-    !(await Bun.file(
-      join(consumer, "installed-skills/building-tuil-applications/SKILL.md"),
-    ).exists())
-  ) {
-    throw new Error("Packed CLI installed an incomplete Agent Skills bundle");
-  }
+  assertPublication(
+    installedSkillNames.length === 7 &&
+      (await Bun.file(
+        join(consumer, "installed-skills/building-tuil-applications/SKILL.md"),
+      ).exists()),
+    "Packed CLI installed an incomplete Agent Skills bundle",
+  );
   const generatedTemplates = [
     "minimal",
     "application",
@@ -454,11 +448,10 @@ if (workflow.snapshot.status !== "completed") {
       { cwd: consumer, stdout: "pipe", stderr: "pipe" },
     );
     const initializeError = await new Response(initialize.stderr).text();
-    if ((await initialize.exited) !== 0) {
-      throw new Error(
-        `Packed CLI could not initialize the ${template} template: ${initializeError.trim()}`,
-      );
-    }
+    assertPublication(
+      (await initialize.exited) === 0,
+      `Packed CLI could not initialize the ${template} template: ${initializeError.trim()}`,
+    );
     await symlink(
       join(consumer, "node_modules"),
       join(generatedProject, "node_modules"),
@@ -474,11 +467,10 @@ if (workflow.snapshot.status !== "completed") {
     const generatedTypecheckError = await new Response(
       generatedTypecheck.stderr,
     ).text();
-    if ((await generatedTypecheck.exited) !== 0) {
-      throw new Error(
-        `Generated ${template} typecheck failed: ${generatedTypecheckOutput}${generatedTypecheckError}`,
-      );
-    }
+    assertPublication(
+      (await generatedTypecheck.exited) === 0,
+      `Generated ${template} typecheck failed: ${generatedTypecheckOutput}${generatedTypecheckError}`,
+    );
     if (template === "component-library") {
       await Bun.write(
         join(generatedProject, "tests/phase4-runtime.test.tsx"),
@@ -511,11 +503,10 @@ test("generated component library renders Phase 4 source", async () => {
       generatedTests.stdout,
     ).text();
     const generatedTestError = await new Response(generatedTests.stderr).text();
-    if ((await generatedTests.exited) !== 0) {
-      throw new Error(
-        `Generated ${template} tests failed: ${generatedTestOutput}${generatedTestError}`,
-      );
-    }
+    assertPublication(
+      (await generatedTests.exited) === 0,
+      `Generated ${template} tests failed: ${generatedTestOutput}${generatedTestError}`,
+    );
   }
 } finally {
   await rm(destination, { recursive: true, force: true });

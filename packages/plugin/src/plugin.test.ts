@@ -108,6 +108,93 @@ describe("plugin manager", () => {
     );
     await expect(cyclic.initialize()).rejects.toThrow("cycle");
   });
+
+  test("reports health and enforces plugin registration lifetimes", async () => {
+    const plugins = manager();
+    const plugin = createPlugin({
+      id: "lifecycle",
+      version: "1.0.0",
+      setup() {
+        return { dispose() {} };
+      },
+    });
+    const unregister = plugins.register(plugin);
+    expect(plugins.health()).toEqual([
+      {
+        id: "lifecycle",
+        version: "1.0.0",
+        status: "registered",
+        error: undefined,
+      },
+    ]);
+    expect(() => plugins.register(plugin)).toThrow("already registered");
+    await plugins.initialize();
+    expect(plugins.health()[0]?.status).toBe("healthy");
+    expect(unregister).toThrow("Cannot unregister active plugin");
+    await plugins.initialize();
+    await plugins.dispose();
+    expect(plugins.health()[0]?.status).toBe("disposed");
+    unregister();
+    expect(plugins.health()).toEqual([]);
+
+    const removable = createPlugin({
+      id: "removable",
+      version: "1.0.0",
+      setup() {},
+    });
+    const remove = plugins.register(removable);
+    remove();
+    expect(plugins.health()).toEqual([]);
+  });
+
+  test("records setup failures and aggregates disposal failures", async () => {
+    const plugins = manager();
+    plugins.register(
+      createPlugin({
+        id: "base",
+        version: "1.0.0",
+        setup() {
+          return () => {
+            throw new Error("dispose failed");
+          };
+        },
+      }),
+    );
+    plugins.register(
+      createPlugin({
+        id: "failure",
+        version: "1.0.0",
+        dependsOn: ["base"],
+        setup() {
+          throw new Error("setup failed");
+        },
+      }),
+    );
+    await expect(plugins.initialize()).rejects.toThrow("dispose plugins");
+    expect(plugins.health()).toMatchObject([
+      { id: "base", status: "disposed" },
+      { id: "failure", status: "failed", error: expect.any(Error) },
+    ]);
+
+    const missing = manager();
+    missing.register(
+      createPlugin({
+        id: "dependent",
+        version: "1.0.0",
+        dependsOn: ["absent"],
+        setup() {},
+      }),
+    );
+    await expect(missing.initialize()).rejects.toThrow(
+      'depends on missing plugin "absent"',
+    );
+    expect(() => createPlugin({ id: "", version: "1", setup() {} })).toThrow(
+      "cannot be empty",
+    );
+    expect(() =>
+      createPlugin({ id: "versionless", version: "", setup() {} }),
+    ).toThrow("must declare a version");
+  });
 });
 
 describe("plugin registry", () => {
@@ -138,7 +225,10 @@ describe("plugin registry", () => {
     expect(registry.list({ capability: "network.request" })[0]?.plugin.id).toBe(
       "extension",
     );
+    expect(registry.get("core")?.plugin).toBe(core);
+    expect(registry.list()).toHaveLength(2);
 
+    coreRegistration.dispose();
     coreRegistration.dispose();
     expect(() => registry.resolve(["extension"])).toThrow(
       'depends on unavailable plugin "core"',

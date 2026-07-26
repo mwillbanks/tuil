@@ -4,7 +4,7 @@ interface ReleasePleasePackage {
   readonly component: string;
 }
 
-async function git(
+export async function git(
   workspace: string,
   ...arguments_: readonly string[]
 ): Promise<string> {
@@ -21,7 +21,7 @@ async function git(
   return output.trim();
 }
 
-async function expectedReleaseTags(
+export async function expectedReleaseTags(
   workspace: string,
 ): Promise<readonly string[]> {
   const config = (await Bun.file(
@@ -40,7 +40,7 @@ async function expectedReleaseTags(
   return Object.freeze(tags.sort());
 }
 
-async function verifyRecoveryRelease(
+export async function verifyRecoveryRelease(
   workspace: string,
   releaseSha: string,
 ): Promise<void> {
@@ -72,7 +72,8 @@ async function verifyRecoveryRelease(
   }
 }
 
-if (import.meta.main) {
-  const workspace = resolve(import.meta.dir, "../..");
-  await verifyRecoveryRelease(workspace, process.env["RELEASE_SHA"] ?? "");
-}
+const workspace = resolve(import.meta.dir, "../..");
+const releaseSha = process.env["RELEASE_SHA"] ?? "";
+await (import.meta.main
+  ? verifyRecoveryRelease(workspace, releaseSha)
+  : undefined);

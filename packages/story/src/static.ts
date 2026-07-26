@@ -1,3 +1,4 @@
+import type { Disposer } from "@mwillbanks/tuil-core";
 import type {
   TerminalStoryControls,
   TuilStory,
@@ -11,7 +12,11 @@ import {
 } from "./index.tsx";
 
 export class StaticStoryCatalog {
-  readonly #catalog = new TuilStoryCatalog();
+  readonly #catalog: TuilStoryCatalog;
+
+  constructor() {
+    this.#catalog = new TuilStoryCatalog();
+  }
 
   register<TProps>(
     id: string,
@@ -19,11 +24,9 @@ export class StaticStoryCatalog {
       TProps,
       Readonly<Record<string, TuilStory<TProps>>>
     >,
-  ): () => void {
+  ): Disposer {
     const registration = this.#catalog.register(id, id, definition);
-    return () => {
-      void registration.dispose();
-    };
+    return () => registration.dispose();
   }
 
   get runtimeCatalog(): TuilStoryCatalog {

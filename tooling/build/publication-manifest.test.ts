@@ -20,4 +20,28 @@ test("publishes each workspace dependency at its own independent version", () =>
     "@mwillbanks/tuil-core": "^0.1.3",
     react: "^19.2.8",
   });
+  expect(
+    normalizePublishedDependencies(undefined, {
+      catalog: {},
+      workspaceVersions: new Map(),
+    }),
+  ).toBeUndefined();
+  expect(
+    normalizePublishedDependencies(
+      { exact: "1.2.3" },
+      { catalog: {}, workspaceVersions: new Map() },
+    ),
+  ).toEqual({ exact: "1.2.3" });
+  expect(() =>
+    normalizePublishedDependencies(
+      { missing: "workspace:*" },
+      { catalog: {}, workspaceVersions: new Map() },
+    ),
+  ).toThrow("no publishable package version");
+  expect(() =>
+    normalizePublishedDependencies(
+      { missing: "catalog:" },
+      { catalog: {}, workspaceVersions: new Map() },
+    ),
+  ).toThrow("no published version");
 });

@@ -114,9 +114,12 @@ test("forms validate in registration order, focus first invalid, submit, and res
   expect(form.dirty).toBeFalse();
 });
 
-test("TanStack fields adapt without coupling terminal controls to form state", () => {
+test("TanStack fields adapt without coupling terminal controls to form state", async () => {
   let next = "";
   let blurred = false;
+  let validated = "";
+  let reset = false;
+  let unsubscribed = false;
   const adapted = adaptTanStackField({
     name: "project",
     state: {
@@ -134,10 +137,101 @@ test("TanStack fields adapt without coupling terminal controls to form state", (
     handleBlur() {
       blurred = true;
     },
+    validate(cause) {
+      validated = cause;
+    },
+    reset() {
+      reset = true;
+    },
+    store: {
+      subscribe(observer) {
+        observer();
+        return {
+          unsubscribe() {
+            unsubscribed = true;
+          },
+        };
+      },
+    },
   });
   adapted.setValue("terminal");
   adapted.blur();
+  await adapted.validate("submit");
+  adapted.reset();
+  const unsubscribe = adapted.subscribe(() => undefined);
+  unsubscribe();
   expect(next).toBe("terminal");
   expect(blurred).toBeTrue();
+  expect(validated).toBe("submit");
+  expect(reset).toBeTrue();
+  expect(unsubscribed).toBeTrue();
+  expect(adapted.name).toBe("project");
+  expect(adapted.value).toBe("tuil");
   expect(adapted.errors).toEqual(["Taken"]);
+  expect(adapted.touched).toBeTrue();
+  expect(adapted.dirty).toBeTrue();
+  expect(adapted.validating).toBeFalse();
+
+  const withoutStore = adaptTanStackField({
+    name: "plain",
+    state: {
+      value: 1,
+      meta: {
+        errors: [new Error("Invalid")],
+        isTouched: false,
+        isDirty: false,
+        isValidating: true,
+      },
+    },
+    handleChange() {},
+    handleBlur() {},
+  });
+  withoutStore.subscribe(() => undefined)();
+  expect(withoutStore.errors).toEqual(["Error: Invalid"]);
+});
+
+test("field and form subscriptions release resources and explicit errors", async () => {
+  const field = new TerminalFieldController({
+    name: "name",
+    initialValue: "initial",
+  });
+  let fieldChanges = 0;
+  const stopField = field.subscribe(() => {
+    fieldChanges += 1;
+  });
+  field.setErrors(["Explicit"]);
+  expect(field.state.valid).toBeFalse();
+  expect(field.serialize(false)).toBe("initial");
+  field.reset("reset");
+  stopField();
+  field.setErrors([]);
+  expect(fieldChanges).toBe(2);
+
+  const form = new TerminalFormController();
+  let formChanges = 0;
+  const stopForm = form.subscribe(() => {
+    formChanges += 1;
+  });
+  let fieldObserver: (() => void) | undefined;
+  let fieldSubscriptionDisposed = false;
+  const unregister = form.register({
+    name: "subscribed",
+    validate: async () => ({ valid: true }),
+    reset: () => undefined,
+    dirty: () => false,
+    value: () => "value",
+    subscribe(observer) {
+      fieldObserver = observer;
+      return () => {
+        fieldSubscriptionDisposed = true;
+      };
+    },
+  });
+  fieldObserver?.();
+  unregister();
+  expect(fieldSubscriptionDisposed).toBeTrue();
+  expect(formChanges).toBeGreaterThanOrEqual(3);
+  stopForm();
+  form.dispose();
+  field.dispose();
 });

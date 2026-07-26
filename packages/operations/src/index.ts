@@ -41,6 +41,84 @@ export interface OperationSnapshot<TResult = unknown> {
   readonly logs: readonly string[];
 }
 
+export const operationFeedbackDelays = Object.freeze({
+  activity: 200,
+  loading: 1_000,
+  stalled: 10_000,
+});
+
+export type OperationFeedback =
+  | {
+      readonly phase: "none" | "activity";
+      readonly elapsed: number;
+    }
+  | {
+      readonly phase: "indeterminate" | "status";
+      readonly elapsed: number;
+      readonly message?: string;
+    }
+  | {
+      readonly phase: "determinate";
+      readonly elapsed: number;
+      readonly current: number;
+      readonly total: number;
+      readonly percent: number;
+      readonly message?: string;
+    };
+
+const activeOperationStatuses = new Set<OperationStatus>([
+  "queued",
+  "running",
+  "waiting",
+  "retrying",
+]);
+
+export function resolveOperationFeedback(
+  operation: OperationSnapshot,
+  now = Date.now(),
+): OperationFeedback {
+  const elapsed = operation.startedAt
+    ? Math.max(0, (operation.completedAt ?? now) - operation.startedAt)
+    : 0;
+  const progress = operation.progress;
+  const determinate = progress?.total !== undefined && progress.total > 0;
+
+  if (!activeOperationStatuses.has(operation.status)) {
+    return { phase: "none", elapsed };
+  }
+  if (elapsed < operationFeedbackDelays.activity) {
+    return { phase: "none", elapsed };
+  }
+  if (elapsed < operationFeedbackDelays.loading) {
+    return { phase: "activity", elapsed };
+  }
+  if (determinate) {
+    return {
+      phase: "determinate",
+      elapsed,
+      current: progress.current,
+      total: progress.total ?? 0,
+      percent: Math.round(
+        Math.min(1, Math.max(0, progress.current / (progress.total ?? 1))) *
+          100,
+      ),
+      message: progress.message,
+    };
+  }
+  if (elapsed < operationFeedbackDelays.stalled) {
+    return {
+      phase: "indeterminate",
+      elapsed,
+      message: progress?.message,
+    };
+  }
+  return {
+    phase: "status",
+    elapsed,
+    message: progress?.message,
+  };
+}
+
 export interface OperationContext {
   readonly signal: AbortSignal;
   readonly attempt: number;
@@ -277,7 +355,7 @@ export class OperationExecutor<TResult = unknown> {
       const timeout = this.definition.timeout;
       let timer: ReturnType<typeof setTimeout> | undefined;
       let timedOut = false;
-      let removeAbortListener: () => void = () => undefined;
+      let removeAbortListener: (() => void) | undefined;
       const aborted = new Promise<never>((_resolve, reject) => {
         const rejectAborted = () => reject(attemptSignal.reason);
         attemptSignal.addEventListener("abort", rejectAborted, { once: true });
@@ -350,7 +428,7 @@ export class OperationExecutor<TResult = unknown> {
         }
       } finally {
         if (timer) clearTimeout(timer);
-        removeAbortListener();
+        removeAbortListener?.();
         if (!attemptChildrenCleaned) {
           this.#cleanupAttemptChildren(attemptGeneration, attemptSucceeded);
         }

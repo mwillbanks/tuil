@@ -1,4 +1,6 @@
 import { expect, test } from "bun:test";
+import { renderToString, Text } from "ink";
+import { createElement } from "react";
 import {
   compileUtilities,
   createDefaultThemeRegistry,
@@ -8,7 +10,9 @@ import {
   normalizeTheme,
   resolveComponentProps,
   resolveSlotProps,
+  ThemeProvider,
   ThemeRegistry,
+  useTheme,
 } from "./index.ts";
 
 test("themes merge tokens and degrade terminal capabilities", () => {
@@ -19,10 +23,10 @@ test("themes merge tokens and degrade terminal capabilities", () => {
   });
   expect(theme.colors.muted).toBe("blue");
   expect(theme.colors.foreground).toBe("white");
-  const normalized = normalizeTheme(theme, {
+  const capabilities = {
     width: 80,
     height: 24,
-    colorDepth: 1,
+    colorDepth: 1 as const,
     unicode: false,
     hyperlinks: false,
     interactive: false,
@@ -31,11 +35,18 @@ test("themes merge tokens and degrade terminal capabilities", () => {
     mouse: false,
     images: false,
     reducedMotion: true,
-    platform: "linux",
-  });
+    platform: "linux" as const,
+  };
+  const normalized = normalizeTheme(theme, capabilities);
   expect(normalized.colors.primary.foreground).toBe("white");
   expect(normalized.motion.enabled).toBeFalse();
   expect(normalized.borders.round[2]).toBe("+");
+  const unicodeMonochrome = normalizeTheme(theme, {
+    ...capabilities,
+    unicode: true,
+  });
+  expect(unicodeMonochrome.borders.single).toEqual(theme.borders.single);
+  expect(unicodeMonochrome.icons.success).toBe(theme.icons.success);
 });
 
 test("ships resolvable dark and light defaults", () => {
@@ -131,6 +142,10 @@ test("theme registry resolves defaults, filters, and disposes registrations", ()
     { theme: light, tags: ["light", "official"] },
     { default: true },
   );
+  expect(registry.list().map((entry) => entry.theme.id)).toEqual([
+    "default-dark",
+    "default-light",
+  ]);
   expect(registry.resolve()).toBe(light);
   expect(registry.list({ tag: "dark" })[0]?.theme).toBe(defaultTheme);
   dark.dispose();
@@ -138,4 +153,21 @@ test("theme registry resolves defaults, filters, and disposes registrations", ()
   expect(() => registry.register({ theme: light })).toThrow(
     "already registered",
   );
+});
+
+test("theme providers resolve factory themes from their parent", () => {
+  function ThemeIdentity() {
+    return createElement(Text, null, useTheme().id);
+  }
+  expect(
+    renderToString(
+      createElement(
+        ThemeProvider,
+        {
+          theme: (base) => createTheme(base, { id: "factory-theme" }),
+        },
+        createElement(ThemeIdentity),
+      ),
+    ),
+  ).toContain("factory-theme");
 });

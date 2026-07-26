@@ -9,7 +9,7 @@ import {
   defineWorkflow,
   transition,
 } from "@mwillbanks/tuil-workflow";
-import { Box } from "ink";
+import { Box, Text } from "ink";
 import { useEffect } from "react";
 import {
   Breadcrumbs,
@@ -20,12 +20,23 @@ import {
 } from "./navigation/navigation.tsx";
 import {
   HelpOverlay,
+  OperationList,
   OperationTree,
   SplashScreen,
   Workflow,
 } from "./workflows/workflow.tsx";
 
 afterEach(cleanup);
+
+async function pressButton(
+  view: ReturnType<typeof renderTuil>,
+  name: string,
+): Promise<void> {
+  const button = view.screen.getByRole("button", { name });
+  if (!button.id) throw new Error(`${name} button is missing an id`);
+  expect(view.app.focus.focus(button.id)).toBeTrue();
+  await view.user.press("enter");
+}
 
 test("tabs, menus, menubars, breadcrumbs, and steppers navigate and expose semantics", async () => {
   const selected: string[] = [];
@@ -119,6 +130,167 @@ test("tabs, menus, menubars, breadcrumbs, and steppers navigate and expose seman
   await staticView.cleanup();
 });
 
+test("navigation components cover manual, nested, and command keyboard contracts", async () => {
+  const tabSelections: string[] = [];
+  const tabs = renderTuil(
+    <Tabs
+      id="manual-tabs"
+      activationMode="manual"
+      items={[
+        { id: "one", label: "One", content: 1 },
+        { id: "disabled", label: "Disabled", disabled: true },
+        { id: "three", label: "Three", content: <Box>Three panel</Box> },
+      ]}
+      onValueChange={(value) => {
+        tabSelections.push(value);
+      }}
+    />,
+  );
+  await tabs.ready;
+  expect(tabs.app.focus.focus("manual-tabs")).toBeTrue();
+  for (const key of [
+    "arrowRight",
+    "arrowLeft",
+    "j",
+    "k",
+    "l",
+    "h",
+    "space",
+    "g",
+    "G",
+    "enter",
+    "unhandled",
+  ]) {
+    await tabs.user.press(key);
+  }
+  expect(tabSelections).toContain("one");
+  expect(tabSelections).toContain("three");
+  await tabs.cleanup();
+
+  const menuSelections: string[] = [];
+  const openChanges: boolean[] = [];
+  const menu = renderTuil(
+    <Menu
+      id="nested-menu"
+      items={[
+        { id: "disabled", label: "Disabled", disabled: true },
+        {
+          id: "parent",
+          label: "Parent",
+          items: [
+            { id: "child-disabled", label: "Disabled child", disabled: true },
+            { id: "child", label: "Child" },
+          ],
+        },
+      ]}
+      onOpenChange={(open) => {
+        openChanges.push(open);
+      }}
+      onSelect={(item) => {
+        menuSelections.push(item.id);
+      }}
+    />,
+  );
+  await menu.ready;
+  expect(menu.app.focus.focus("nested-menu")).toBeTrue();
+  for (const key of [
+    "arrowDown",
+    "arrowUp",
+    "j",
+    "k",
+    "arrowRight",
+    "arrowDown",
+    "enter",
+  ]) {
+    await menu.user.press(key);
+  }
+  expect(menuSelections).toContain("child");
+  expect(openChanges).toContain(false);
+  await menu.cleanup();
+
+  const menubarChanges: string[] = [];
+  const menubar = renderTuil(
+    <Menubar
+      id="keyboard-menubar"
+      menus={[
+        { id: "file", label: "File", items: [] },
+        { id: "disabled", label: "Disabled", disabled: true, items: [] },
+        { id: "edit", label: "Edit", items: [] },
+      ]}
+      onValueChange={(value) => {
+        menubarChanges.push(value);
+      }}
+    />,
+  );
+  await menubar.ready;
+  expect(menubar.app.focus.focus("keyboard-menubar")).toBeTrue();
+  await menubar.user.press("arrowRight");
+  await menubar.user.press("arrowLeft");
+  await menubar.user.press("unhandled");
+  expect(menubarChanges).toEqual(["edit", "file"]);
+  await menubar.cleanup();
+
+  const crumbs: string[] = [];
+  function CommandBreadcrumbs() {
+    const app = useApp();
+    useEffect(() => {
+      const registration = app.commands.register(
+        defineCommand({
+          id: "navigate.home",
+          title: "Home",
+          execute: () => {
+            crumbs.push("command");
+          },
+        }),
+      );
+      return () => {
+        void registration.dispose();
+      };
+    }, [app]);
+    return (
+      <Breadcrumbs
+        id="keyboard-crumbs"
+        items={[
+          { id: "home", label: "Home", command: "navigate.home" },
+          { id: "disabled", label: "Disabled", disabled: true },
+          { id: "current", label: "Current" },
+        ]}
+        onSelect={(item) => {
+          crumbs.push(item.id);
+        }}
+      />
+    );
+  }
+  const breadcrumbs = renderTuil(<CommandBreadcrumbs />);
+  await breadcrumbs.ready;
+  expect(breadcrumbs.app.focus.focus("keyboard-crumbs")).toBeTrue();
+  await breadcrumbs.user.press("arrowLeft");
+  await breadcrumbs.user.press("enter");
+  await breadcrumbs.user.press("arrowRight");
+  await breadcrumbs.user.press("unhandled");
+  expect(crumbs).toEqual(["command", "home"]);
+  await breadcrumbs.cleanup();
+
+  const stepper = renderTuil(
+    <Stepper
+      orientation="vertical"
+      steps={[
+        { id: "done", label: "Done", status: "completed" },
+        { id: "error", label: "Error", status: "error" },
+        { id: "skipped", label: "Skipped", status: "skipped" },
+        { id: "current", label: "Current", status: "current" },
+        { id: "pending", label: "Pending" },
+      ]}
+    />,
+    { terminal: { capabilities: { unicode: false } } },
+  );
+  await stepper.ready;
+  expect(stepper.screen.frame()).toContain("[x] Done");
+  expect(stepper.screen.frame()).toContain("[!] Error");
+  expect(stepper.screen.frame()).toContain("[-] Skipped");
+  await stepper.cleanup();
+});
+
 test("workflow UI tracks real operations and supports progression", async () => {
   const operation = defineOperation({
     id: "build",
@@ -166,6 +338,159 @@ test("workflow UI tracks real operations and supports progression", async () => 
   expect(runner.snapshot.status).toBe("completed");
 });
 
+test("workflow actions delegate next, back, skip, cancel, and retry", async () => {
+  const runner = createWorkflow(
+    defineWorkflow({
+      id: "actions",
+      version: 1,
+      initialState: {},
+      steps: {
+        first: defineStep({ component: "First" }),
+        second: defineStep({ component: "Second" }),
+        third: defineStep({ component: "Third" }),
+      },
+      transitions: [
+        transition("first", "second"),
+        transition("second", "third"),
+      ],
+    }),
+  );
+  await runner.start();
+  const view = renderTuil(
+    <Workflow workflow={runner} autoStart={false}>
+      <Workflow.Content
+        render={(step) => `Rendered ${String(step?.component)}`}
+      />
+      <Workflow.Actions showSkip />
+    </Workflow>,
+  );
+  await view.ready;
+  await pressButton(view, "Next");
+  expect(runner.snapshot.currentStep).toBe("second");
+  await pressButton(view, "Back");
+  expect(runner.snapshot.currentStep).toBe("first");
+  await pressButton(view, "Skip");
+  expect(runner.snapshot.currentStep).toBe("second");
+  await pressButton(view, "Cancel");
+  expect(runner.snapshot.status).toBe("cancelled");
+  await view.cleanup();
+
+  let attempts = 0;
+  const retryRunner = createWorkflow(
+    defineWorkflow({
+      id: "retry-action",
+      version: 1,
+      initialState: {},
+      steps: {
+        retry: defineStep({
+          enter() {
+            attempts += 1;
+            if (attempts === 1) throw new Error("first attempt");
+          },
+        }),
+      },
+      transitions: [],
+    }),
+  );
+  await expect(retryRunner.start()).rejects.toThrow("first attempt");
+  const retry = renderTuil(
+    <Workflow workflow={retryRunner} autoStart={false}>
+      <Workflow.Actions />
+    </Workflow>,
+  );
+  await retry.ready;
+  await pressButton(retry, "Retry");
+  expect(attempts).toBe(2);
+});
+
+test("workflow auto-start reports startup failures", async () => {
+  const reports: { readonly error: unknown; readonly phase: string }[] = [];
+  const runner = createWorkflow(
+    defineWorkflow({
+      id: "startup-failure",
+      version: 1,
+      initialState: {},
+      steps: {
+        start: defineStep({
+          enter() {
+            throw new Error("startup failed");
+          },
+        }),
+      },
+      transitions: [],
+    }),
+  );
+  const view = renderTuil(
+    <Workflow workflow={runner}>
+      <Workflow.Content />
+    </Workflow>,
+    {
+      errorHandler(error, { phase }) {
+        reports.push({ error, phase });
+      },
+    },
+  );
+  await view.ready;
+  await Bun.sleep(25);
+  expect(reports).toHaveLength(1);
+  expect(reports[0]?.phase).toBe("workflow-start");
+  expect(reports[0]?.error).toEqual(new Error("startup failed"));
+  await view.cleanup();
+});
+
+test("operation views apply deterministic waiting feedback", async () => {
+  const operation = (
+    id: string,
+    startedAt: number,
+    progress?: { current: number; total?: number; message?: string },
+  ) => ({
+    id,
+    title: id,
+    status: "running" as const,
+    attempt: 1,
+    startedAt,
+    progress,
+    children: [],
+    metadata: {},
+    logs: [],
+  });
+  const operations = [
+    operation("imperceptible", 10_900),
+    operation("micro", 10_500),
+    operation("loading", 9_000),
+    operation("stalled", 1_000, { current: 4, message: "Indexing" }),
+    operation("measured", 9_000, {
+      current: 5,
+      total: 10,
+      message: "Uploading",
+    }),
+    {
+      ...operation("failed", 9_000),
+      status: "failed" as const,
+      completedAt: 10_000,
+      error: { name: "Error", message: "Build failed" },
+    },
+  ];
+  const view = renderTuil(
+    <>
+      <OperationList operations={operations} now={11_000} showDuration />
+      <OperationTree operations={operations} now={11_000} />
+      <OperationList operations={[]} now={11_000} />
+    </>,
+  );
+  await view.ready;
+  const output = view.screen.frame();
+  expect(output).toContain("[ ] imperceptible");
+  expect(output).toContain("[·] micro");
+  expect(output).toContain("Active");
+  expect(output).toContain("… Working…");
+  expect(output).toContain("Indexing (10s)");
+  expect(output).toContain("5/10 (50%) Uploading");
+  expect(output).toContain("Build failed");
+  expect(output).toContain("No operations");
+  expect(output).not.toContain("4 Indexing");
+});
+
 test("operation views, splash fallback, and live command help render", async () => {
   const parent = createOperation(
     defineOperation({
@@ -190,6 +515,7 @@ test("operation views, splash fallback, and live command help render", async () 
         message="Loading"
         progress={0.5}
         status="Working"
+        logo={"TUIL\nTUIL"}
       />
     </>,
     {
@@ -204,6 +530,7 @@ test("operation views, splash fallback, and live command help render", async () 
   expect(output).toContain("Parent");
   expect(output).toContain("Child");
   expect(output).toContain("50%");
+  expect(output.match(/TUIL/g)?.length).toBe(2);
   await staticView.cleanup();
 
   const expandedChanges: readonly string[][] = [];
@@ -224,11 +551,15 @@ test("operation views, splash fallback, and live command help render", async () 
     tree.screen.getByRole("treeitem", { name: "Parent" }).expanded,
   ).toBeTrue();
   await tree.user.press("tab");
+  await tree.user.press("arrowRight");
+  await tree.user.press("arrowDown");
+  await tree.user.press("arrowUp");
+  await tree.user.press("arrowLeft");
+  await tree.user.press("enter");
+  expect(tree.screen.frame()).toContain("Child");
   await tree.user.press("enter");
   expect(tree.screen.frame()).not.toContain("Child");
   expect(expandedChanges.at(-1)).toEqual([]);
-  await tree.user.press("enter");
-  expect(tree.screen.frame()).toContain("Child");
   await tree.cleanup();
 
   const duplicateChildren = await Promise.all(
@@ -326,4 +657,40 @@ test("workflow errors expose alert semantics and compound slots", async () => {
   await Bun.sleep(10);
   await runner.next();
   expect(view.screen.getByRole("alert", { name: "Required" })).toBeDefined();
+});
+
+test("workflow content renders component steps, help, and commands", async () => {
+  function FunctionalStep() {
+    return (
+      <Box>
+        <Text>Functional content</Text>
+      </Box>
+    );
+  }
+  const runner = createWorkflow(
+    defineWorkflow({
+      id: "functional-content",
+      version: 1,
+      initialState: {},
+      steps: {
+        content: defineStep({
+          title: "Functional",
+          component: FunctionalStep,
+          commands: ["form.submit"],
+          help: "Complete every field.",
+        }),
+      },
+      transitions: [],
+    }),
+  );
+  const view = renderTuil(
+    <Workflow workflow={runner}>
+      <Workflow.Content />
+    </Workflow>,
+  );
+  await view.ready;
+  await Bun.sleep(25);
+  expect(view.screen.frame()).toContain("Functional content");
+  expect(view.screen.frame()).toContain("Commands: form.submit");
+  await view.cleanup();
 });

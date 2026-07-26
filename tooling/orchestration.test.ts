@@ -1,0 +1,250 @@
+import { expect, test } from "bun:test";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import {
+  checkCoverageCompleteness,
+  checkCoverageFile,
+  coverageSources,
+  missingCoverageSources,
+} from "./coverage/check.ts";
+import { prepareDocsAssets } from "./docs/prepare-assets.ts";
+import {
+  assertStaticDocs,
+  validateStaticDocs,
+} from "./docs/validate-static.ts";
+import type { PublishArtifact } from "./release/artifacts.ts";
+import { type PublishRuntime, publishRelease } from "./release/publish.ts";
+import {
+  expectedReleaseTags,
+  git,
+  verifyRecoveryRelease,
+} from "./release/verify-recovery.ts";
+
+const workspace = resolve(import.meta.dir, "..");
+
+async function run(command: readonly string[], cwd: string): Promise<string> {
+  const child = Bun.spawn([...command], {
+    cwd,
+    stdout: "pipe",
+    stderr: "pipe",
+  });
+  const [exitCode, stdout, stderr] = await Promise.all([
+    child.exited,
+    new Response(child.stdout).text(),
+    new Response(child.stderr).text(),
+  ]);
+  if (exitCode !== 0) throw new Error(stderr);
+  return stdout.trim();
+}
+
+test("build, registry, documentation, and publication orchestration completes", async () => {
+  await import("./registry/build.ts");
+  const registryCheck = await import("./registry/check.ts");
+  await registryCheck.checkRegistryArtifacts();
+  const generatedRegistry = join(
+    workspace,
+    "packages/cli/src/generated-registry.ts",
+  );
+  const generatedRegistrySource = await readFile(generatedRegistry, "utf8");
+  await writeFile(generatedRegistry, `${generatedRegistrySource}\n`);
+  await expect(registryCheck.checkRegistryArtifacts()).rejects.toThrow(
+    "Registry artifacts are stale",
+  );
+  expect(await readFile(generatedRegistry, "utf8")).toBe(
+    `${generatedRegistrySource}\n`,
+  );
+  await writeFile(generatedRegistry, generatedRegistrySource);
+  await import("./build/build-all.ts");
+  await import("./build/build-ecosystem.ts");
+  await validateStaticDocs({
+    outDirectory: join(workspace, "apps/docs/out"),
+  });
+
+  const packageBuild = await import("./build/package.ts");
+  for (const packageName of ["core", "story", "tuil", "cli"]) {
+    await packageBuild.buildPackage(join(workspace, "packages", packageName));
+  }
+  const publication = await import("./build/publication-smoke.ts");
+  expect(() => publication.assertPublication(false, "invalid")).toThrow(
+    "invalid",
+  );
+  const buildAll = await import("./build/build-all.ts");
+  expect(() =>
+    buildAll.orderWorkspacePackages(
+      new Map<
+        string,
+        {
+          readonly name: string;
+          readonly dependencies: Readonly<Record<string, string>>;
+        }
+      >([
+        ["a", { name: "a", dependencies: { b: "workspace:*" } }],
+        ["b", { name: "b", dependencies: { a: "workspace:*" } }],
+      ]),
+      new Map([
+        ["a", "a"],
+        ["b", "b"],
+      ]),
+    ),
+  ).toThrow("dependency cycle");
+}, 180_000);
+
+test("coverage and documentation gates own their complete source sets", async () => {
+  const sources = await coverageSources(workspace);
+  const report = sources
+    .map((path) => `SF:${join(workspace, path)}`)
+    .join("\n");
+  expect(await missingCoverageSources(report, workspace)).toEqual([]);
+  await checkCoverageCompleteness(report, workspace);
+  await expect(
+    checkCoverageCompleteness(report.replace(/^SF:.+\n?/, ""), workspace),
+  ).rejects.toThrow("omits in-scope implementation files");
+
+  const root = await mkdtemp(join(tmpdir(), "tuil-gates-"));
+  try {
+    await expect(
+      checkCoverageFile(join(root, "missing.info"), workspace),
+    ).rejects.toThrow("Coverage report is missing");
+    const reportPath = join(root, "lcov.info");
+    await writeFile(reportPath, report);
+    await checkCoverageFile(reportPath, workspace);
+
+    const publicDirectory = join(root, "public");
+    await prepareDocsAssets({
+      logoSource: join(workspace, "logo.svg"),
+      publicDirectory,
+    });
+    expect(() => assertStaticDocs(false, "invalid docs")).toThrow(
+      "invalid docs",
+    );
+    expect(await readFile(join(publicDirectory, ".nojekyll"), "utf8")).toBe("");
+
+    for (const path of [
+      "api/search",
+      "docs/architecture/index.html",
+      "docs/guides/index.html",
+      "docs/index.html",
+      "index.html",
+      "_next/static/chunks/app.css",
+    ]) {
+      const target = join(publicDirectory, path);
+      await mkdir(resolve(target, ".."), { recursive: true });
+      await writeFile(target, "");
+    }
+    await writeFile(
+      join(publicDirectory, "index.html"),
+      [
+        '<link href="/tuil/_next/static/chunks/app.css">',
+        '<a href="/tuil/docs/">Docs</a>',
+        '<img src="/tuil/logo.svg">',
+      ].join(""),
+    );
+    await writeFile(
+      join(publicDirectory, "_next/static/chunks/app.css"),
+      ".flex{display:flex}",
+    );
+    await writeFile(
+      join(publicDirectory, "api/search"),
+      JSON.stringify([{ url: "/docs" }]),
+    );
+    await validateStaticDocs({
+      outDirectory: publicDirectory,
+      basePath: "tuil/",
+    });
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("release publishing handles existing, new, failed, and delayed artifacts", async () => {
+  const artifact: PublishArtifact = {
+    sourceDirectory: "/source",
+    artifactDirectory: "/artifact",
+    name: "@scope/package",
+    version: "1.2.3",
+    workspaceDependencies: [],
+  };
+  const responses: number[] = [404, 200];
+  const runtime: PublishRuntime = {
+    discover: () => Promise.resolve([artifact]),
+    fetch: (() =>
+      Promise.resolve(
+        new Response(null, { status: responses.shift() ?? 200 }),
+      )) as unknown as typeof fetch,
+    spawn: () => ({ exited: Promise.resolve(0) }),
+    sleep: () => Promise.resolve(),
+  };
+  expect(await publishRelease("/workspace", "next", runtime)).toEqual({
+    published: ["@scope/package@1.2.3"],
+    releaseTag: "next",
+  });
+
+  await expect(
+    publishRelease("/workspace", "latest", {
+      ...runtime,
+      fetch: (() =>
+        Promise.resolve(
+          new Response(null, { status: 500 }),
+        )) as unknown as typeof fetch,
+    }),
+  ).rejects.toThrow("registry lookup failed");
+  await expect(
+    publishRelease("/workspace", "latest", {
+      ...runtime,
+      fetch: (() =>
+        Promise.resolve(
+          new Response(null, { status: 404 }),
+        )) as unknown as typeof fetch,
+      spawn: () => ({ exited: Promise.resolve(1) }),
+    }),
+  ).rejects.toThrow("Failed to publish");
+  await expect(
+    publishRelease("/workspace", "latest", {
+      ...runtime,
+      fetch: (() =>
+        Promise.resolve(
+          new Response(null, { status: 404 }),
+        )) as unknown as typeof fetch,
+    }),
+  ).rejects.toThrow("did not expose");
+});
+
+test("recovery verification requires the exact commit and release tags", async () => {
+  const root = await mkdtemp(join(tmpdir(), "tuil-recovery-"));
+  try {
+    await run(["git", "init", "-q"], root);
+    await run(["git", "config", "user.email", "test@example.com"], root);
+    await run(["git", "config", "user.name", "Tuil Test"], root);
+    await mkdir(join(root, "packages/example"), { recursive: true });
+    await writeFile(
+      join(root, "release-please-config.json"),
+      JSON.stringify({
+        packages: { "packages/example": { component: "example" } },
+      }),
+    );
+    await writeFile(
+      join(root, "packages/example/package.json"),
+      JSON.stringify({ name: "example", version: "1.2.3" }),
+    );
+    await run(["git", "add", "."], root);
+    await run(["git", "commit", "-qm", "test: seed recovery"], root);
+    const sha = await run(["git", "rev-parse", "HEAD"], root);
+    await run(["git", "tag", "example-v1.2.3"], root);
+    expect(await expectedReleaseTags(root)).toEqual(["example-v1.2.3"]);
+    await verifyRecoveryRelease(root, sha);
+    await expect(verifyRecoveryRelease(root, "invalid")).rejects.toThrow(
+      "full 40-character",
+    );
+    await expect(verifyRecoveryRelease(root, "0".repeat(40))).rejects.toThrow(
+      "Recovery checkout",
+    );
+    await run(["git", "tag", "-d", "example-v1.2.3"], root);
+    await expect(verifyRecoveryRelease(root, sha)).rejects.toThrow(
+      "missing release tags",
+    );
+    await expect(git(root, "not-a-command")).rejects.toThrow("failed");
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});

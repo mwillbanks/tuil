@@ -49,16 +49,19 @@
   "scripts": {
     "build": "bun run registry:build && bun tooling/build/build-all.ts && bun tooling/build/build-ecosystem.ts",
     "registry:build": "bun tooling/registry/build.ts",
-    "test": "bun test --bail",
+    "registry:check": "bun tooling/registry/check.ts",
+    "test": "bun test --bail --max-concurrency=1 && bun tooling/coverage/check.ts",
+    "test:changed": "bun --config=tooling/bunfig.changed.toml test --changed=HEAD --pass-with-no-tests --max-concurrency=1",
+    "test:coverage": "bun test --coverage --coverage-reporter=lcov --coverage-reporter=text --max-concurrency=1 && bun tooling/coverage/check.ts",
     "test:publication": "bun run build && bun tooling/build/publication-smoke.ts",
     "typecheck": "tsc --noEmit",
-    "check": "bun run format:check && bun run typecheck && bun run test && bun run build && bun run fallow && bun run fallow:health",
+    "check": "bun run format:check && bun run registry:check && bun run typecheck && bun run test && bun run build && bun run fallow && bun run fallow:health",
     "lint": "bun biome check . --reporter concise --error-on-warnings",
     "format:check": "bun biome check . --reporter concise --error-on-warnings",
     "format": "bun biome check . --unsafe --write --reporter concise",
-    "fallow": "fallow --skip health",
-    "fallow:audit": "fallow audit",
-    "fallow:health": "fallow health --min-score 77 --hotspots --targets",
+    "fallow": "fallow --skip health --format json --quiet --fail-on-issues",
+    "fallow:audit": "fallow audit --format json --quiet --fail-on-issues",
+    "fallow:health": "fallow health --min-score 77 --hotspots --targets --format json --quiet --fail-on-issues",
     "security": "osv-scanner scan source --config=osv-scanner.toml --lockfile=bun.lock",
     "release": "bun run check && bun tooling/build/publication-smoke.ts && bun tooling/release/publish.ts",
     "playground": "bun --cwd apps/playground start",
@@ -66,7 +69,8 @@
     "storybook": "bun --cwd apps/showcase storybook",
     "docs": "bun run --cwd apps/docs dev",
     "docs:check": "bun run --cwd apps/docs check",
-    "tuil": "bun packages/cli/src/bin.ts"
+    "tuil": "bun packages/cli/src/bin.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "@tanstack/react-table": "catalog:",
@@ -76,6 +80,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.5",
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
     "@tanstack/pacer": "catalog:",
     "@tanstack/react-form": "catalog:",
     "@tanstack/react-virtual": "catalog:",
@@ -83,11 +89,13 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "fallow": "^3.9.1",
+    "husky": "^9.1.7",
     "ink-testing-library": "^4.0.0",
+    "lint-staged": "^17.2.0",
     "nusm": "catalog:",
-    "typescript": "^7.0.2",
     "react-dom": "catalog:",
     "slice-ansi": "catalog:",
-    "string-width": "catalog:"
+    "string-width": "catalog:",
+    "typescript": "^7.0.2"
   }
 }

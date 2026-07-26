@@ -1,7 +1,10 @@
 import { afterEach, expect, test } from "bun:test";
 import { useApp } from "@mwillbanks/tuil";
 import { defineCommand } from "@mwillbanks/tuil-core";
-import { adaptTanStackField } from "@mwillbanks/tuil-form";
+import {
+  adaptTanStackField,
+  TerminalFormController,
+} from "@mwillbanks/tuil-form";
 import { useHotkey } from "@mwillbanks/tuil-hotkeys";
 import { useTerminalInput } from "@mwillbanks/tuil-ink";
 import { cleanup, renderTuil } from "@mwillbanks/tuil-testing-ink";
@@ -24,6 +27,7 @@ import {
   NumberInput,
   RadioGroup,
   Select,
+  Switch,
   TextArea,
   TextInput,
   ValidationSummary,
@@ -198,6 +202,106 @@ test("selection controls expose semantic state and keyboard behavior", async () 
   expect(completions).toEqual(["javascript"]);
 });
 
+test("controls cover cursor, bounds, search, and selection limit policies", async () => {
+  const editor = renderTuil(
+    <Field label="Bounded" description="Three characters maximum">
+      <TextInput
+        id="bounded"
+        label="Bounded"
+        defaultValue="ab"
+        maxLength={3}
+        autoFocus
+      />
+    </Field>,
+  );
+  await editor.ready;
+  await editor.user.press("arrowLeft");
+  await editor.user.press("arrowRight");
+  await editor.user.press("arrowLeft");
+  await editor.user.press("backspace");
+  await editor.user.press("backspace");
+  await editor.user.type("long");
+  expect(editor.screen.frame()).toContain("Three characters maximum");
+  expect(
+    editor.screen.getByRole("textbox", { name: "Bounded" }).valueText,
+  ).toBe("lob");
+  await editor.cleanup();
+
+  const switches: boolean[] = [];
+  const toggle = renderTuil(
+    <Switch
+      id="notifications"
+      label="Notifications"
+      autoFocus
+      onCheckedChange={(checked) => {
+        switches.push(checked);
+      }}
+    >
+      Notifications
+    </Switch>,
+  );
+  await toggle.user.press("enter");
+  expect(switches).toEqual([true]);
+  await toggle.cleanup();
+
+  const searchable = renderTuil(
+    <Select
+      id="searchable"
+      label="Searchable"
+      options={options}
+      searchable
+      autoFocus
+    />,
+  );
+  await searchable.user.press("arrowUp");
+  await searchable.user.press("arrowUp");
+  await searchable.user.press("arrowDown");
+  await searchable.user.type("z");
+  expect(searchable.screen.frame()).toContain("No options");
+  await searchable.user.press("backspace");
+  await searchable.user.press("escape");
+  expect(searchable.screen.frame()).not.toContain("No options");
+  await searchable.cleanup();
+
+  const limited: readonly string[][] = [];
+  const multi = renderTuil(
+    <MultiSelect
+      id="limited"
+      label="Limited"
+      options={options}
+      maxSelected={1}
+      autoFocus
+      onValueChange={(values) => {
+        (limited as string[][]).push([...values]);
+      }}
+    />,
+  );
+  await multi.user.press("space");
+  await multi.user.press("arrowDown");
+  await multi.user.press("space");
+  await multi.user.press("arrowUp");
+  await multi.user.press("space");
+  expect(limited).toEqual([["typescript"], []]);
+  await multi.cleanup();
+
+  const completions: string[] = [];
+  const autocomplete = renderTuil(
+    <Autocomplete
+      id="keyboard-completion"
+      label="Keyboard completion"
+      options={options}
+      autoFocus
+      onOptionSelect={(option) => {
+        completions.push(option.value);
+      }}
+    />,
+  );
+  await autocomplete.user.press("arrowDown");
+  await autocomplete.user.press("arrowUp");
+  await autocomplete.user.press("enter");
+  expect(completions).toEqual(["typescript"]);
+});
+
 test("dialogs trap and restore focus while escape dismisses the top overlay", async () => {
   let backgroundInputs = 0;
   function Harness() {
@@ -325,6 +429,40 @@ test("forms validate through commands, summarize errors, blur adapters, and focu
   expect(view.screen.frame()).toContain("Name is required");
   await view.user.type("tuil");
   expect(changes).toEqual(["t", "tu", "tui", "tuil"]);
+});
+
+test("form controllers own registered field reset, restore, values, and subscriptions", async () => {
+  const controller = new TerminalFormController();
+  const view = renderTuil(
+    <Form id="owned-form" controller={controller}>
+      <TextInput
+        id="owned-name"
+        label="Owned name"
+        defaultValue="initial"
+        validators={{
+          command: (value) => (value ? undefined : "Required"),
+        }}
+        autoFocus
+      />
+    </Form>,
+  );
+  await view.ready;
+  expect(controller.values({ redactSecrets: false })).toEqual({
+    "owned-name": "initial",
+  });
+  await view.user.type("x");
+  expect(controller.dirty).toBeTrue();
+  expect(controller.validationSummary()).toEqual([]);
+  await controller.restore({ "owned-name": "restored", unknown: "ignored" });
+  expect(controller.values({ redactSecrets: false })["owned-name"]).toBe(
+    "restored",
+  );
+  controller.reset();
+  await Bun.sleep(10);
+  expect(controller.dirty).toBeFalse();
+  await controller.validate("command");
+  await view.cleanup();
+  controller.dispose();
 });
 
 test("multiple forms receive unique default command namespaces", async () => {
@@ -488,11 +626,36 @@ test("confirm, tooltip, toast, and command palette complete overlay contracts", 
   expect(confirmed).toBeTrue();
   await confirm.cleanup();
 
+  let cancelled = false;
+  const triggered = renderTuil(
+    <ConfirmDialog
+      id="triggered-confirm"
+      title="Archive project?"
+      trigger="Archive"
+      onConfirm={() => undefined}
+      onCancel={() => {
+        cancelled = true;
+      }}
+    />,
+  );
+  await triggered.ready;
+  const trigger = triggered.screen.getByRole("button", { name: "Open dialog" });
+  if (!trigger.id) throw new Error("Dialog trigger is missing an id");
+  expect(triggered.app.focus.focus(trigger.id)).toBeTrue();
+  await triggered.user.press("enter");
+  const cancel = triggered.screen.getByRole("button", { name: "Cancel" });
+  if (!cancel.id) throw new Error("Dialog cancel button is missing an id");
+  expect(triggered.app.focus.focus(cancel.id)).toBeTrue();
+  await triggered.user.press("enter");
+  expect(cancelled).toBeTrue();
+  await triggered.cleanup();
+
   const tooltip = renderTuil(
     <Tooltip targetId="help" content="Contextual help" delay={0}>
       <Button id="help" autoFocus>
         Help
       </Button>
+      <Button id="other-help">Other</Button>
     </Tooltip>,
   );
   await tooltip.ready;
@@ -501,6 +664,21 @@ test("confirm, tooltip, toast, and command palette complete overlay contracts", 
   expect(
     tooltip.screen.getByRole("status", { name: "Help for help" }),
   ).toBeDefined();
+  await tooltip.user.press("f1");
+  await Bun.sleep(10);
+  expect(() =>
+    tooltip.screen.getByRole("status", { name: "Help for help" }),
+  ).toThrow();
+  await tooltip.user.press("f1");
+  await Bun.sleep(10);
+  expect(
+    tooltip.screen.getByRole("status", { name: "Help for help" }),
+  ).toBeDefined();
+  expect(tooltip.app.focus.focus("other-help")).toBeTrue();
+  await Bun.sleep(20);
+  expect(() =>
+    tooltip.screen.getByRole("status", { name: "Help for help" }),
+  ).toThrow();
   await tooltip.cleanup();
 
   const reported: { error: unknown; phase: string }[] = [];
@@ -527,10 +705,26 @@ test("confirm, tooltip, toast, and command palette complete overlay contracts", 
   expect(reported.every((entry) => entry.error instanceof Error)).toBeTrue();
   await rejectedTooltip.cleanup();
 
+  let toastApi: ReturnType<typeof useToast> | undefined;
+  let toastActions = 0;
   function ToastHarness() {
     const toast = useToast();
+    toastApi = toast;
     useEffect(() => {
       toast.show({ title: "Saved", variant: "success", duration: 0 });
+      toast.show({
+        id: "action-toast",
+        title: "Action",
+        description: "Available",
+        duration: 0,
+        action: {
+          label: "Act",
+          run: () => {
+            toastActions += 1;
+          },
+        },
+      });
+      toast.show({ title: "Temporary", duration: 1 });
     }, [toast]);
     return null;
   }
@@ -541,7 +735,50 @@ test("confirm, tooltip, toast, and command palette complete overlay contracts", 
   );
   await toasts.ready;
   await Bun.sleep(0);
+  if (!toastApi) throw new Error("Toast API was not initialized");
   expect(toasts.screen.getByRole("status", { name: "Saved" })).toBeDefined();
+  const action = toasts.screen.getByRole("button", { name: "Act" });
+  if (!action.id) throw new Error("Toast action is missing an id");
+  expect(toasts.app.focus.focus(action.id)).toBeTrue();
+  await toasts.user.press("enter");
+  expect(toastActions).toBe(1);
+  toastApi.update("missing", { title: "Ignored" });
+  toastApi.update("action-toast", {
+    title: "Updated action",
+    variant: "warning",
+  });
+  await Bun.sleep(10);
+  expect(
+    toasts.screen.getByRole("status", { name: "Updated action" }),
+  ).toBeDefined();
+  expect(
+    await toastApi.promise(Promise.resolve(2), {
+      loading: "Loading success",
+      success: (value) => `Loaded ${value}`,
+      error: "Failed",
+    }),
+  ).toBe(2);
+  await expect(
+    toastApi.promise(Promise.reject(new Error("nope")), {
+      loading: "Loading failure",
+      success: "Loaded",
+      error: (error) =>
+        `Failed: ${error instanceof Error ? error.message : String(error)}`,
+    }),
+  ).rejects.toThrow("nope");
+  await Bun.sleep(10);
+  expect(toasts.screen.frame()).toContain("Loaded 2");
+  expect(toasts.screen.frame()).toContain("Failed: nope");
+  const dismiss = toasts.screen
+    .getAllByRole("button", { name: "Dismiss" })
+    .at(-1);
+  if (!dismiss?.id) throw new Error("Toast dismiss button is missing an id");
+  expect(toasts.app.focus.focus(dismiss.id)).toBeTrue();
+  await toasts.user.press("enter");
+  toastApi.dismiss("action-toast");
+  toastApi.dismiss("missing");
+  await Bun.sleep(5);
+  expect(toasts.screen.frame()).not.toContain("Temporary");
   await toasts.cleanup();
 
   const executions: string[] = [];
@@ -564,7 +801,12 @@ test("confirm, tooltip, toast, and command palette complete overlay contracts", 
     return <CommandPalette defaultOpen />;
   }
   const palette = renderTuil(<CommandHarness />);
-  await palette.user.type("create");
+  await palette.user.press("arrowDown");
+  await palette.user.press("arrowUp");
+  await palette.user.type("missing");
+  await palette.user.press("enter");
+  expect(palette.screen.frame()).toContain("No matching commands");
+  await palette.user.type(`${"\u007f".repeat("missing".length)}create`);
   await palette.user.press("enter");
   expect(executions).toEqual(["created"]);
 });
@@ -577,6 +819,7 @@ test("form and overlay components degrade for static and JSON output", async () 
       <Dialog defaultOpen id="static-dialog">
         <Dialog.Content label="Static dialog">
           <Dialog.Title>Static dialog</Dialog.Title>
+          <Dialog.Description>Static description</Dialog.Description>
         </Dialog.Content>
       </Dialog>
     </>,

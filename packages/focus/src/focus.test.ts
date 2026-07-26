@@ -108,4 +108,88 @@ describe("focus manager", () => {
     expect(focus.focusedId).toBe("outer-button");
     expect(focus.focus("unrelated")).toBeFalse();
   });
+
+  test("covers hierarchical, paged, updated, and disposable focus behavior", () => {
+    const focus = new FocusManager();
+    const changes: string[] = [];
+    const stopObserving = focus.observe((change) =>
+      changes.push(
+        `${change.previousId ?? "none"}:${change.currentId ?? "none"}`,
+      ),
+    );
+    expect(focus.next()).toBeFalse();
+    expect(focus.previous()).toBeFalse();
+    expect(focus.enter()).toBeFalse();
+    expect(focus.exit()).toBeFalse();
+    expect(focus.restore()).toBeFalse();
+    expect(focus.activeScopeId).toBeUndefined();
+
+    const unregisterScope = focus.registerScope({
+      id: "hierarchy",
+      loop: false,
+      orientation: "vertical",
+    });
+    expect(() => focus.registerScope({ id: "hierarchy" })).toThrow(
+      "already registered",
+    );
+    expect(() => focus.activateScope("missing")).toThrow("not registered");
+    focus.activateScope("hierarchy");
+    const unregisterParent = focus.registerNode({
+      id: "parent",
+      scopeId: "hierarchy",
+      disabled: false,
+      hidden: false,
+    });
+    const unregisterChild = focus.registerNode({
+      id: "child",
+      parentId: "parent",
+      scopeId: "hierarchy",
+      disabled: false,
+      hidden: false,
+    });
+    focus.registerNode({
+      id: "last",
+      scopeId: "hierarchy",
+      disabled: false,
+      hidden: false,
+    });
+    expect(() =>
+      focus.registerNode({
+        id: "last",
+        disabled: false,
+        hidden: false,
+      }),
+    ).toThrow("already registered");
+    expect(focus.nodes()).toHaveLength(3);
+    expect(focus.first()).toBeTrue();
+    expect(focus.enter()).toBeTrue();
+    expect(focus.focusedId).toBe("child");
+    expect(focus.exit()).toBeTrue();
+    expect(focus.focusedId).toBe("parent");
+    expect(focus.move("pageDown", 10)).toBeTrue();
+    expect(focus.focusedId).toBe("last");
+    expect(focus.move("pageUp", 10)).toBeTrue();
+    expect(focus.focusedId).toBe("parent");
+    expect(focus.move("down")).toBeTrue();
+    expect(focus.move("up")).toBeTrue();
+    expect(focus.move("home")).toBeTrue();
+    expect(focus.move("end")).toBeTrue();
+    expect(focus.move("previous")).toBeTrue();
+    expect(focus.move("next")).toBeTrue();
+    expect(focus.move("child")).toBeFalse();
+    expect(focus.move("parent")).toBeFalse();
+    expect(focus.next()).toBeFalse();
+
+    focus.updateNode("last", { disabled: true });
+    expect(focus.focusedId).not.toBe("last");
+    expect(() => focus.updateNode("missing", { hidden: true })).toThrow(
+      "not registered",
+    );
+    unregisterChild();
+    unregisterParent();
+    focus.deactivateScope("missing");
+    unregisterScope();
+    stopObserving();
+    expect(changes.length).toBeGreaterThan(0);
+  });
 });

@@ -103,4 +103,56 @@ describe("event bus", () => {
     bus.dispose();
     expect(bus.history()).toEqual([]);
   });
+
+  test("manages dynamic declarations, cancellable listeners, and observers", async () => {
+    const bus = new EventBus<TestEvents>();
+    const unregister = bus.register(
+      "project:create",
+      event<{ name: string }>(),
+    );
+    expect(() =>
+      bus.register("project:create", event<{ name: string }>()),
+    ).toThrow("already declared");
+
+    const calls: string[] = [];
+    const controller = new AbortController();
+    bus.on(
+      "project:create",
+      () => {
+        calls.push("aborted");
+      },
+      { signal: controller.signal },
+    );
+    controller.abort();
+    const stopListening = bus.on("project:create", () => {
+      calls.push("active");
+    });
+    let observed = 0;
+    const stopObserving = bus.observe(() => {
+      observed += 1;
+    });
+
+    await bus.emit(
+      "project:create",
+      { name: "background" },
+      { priority: "background" },
+    );
+    expect(calls).toEqual(["active"]);
+    expect(observed).toBe(1);
+
+    stopListening();
+    stopObserving();
+    await bus.emit("project:create", { name: "silent" });
+    expect(calls).toEqual(["active"]);
+    expect(observed).toBe(1);
+
+    unregister();
+    await expect(
+      bus.emit("project:create", { name: "undeclared" }),
+    ).rejects.toThrow("has not been declared");
+    bus.dispose();
+    expect(() =>
+      bus.register("project:create", event<{ name: string }>()),
+    ).toThrow("disposed");
+  });
 });

@@ -37,6 +37,9 @@
   "dependencies": {
     "@mwillbanks/tuil-core": "workspace:*"
   },
+  "devDependencies": {
+    "ink": "catalog:"
+  },
   "peerDependencies": {
     "react": "catalog:"
   },

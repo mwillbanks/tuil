@@ -12,6 +12,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/@mwillbanks/tuil"><img alt="npm" src="https://img.shields.io/npm/v/@mwillbanks/tuil" /></a>
   <a href="https://github.com/mwillbanks/tuil/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/mwillbanks/tuil/actions/workflows/ci.yml/badge.svg" /></a>
+  <a href="https://app.codecov.io/gh/mwillbanks/tuil"><img alt="Coverage" src="https://codecov.io/gh/mwillbanks/tuil/branch/main/graph/badge.svg" /></a>
   <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
 </p>
 

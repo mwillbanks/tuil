@@ -1,0 +1,4 @@
+bun run test
+bun run security
+bun run fallow
+bun run fallow:health

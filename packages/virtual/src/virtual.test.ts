@@ -25,6 +25,7 @@ test("terminal virtualizer measures large cell ranges within frame budgets", () 
   }
   const elapsed = performance.now() - started;
   adapter.dispose();
+  adapter.dispose();
   expect(range.indexes.length).toBeLessThanOrEqual(24);
   expect(elapsed).toBeLessThan(250);
 });

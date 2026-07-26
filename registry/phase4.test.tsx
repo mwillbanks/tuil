@@ -835,3 +835,439 @@ test("transfer lists index large selections and report static omissions", async 
   expect(transfer.screen.getByTestId("large-transfer")).toBeDefined();
   await transfer.cleanup();
 });
+
+test("structured viewers cover complete keyboard navigation contracts", async () => {
+  const expansionChanges: string[][] = [];
+  const selections: string[] = [];
+  const tree = renderTuil(
+    <Tree
+      id="keyboard-tree"
+      height={2}
+      autoFocus
+      defaultExpandedIds={["root"]}
+      items={[
+        {
+          id: "root",
+          label: "Root",
+          children: [
+            {
+              id: "branch",
+              label: "Branch",
+              children: [{ id: "leaf", label: "Leaf" }],
+            },
+            { id: "disabled", label: "Disabled", disabled: true },
+          ],
+        },
+      ]}
+      onExpandedChange={(ids) => {
+        expansionChanges.push([...ids]);
+      }}
+      onSelect={(item) => {
+        selections.push(item.id);
+      }}
+    />,
+  );
+  await tree.ready;
+  await tree.user.press("arrowLeft");
+  await tree.user.press("arrowRight");
+  await tree.user.press("arrowRight");
+  await tree.user.press("enter");
+  await tree.user.press("arrowRight");
+  await tree.user.press("arrowDown");
+  await tree.user.press("pageDown");
+  await tree.user.press("pageUp");
+  await tree.user.press("end");
+  await tree.user.press("enter");
+  await tree.user.press("home");
+  await tree.user.press("space");
+  await tree.user.press("arrowDown");
+  await tree.user.press("arrowLeft");
+  await tree.user.press("unhandled");
+  expect(expansionChanges.length).toBeGreaterThanOrEqual(3);
+  expect(selections).toContain("root");
+  await tree.cleanup();
+
+  const jsonChanges: string[][] = [];
+  const json = renderTuil(
+    <JsonViewer
+      id="keyboard-json"
+      value={{
+        alpha: { nested: true },
+        beta: [1, 2],
+        empty: {},
+        nil: null,
+        big: 1n,
+        missing: undefined,
+      }}
+      defaultExpandedDepth={2}
+      height={2}
+      autoFocus
+      onExpandedChange={(paths) => {
+        jsonChanges.push([...paths]);
+      }}
+    />,
+  );
+  await json.ready;
+  await json.user.press("arrowLeft");
+  await json.user.press("arrowRight");
+  await json.user.press("arrowDown");
+  await json.user.press("enter");
+  await json.user.press("arrowRight");
+  await json.user.press("arrowLeft");
+  await json.user.press("pageDown");
+  await json.user.press("pageUp");
+  await json.user.press("end");
+  await json.user.press("home");
+  await json.user.press("space");
+  await json.user.press("unhandled");
+  expect(jsonChanges.length).toBeGreaterThan(0);
+  await json.cleanup();
+
+  const diff = renderTuil(
+    <DiffViewer
+      id="keyboard-diff"
+      before={"zero\none\ntwo\nthree\nfour"}
+      after={"zero\none changed\ntwo\nthree changed\nfour"}
+      context={1}
+      height={2}
+      autoFocus
+    />,
+  );
+  await diff.ready;
+  for (const key of [
+    "arrowDown",
+    "arrowUp",
+    "pageDown",
+    "pageUp",
+    "end",
+    "home",
+    "unhandled",
+  ]) {
+    await diff.user.press(key);
+  }
+  expect(diff.screen.frame()).toContain("zero");
+  await diff.cleanup();
+
+  let transferred: readonly string[] = ["two"];
+  function KeyboardTransfer(): React.ReactNode {
+    const [value, setValue] = useState<readonly string[]>(["two"]);
+    transferred = value;
+    return (
+      <TransferList
+        id="keyboard-transfer"
+        items={[
+          { id: "one", label: "One" },
+          { id: "two", label: "Two" },
+          { id: "three", label: "Three", disabled: true },
+        ]}
+        value={value}
+        onValueChange={setValue}
+        height={1}
+        autoFocus
+      />
+    );
+  }
+  const transfer = renderTuil(<KeyboardTransfer />);
+  await transfer.ready;
+  for (const key of [
+    "arrowDown",
+    "arrowUp",
+    "pageDown",
+    "pageUp",
+    "end",
+    "home",
+    "arrowRight",
+    "enter",
+    "arrowLeft",
+    "a",
+    "unhandled",
+  ]) {
+    await transfer.user.press(key);
+  }
+  expect(transferred).toContain("one");
+  await transfer.cleanup();
+
+  const vertical = renderTuil(
+    <SplitPane
+      id="vertical-split"
+      orientation="vertical"
+      defaultSizes={[0, Number.NaN, 0]}
+      panes={[
+        { id: "one", content: <Text>One</Text>, maxSize: 80 },
+        { id: "two", content: <Text>Two</Text> },
+        { id: "three", content: <Text>Three</Text> },
+      ]}
+      autoFocus
+    />,
+  );
+  await vertical.ready;
+  for (const key of [
+    "arrowDown",
+    "arrowUp",
+    "]",
+    "[",
+    "pageDown",
+    "pageUp",
+    "end",
+    "home",
+    "unhandled",
+  ]) {
+    await vertical.user.press(key);
+  }
+  await vertical.cleanup();
+});
+
+test("data viewers cover bounded navigation, empty, and static overflow states", async () => {
+  const tableActions: string[] = [];
+  const table = renderTuil(
+    <Table
+      id="keyboard-table"
+      focusMode="cell"
+      height={2}
+      width={12}
+      rows={[
+        { id: "one", left: "A", right: "B" },
+        { id: "two", left: "C", right: "D" },
+        { id: "three", left: "E", right: "F" },
+      ]}
+      getRowKey={(row) => row.id}
+      columns={[
+        { id: "left", header: "Left", accessor: (row) => row.left, width: 6 },
+        {
+          id: "right",
+          header: "Right",
+          accessor: (row) => row.right,
+          width: 6,
+        },
+      ]}
+      onActivate={(_row, column) => {
+        tableActions.push(`activate:${column.id}`);
+      }}
+      onSelectionChange={(keys) => {
+        tableActions.push(`select:${keys.join(",")}`);
+      }}
+    />,
+  );
+  await table.ready;
+  expect(table.app.focus.focus("keyboard-table")).toBeTrue();
+  for (const key of [
+    "arrowDown",
+    "arrowUp",
+    "pageDown",
+    "pageUp",
+    "arrowRight",
+    "arrowLeft",
+    "end",
+    "home",
+    "enter",
+    "space",
+    "s",
+    "unhandled",
+  ]) {
+    await table.user.press(key);
+  }
+  expect(
+    tableActions.some((action) => action.startsWith("activate:")),
+  ).toBeTrue();
+  expect(
+    tableActions.some((action) => action.startsWith("select:")),
+  ).toBeTrue();
+  await table.cleanup();
+
+  const activeIndexes: number[] = [];
+  const list = renderTuil(
+    <VirtualList
+      id="keyboard-list"
+      autoFocus
+      height={2}
+      items={["one", "two", "three", "four"]}
+      getItemKey={(item) => item}
+      renderItem={(item) => item}
+      onActiveIndexChange={(index) => {
+        activeIndexes.push(index);
+      }}
+    />,
+  );
+  await list.ready;
+  for (const key of [
+    "arrowDown",
+    "arrowUp",
+    "pageDown",
+    "pageUp",
+    "end",
+    "home",
+    "enter",
+    "unhandled",
+  ]) {
+    await list.user.press(key);
+  }
+  expect(activeIndexes.length).toBeGreaterThan(0);
+  await list.cleanup();
+
+  const following: boolean[] = [];
+  const logs = renderTuil(
+    <LogViewer
+      id="keyboard-logs"
+      autoFocus
+      height={2}
+      width={50}
+      showTimestamp
+      lines={[
+        {
+          id: "debug",
+          level: "debug",
+          message: "debug",
+          timestamp: new Date("2026-01-01T00:00:00Z"),
+        },
+        { id: "warning", level: "warning", message: "warning", timestamp: 2 },
+        { id: "error", level: "error", message: "error" },
+        { id: "info", level: "info", message: "info" },
+      ]}
+      onFollowChange={(value) => {
+        following.push(value);
+      }}
+    />,
+  );
+  await logs.ready;
+  for (const key of [
+    "arrowUp",
+    "arrowDown",
+    "pageUp",
+    "pageDown",
+    "home",
+    "end",
+    "space",
+    "unhandled",
+  ]) {
+    await logs.user.press(key);
+  }
+  expect(following).toContain(false);
+  expect(following).toContain(true);
+  await logs.cleanup();
+
+  const paneSizes: number[] = [];
+  const pane = renderTuil(
+    <ResizablePane
+      id="keyboard-pane"
+      autoFocus
+      defaultExtent={10}
+      minSize={8}
+      maxSize={12}
+      onSizeChange={(size) => {
+        paneSizes.push(size);
+      }}
+    >
+      <Text>Pane</Text>
+    </ResizablePane>,
+  );
+  await pane.ready;
+  for (const key of [
+    "arrowLeft",
+    "arrowRight",
+    "-",
+    "+",
+    "home",
+    "end",
+    "unhandled",
+  ]) {
+    await pane.user.press(key);
+  }
+  expect(paneSizes).toContain(8);
+  expect(paneSizes).toContain(12);
+  await pane.cleanup();
+
+  const states = renderTuil(
+    <Box flexDirection="column">
+      <Table
+        rows={[]}
+        columns={[]}
+        getRowKey={(_row, index) => String(index)}
+      />
+      <VirtualList
+        items={[]}
+        getItemKey={(item) => String(item)}
+        renderItem={(item) => String(item)}
+      />
+      <Tree items={[]} />
+      <LogViewer lines={[]} />
+    </Box>,
+    { terminal: { mode: "static" } },
+  );
+  await states.ready;
+  expect(states.screen.frame()).toContain("No rows");
+  expect(states.screen.frame()).toContain("No items");
+  expect(states.screen.frame()).toContain("No log entries");
+  await states.cleanup();
+
+  const overflow = renderTuil(
+    <Box flexDirection="column">
+      <Table
+        staticLimit={1}
+        rows={[{ id: "1" }, { id: "2" }, { id: "3" }]}
+        columns={[{ id: "id", header: "ID", accessor: (row) => row.id }]}
+        getRowKey={(row) => row.id}
+      />
+      <VirtualList
+        staticLimit={1}
+        items={["one", "two", "three"]}
+        getItemKey={(item) => item}
+        renderItem={(item) => item}
+      />
+      <Tree
+        staticLimit={1}
+        items={[
+          { id: "one", label: "One" },
+          { id: "two", label: "Two" },
+        ]}
+      />
+    </Box>,
+    { terminal: { mode: "static" } },
+  );
+  await overflow.ready;
+  expect(overflow.screen.frame()).toContain("additional");
+  await overflow.cleanup();
+
+  const removeAllChanges: readonly string[][] = [];
+  const removeAll = renderTuil(
+    <TransferList
+      id="remove-all-transfer"
+      autoFocus
+      items={[
+        { id: "one", label: "One" },
+        { id: "two", label: "Two" },
+      ]}
+      defaultValue={["one", "two"]}
+      onValueChange={(value) => {
+        (removeAllChanges as string[][]).push([...value]);
+      }}
+    />,
+  );
+  await removeAll.ready;
+  await removeAll.user.press("arrowRight");
+  await removeAll.user.press("a");
+  expect(removeAllChanges.at(-1)).toEqual([]);
+  await removeAll.cleanup();
+
+  const parentNavigation = renderTuil(
+    <Tree
+      id="parent-navigation-tree"
+      autoFocus
+      defaultExpandedIds={["root"]}
+      items={[
+        {
+          id: "root",
+          label: "Root",
+          children: [{ id: "child", label: "Child" }],
+        },
+      ]}
+    />,
+  );
+  await parentNavigation.ready;
+  await parentNavigation.user.press("arrowRight");
+  await parentNavigation.user.press("arrowLeft");
+  await parentNavigation.user.press("arrowUp");
+  expect(
+    parentNavigation.screen.getByRole("treeitem", { name: "Root" }),
+  ).toBeDefined();
+  await parentNavigation.cleanup();
+});

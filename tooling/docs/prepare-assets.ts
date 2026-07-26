@@ -17,6 +17,4 @@ export async function prepareDocsAssets(
   await writeFile(resolve(publicDirectory, ".nojekyll"), "", "utf8");
 }
 
-if (import.meta.main) {
-  await prepareDocsAssets();
-}
+await (import.meta.main ? prepareDocsAssets() : undefined);

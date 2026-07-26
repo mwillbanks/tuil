@@ -3,7 +3,7 @@ import { useFocusable } from "@mwillbanks/tuil-focus";
 import {
   type CommonComponentProps,
   escapeTerminalControlCharacters,
-  useSemanticNode,
+  TerminalSemanticNode,
   useTerminalInput,
 } from "@mwillbanks/tuil-ink";
 import {
@@ -40,37 +40,6 @@ type TransferListSlots = {
 };
 
 type TransferSide = "available" | "selected";
-
-function SemanticTransferNode(props: {
-  readonly id: string;
-  readonly role: "form" | "listbox" | "option";
-  readonly label: string;
-  readonly selected?: boolean;
-  readonly disabled?: boolean;
-  readonly valueText?: string;
-  readonly metadata?: CommonComponentProps;
-}): null {
-  useSemanticNode(
-    useMemo(
-      () => ({
-        key: props.id,
-        id: props.id,
-        testId: props.metadata?.testId,
-        role: props.metadata?.role ?? props.role,
-        label: props.metadata?.label ?? props.label,
-        description: props.metadata?.description,
-        selected: props.metadata?.selected ?? props.selected,
-        checked: props.metadata?.checked,
-        expanded: props.metadata?.expanded,
-        disabled: props.metadata?.disabled ?? props.disabled,
-        readOnly: props.metadata?.readOnly,
-        valueText: props.metadata?.valueText ?? props.valueText,
-      }),
-      [props],
-    ),
-  );
-  return null;
-}
 
 export interface TransferListProps<TData = unknown>
   extends CommonComponentProps,
@@ -268,7 +237,7 @@ export function TransferList<TData>({
         borderStyle={focused && side === panelSide ? "single" : undefined}
         {...resolveSlotProps(slotProps?.panel, state, theme)}
       >
-        <SemanticTransferNode
+        <TerminalSemanticNode
           id={`${id}:${panelSide}`}
           role="listbox"
           label={title}
@@ -301,7 +270,7 @@ export function TransferList<TData>({
                     dimColor={item.disabled}
                     {...resolveSlotProps(slotProps?.item, state, theme)}
                   >
-                    <SemanticTransferNode
+                    <TerminalSemanticNode
                       id={`${id}:${panelSide}:${item.id}`}
                       role="option"
                       label={item.label}
@@ -333,7 +302,7 @@ export function TransferList<TData>({
       gap={1}
       {...resolveSlotProps(slotProps?.root, state, theme)}
     >
-      <SemanticTransferNode
+      <TerminalSemanticNode
         id={id}
         role="form"
         label={props.label ?? "Transfer list"}

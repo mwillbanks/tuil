@@ -1,4 +1,4 @@
-import type { TerminalBounds } from "@mwillbanks/tuil-core";
+import { deleteOnDispose, type TerminalBounds } from "@mwillbanks/tuil-core";
 import {
   createContext,
   createElement,
@@ -56,14 +56,23 @@ export interface FocusChange {
 }
 
 export class FocusManager {
-  readonly #nodes = new Map<string, FocusNode>();
-  readonly #scopes = new Map<string, FocusScopeDefinition>();
-  readonly #observers = new Set<(change: FocusChange) => void>();
-  readonly #history: (string | undefined)[] = [];
-  readonly #trapScopeIds: string[] = [];
-  #registrationOrder = 0;
+  readonly #nodes: Map<string, FocusNode>;
+  readonly #scopes: Map<string, FocusScopeDefinition>;
+  readonly #observers: Set<(change: FocusChange) => void>;
+  readonly #history: (string | undefined)[];
+  readonly #trapScopeIds: string[];
+  #registrationOrder: number;
   #focusedId?: string;
   #activeScopeId?: string;
+
+  constructor() {
+    this.#nodes = new Map();
+    this.#scopes = new Map();
+    this.#observers = new Set();
+    this.#history = [];
+    this.#trapScopeIds = [];
+    this.#registrationOrder = 0;
+  }
 
   get focusedId(): string | undefined {
     return this.#focusedId;
@@ -93,13 +102,7 @@ export class FocusManager {
     ) {
       this.first();
     }
-    return () => {
-      this.#nodes.delete(node.id);
-      if (this.#focusedId === node.id) {
-        this.#setFocused(undefined, "unregister");
-        this.first();
-      }
-    };
+    return this.#unregisterNode.bind(this, node.id);
   }
 
   updateNode(id: string, update: Partial<FocusNode>): void {
@@ -121,13 +124,7 @@ export class FocusManager {
       throw new Error(`Focus scope "${scope.id}" is already registered`);
     }
     this.#scopes.set(scope.id, Object.freeze({ ...scope }));
-    return () => {
-      this.#scopes.delete(scope.id);
-      if (this.#activeScopeId === scope.id) {
-        this.#activeScopeId = scope.parentId;
-      }
-      this.#removeTrap(scope.id);
-    };
+    return this.#unregisterScope.bind(this, scope.id, scope.parentId);
   }
 
   activateScope(id: string): void {
@@ -264,11 +261,27 @@ export class FocusManager {
 
   observe(observer: (change: FocusChange) => void): () => void {
     this.#observers.add(observer);
-    return () => this.#observers.delete(observer);
+    return deleteOnDispose(this.#observers, observer);
   }
 
   nodes(): readonly FocusNode[] {
     return [...this.#nodes.values()];
+  }
+
+  #unregisterNode(id: string): void {
+    this.#nodes.delete(id);
+    if (this.#focusedId === id) {
+      this.#setFocused(undefined, "unregister");
+      this.first();
+    }
+  }
+
+  #unregisterScope(id: string, parentId?: string): void {
+    this.#scopes.delete(id);
+    if (this.#activeScopeId === id) {
+      this.#activeScopeId = parentId;
+    }
+    this.#removeTrap(id);
   }
 
   #moveLinear(delta: -1 | 1, reason: string): boolean {
@@ -431,10 +444,11 @@ export function useFocusable(node: FocusNodeInput): {
     () => manager.registerNode(registeredNode),
     [manager, registeredNode],
   );
+  const getFocusedId = useCallback(() => manager.focusedId, [manager]);
   const focusedId = useSyncExternalStore(
     (notify) => manager.observe(notify),
-    () => manager.focusedId,
-    () => manager.focusedId,
+    getFocusedId,
+    getFocusedId,
   );
   return {
     focused: focusedId === node.id,

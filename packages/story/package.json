@@ -54,6 +54,9 @@
     "ansi-to-html": "^0.7.2",
     "chalk": "^5.6.2"
   },
+  "devDependencies": {
+    "react-dom": "catalog:"
+  },
   "peerDependencies": {
     "@storybook/react": "^10.5.4",
     "ink": "catalog:",

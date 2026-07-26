@@ -1,5 +1,10 @@
 import { useApp } from "@mwillbanks/tuil";
-import type { SemanticMetadata } from "@mwillbanks/tuil-core";
+import {
+  resolveTerminalViewport,
+  type SemanticMetadata,
+  type SemanticRole,
+  type TerminalViewport,
+} from "@mwillbanks/tuil-core";
 import { useFocusable } from "@mwillbanks/tuil-focus";
 import { useHotkey, useHotkeys } from "@mwillbanks/tuil-hotkeys";
 import {
@@ -14,6 +19,7 @@ import {
   type BoxProps as InkBoxProps,
   Text as InkText,
   type TextProps as InkTextProps,
+  useStdout,
 } from "ink";
 import {
   type PropsWithChildren,
@@ -23,13 +29,68 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useSemanticNode } from "./semantics.ts";
+import { resolveSemanticNode, useSemanticNode } from "./semantics.ts";
 
 export interface CommonComponentProps extends SemanticMetadata {
   readonly variant?: string;
   readonly size?: "sm" | "md" | "lg";
   readonly unstyled?: boolean;
   readonly className?: string;
+}
+
+export interface TerminalSemanticNodeProps {
+  readonly id: string;
+  readonly role: SemanticRole;
+  readonly label: string;
+  readonly description?: string;
+  readonly selected?: boolean;
+  readonly expanded?: boolean;
+  readonly disabled?: boolean;
+  readonly valueText?: string;
+  readonly metadata?: CommonComponentProps;
+}
+
+export function TerminalSemanticNode(props: TerminalSemanticNodeProps): null {
+  useSemanticNode(
+    useMemo(
+      () =>
+        resolveSemanticNode(
+          {
+            key: props.id,
+            id: props.id,
+            role: props.role,
+            label: props.label,
+            description: props.description,
+            selected: props.selected,
+            expanded: props.expanded,
+            disabled: props.disabled,
+            valueText: props.valueText,
+          },
+          props.metadata,
+        ),
+      [
+        props.description,
+        props.disabled,
+        props.expanded,
+        props.id,
+        props.label,
+        props.metadata?.checked,
+        props.metadata?.description,
+        props.metadata?.disabled,
+        props.metadata?.expanded,
+        props.metadata?.label,
+        props.metadata?.readOnly,
+        props.metadata?.role,
+        props.metadata?.selected,
+        props.metadata?.testId,
+        props.metadata?.valueText,
+        props.role,
+        props.selected,
+        props.valueText,
+      ],
+    ),
+  );
+  return null;
 }
 
 function semanticKey(id: string | undefined, generated: string): string {
@@ -157,6 +218,41 @@ export function HStack(props: Omit<StackProps, "direction">): ReactNode {
 
 export function VStack(props: Omit<StackProps, "direction">): ReactNode {
   return <Stack direction="column" {...props} />;
+}
+
+export interface ResponsiveStackProps extends Omit<StackProps, "direction"> {
+  readonly directions?: Partial<
+    Readonly<Record<TerminalViewport, StackProps["direction"]>>
+  >;
+}
+
+export function useTerminalViewport(): TerminalViewport {
+  const app = useApp();
+  const { stdout } = useStdout();
+  const [width, setWidth] = useState(
+    () => stdout.columns ?? app.capabilities.width,
+  );
+  useEffect(() => {
+    const updateWidth = () => {
+      setWidth(stdout.columns ?? app.capabilities.width);
+    };
+    updateWidth();
+    stdout.on("resize", updateWidth);
+    return () => {
+      stdout.off("resize", updateWidth);
+    };
+  }, [app.capabilities.width, stdout]);
+  return resolveTerminalViewport(width);
+}
+
+export function ResponsiveStack({
+  directions,
+  ...props
+}: ResponsiveStackProps): ReactNode {
+  const viewport = useTerminalViewport();
+  const direction =
+    directions?.[viewport] ?? (viewport === "compact" ? "column" : "row");
+  return <Stack direction={direction} {...props} />;
 }
 
 export interface ContainerProps extends BoxProps {

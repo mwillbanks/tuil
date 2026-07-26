@@ -1,9 +1,17 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import {
+  chmod,
+  mkdir,
+  mkdtemp,
+  readFile,
+  rm,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { renderTuil } from "@mwillbanks/tuil-testing-ink";
 import { initWizardStories } from "../../../registry/blocks/init-wizard.stories.tsx";
+import { runCli } from "./bin.ts";
 import {
   type InitAnswers,
   InitWizard,
@@ -11,7 +19,6 @@ import {
 } from "./index.tsx";
 
 const directories: string[] = [];
-const cli = join(import.meta.dir, "bin.ts");
 
 afterEach(async () => {
   await Promise.all(
@@ -25,16 +32,28 @@ async function run(
   cwd: string,
   args: readonly string[],
 ): Promise<{ exitCode: number; stdout: string; stderr: string }> {
-  const process = Bun.spawn(["bun", cli, ...args], {
-    cwd,
-    stdout: "pipe",
-    stderr: "pipe",
-  });
-  return {
-    exitCode: await process.exited,
-    stdout: await new Response(process.stdout).text(),
-    stderr: await new Response(process.stderr).text(),
-  };
+  const previousCwd = process.cwd();
+  const stdoutWrite = process.stdout.write;
+  const stderrWrite = process.stderr.write;
+  let stdout = "";
+  let stderr = "";
+  process.chdir(cwd);
+  process.stdout.write = ((chunk: string | Uint8Array) => {
+    stdout += typeof chunk === "string" ? chunk : Buffer.from(chunk).toString();
+    return true;
+  }) as typeof process.stdout.write;
+  process.stderr.write = ((chunk: string | Uint8Array) => {
+    stderr += typeof chunk === "string" ? chunk : Buffer.from(chunk).toString();
+    return true;
+  }) as typeof process.stderr.write;
+  try {
+    const exitCode = await runCli([...args]);
+    return { exitCode, stdout, stderr };
+  } finally {
+    process.stdout.write = stdoutWrite;
+    process.stderr.write = stderrWrite;
+    process.chdir(previousCwd);
+  }
 }
 
 describe("tuil CLI", () => {
@@ -165,6 +184,94 @@ describe("tuil CLI", () => {
     ]);
     expect(update.exitCode).toBe(1);
     expect(update.stderr).toContain("locally modified");
+  });
+
+  test("exercises the complete non-interactive command surface", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tuil-cli-"));
+    directories.push(root);
+    await writeFile(
+      join(root, "package.json"),
+      `${JSON.stringify({ name: "command-surface", private: true })}\n`,
+    );
+
+    const jsonCommands = [
+      ["help", "--output=json"],
+      ["doctor", "--output=json"],
+      ["info", "--output=json"],
+      ["list", "--output=json"],
+      ["search", "button", "--output=json"],
+      ["plugin", "--output=json"],
+      ["registry", "--output=json"],
+      ["skills", "list", "--output=json"],
+    ] as const;
+    for (const command of jsonCommands) {
+      const result = await run(root, command);
+      expect(result).toMatchObject({ exitCode: 0, stderr: "" });
+      expect(() => JSON.parse(result.stdout)).not.toThrow();
+    }
+
+    const skillTarget = join(root, "agent-skills");
+    expect(
+      (
+        await run(root, [
+          "skills",
+          "install",
+          "--target",
+          skillTarget,
+          "--output",
+          "silent",
+        ])
+      ).exitCode,
+    ).toBe(0);
+    expect(
+      await Bun.file(
+        join(skillTarget, "building-tuil-applications/SKILL.md"),
+      ).exists(),
+    ).toBeTrue();
+    expect(
+      (await run(root, ["skills", "unknown", "--output", "silent"])).stderr,
+    ).toContain("Unknown skills action");
+
+    await mkdir(join(root, "node_modules/.bin"), { recursive: true });
+    const biome = join(root, "node_modules/.bin/biome");
+    await writeFile(
+      biome,
+      "#!/usr/bin/env bun\nprocess.stdout.write(await Bun.stdin.text());\n",
+    );
+    await chmod(biome, 0o755);
+    expect(
+      (await run(root, ["add", "text", "--no-install", "--output", "silent"]))
+        .exitCode,
+    ).toBe(0);
+    expect(
+      (await run(root, ["diff", "text", "--output", "json"])).exitCode,
+    ).toBe(0);
+    expect(
+      (await run(root, ["remove", "text", "--output", "silent"])).exitCode,
+    ).toBe(0);
+    expect(
+      (await run(root, ["theme", "default", "--output", "silent"])).exitCode,
+    ).toBe(0);
+    expect(await Bun.file(join(root, "src/lib/theme.ts")).exists()).toBeTrue();
+    expect(
+      (await run(root, ["theme", "button", "--output", "silent"])).stderr,
+    ).toContain("Theme preset");
+    expect((await run(root, ["add", "--output", "silent"])).stderr).toContain(
+      "requires at least one",
+    );
+
+    expect(
+      (
+        await run(root, [
+          "init",
+          "static-demo",
+          "--template",
+          "minimal",
+          "--output",
+          "static",
+        ])
+      ).stdout,
+    ).toContain("Project ready");
   });
 
   test("updates individually requested aliases through canonical source owners", async () => {

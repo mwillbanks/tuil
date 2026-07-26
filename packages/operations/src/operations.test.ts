@@ -3,7 +3,165 @@ import {
   createOperation,
   defineOperation,
   OperationBlockedError,
+  operationFeedbackDelays,
+  resolveOperationFeedback,
 } from "./index.ts";
+
+const feedbackSnapshot = {
+  id: "feedback",
+  title: "Feedback",
+  status: "running" as const,
+  attempt: 1,
+  startedAt: 1_000,
+  children: [],
+  metadata: {},
+  logs: [],
+};
+
+test("operation feedback follows the shared waiting-time policy", () => {
+  expect(resolveOperationFeedback(feedbackSnapshot, 1_199)).toEqual({
+    phase: "none",
+    elapsed: 199,
+  });
+  expect(resolveOperationFeedback(feedbackSnapshot, 1_200)).toEqual({
+    phase: "activity",
+    elapsed: operationFeedbackDelays.activity,
+  });
+  expect(resolveOperationFeedback(feedbackSnapshot, 1_999).phase).toBe(
+    "activity",
+  );
+  expect(resolveOperationFeedback(feedbackSnapshot, 2_000)).toEqual({
+    phase: "indeterminate",
+    elapsed: operationFeedbackDelays.loading,
+    message: undefined,
+  });
+  expect(
+    resolveOperationFeedback(
+      {
+        ...feedbackSnapshot,
+        progress: { current: 12, total: 10, message: "Uploading" },
+      },
+      2_000,
+    ),
+  ).toEqual({
+    phase: "determinate",
+    elapsed: 1_000,
+    current: 12,
+    total: 10,
+    percent: 100,
+    message: "Uploading",
+  });
+  expect(
+    resolveOperationFeedback(
+      {
+        ...feedbackSnapshot,
+        progress: { current: -1, total: 10 },
+      },
+      2_000,
+    ),
+  ).toMatchObject({ phase: "determinate", percent: 0 });
+  expect(
+    resolveOperationFeedback(
+      {
+        ...feedbackSnapshot,
+        progress: { current: 4, message: "Indexing" },
+      },
+      11_000,
+    ),
+  ).toEqual({
+    phase: "status",
+    elapsed: operationFeedbackDelays.stalled,
+    message: "Indexing",
+  });
+  expect(
+    resolveOperationFeedback(
+      {
+        ...feedbackSnapshot,
+        status: "succeeded",
+        completedAt: 2_000,
+        progress: { current: 1, total: 2 },
+      },
+      20_000,
+    ),
+  ).toEqual({
+    phase: "none",
+    elapsed: 1_000,
+  });
+  expect(
+    resolveOperationFeedback(
+      { ...feedbackSnapshot, status: "idle", startedAt: undefined },
+      20_000,
+    ),
+  ).toEqual({ phase: "none", elapsed: 0 });
+});
+
+test("operation retry delays can resolve or be cancelled", async () => {
+  let attempts = 0;
+  const delayed = createOperation(
+    defineOperation({
+      id: "delayed-retry",
+      title: "Delayed retry",
+      retries: 1,
+      retryDelay: 1,
+      run() {
+        attempts += 1;
+        if (attempts === 1) throw new Error("retry");
+        return "done";
+      },
+    }),
+  );
+  expect(await delayed.execute()).toBe("done");
+
+  const cancelled = createOperation(
+    defineOperation({
+      id: "cancelled-delay",
+      title: "Cancelled delay",
+      retries: 1,
+      retryDelay: 100,
+      run() {
+        throw new Error("retry");
+      },
+    }),
+  );
+  const running = cancelled.execute();
+  await Bun.sleep(1);
+  cancelled.cancel("cancel delay");
+  await expect(running).rejects.toBe("cancel delay");
+  expect(cancelled.state.status).toBe("cancelled");
+});
+
+test("operations can be skipped only before execution", async () => {
+  const skipped = createOperation(
+    defineOperation({
+      id: "skipped",
+      title: "Skipped",
+      run: () => "unused",
+    }),
+  );
+  skipped.skip();
+  expect(skipped.state.status).toBe("skipped");
+  expect(skipped.state.completedAt).toBeNumber();
+  expect(() => skipped.skip()).toThrow("idle or queued");
+
+  const completed = createOperation(
+    defineOperation({
+      id: "completed",
+      title: "Completed",
+      run: () => "done",
+    }),
+  );
+  let updates = 0;
+  const stopUpdates = completed.subscribe(() => {
+    updates += 1;
+  });
+  const stopEvents = completed.observe(() => undefined);
+  await completed.execute();
+  expect(updates).toBeGreaterThan(0);
+  stopUpdates();
+  stopEvents();
+  expect(() => completed.skip()).toThrow("idle or queued");
+  completed.dispose();
+});
 
 test("operations report progress, batch bounded logs, retry, nest, cancel, and rollback", async () => {
   let attempts = 0;

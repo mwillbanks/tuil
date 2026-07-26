@@ -4,7 +4,14 @@ import { Text } from "@mwillbanks/tuil-ink";
 import { cleanup } from "@mwillbanks/tuil-testing-ink";
 import type { ReactElement } from "react";
 import { createElement } from "react";
-import { ansiFrameToHtml, createFumadocsStoryAdapter } from "./browser.tsx";
+import { renderToStaticMarkup } from "react-dom/server";
+import {
+  ansiFrameToHtml,
+  createFumadocsStoryAdapter,
+  createTerminalStoryFrameEffect,
+  TerminalStoryFrame,
+  TerminalStoryFrameView,
+} from "./browser.tsx";
 import {
   createStoryHttpHandler,
   defineTuilStories,
@@ -74,6 +81,58 @@ test("renders portable stories, updates args, and records controls", async () =>
   );
 });
 
+test("catalog and story session lifetimes cover validation and cancellation", async () => {
+  const stories = new TuilStoryCatalog();
+  const greeting = stories.register("greeting", "Zulu", definition);
+  stories.register("alternate", "Alpha", definition);
+  expect(stories.list().map((set) => set.id)).toEqual([
+    "alternate",
+    "greeting",
+  ]);
+  expect(() => stories.register("", "Empty", definition)).toThrow(
+    "cannot be empty",
+  );
+  expect(() => stories.register("greeting", "Duplicate", definition)).toThrow(
+    "already registered",
+  );
+
+  const session = await TuilStorySession.open(stories, {
+    storyId: "greeting",
+    variant: "Default",
+    controls: { colorDepth: 4 },
+  });
+  expect(session.args["label"]).toBe("Ready");
+  expect(session.controls.colorDepth).toBe(4);
+  await session.press("enter");
+
+  const waitingController = new AbortController();
+  const waiting = TuilStorySession.open(stories, {
+    storyId: "alternate",
+    variant: "Default",
+    signal: waitingController.signal,
+  });
+  waitingController.abort(new Error("cancel queued story"));
+  await expect(waiting).rejects.toThrow("cancel queued story");
+  await session.close();
+  await session.close();
+
+  greeting.dispose();
+  greeting.dispose();
+  expect(stories.get("greeting")).toBeUndefined();
+  await expect(
+    TuilStorySession.open(stories, {
+      storyId: "missing",
+      variant: "Default",
+    }),
+  ).rejects.toThrow("Unknown story set");
+  await expect(
+    TuilStorySession.open(stories, {
+      storyId: "alternate",
+      variant: "Missing",
+    }),
+  ).rejects.toThrow("Unknown variant");
+});
+
 test("serves normalized frames through the browser bridge", async () => {
   const stories = catalog();
   const handler = createStoryHttpHandler(stories);
@@ -93,6 +152,78 @@ test("serves normalized frames through the browser bridge", async () => {
   expect(
     (await handler(new Request("http://localhost/api/tuil-story"))).status,
   ).toBe(405);
+});
+
+test("renders browser frames and reports bridge failures", async () => {
+  const request = {
+    storyId: "greeting",
+    variant: "Default",
+  } as const;
+  const frame = await renderStoryRequest(catalog(), request);
+  const frameHtml = ansiFrameToHtml(frame.ansiFrame);
+  const rendered = renderToStaticMarkup(
+    createElement(TerminalStoryFrameView, {
+      request,
+      inspector: true,
+      frame,
+      frameHtml,
+      status: "",
+    }),
+  );
+  expect(rendered).toContain("data-tuil-inspector");
+  expect(rendered).toContain("Frame inspection");
+  expect(
+    renderToStaticMarkup(
+      createElement(TerminalStoryFrameView, {
+        request,
+        inspector: false,
+        status: "Rendering terminal story…",
+      }),
+    ),
+  ).toContain("Rendering terminal story");
+  expect(
+    renderToStaticMarkup(
+      createElement(TerminalStoryFrame, {
+        ...request,
+        inspector: false,
+      }),
+    ),
+  ).toContain("Rendering terminal story");
+
+  const originalFetch = globalThis.fetch;
+  const frames: Array<typeof frame | undefined> = [];
+  const statuses: string[] = [];
+  try {
+    globalThis.fetch = (() =>
+      Promise.resolve(Response.json(frame))) as unknown as typeof fetch;
+    const disposeSuccess = createTerminalStoryFrameEffect({
+      endpoint: "/story",
+      body: JSON.stringify(request),
+      setFrame: (value) => frames.push(value),
+      setStatus: (value) => statuses.push(value),
+    })();
+    await Bun.sleep(0);
+    expect(frames.at(-1)?.frame).toContain("Ready");
+    expect(statuses.at(-1)).toBe("");
+    disposeSuccess();
+
+    globalThis.fetch = (() =>
+      Promise.resolve(
+        Response.json({ error: "Bridge failed" }, { status: 500 }),
+      )) as unknown as typeof fetch;
+    const disposeFailure = createTerminalStoryFrameEffect({
+      endpoint: "/story",
+      body: JSON.stringify(request),
+      setFrame: (value) => frames.push(value),
+      setStatus: (value) => statuses.push(value),
+    })();
+    await Bun.sleep(0);
+    expect(frames.at(-1)).toBeUndefined();
+    expect(statuses.at(-1)).toBe("Bridge failed");
+    disposeFailure();
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 test("produces Storybook, Fumadocs, snapshot, and documentation adapters", async () => {
@@ -252,7 +383,7 @@ test("serves a static adapter with complete terminal controls", async () => {
     },
   });
   const staticCatalog = new StaticStoryCatalog();
-  staticCatalog.register("greeting", staticDefinition);
+  const unregister = staticCatalog.register("greeting", staticDefinition);
   expect(
     (
       await renderStaticStoryRequest(staticCatalog, {
@@ -291,4 +422,6 @@ test("serves a static adapter with complete terminal controls", async () => {
     }),
   );
   expect(response.status).toBe(200);
+  await unregister();
+  expect(staticCatalog.runtimeCatalog.get("greeting")).toBeUndefined();
 });

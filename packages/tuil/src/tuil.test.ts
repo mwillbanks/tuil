@@ -3,6 +3,7 @@ import { createPlugin } from "@mwillbanks/tuil-plugin";
 import {
   createApp,
   defineCommand,
+  defineConfig,
   defineEvents,
   defineService,
   event,
@@ -66,6 +67,12 @@ describe("application runtime", () => {
       },
     );
     await app.events.emit("project:created", { name: "demo" });
+    const extension = app.extensions["routes"]?.register({ id: "temporary" });
+    expect(app.extensions["routes"]?.values()).toContainEqual({
+      id: "temporary",
+    });
+    await extension?.dispose();
+    expect(app.extensions["routes"]?.values()).toEqual([]);
     await app.stop();
     expect(app.lifecycle.state).toBe("disposed");
     expect(calls).toEqual([
@@ -84,6 +91,17 @@ describe("application runtime", () => {
       "app:stop",
       "app:dispose",
     ]);
+  });
+
+  test("freezes repository configuration", () => {
+    const config = defineConfig({
+      renderer: "ink",
+      paths: { components: "components", utilities: "lib", hooks: "hooks" },
+      registry: { sources: ["https://example.com"] },
+      theme: { preset: "default-dark" },
+      packageManager: "bun",
+    });
+    expect(Object.isFrozen(config)).toBeTrue();
   });
 
   test("routes initialization failures through the error handler", async () => {

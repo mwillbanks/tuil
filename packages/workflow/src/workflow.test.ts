@@ -940,6 +940,49 @@ test("workflow converts persisted in-flight work into a retryable interruption",
   expect(runner.snapshot.operations[0]?.status).toBe("succeeded");
 });
 
+test("workflow restores interrupted parallel branches and validates explicitly", async () => {
+  const persisted: PersistedWorkflow<Record<string, never>> = {
+    version: 1,
+    state: {},
+    currentStep: "parallel",
+    completedSteps: [],
+    skippedSteps: [],
+    history: ["parallel"],
+    status: "running",
+    parallel: [
+      {
+        id: "branch",
+        stepId: "parallel",
+        status: "running",
+      },
+    ],
+  };
+  const runner = createWorkflow(
+    defineWorkflow({
+      id: "parallel-resume",
+      version: 1,
+      initialState: {},
+      persistence: {
+        load: () => persisted,
+        save: () => undefined,
+      },
+      steps: {
+        parallel: defineStep({
+          validate: () => "Review the interrupted branch",
+        }),
+      },
+      transitions: [],
+    }),
+  );
+  expect(await runner.resume()).toBeTrue();
+  expect(runner.snapshot.parallel[0]).toMatchObject({
+    status: "failed",
+    error: "Parallel branch was interrupted before workflow recovery",
+  });
+  expect(await runner.validate()).toBeFalse();
+  expect(runner.snapshot.errors).toEqual(["Review the interrupted branch"]);
+});
+
 test("disposing a workflow aborts work and isolates observer failures", async () => {
   const observerErrors: unknown[] = [];
   let lateEnter = false;

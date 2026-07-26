@@ -1,11 +1,13 @@
-import type { SemanticMetadata } from "@mwillbanks/tuil-core";
+import { deleteOnDispose, type SemanticMetadata } from "@mwillbanks/tuil-core";
 import {
   createContext,
   createElement,
   type ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
+  useSyncExternalStore,
 } from "react";
 
 export interface SemanticNode extends SemanticMetadata {
@@ -13,17 +15,54 @@ export interface SemanticNode extends SemanticMetadata {
   readonly text?: string;
 }
 
+export function resolveSemanticNode(
+  defaults: SemanticNode,
+  metadata?: SemanticMetadata,
+): SemanticNode {
+  const definedMetadata = Object.fromEntries(
+    Object.entries(metadata ?? {}).filter(([, value]) => value !== undefined),
+  );
+  return Object.freeze({
+    ...defaults,
+    ...definedMetadata,
+    key: defaults.key,
+    id: defaults.id,
+  });
+}
+
+export interface ExternalSnapshotStore<TSnapshot> {
+  subscribe(observer: () => void): () => void;
+  snapshot(): TSnapshot;
+}
+
+export function useOptionalExternalStore<TSnapshot>(
+  store: ExternalSnapshotStore<TSnapshot> | undefined,
+  emptySnapshot: TSnapshot,
+): TSnapshot {
+  const subscribe = useCallback(
+    (notify: () => void) => store?.subscribe(notify) ?? (() => undefined),
+    [store],
+  );
+  const getSnapshot = useCallback(
+    () => store?.snapshot() ?? emptySnapshot,
+    [emptySnapshot, store],
+  );
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+}
+
 export class SemanticRegistry {
-  readonly #nodes = new Map<string, SemanticNode>();
-  readonly #observers = new Set<() => void>();
+  readonly #nodes: Map<string, SemanticNode>;
+  readonly #observers: Set<() => void>;
+
+  constructor() {
+    this.#nodes = new Map();
+    this.#observers = new Set();
+  }
 
   register(node: SemanticNode): () => void {
     this.#nodes.set(node.key, Object.freeze({ ...node }));
     this.#notify();
-    return () => {
-      this.#nodes.delete(node.key);
-      this.#notify();
-    };
+    return deleteOnDispose(this.#nodes, node.key, this.#notify.bind(this));
   }
 
   update(node: SemanticNode): void {
@@ -37,7 +76,7 @@ export class SemanticRegistry {
 
   observe(observer: () => void): () => void {
     this.#observers.add(observer);
-    return () => this.#observers.delete(observer);
+    return deleteOnDispose(this.#observers, observer);
   }
 
   #notify(): void {

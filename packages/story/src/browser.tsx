@@ -91,20 +91,20 @@ export interface TerminalStoryFrameProps extends StoryBridgeRequest {
   readonly inspector?: boolean;
 }
 
-export function TerminalStoryFrame({
-  endpoint = "/api/tuil-story",
-  className,
-  inspector = true,
-  ...request
-}: TerminalStoryFrameProps): ReactElement {
-  const body = useMemo(() => JSON.stringify(request), [request]);
-  const [frame, setFrame] = useState<StoryFrame>();
-  const [status, setStatus] = useState("Rendering terminal story…");
-  const frameHtml = useMemo(
-    () => (frame ? ansiFrameToHtml(frame.ansiFrame) : undefined),
-    [frame],
-  );
-  useEffect(() => {
+export interface TerminalStoryFrameEffectOptions {
+  readonly endpoint: string;
+  readonly body: string;
+  readonly setFrame: (frame: StoryFrame | undefined) => void;
+  readonly setStatus: (status: string) => void;
+}
+
+export function createTerminalStoryFrameEffect({
+  endpoint,
+  body,
+  setFrame,
+  setStatus,
+}: TerminalStoryFrameEffectOptions): () => () => void {
+  return () => {
     const controller = new AbortController();
     setStatus("Rendering terminal story…");
     void fetch(endpoint, {
@@ -132,7 +132,26 @@ export function TerminalStoryFrame({
         }
       });
     return () => controller.abort();
-  }, [body, endpoint]);
+  };
+}
+
+export interface TerminalStoryFrameViewProps {
+  readonly request: StoryBridgeRequest;
+  readonly className?: string;
+  readonly inspector: boolean;
+  readonly frame?: StoryFrame;
+  readonly status: string;
+  readonly frameHtml?: string;
+}
+
+export function TerminalStoryFrameView({
+  request,
+  className,
+  inspector,
+  frame,
+  status,
+  frameHtml,
+}: TerminalStoryFrameViewProps): ReactElement {
   return createElement(
     "div",
     {
@@ -187,6 +206,40 @@ export function TerminalStoryFrame({
         )
       : null,
   );
+}
+
+export function TerminalStoryFrame({
+  endpoint = "/api/tuil-story",
+  className,
+  inspector = true,
+  ...request
+}: TerminalStoryFrameProps): ReactElement {
+  const body = useMemo(() => JSON.stringify(request), [request]);
+  const [frame, setFrame] = useState<StoryFrame>();
+  const [status, setStatus] = useState("Rendering terminal story…");
+  const frameHtml = useMemo(
+    () => (frame ? ansiFrameToHtml(frame.ansiFrame) : undefined),
+    [frame],
+  );
+  const effect = useMemo(
+    () =>
+      createTerminalStoryFrameEffect({
+        endpoint,
+        body,
+        setFrame,
+        setStatus,
+      }),
+    [body, endpoint],
+  );
+  useEffect(effect, [effect]);
+  return createElement(TerminalStoryFrameView, {
+    request,
+    className,
+    inspector,
+    frame,
+    status,
+    frameHtml,
+  });
 }
 
 export type FumadocsStoryProps = Readonly<

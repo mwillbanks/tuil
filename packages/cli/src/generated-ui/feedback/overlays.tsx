@@ -3,6 +3,7 @@ import type { Command } from "@mwillbanks/tuil-core";
 import { useHotkey } from "@mwillbanks/tuil-hotkeys";
 import {
   Overlay,
+  useOptionalExternalStore,
   useSemanticNode,
   useTerminalInput,
 } from "@mwillbanks/tuil-ink";
@@ -18,7 +19,6 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
 } from "react";
 import { Button } from "../components/button.tsx";
 import { TextInput } from "../forms/controls.tsx";
@@ -501,6 +501,7 @@ class ToastManager {
 }
 
 const ToastContext = createContext<ToastManager | undefined>(undefined);
+const emptyToastRecords: readonly ToastRecord[] = Object.freeze([]);
 
 export interface ToastApi {
   readonly show: ToastManager["show"];
@@ -558,7 +559,12 @@ export function Toast(props: {
         label: props.toast.title,
         description: props.toast.description,
       }),
-      [props.toast],
+      [
+        props.toast.description,
+        props.toast.id,
+        props.toast.title,
+        props.toast.variant,
+      ],
     ),
   );
   return (
@@ -585,20 +591,13 @@ export function Toast(props: {
 
 export function ToastViewport(): ReactNode {
   const manager = useContext(ToastContext);
+  const dismiss = useCallback((id: string) => manager?.dismiss(id), [manager]);
+  const records = useOptionalExternalStore(manager, emptyToastRecords);
   if (!manager) throw new Error("ToastViewport requires ToastProvider");
-  const records = useSyncExternalStore(
-    (notify) => manager.subscribe(notify),
-    () => manager.snapshot(),
-    () => manager.snapshot(),
-  );
   return (
     <Box flexDirection="column">
       {records.map((toast) => (
-        <Toast
-          key={toast.id}
-          toast={toast}
-          onDismiss={(id) => manager.dismiss(id)}
-        />
+        <Toast key={toast.id} toast={toast} onDismiss={dismiss} />
       ))}
     </Box>
   );

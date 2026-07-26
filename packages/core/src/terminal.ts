@@ -1,5 +1,17 @@
 export type ColorDepth = 1 | 4 | 8 | 24;
 export type RenderMode = "interactive" | "static" | "json" | "silent";
+export type TerminalViewport = "compact" | "regular" | "wide";
+
+export const terminalViewportBreakpoints = Object.freeze({
+  regular: 60,
+  wide: 120,
+});
+
+export function resolveTerminalViewport(width: number): TerminalViewport {
+  if (width < terminalViewportBreakpoints.regular) return "compact";
+  if (width < terminalViewportBreakpoints.wide) return "regular";
+  return "wide";
+}
 
 export interface TerminalCapabilities {
   readonly width: number;

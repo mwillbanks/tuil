@@ -7,6 +7,7 @@ import {
   render,
   SemanticRegistry,
   Text,
+  type TuilRenderInstance,
   useTerminalInput,
 } from "@mwillbanks/tuil-ink";
 import {
@@ -352,8 +353,11 @@ export function createPlaygroundApp(
   });
 }
 
-function widthAwareOutput(width: number): NodeJS.WriteStream {
-  return new Proxy(process.stdout, {
+function widthAwareOutput(
+  width: number,
+  output: NodeJS.WriteStream,
+): NodeJS.WriteStream {
+  return new Proxy(output, {
     get(target, property) {
       if (property === "columns") return width;
       const value = Reflect.get(target, property, target);
@@ -362,10 +366,22 @@ function widthAwareOutput(width: number): NodeJS.WriteStream {
   });
 }
 
-export async function runPlayground(): Promise<void> {
+export interface PlaygroundRunnerOptions {
+  readonly output?: NodeJS.WriteStream;
+  readonly renderApp?: (
+    app: TuilApp,
+    options: { readonly stdout: NodeJS.WriteStream },
+  ) => Promise<TuilRenderInstance>;
+}
+
+export async function runPlayground(
+  options: PlaygroundRunnerOptions = {},
+): Promise<void> {
+  const output = options.output ?? process.stdout;
+  const renderApp = options.renderApp ?? render;
   let config: PlaygroundRuntimeConfig = {
-    width: process.stdout.columns ?? 80,
-    height: process.stdout.rows ?? 24,
+    width: output.columns ?? 80,
+    height: output.rows ?? 24,
     themeId: "default-dark",
     storyId: "foundation",
     variant: "Running",
@@ -374,13 +390,19 @@ export async function runPlayground(): Promise<void> {
   let active: Awaited<ReturnType<typeof render>> | undefined;
   let stopped = false;
   let resolveCompletion: (() => void) | undefined;
-  const completion = new Promise<void>((resolve) => {
+  let rejectCompletion: ((error: unknown) => void) | undefined;
+  let handleOutputResize: (() => void) | undefined;
+  const completion = new Promise<void>((resolve, reject) => {
     resolveCompletion = resolve;
+    rejectCompletion = reject;
   });
   let restartQueue = Promise.resolve();
   const finish = () => {
     if (stopped) return;
     stopped = true;
+    if (handleOutputResize) {
+      output.off("resize", handleOutputResize);
+    }
     restartQueue = restartQueue.then(async () => {
       await active?.unmount();
       resolveCompletion?.();
@@ -389,44 +411,72 @@ export async function runPlayground(): Promise<void> {
   const restart = (next: PlaygroundRuntimeConfig) => {
     if (stopped) return;
     config = next;
-    restartQueue = restartQueue.then(async () => {
-      await Bun.sleep(0);
-      const previous = active;
-      active = undefined;
-      await previous?.unmount();
-      if (stopped) return;
-      const app = createPlaygroundApp(config, {
-        onExit: finish,
-        onResize: (width, height) =>
-          restart({
-            ...config,
-            width,
-            height,
-            terminal: { ...config.terminal, width, height },
-          }),
-        onThemeChange: (themeId) =>
-          restart({
-            ...config,
-            themeId,
-            terminal: { ...config.terminal, theme: themeId },
-          }),
-        onStoryChange: (storyId, variant) => {
-          config = { ...config, storyId, variant };
-        },
+    restartQueue = restartQueue
+      .then(async () => {
+        await Bun.sleep(0);
+        const previous = active;
+        active = undefined;
+        await previous?.unmount();
+        if (stopped) return;
+        const app = createPlaygroundApp(config, {
+          onExit: finish,
+          onResize: (width, height) =>
+            restart({
+              ...config,
+              width,
+              height,
+              terminal: { ...config.terminal, width, height },
+            }),
+          onThemeChange: (themeId) =>
+            restart({
+              ...config,
+              themeId,
+              terminal: { ...config.terminal, theme: themeId },
+            }),
+          onStoryChange: (storyId, variant) => {
+            config = { ...config, storyId, variant };
+          },
+        });
+        const instance = await renderApp(app, {
+          stdout: widthAwareOutput(config.width, output),
+        });
+        active = instance;
+        void instance.waitUntilExit().then(() => {
+          if (active === instance && !stopped) finish();
+        });
+      })
+      .catch((error: unknown) => {
+        if (stopped) return;
+        stopped = true;
+        if (handleOutputResize) {
+          output.off("resize", handleOutputResize);
+        }
+        rejectCompletion?.(error);
       });
-      const instance = await render(app, {
-        stdout: widthAwareOutput(config.width),
-      });
-      active = instance;
-      void instance.waitUntilExit().then(() => {
-        if (active === instance && !stopped) finish();
-      });
+  };
+  handleOutputResize = () => {
+    const width = output.columns ?? config.width;
+    const height = output.rows ?? config.height;
+    restart({
+      ...config,
+      width,
+      height,
+      terminal: { ...config.terminal, width, height },
     });
   };
-  restart(config);
-  await restartQueue;
-  await completion;
-  await restartQueue;
+  output.on("resize", handleOutputResize);
+  try {
+    restart(config);
+    await restartQueue;
+    await completion;
+    await restartQueue;
+  } finally {
+    output.off("resize", handleOutputResize);
+    if (!stopped) {
+      stopped = true;
+      await active?.unmount();
+    }
+  }
 }
 
 if (import.meta.main) {

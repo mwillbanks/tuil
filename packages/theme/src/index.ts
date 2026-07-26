@@ -182,24 +182,21 @@ export const defaultTheme: Theme = deepFreeze({
   components: {},
 } satisfies Theme);
 
+function isMergeableRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
 function mergeRecord<T extends object>(base: T, override?: Partial<T>): T {
   if (!override) {
     return base;
   }
   const result = { ...base } as Record<string, unknown>;
   for (const [key, value] of Object.entries(override)) {
+    if (value === undefined) continue;
     const current = result[key];
     result[key] =
-      value &&
-      typeof value === "object" &&
-      !Array.isArray(value) &&
-      current &&
-      typeof current === "object" &&
-      !Array.isArray(current)
-        ? mergeRecord(
-            current as Record<string, unknown>,
-            value as Record<string, unknown>,
-          )
+      isMergeableRecord(value) && isMergeableRecord(current)
+        ? mergeRecord(current, value)
         : value;
   }
   return result as T;

@@ -7,6 +7,10 @@ export interface StoryServerOptions {
   readonly port?: number;
 }
 
+export function storyServerMessage(url: URL): string {
+  return `tuil story bridge listening on ${url.toString()}\n`;
+}
+
 export function startStoryServer(
   options: StoryServerOptions = {},
 ): ReturnType<typeof Bun.serve> {
@@ -60,7 +64,5 @@ export function startStoryServer(
 
 if (import.meta.main) {
   const server = startStoryServer();
-  process.stdout.write(
-    `tuil story bridge listening on ${server.url.toString()}\n`,
-  );
+  process.stdout.write(storyServerMessage(server.url));
 }

@@ -319,6 +319,42 @@ describe("registry installer", () => {
     );
   });
 
+  test("reads and validates local registry items and indexes", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tuil-local-registry-"));
+    directories.push(root);
+    await writeFile(
+      join(root, "registry.json"),
+      JSON.stringify({ items: [{ name: "button", type: "component" }] }),
+    );
+    await writeFile(
+      join(root, "button.json"),
+      JSON.stringify({
+        name: "button",
+        type: "component",
+        files: [
+          {
+            path: "button.ts",
+            target: "button.ts",
+            content: "button\n",
+          },
+        ],
+      }),
+    );
+    await writeFile(
+      join(root, "invalid.json"),
+      JSON.stringify({
+        name: "invalid",
+        type: "component",
+        files: [{ path: "invalid.ts" }],
+      }),
+    );
+    const source = new FileRegistrySource("local", root);
+    expect((await source.get("button"))?.name).toBe("button");
+    expect(await source.get("missing")).toBeUndefined();
+    expect(await source.list()).toHaveLength(1);
+    await expect(source.get("invalid")).rejects.toThrow("inline every file");
+  });
+
   test("installs a registry item delivered over HTTP with inline content", async () => {
     const root = await mkdtemp(join(tmpdir(), "tuil-registry-"));
     directories.push(root);
@@ -355,5 +391,176 @@ describe("registry installer", () => {
     } finally {
       server.stop(true);
     }
+  });
+
+  test("normalizes HTTP indexes and reports malformed remote responses", async () => {
+    const server = Bun.serve({
+      port: 0,
+      fetch(request) {
+        const path = new URL(request.url).pathname;
+        if (path === "/good/registry.json") {
+          return Response.json({
+            items: [
+              { name: "button", type: "registry:tuil-ui" },
+              {
+                name: "workflow",
+                type: "registry:tuil-workflow",
+                title: "Workflow",
+                description: "Flows",
+              },
+            ],
+          });
+        }
+        if (path === "/array/registry.json") {
+          return Response.json([
+            { name: "field", type: "form", title: "Field" },
+          ]);
+        }
+        if (path === "/bad/registry.json") {
+          return Response.json({ items: "invalid" });
+        }
+        if (path === "/error/registry.json" || path === "/good/failure.json") {
+          return new Response("failed", { status: 500 });
+        }
+        if (path === "/good/invalid.json") {
+          return Response.json({
+            name: "invalid",
+            type: "component",
+            files: [{ path: "invalid.ts" }],
+          });
+        }
+        return new Response("not found", { status: 404 });
+      },
+    });
+    try {
+      const origin = `http://127.0.0.1:${server.port}`;
+      const good = new HttpRegistrySource("good", `${origin}/good/`);
+      expect(await good.list()).toEqual([
+        {
+          name: "button",
+          type: "component",
+          title: "button",
+          description: "",
+        },
+        {
+          name: "workflow",
+          type: "workflow",
+          title: "Workflow",
+          description: "Flows",
+        },
+      ]);
+      expect(
+        await new HttpRegistrySource("array", `${origin}/array`).list(),
+      ).toHaveLength(1);
+      expect(await good.get("missing")).toBeUndefined();
+      await expect(good.get("invalid")).rejects.toThrow("inline every file");
+      await expect(good.get("failure")).rejects.toThrow("returned 500");
+      await expect(
+        new HttpRegistrySource("bad", `${origin}/bad`).list(),
+      ).rejects.toThrow("index must be an array");
+      await expect(
+        new HttpRegistrySource("error", `${origin}/error`).list(),
+      ).rejects.toThrow("returned 500");
+    } finally {
+      server.stop(true);
+    }
+  });
+
+  test("combines registry sources, searches, and diagnoses dependency plans", async () => {
+    const entry = {
+      name: "button",
+      type: "component" as const,
+      title: "Button",
+      description: "Interactive control",
+    };
+    const successful: RegistrySource = {
+      id: "good",
+      async get(name) {
+        if (name === "missing") return undefined;
+        return parseRegistryItem({
+          name,
+          type: "component",
+          registryDependencies:
+            name === "cycle-a"
+              ? ["cycle-b"]
+              : name === "cycle-b"
+                ? ["cycle-a"]
+                : [],
+          files: [],
+        });
+      },
+      async list() {
+        return [entry];
+      },
+    };
+    const duplicate: RegistrySource = {
+      id: "duplicate",
+      async get() {
+        return undefined;
+      },
+      async list() {
+        return [entry, { ...entry, name: "field", title: "Field" }];
+      },
+    };
+    const failing: RegistrySource = {
+      id: "failing",
+      async get() {
+        throw new Error("get failed");
+      },
+      async list() {
+        throw new Error("list failed");
+      },
+    };
+    const client = new RegistryClient([failing, successful, duplicate]);
+    expect(await client.list()).toHaveLength(2);
+    expect((await client.search("interactive"))[0]?.name).toBe("button");
+    expect(await client.search("absent")).toEqual([]);
+    expect((await client.get("@good/button")).sourceId).toBe("good");
+    await expect(client.get("@unknown/button")).rejects.toThrow(
+      "was not found",
+    );
+    await expect(
+      new RegistryClient([successful]).resolvePlan(["cycle-a"]),
+    ).rejects.toThrow("dependency cycle");
+    expect(() => new RegistryClient([])).toThrow("at least one source");
+    await expect(new RegistryClient([failing]).list()).rejects.toThrow(
+      "Every registry source failed",
+    );
+  });
+
+  test("transforms installed sources and renders modified and missing diffs", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tuil-registry-transform-"));
+    directories.push(root);
+    const installer = new RegistryInstaller(root);
+    const transformed = parseRegistryItem({
+      name: "transform",
+      type: "component",
+      files: [
+        {
+          path: "component.ts",
+          target: "src/component.ts",
+          content:
+            'import "@/components/tuil/button";\nconst tone = "danger";\n',
+        },
+      ],
+    });
+    const options = {
+      importAliases: { button: "control" },
+      componentDirectory: "~/ui",
+      themeTokens: { danger: "critical" },
+      format: (content: string, target: string) =>
+        `${content}// formatted ${target}\n`,
+    };
+    await installer.install(transformed, options);
+    expect(await readFile(join(root, "src/component.ts"), "utf8")).toContain(
+      'import "~/ui/control"',
+    );
+    const modified = await installer.diff(item("export const value = 3;\n"));
+    expect(modified[0]).toMatchObject({ status: "missing" });
+    await writeFile(join(root, "src/component.ts"), "local\nsecond line\n");
+    const difference = await installer.diff(transformed, options);
+    expect(difference[0]?.status).toBe("modified");
+    expect(difference[0]?.diff).toContain("-local");
+    expect(difference[0]?.diff).toContain("+import");
   });
 });

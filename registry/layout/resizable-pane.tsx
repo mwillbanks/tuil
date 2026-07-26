@@ -2,7 +2,7 @@ import { useApp } from "@mwillbanks/tuil";
 import { useFocusable } from "@mwillbanks/tuil-focus";
 import {
   type CommonComponentProps,
-  useSemanticNode,
+  TerminalSemanticNode,
   useTerminalInput,
 } from "@mwillbanks/tuil-ink";
 import {
@@ -19,37 +19,6 @@ import {
   useMemo,
   useState,
 } from "react";
-
-function SemanticPaneNode(props: {
-  readonly id: string;
-  readonly role: "application" | "button";
-  readonly label: string;
-  readonly selected?: boolean;
-  readonly disabled?: boolean;
-  readonly valueText?: string;
-  readonly metadata?: CommonComponentProps;
-}): null {
-  useSemanticNode(
-    useMemo(
-      () => ({
-        key: props.id,
-        id: props.id,
-        testId: props.metadata?.testId,
-        role: props.metadata?.role ?? props.role,
-        label: props.metadata?.label ?? props.label,
-        description: props.metadata?.description,
-        selected: props.metadata?.selected ?? props.selected,
-        checked: props.metadata?.checked,
-        expanded: props.metadata?.expanded,
-        disabled: props.metadata?.disabled ?? props.disabled,
-        readOnly: props.metadata?.readOnly,
-        valueText: props.metadata?.valueText ?? props.valueText,
-      }),
-      [props],
-    ),
-  );
-  return null;
-}
 
 type ResizablePaneSlots = {
   root: BoxProps;
@@ -165,7 +134,7 @@ export function ResizablePane({
       height={direction === "vertical" ? current : undefined}
       {...resolveSlotProps(slotProps?.root, state, theme)}
     >
-      <SemanticPaneNode
+      <TerminalSemanticNode
         id={id}
         role="application"
         label={props.label ?? "Resizable pane"}
@@ -184,7 +153,7 @@ export function ResizablePane({
         bold={focused}
         {...resolveSlotProps(slotProps?.handle, state, theme)}
       >
-        <SemanticPaneNode
+        <TerminalSemanticNode
           id={`${id}:handle`}
           role="button"
           label={`Resize ${props.label ?? "pane"}`}

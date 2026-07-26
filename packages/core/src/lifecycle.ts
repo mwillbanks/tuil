@@ -1,3 +1,5 @@
+import { deleteOnDispose } from "./disposable.ts";
+
 export type AppLifecycleState =
   | "created"
   | "configuring"
@@ -18,10 +20,15 @@ const transitions: Record<AppLifecycleState, readonly AppLifecycleState[]> = {
 };
 
 export class Lifecycle {
-  #state: AppLifecycleState = "created";
-  readonly #observers = new Set<
+  #state: AppLifecycleState;
+  readonly #observers: Set<
     (state: AppLifecycleState, previous: AppLifecycleState) => void
-  >();
+  >;
+
+  constructor() {
+    this.#state = "created";
+    this.#observers = new Set();
+  }
 
   get state(): AppLifecycleState {
     return this.#state;
@@ -42,6 +49,6 @@ export class Lifecycle {
     observer: (state: AppLifecycleState, previous: AppLifecycleState) => void,
   ): () => void {
     this.#observers.add(observer);
-    return () => this.#observers.delete(observer);
+    return deleteOnDispose(this.#observers, observer);
   }
 }

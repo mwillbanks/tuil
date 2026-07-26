@@ -16,15 +16,23 @@ const requiredFiles = [
   "logo.svg",
 ];
 
+export function assertStaticDocs(
+  condition: unknown,
+  message: string,
+): asserts condition {
+  if (!condition) throw new Error(message);
+}
+
 function normalizeBasePath(value: string): string {
   if (!value || value === "/") return "";
   return value.replace(/\/+$/, "").replace(/^([^/])/, "/$1");
 }
 
 async function requireFile(path: string): Promise<void> {
-  if (!(await stat(path)).isFile()) {
-    throw new Error(`Expected static documentation file: ${path}`);
-  }
+  assertStaticDocs(
+    (await stat(path)).isFile(),
+    `Expected static documentation file: ${path}`,
+  );
 }
 
 function extractInternalTargets(home: string): string[] {
@@ -39,29 +47,28 @@ function validateHomeTargets(home: string, basePath: string): void {
     `${basePath}/docs/`,
     `${basePath}/logo.svg`,
   ]) {
-    if (!home.includes(`"${target}`)) {
-      throw new Error(
-        `Static home page is missing base-path target "${target}"`,
-      );
-    }
+    assertStaticDocs(
+      home.includes(`"${target}`),
+      `Static home page is missing base-path target "${target}"`,
+    );
   }
-  if (home.includes("/api/tuil-story")) {
-    throw new Error("Static documentation retained the live story endpoint");
-  }
+  assertStaticDocs(
+    !home.includes("/api/tuil-story"),
+    "Static documentation retained the live story endpoint",
+  );
 }
 
 function validateInternalTargets(
   internalTargets: readonly string[],
   basePath: string,
 ): void {
-  if (
-    basePath &&
-    internalTargets.some(
-      (target) => target !== basePath && !target.startsWith(`${basePath}/`),
-    )
-  ) {
-    throw new Error("Static documentation emitted a root-relative target");
-  }
+  assertStaticDocs(
+    !basePath ||
+      !internalTargets.some(
+        (target) => target !== basePath && !target.startsWith(`${basePath}/`),
+      ),
+    "Static documentation emitted a root-relative target",
+  );
 }
 
 async function validateStylesheet(
@@ -73,23 +80,26 @@ async function validateStylesheet(
     (target) =>
       target.includes("/_next/static/chunks/") && target.endsWith(".css"),
   );
-  if (!stylesheet) {
-    throw new Error("Static documentation did not emit a stylesheet");
-  }
+  assertStaticDocs(
+    stylesheet,
+    "Static documentation did not emit a stylesheet",
+  );
   const stylesheetPath = stylesheet.slice(basePath.length).replace(/^\//, "");
   const css = await readFile(join(outDirectory, stylesheetPath), "utf8");
-  if (!css.includes(".flex{display:flex}")) {
-    throw new Error("Tailwind utilities were not compiled into the docs CSS");
-  }
+  assertStaticDocs(
+    css.includes(".flex{display:flex}"),
+    "Tailwind utilities were not compiled into the docs CSS",
+  );
 }
 
 async function validateSearch(outDirectory: string): Promise<void> {
   const search = JSON.parse(
     await readFile(join(outDirectory, "api/search"), "utf8"),
   ) as unknown;
-  if (!JSON.stringify(search).includes("/docs")) {
-    throw new Error("Static documentation search index contains no docs");
-  }
+  assertStaticDocs(
+    JSON.stringify(search).includes("/docs"),
+    "Static documentation search index contains no docs",
+  );
 }
 
 async function validateLogo(
@@ -98,9 +108,10 @@ async function validateLogo(
 ): Promise<void> {
   const sourceLogo = await readFile(join(workspace, "logo.svg"), "utf8");
   const outputLogo = await readFile(join(outDirectory, "logo.svg"), "utf8");
-  if (outputLogo !== sourceLogo) {
-    throw new Error("Static documentation logo differs from logo.svg");
-  }
+  assertStaticDocs(
+    outputLogo === sourceLogo,
+    "Static documentation logo differs from logo.svg",
+  );
 }
 
 export async function validateStaticDocs(
@@ -124,6 +135,4 @@ export async function validateStaticDocs(
   await validateLogo(workspace, outDirectory);
 }
 
-if (import.meta.main) {
-  await validateStaticDocs();
-}
+await (import.meta.main ? validateStaticDocs() : undefined);

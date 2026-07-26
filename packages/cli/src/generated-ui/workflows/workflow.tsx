@@ -6,9 +6,12 @@ import {
   useHotkey,
 } from "@mwillbanks/tuil-hotkeys";
 import { useSemanticNode, useTerminalInput } from "@mwillbanks/tuil-ink";
-import type {
-  OperationSnapshot,
-  OperationStatus,
+import {
+  type OperationFeedback,
+  type OperationSnapshot,
+  type OperationStatus,
+  operationFeedbackDelays,
+  resolveOperationFeedback,
 } from "@mwillbanks/tuil-operations";
 import {
   resolveSlotProps,
@@ -25,6 +28,7 @@ import {
   createContext,
   createElement,
   type ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useId,
@@ -77,6 +81,49 @@ export interface WorkflowProps<TState>
   readonly children?: ReactNode;
 }
 
+function useWorkflowSnapshot<TState>(
+  workflow: WorkflowRunner<TState>,
+): WorkflowSnapshot<TState> {
+  const subscribe = useCallback(
+    (notify: () => void) => workflow.subscribe(notify),
+    [workflow],
+  );
+  const getSnapshot = useCallback(() => workflow.snapshot, [workflow]);
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+}
+
+async function reportWorkflowStartError(
+  app: ReturnType<typeof useApp>,
+  cause: unknown,
+  setStartError: (error: unknown) => void,
+): Promise<void> {
+  try {
+    await app.reportError(cause, "workflow-start");
+  } catch (reportError) {
+    setStartError(
+      new AggregateError(
+        [cause, reportError],
+        "Workflow startup and error reporting failed",
+      ),
+    );
+  }
+}
+
+function useWorkflowStart<TState>(
+  workflow: WorkflowRunner<TState>,
+  autoStart: boolean,
+): unknown {
+  const app = useApp();
+  const [startError, setStartError] = useState<unknown>();
+  useEffect(() => {
+    if (!autoStart || workflow.snapshot.status !== "idle") return;
+    void workflow
+      .start()
+      .catch((cause) => reportWorkflowStartError(app, cause, setStartError));
+  }, [app, autoStart, workflow]);
+  return startError;
+}
+
 function WorkflowRoot<TState>({
   id: providedId,
   workflow,
@@ -85,36 +132,11 @@ function WorkflowRoot<TState>({
   slots,
   slotProps,
 }: WorkflowProps<TState>): ReactNode {
-  const app = useApp();
   const theme = useTheme();
   const generated = useId();
   const id = providedId ?? generated;
-  const snapshot = useSyncExternalStore(
-    (notify) => workflow.subscribe(notify),
-    () => workflow.snapshot,
-    () => workflow.snapshot,
-  );
-  const [startError, setStartError] = useState<unknown>();
-  useEffect(() => {
-    if (autoStart && workflow.snapshot.status === "idle") {
-      void (async () => {
-        try {
-          await workflow.start();
-        } catch (cause) {
-          try {
-            await app.reportError(cause, "workflow-start");
-          } catch (reportError) {
-            setStartError(
-              new AggregateError(
-                [cause, reportError],
-                "Workflow startup and error reporting failed",
-              ),
-            );
-          }
-        }
-      })();
-    }
-  }, [app, autoStart, workflow]);
+  const snapshot = useWorkflowSnapshot(workflow);
+  const startError = useWorkflowStart(workflow, autoStart);
   if (startError) throw startError;
   useSemanticNode(
     useMemo(
@@ -391,10 +413,110 @@ const statusMarkers: Readonly<Record<OperationStatus, string>> = {
   skipped: "-",
 };
 
-function duration(operation: OperationSnapshot): string | undefined {
+function duration(
+  operation: OperationSnapshot,
+  now: number,
+): string | undefined {
   if (!operation.startedAt) return undefined;
-  const end = operation.completedAt ?? Date.now();
+  const end = operation.completedAt ?? now;
   return `${Math.max(0, end - operation.startedAt)}ms`;
+}
+
+function useOperationNow(
+  operations: readonly OperationSnapshot[],
+  fixedNow?: number,
+): number {
+  const [now, setNow] = useState(() => fixedNow ?? Date.now());
+  useEffect(() => {
+    if (fixedNow !== undefined) return;
+    const current = Date.now();
+    const deadlines: number[] = [];
+    const collect = (items: readonly OperationSnapshot[]) => {
+      for (const operation of items) {
+        if (
+          operation.startedAt &&
+          ["queued", "running", "waiting", "retrying"].includes(
+            operation.status,
+          )
+        ) {
+          deadlines.push(
+            operation.startedAt + operationFeedbackDelays.loading,
+            operation.startedAt + operationFeedbackDelays.stalled,
+          );
+          const stalledAt =
+            operation.startedAt + operationFeedbackDelays.stalled;
+          if (current >= stalledAt) {
+            const elapsed = current - operation.startedAt;
+            deadlines.push(
+              operation.startedAt + (Math.floor(elapsed / 1_000) + 1) * 1_000,
+            );
+          }
+        }
+        collect(operation.children);
+      }
+    };
+    collect(operations);
+    if (deadlines.some((deadline) => deadline > now && deadline <= current)) {
+      setNow(current);
+      return;
+    }
+    const deadline = deadlines
+      .filter((candidate) => candidate > current)
+      .sort((left, right) => left - right)[0];
+    if (deadline === undefined) return;
+    const timer = setTimeout(
+      () => setNow(Date.now()),
+      Math.max(0, deadline - current),
+    );
+    return () => clearTimeout(timer);
+  }, [fixedNow, now, operations]);
+  return fixedNow ?? now;
+}
+
+function operationFeedbackText(
+  feedback: OperationFeedback,
+  pendingIcon: string,
+): string | undefined {
+  switch (feedback.phase) {
+    case "activity":
+      return "Active";
+    case "determinate":
+      return `${feedback.current}/${feedback.total} (${feedback.percent}%)${
+        feedback.message ? ` ${feedback.message}` : ""
+      }`;
+    case "indeterminate":
+      return `${pendingIcon} ${feedback.message ?? "Working"}…`;
+    case "status":
+      return `${feedback.message ?? "Still working"} (${Math.floor(
+        feedback.elapsed / 1_000,
+      )}s)`;
+    default:
+      return undefined;
+  }
+}
+
+function operationStatusMarker(
+  status: OperationStatus,
+  feedback: OperationFeedback,
+): string {
+  if (
+    ["queued", "running", "waiting", "retrying"].includes(status) &&
+    feedback.phase === "none"
+  ) {
+    return " ";
+  }
+  if (feedback.phase === "activity") return "·";
+  return statusMarkers[status];
+}
+
+function operationExpansionMarker(
+  hasChildren: boolean,
+  expanded: boolean,
+  unicode: boolean,
+): string {
+  if (!hasChildren) return "  ";
+  if (expanded) return unicode ? "▾ " : "- ";
+  return unicode ? "▸ " : "+ ";
 }
 
 function OperationSemantic(props: {
@@ -435,6 +557,7 @@ export interface OperationListProps
   readonly showDuration?: boolean;
   readonly showAttempts?: boolean;
   readonly showProgress?: boolean;
+  readonly now?: number;
 }
 
 export function OperationList({
@@ -444,10 +567,12 @@ export function OperationList({
   showDuration = false,
   showAttempts = false,
   showProgress = true,
+  now: fixedNow,
   slots,
   slotProps,
 }: OperationListProps): ReactNode {
   const theme = useTheme();
+  const now = useOperationNow(operations, fixedNow);
   useSemanticNode(
     useMemo(
       () => ({
@@ -472,6 +597,12 @@ export function OperationList({
     >
       {operations.map((operation, index) => {
         const operationKey = `${id}:${index}:${operation.id}`;
+        const feedback = resolveOperationFeedback(operation, now);
+        const feedbackText = operationFeedbackText(
+          feedback,
+          theme.icons.pending,
+        );
+        const marker = operationStatusMarker(operation.status, feedback);
         return (
           <Item
             key={operationKey}
@@ -484,24 +615,20 @@ export function OperationList({
                 tree={false}
                 prefix={operationKey}
               />
-              [{statusMarkers[operation.status]}] {operation.title}
+              [{marker}] {operation.title}
               {showAttempts && operation.attempt > 0
                 ? ` (attempt ${operation.attempt})`
                 : ""}
-              {showDuration && duration(operation)
-                ? ` ${duration(operation)}`
+              {showDuration && duration(operation, now)
+                ? ` ${duration(operation, now)}`
                 : ""}
             </Title>
-            {showProgress && operation.progress ? (
+            {showProgress && feedbackText ? (
               <Metadata
                 dimColor
                 {...resolveSlotProps(slotProps?.metadata, state, theme)}
               >
-                {operation.progress.current}
-                {operation.progress.total ? `/${operation.progress.total}` : ""}
-                {operation.progress.message
-                  ? ` ${operation.progress.message}`
-                  : ""}
+                {feedbackText}
               </Metadata>
             ) : null}
             {operation.error ? (
@@ -518,6 +645,7 @@ export function OperationList({
                   showDuration={showDuration}
                   showAttempts={showAttempts}
                   showProgress={showProgress}
+                  now={now}
                 />
               </Box>
             ) : null}
@@ -556,6 +684,7 @@ export function OperationTree({
 }: OperationTreeProps): ReactNode {
   const app = useApp();
   const theme = useTheme();
+  const now = useOperationNow(operations, props.now);
   const [internalExpanded, setInternalExpanded] = useState(
     () => new Set(defaultExpanded),
   );
@@ -699,6 +828,12 @@ export function OperationTree({
         const isExpanded =
           resolvedExpanded.has(row.key) ||
           resolvedExpanded.has(row.operation.id);
+        const feedback = resolveOperationFeedback(row.operation, now);
+        const feedbackText = operationFeedbackText(
+          feedback,
+          theme.icons.pending,
+        );
+        const marker = operationStatusMarker(row.operation.status, feedback);
         return (
           <Item
             key={row.key}
@@ -719,35 +854,25 @@ export function OperationTree({
                 prefix={`${id}:${row.key}`}
               />
               {focused && index === active ? "> " : "  "}
-              {row.operation.children.length > 0
-                ? isExpanded
-                  ? app.capabilities.unicode
-                    ? "▾ "
-                    : "- "
-                  : app.capabilities.unicode
-                    ? "▸ "
-                    : "+ "
-                : "  "}
-              [{statusMarkers[row.operation.status]}] {row.operation.title}
+              {operationExpansionMarker(
+                row.operation.children.length > 0,
+                isExpanded,
+                app.capabilities.unicode,
+              )}
+              [{marker}] {row.operation.title}
               {props.showAttempts && row.operation.attempt > 0
                 ? ` (attempt ${row.operation.attempt})`
                 : ""}
-              {props.showDuration && duration(row.operation)
-                ? ` ${duration(row.operation)}`
+              {props.showDuration && duration(row.operation, now)
+                ? ` ${duration(row.operation, now)}`
                 : ""}
             </Title>
-            {props.showProgress !== false && row.operation.progress ? (
+            {props.showProgress !== false && feedbackText ? (
               <Metadata
                 dimColor
                 {...resolveSlotProps(slotProps?.metadata, state, theme)}
               >
-                {row.operation.progress.current}
-                {row.operation.progress.total
-                  ? `/${row.operation.progress.total}`
-                  : ""}
-                {row.operation.progress.message
-                  ? ` ${row.operation.progress.message}`
-                  : ""}
+                {feedbackText}
               </Metadata>
             ) : null}
           </Item>

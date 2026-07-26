@@ -18,6 +18,7 @@ import {
 } from "@mwillbanks/tuil-workflow";
 import {
   type ReactNode,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -126,15 +127,25 @@ export function InitWizard(props: InitWizardProps): ReactNode {
       }),
     );
   }, []);
-  const workflowSnapshot = useSyncExternalStore(
-    (notify) => workflow.subscribe(notify),
-    () => workflow.snapshot,
-    () => workflow.snapshot,
+  const subscribeWorkflow = useCallback(
+    (notify: () => void) => workflow.subscribe(notify),
+    [workflow],
   );
+  const getWorkflowSnapshot = useCallback(() => workflow.snapshot, [workflow]);
+  const workflowSnapshot = useSyncExternalStore(
+    subscribeWorkflow,
+    getWorkflowSnapshot,
+    getWorkflowSnapshot,
+  );
+  const subscribeRouter = useCallback(
+    (notify: () => void) => router.subscribe(notify),
+    [router],
+  );
+  const getRouterState = useCallback(() => router.state, [router]);
   const routerState = useSyncExternalStore(
-    (notify) => router.subscribe(notify),
-    () => router.state,
-    () => router.state,
+    subscribeRouter,
+    getRouterState,
+    getRouterState,
   );
   const stage = workflowSnapshot.currentStep ?? "name";
   const run = async (work: Promise<unknown>) => {

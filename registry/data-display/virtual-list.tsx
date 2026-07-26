@@ -2,7 +2,7 @@ import { useApp } from "@mwillbanks/tuil";
 import { useFocusable } from "@mwillbanks/tuil-focus";
 import {
   type CommonComponentProps,
-  useSemanticNode,
+  TerminalSemanticNode as SemanticNode,
   useTerminalInput,
 } from "@mwillbanks/tuil-ink";
 import {
@@ -23,48 +23,6 @@ import {
   useMemo,
   useState,
 } from "react";
-
-function SemanticNode(props: {
-  readonly id: string;
-  readonly role:
-    | "table"
-    | "row"
-    | "cell"
-    | "listbox"
-    | "option"
-    | "tree"
-    | "treeitem"
-    | "status"
-    | "button";
-  readonly label: string;
-  readonly description?: string;
-  readonly selected?: boolean;
-  readonly expanded?: boolean;
-  readonly disabled?: boolean;
-  readonly valueText?: string;
-  readonly metadata?: CommonComponentProps;
-}): null {
-  useSemanticNode(
-    useMemo(
-      () => ({
-        key: props.id,
-        id: props.id,
-        testId: props.metadata?.testId,
-        role: props.metadata?.role ?? props.role,
-        label: props.metadata?.label ?? props.label,
-        description: props.metadata?.description ?? props.description,
-        selected: props.metadata?.selected ?? props.selected,
-        checked: props.metadata?.checked,
-        expanded: props.metadata?.expanded ?? props.expanded,
-        disabled: props.metadata?.disabled ?? props.disabled,
-        readOnly: props.metadata?.readOnly,
-        valueText: props.metadata?.valueText ?? props.valueText,
-      }),
-      [props],
-    ),
-  );
-  return null;
-}
 
 type VirtualListSlots = {
   root: BoxProps;

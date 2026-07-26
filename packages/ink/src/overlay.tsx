@@ -1,19 +1,25 @@
+import { deleteOnDispose } from "@mwillbanks/tuil-core";
 import { FocusTrap } from "@mwillbanks/tuil-focus";
-import { HotkeyLayer, useHotkey } from "@mwillbanks/tuil-hotkeys";
+import { HotkeyLayer } from "@mwillbanks/tuil-hotkeys";
 import {
   createContext,
   type ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
-  useSyncExternalStore,
 } from "react";
 import { TerminalInputLayer, useTerminalInput } from "./input.ts";
+import { useOptionalExternalStore } from "./semantics.ts";
 
 interface OverlaySnapshot {
   readonly ids: readonly string[];
   readonly topId?: string;
 }
+
+const emptyOverlaySnapshot: OverlaySnapshot = Object.freeze({
+  ids: Object.freeze([]),
+});
 
 interface OverlayEntry {
   readonly id: string;
@@ -22,10 +28,17 @@ interface OverlayEntry {
 }
 
 class OverlayManager {
-  readonly #entries = new Map<string, OverlayEntry>();
-  readonly #observers = new Set<() => void>();
-  #snapshot: OverlaySnapshot = Object.freeze({ ids: [] });
-  #sequence = 0;
+  readonly #entries: Map<string, OverlayEntry>;
+  readonly #observers: Set<() => void>;
+  #snapshot: OverlaySnapshot;
+  #sequence: number;
+
+  constructor() {
+    this.#entries = new Map();
+    this.#observers = new Set();
+    this.#snapshot = Object.freeze({ ids: [] });
+    this.#sequence = 0;
+  }
 
   register(id: string, parentId?: string): () => void {
     if (this.#entries.has(id)) {
@@ -38,19 +51,20 @@ class OverlayManager {
     });
     this.#sequence += 1;
     this.#update();
-    return () => {
-      this.#entries.delete(id);
-      this.#update();
-    };
+    return deleteOnDispose(this.#entries, id, this.#update.bind(this));
   }
 
   subscribe(observer: () => void): () => void {
     this.#observers.add(observer);
-    return () => this.#observers.delete(observer);
+    return deleteOnDispose(this.#observers, observer);
   }
 
   snapshot(): OverlaySnapshot {
     return this.#snapshot;
+  }
+
+  topId(): string | undefined {
+    return this.#snapshot.topId;
   }
 
   #update(): void {
@@ -105,19 +119,16 @@ export interface OverlayStatus {
 
 export function useOverlayStatus(): OverlayStatus {
   const manager = useContext(OverlayContext);
+  const getTopId = useCallback(() => manager?.topId(), [manager]);
+  const snapshot = useOptionalExternalStore(manager, emptyOverlaySnapshot);
   if (!manager) {
     throw new Error("useOverlayStatus must be used inside OverlayProvider");
   }
-  const snapshot = useSyncExternalStore(
-    (notify) => manager.subscribe(notify),
-    () => manager.snapshot(),
-    () => manager.snapshot(),
-  );
   return {
     active: snapshot.ids.length > 0,
     count: snapshot.ids.length,
     topId: snapshot.topId,
-    getTopId: () => manager.snapshot().topId,
+    getTopId,
   };
 }
 
@@ -173,13 +184,6 @@ export function Overlay({
       layerId: id,
     },
   );
-  useHotkey("escape", () => onDismiss?.(), {
-    scope: "overlay",
-    scopeId: id,
-    priority: 10_000,
-    enabled: () => open && dismissOnEscape && manager.snapshot().topId === id,
-    title: "Dismiss overlay",
-  });
   if (!open) return null;
   return (
     <FocusTrap id={`overlay:${id}`} active>

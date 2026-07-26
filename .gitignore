@@ -1,7 +1,7 @@
 node_modules
 dist
 dist-storybook
-coverage
+/coverage/
 *.tsbuildinfo
 .tuil
 .next

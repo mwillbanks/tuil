@@ -49,7 +49,7 @@ export class TuilUser {
   async press(keys: string): Promise<void> {
     await this.ready;
     this.write(keySequences[keys] ?? keys);
-    await Bun.sleep(10);
+    await Bun.sleep(25);
   }
 
   async type(value: string): Promise<void> {
@@ -58,7 +58,7 @@ export class TuilUser {
       this.write(character);
       await Bun.sleep(0);
     }
-    await Bun.sleep(10);
+    await Bun.sleep(25);
   }
 }
 
@@ -134,6 +134,14 @@ export function renderTuil(
   const instance = renderInk(
     createRuntimeElement(app, registry, markRendered) as ReactElement,
   );
+  Object.defineProperty(instance.stdout, "columns", {
+    configurable: true,
+    value: app.capabilities.width,
+  });
+  instance.stdout.emit("resize", {
+    width: app.capabilities.width,
+    height: app.capabilities.height,
+  });
   const ready = Promise.all([runtimeReady, rendered]).then(() => undefined);
   let readyFailure: unknown;
   void ready.catch((error: unknown) => {

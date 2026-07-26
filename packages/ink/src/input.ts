@@ -1,3 +1,4 @@
+import { deleteOnDispose } from "@mwillbanks/tuil-core";
 import type { Key } from "ink";
 import {
   createContext,
@@ -21,8 +22,13 @@ interface TerminalInputRegistration {
 }
 
 export class TerminalInputRouter {
-  readonly #registrations = new Map<number, TerminalInputRegistration>();
-  #nextId = 0;
+  readonly #registrations: Map<number, TerminalInputRegistration>;
+  #nextId: number;
+
+  constructor() {
+    this.#registrations = new Map();
+    this.#nextId = 0;
+  }
 
   register(
     handler: TerminalInputHandler,
@@ -32,7 +38,7 @@ export class TerminalInputRouter {
     const id = this.#nextId;
     this.#nextId += 1;
     this.#registrations.set(id, { id, priority, layerId, handler });
-    return () => this.#registrations.delete(id);
+    return deleteOnDispose(this.#registrations, id);
   }
 
   async dispatch(

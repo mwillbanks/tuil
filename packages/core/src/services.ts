@@ -33,10 +33,17 @@ interface ServiceRecord {
 }
 
 export class ServiceContainer implements Disposable {
-  readonly #records = new Map<string, ServiceRecord>();
-  readonly #order: string[] = [];
-  readonly #controller = new AbortController();
-  #disposed = false;
+  readonly #records: Map<string, ServiceRecord>;
+  readonly #order: string[];
+  readonly #controller: AbortController;
+  #disposed: boolean;
+
+  constructor() {
+    this.#records = new Map();
+    this.#order = [];
+    this.#controller = new AbortController();
+    this.#disposed = false;
+  }
 
   register<TId extends string, TValue>(
     definition: ServiceDefinition<TId, TValue>,
@@ -59,9 +66,9 @@ export class ServiceContainer implements Disposable {
         : {
             definition: {
               create: definitionOrId.create,
-              dispose: definitionOrId.dispose
-                ? (created) => definitionOrId.dispose?.(created as TValue)
-                : undefined,
+              dispose: definitionOrId.dispose as
+                | ((created: unknown) => void | Promise<void>)
+                | undefined,
             },
             status: "registered",
           },
