@@ -15,31 +15,61 @@ export type PluginCapability =
   | "terminal.clipboard"
   | "state.persist";
 
-export interface ExtensionRegistry {
-  register(value: unknown): Disposable | Disposer | undefined;
+export interface ExtensionRegistry<TValue = unknown> {
+  register(value: TValue): Disposable;
+  values(): readonly TValue[];
+  observe(observer: () => void): Disposer;
 }
 
-export interface PluginContext<TEvents extends EventMap = EventMap> {
+export interface DefaultExtensionPoints {
+  routes: unknown;
+  registry: unknown;
+  workflows: unknown;
+  theme: unknown;
+  statusBar: unknown;
+  appBar: unknown;
+  menus: unknown;
+  keybindings: unknown;
+  dataAdapters: unknown;
+  persistenceAdapters: unknown;
+  operationExecutors: unknown;
+  devtools: unknown;
+  readonly [key: string]: unknown;
+}
+
+export type ExtensionPointMap = DefaultExtensionPoints;
+
+export interface PluginContext<
+  TEvents extends EventMap = EventMap,
+  TExtensions extends ExtensionPointMap = DefaultExtensionPoints,
+> {
   readonly services: ServiceContainer;
   readonly commands: CommandRegistry;
   readonly events: EventBus<TEvents>;
-  readonly routes: ExtensionRegistry;
-  readonly registry: ExtensionRegistry;
-  readonly workflows: ExtensionRegistry;
-  readonly theme: ExtensionRegistry;
-  readonly statusBar: ExtensionRegistry;
-  readonly appBar: ExtensionRegistry;
-  readonly menus: ExtensionRegistry;
-  readonly keybindings: ExtensionRegistry;
-  readonly dataAdapters: ExtensionRegistry;
-  readonly persistenceAdapters: ExtensionRegistry;
-  readonly operationExecutors: ExtensionRegistry;
-  readonly devtools: ExtensionRegistry;
+  readonly routes: ExtensionRegistry<TExtensions["routes"]>;
+  readonly registry: ExtensionRegistry<TExtensions["registry"]>;
+  readonly workflows: ExtensionRegistry<TExtensions["workflows"]>;
+  readonly theme: ExtensionRegistry<TExtensions["theme"]>;
+  readonly statusBar: ExtensionRegistry<TExtensions["statusBar"]>;
+  readonly appBar: ExtensionRegistry<TExtensions["appBar"]>;
+  readonly menus: ExtensionRegistry<TExtensions["menus"]>;
+  readonly keybindings: ExtensionRegistry<TExtensions["keybindings"]>;
+  readonly dataAdapters: ExtensionRegistry<TExtensions["dataAdapters"]>;
+  readonly persistenceAdapters: ExtensionRegistry<
+    TExtensions["persistenceAdapters"]
+  >;
+  readonly operationExecutors: ExtensionRegistry<
+    TExtensions["operationExecutors"]
+  >;
+  readonly devtools: ExtensionRegistry<TExtensions["devtools"]>;
   readonly capabilities: ReadonlySet<PluginCapability>;
   readonly signal: AbortSignal;
 }
 
-export interface Plugin<TEvents extends EventMap = EventMap> {
+export interface Plugin<
+  TEvents extends EventMap = EventMap,
+  TExtensions extends ExtensionPointMap = DefaultExtensionPoints,
+> {
   readonly id: string;
   readonly version: string;
   readonly dependsOn?: readonly string[];
@@ -47,7 +77,7 @@ export interface Plugin<TEvents extends EventMap = EventMap> {
     readonly capabilities?: readonly PluginCapability[];
   };
   readonly setup: (
-    context: PluginContext<TEvents>,
+    context: PluginContext<TEvents, TExtensions>,
   ) =>
     | undefined
     | Disposable
@@ -55,8 +85,11 @@ export interface Plugin<TEvents extends EventMap = EventMap> {
     | Promise<undefined | Disposable | Disposer>;
 }
 
-export interface PluginRegistryEntry<TEvents extends EventMap = EventMap> {
-  readonly plugin: Plugin<TEvents>;
+export interface PluginRegistryEntry<
+  TEvents extends EventMap = EventMap,
+  TExtensions extends ExtensionPointMap = DefaultExtensionPoints,
+> {
+  readonly plugin: Plugin<TEvents, TExtensions>;
   readonly description?: string;
   readonly tags?: readonly string[];
 }
@@ -70,10 +103,16 @@ export interface PluginRegistryQuery {
  * Host-owned catalog for discovering plugins before they enter a PluginManager.
  * Resolution validates and orders the complete dependency graph.
  */
-export class PluginRegistry<TEvents extends EventMap = EventMap> {
-  readonly #entries = new Map<string, PluginRegistryEntry<TEvents>>();
+export class PluginRegistry<
+  TEvents extends EventMap = EventMap,
+  TExtensions extends ExtensionPointMap = DefaultExtensionPoints,
+> {
+  readonly #entries = new Map<
+    string,
+    PluginRegistryEntry<TEvents, TExtensions>
+  >();
 
-  register(entry: PluginRegistryEntry<TEvents>): Disposable {
+  register(entry: PluginRegistryEntry<TEvents, TExtensions>): Disposable {
     const { plugin } = entry;
     if (this.#entries.has(plugin.id)) {
       throw new Error(`Plugin "${plugin.id}" is already in the registry`);
@@ -92,13 +131,13 @@ export class PluginRegistry<TEvents extends EventMap = EventMap> {
     };
   }
 
-  get(id: string): PluginRegistryEntry<TEvents> | undefined {
+  get(id: string): PluginRegistryEntry<TEvents, TExtensions> | undefined {
     return this.#entries.get(id);
   }
 
   list(
     query: PluginRegistryQuery = {},
-  ): readonly PluginRegistryEntry<TEvents>[] {
+  ): readonly PluginRegistryEntry<TEvents, TExtensions>[] {
     return [...this.#entries.values()]
       .filter(
         (entry) =>
@@ -109,10 +148,10 @@ export class PluginRegistry<TEvents extends EventMap = EventMap> {
       .sort((left, right) => left.plugin.id.localeCompare(right.plugin.id));
   }
 
-  resolve(ids: readonly string[]): readonly Plugin<TEvents>[] {
+  resolve(ids: readonly string[]): readonly Plugin<TEvents, TExtensions>[] {
     const permanent = new Set<string>();
     const temporary = new Set<string>();
-    const resolved: Plugin<TEvents>[] = [];
+    const resolved: Plugin<TEvents, TExtensions>[] = [];
     const visit = (id: string, path: readonly string[]): void => {
       if (permanent.has(id)) return;
       if (temporary.has(id)) {
@@ -154,9 +193,10 @@ export interface PluginHealth {
   readonly error?: unknown;
 }
 
-export function createPlugin<TEvents extends EventMap = EventMap>(
-  plugin: Plugin<TEvents>,
-): Plugin<TEvents> {
+export function createPlugin<
+  TEvents extends EventMap = EventMap,
+  TExtensions extends ExtensionPointMap = DefaultExtensionPoints,
+>(plugin: Plugin<TEvents, TExtensions>): Plugin<TEvents, TExtensions> {
   if (!plugin.id.trim()) {
     throw new Error("Plugin id cannot be empty");
   }
@@ -166,29 +206,39 @@ export function createPlugin<TEvents extends EventMap = EventMap>(
   return Object.freeze(plugin);
 }
 
-interface PluginRecord<TEvents extends EventMap> {
-  readonly plugin: Plugin<TEvents>;
+interface PluginRecord<
+  TEvents extends EventMap,
+  TExtensions extends ExtensionPointMap,
+> {
+  readonly plugin: Plugin<TEvents, TExtensions>;
   status: PluginHealth["status"];
   error?: unknown;
   dispose?: Disposer;
 }
 
-export class PluginManager<TEvents extends EventMap = EventMap> {
-  readonly #records = new Map<string, PluginRecord<TEvents>>();
+export class PluginManager<
+  TEvents extends EventMap = EventMap,
+  TExtensions extends ExtensionPointMap = DefaultExtensionPoints,
+> {
+  readonly #records = new Map<string, PluginRecord<TEvents, TExtensions>>();
   readonly #initialized: string[] = [];
-  readonly #context: Omit<PluginContext<TEvents>, "signal">;
+  readonly #context: Omit<PluginContext<TEvents, TExtensions>, "signal">;
   readonly #controller = new AbortController();
+  #disposed = false;
+  #disposePromise?: Promise<void>;
 
-  constructor(context: Omit<PluginContext<TEvents>, "signal">) {
+  constructor(context: Omit<PluginContext<TEvents, TExtensions>, "signal">) {
     this.#context = context;
   }
 
-  register(plugin: Plugin<TEvents>): () => void {
+  register(plugin: Plugin<TEvents, TExtensions>): () => void {
+    this.#assertActive();
     if (this.#records.has(plugin.id)) {
       throw new Error(`Plugin "${plugin.id}" is already registered`);
     }
     this.#records.set(plugin.id, { plugin, status: "registered" });
     return () => {
+      this.#assertActive();
       const record = this.#records.get(plugin.id);
       if (record?.status === "healthy" || record?.status === "initializing") {
         throw new Error(`Cannot unregister active plugin "${plugin.id}"`);
@@ -209,6 +259,7 @@ export class PluginManager<TEvents extends EventMap = EventMap> {
   }
 
   async initialize(): Promise<void> {
+    this.#assertActive();
     const order = this.#resolveOrder();
     try {
       for (const id of order) {
@@ -250,6 +301,12 @@ export class PluginManager<TEvents extends EventMap = EventMap> {
   }
 
   async dispose(): Promise<void> {
+    this.#disposePromise ??= this.#performDispose();
+    await this.#disposePromise;
+  }
+
+  async #performDispose(): Promise<void> {
+    this.#disposed = true;
     this.#controller.abort(new Error("Plugin manager disposed"));
     const errors: unknown[] = [];
     for (const id of [...this.#initialized].reverse()) {
@@ -265,8 +322,17 @@ export class PluginManager<TEvents extends EventMap = EventMap> {
       }
     }
     this.#initialized.length = 0;
+    for (const record of this.#records.values()) {
+      if (record.status !== "failed") record.status = "disposed";
+    }
     if (errors.length > 0) {
       throw new AggregateError(errors, "Failed to dispose plugins");
+    }
+  }
+
+  #assertActive(): void {
+    if (this.#disposed) {
+      throw new Error("Plugin manager is disposed");
     }
   }
 

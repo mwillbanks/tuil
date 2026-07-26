@@ -7,8 +7,10 @@ import {
   createContext,
   createElement,
   type ReactNode,
+  useCallback,
   useContext,
   useMemo,
+  useSyncExternalStore,
 } from "react";
 
 export type ColorScheme = "light" | "dark" | "auto";
@@ -69,11 +71,13 @@ export interface Theme {
   readonly components: Readonly<Record<string, ComponentTheme>>;
 }
 
-export type ThemeInput = Partial<{
-  [TKey in keyof Theme]: Theme[TKey] extends object
-    ? Partial<Theme[TKey]>
-    : Theme[TKey];
-}>;
+type DeepPartial<T> = T extends readonly unknown[]
+  ? T
+  : T extends object
+    ? { readonly [TKey in keyof T]?: DeepPartial<T[TKey]> }
+    : T;
+
+export type ThemeInput = DeepPartial<Theme>;
 
 export interface ThemeRegistryEntry {
   readonly theme: Theme;
@@ -416,9 +420,54 @@ export function resolveComponentProps(
 
 export type ThemeFactory = (base: Theme) => Theme;
 
+export class ThemeController {
+  readonly #capabilities: TerminalCapabilities;
+  readonly #observers = new Set<() => void>();
+  #theme: Theme;
+
+  constructor(theme: Theme, capabilities: TerminalCapabilities) {
+    this.#capabilities = capabilities;
+    this.#theme = normalizeTheme(theme, capabilities);
+  }
+
+  get(): Theme {
+    return this.#theme;
+  }
+
+  set(theme: Theme | ThemeFactory): Theme {
+    const selected = typeof theme === "function" ? theme(this.#theme) : theme;
+    const next = normalizeTheme(selected, this.#capabilities);
+    if (next === this.#theme) return next;
+    this.#theme = next;
+    for (const observer of this.#observers) observer();
+    return next;
+  }
+
+  observe(observer: () => void): () => void {
+    this.#observers.add(observer);
+    return () => this.#observers.delete(observer);
+  }
+}
+
 const ThemeContext = createContext<Theme>(defaultTheme);
 
-export function ThemeProvider(props: {
+function ControlledThemeProvider(props: {
+  readonly controller: ThemeController;
+  readonly children?: ReactNode;
+}): ReactNode {
+  const subscribe = useCallback(
+    (observer: () => void) => props.controller.observe(observer),
+    [props.controller],
+  );
+  const getSnapshot = useCallback(
+    () => props.controller.get(),
+    [props.controller],
+  );
+  const value = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  return createElement(ThemeContext.Provider, { value }, props.children);
+}
+
+function StaticThemeProvider(props: {
   readonly theme: Theme | ThemeFactory;
   readonly children?: ReactNode;
 }): ReactNode {
@@ -429,6 +478,23 @@ export function ThemeProvider(props: {
     [parent, props.theme],
   );
   return createElement(ThemeContext.Provider, { value }, props.children);
+}
+
+export function ThemeProvider(props: {
+  readonly theme: Theme | ThemeFactory | ThemeController;
+  readonly children?: ReactNode;
+}): ReactNode {
+  return props.theme instanceof ThemeController
+    ? createElement(
+        ControlledThemeProvider,
+        { controller: props.theme },
+        props.children,
+      )
+    : createElement(
+        StaticThemeProvider,
+        { theme: props.theme },
+        props.children,
+      );
 }
 
 export function useTheme(): Theme {

@@ -1013,7 +1013,7 @@ async function installRegistryDependencies(
     }
     await restoreFiles(snapshots);
   };
-  const install = Bun.spawn(["bun", "add", ...dependencies], {
+  const install = Bun.spawn(["bun", "add", "--", ...dependencies], {
     cwd: root,
     stdout: quiet ? "ignore" : "inherit",
     stderr: quiet ? "ignore" : "inherit",

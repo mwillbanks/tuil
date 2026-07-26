@@ -22,6 +22,7 @@ import { FocusManager } from "@mwillbanks/tuil-focus";
 import { HotkeyManager } from "@mwillbanks/tuil-hotkeys";
 import {
   createPlugin,
+  type ExtensionPointMap,
   type ExtensionRegistry,
   type Plugin,
   type PluginCapability,
@@ -32,6 +33,7 @@ import {
   defaultTheme,
   normalizeTheme,
   type Theme,
+  ThemeController,
   type ThemeFactory,
 } from "@mwillbanks/tuil-theme";
 import {
@@ -40,6 +42,7 @@ import {
   createElement,
   type ReactNode,
   useContext,
+  useSyncExternalStore,
 } from "react";
 
 export * from "@mwillbanks/tuil-core";
@@ -130,31 +133,45 @@ export type AppEventMap<TEvents extends EventMap> = {
       : never;
 };
 
-export interface TuilRuntime {
+export interface TuilExtensionPoints extends ExtensionPointMap {
+  routes: unknown;
+  registry: unknown;
+  workflows: unknown;
+  theme: unknown;
+  statusBar: unknown;
+  appBar: unknown;
+  menus: unknown;
+  keybindings: unknown;
+  dataAdapters: unknown;
+  persistenceAdapters: unknown;
+  operationExecutors: unknown;
+  devtools: unknown;
+}
+
+export type ExtensionRegistries<TExtensions extends ExtensionPointMap> = {
+  readonly [TKey in keyof TExtensions]: ExtensionRegistry<TExtensions[TKey]>;
+};
+
+export interface TuilRuntime<
+  TEvents extends EventMap = EventMap,
+  TExtensions extends ExtensionPointMap = TuilExtensionPoints,
+> {
   readonly id: string;
   readonly component: ComponentType;
   readonly lifecycle: Lifecycle;
   readonly services: ServiceContainer;
   readonly commands: CommandRegistry;
-  readonly events: {
-    observe(
-      observer: (
-        event: import("@mwillbanks/tuil-events").ObservedEvent,
-      ) => void,
-    ): () => void;
-    history(): readonly import("@mwillbanks/tuil-events").ObservedEvent[];
-  };
+  readonly events: EventBus<AppEventMap<TEvents>>;
   readonly focus: FocusManager;
   readonly hotkeys: HotkeyManager;
   readonly plugins: {
     health(): readonly import("@mwillbanks/tuil-plugin").PluginHealth[];
   };
-  readonly extensions: Readonly<
-    Record<string, { values(): readonly unknown[] }>
-  >;
+  readonly extensions: Readonly<ExtensionRegistries<TExtensions>>;
   readonly capabilities: TerminalCapabilities;
   readonly mode: RenderMode;
   readonly theme: Theme;
+  readonly themeController: ThemeController;
   initialize(): Promise<void>;
   mount(): Promise<void>;
   ready(): Promise<void>;
@@ -179,11 +196,12 @@ export type ServiceInput<TValue = unknown> =
 export interface TuilAppOptions<
   TServices extends Record<string, unknown> = Record<string, unknown>,
   TEvents extends EventMap = EventMap,
+  TExtensions extends ExtensionPointMap = TuilExtensionPoints,
 > {
   readonly id?: string;
   readonly component: ComponentType;
   readonly theme?: Theme | ThemeFactory;
-  readonly plugins?: readonly Plugin<AppEventMap<TEvents>>[];
+  readonly plugins?: readonly Plugin<AppEventMap<TEvents>, TExtensions>[];
   readonly capabilities?: readonly PluginCapability[];
   readonly services?: {
     readonly [TKey in keyof TServices]: ServiceInput<TServices[TKey]>;
@@ -216,18 +234,35 @@ export function defineConfig(config: TuilConfig): TuilConfig {
   return Object.freeze(config);
 }
 
-class MemoryExtensionRegistry implements ExtensionRegistry {
-  readonly #values = new Set<unknown>();
+class MemoryExtensionRegistry<TValue> implements ExtensionRegistry<TValue> {
+  readonly #registrations = new Map<symbol, TValue>();
+  readonly #observers = new Set<() => void>();
+  #snapshot: readonly TValue[] = Object.freeze([]);
 
-  register(value: unknown) {
-    this.#values.add(value);
+  register(value: TValue) {
+    const registration = Symbol();
+    this.#registrations.set(registration, value);
+    this.#snapshot = Object.freeze([...this.#registrations.values()]);
+    this.#notify();
     return toDisposable(() => {
-      this.#values.delete(value);
+      if (this.#registrations.delete(registration)) {
+        this.#snapshot = Object.freeze([...this.#registrations.values()]);
+        this.#notify();
+      }
     });
   }
 
-  values(): readonly unknown[] {
-    return [...this.#values];
+  values(): readonly TValue[] {
+    return this.#snapshot;
+  }
+
+  observe(observer: () => void): () => void {
+    this.#observers.add(observer);
+    return () => this.#observers.delete(observer);
+  }
+
+  #notify(): void {
+    for (const observer of this.#observers) observer();
   }
 }
 
@@ -250,6 +285,7 @@ const lifecycleDefinitions = defineEvents<AppLifecycleEvents>({
 export class TuilApp<
   TServices extends Record<string, unknown> = Record<string, unknown>,
   TEvents extends EventMap = EventMap,
+  TExtensions extends ExtensionPointMap = TuilExtensionPoints,
 > {
   readonly id: string;
   readonly component: ComponentType;
@@ -261,9 +297,9 @@ export class TuilApp<
   readonly hotkeys = new HotkeyManager();
   readonly capabilities: TerminalCapabilities;
   readonly mode: RenderMode;
-  readonly theme: Theme;
-  readonly plugins: PluginManager<AppEventMap<TEvents>>;
-  readonly extensions: Readonly<Record<string, MemoryExtensionRegistry>>;
+  readonly themeController: ThemeController;
+  readonly plugins: PluginManager<AppEventMap<TEvents>, TExtensions>;
+  readonly extensions: Readonly<ExtensionRegistries<TExtensions>>;
   readonly #errorHandler?: ErrorHandler;
   readonly #commandBindings = new Map<string, readonly (() => void)[]>();
   readonly #commandRegistryObserver: { dispose(): void | Promise<void> };
@@ -271,7 +307,7 @@ export class TuilApp<
   #initializePromise?: Promise<void>;
   #stopPromise?: Promise<void>;
 
-  constructor(options: TuilAppOptions<TServices, TEvents>) {
+  constructor(options: TuilAppOptions<TServices, TEvents, TExtensions>) {
     this.#errorHandler = options.errorHandler;
     this.id = options.id ?? crypto.randomUUID();
     this.component = options.component;
@@ -284,7 +320,10 @@ export class TuilApp<
       typeof options.theme === "function"
         ? options.theme(defaultTheme)
         : (options.theme ?? defaultTheme);
-    this.theme = normalizeTheme(selectedTheme, this.capabilities);
+    this.themeController = new ThemeController(
+      normalizeTheme(selectedTheme, this.capabilities),
+      this.capabilities,
+    );
     this.events = new EventBus<AppEventMap<TEvents>>({
       ...lifecycleDefinitions,
       ...options.events,
@@ -302,7 +341,7 @@ export class TuilApp<
       persistenceAdapters: new MemoryExtensionRegistry(),
       operationExecutors: new MemoryExtensionRegistry(),
       devtools: new MemoryExtensionRegistry(),
-    };
+    } as unknown as ExtensionRegistries<TExtensions>;
     this.extensions = extensions;
     this.plugins = new PluginManager({
       services: this.services,
@@ -353,6 +392,10 @@ export class TuilApp<
     for (const plugin of options.plugins ?? []) {
       this.plugins.register(plugin);
     }
+  }
+
+  get theme(): Theme {
+    return this.themeController.get();
   }
 
   async initialize(): Promise<void> {
@@ -499,7 +542,10 @@ export class TuilApp<
       failures.push(eventError);
     }
     try {
-      await this.#errorHandler?.(error, { phase, app: this });
+      await this.#errorHandler?.(error, {
+        phase,
+        app: this as unknown as TuilRuntime,
+      });
     } catch (handlerError) {
       failures.push(handlerError);
     }
@@ -512,29 +558,50 @@ export class TuilApp<
 export function createApp<
   const TServices extends Record<string, unknown> = Record<string, never>,
   const TEvents extends EventMap = Record<string, never>,
->(options: TuilAppOptions<TServices, TEvents>): TuilApp<TServices, TEvents> {
-  return new TuilApp(options);
+  const TExtensions extends ExtensionPointMap = TuilExtensionPoints,
+>(
+  options: TuilAppOptions<TServices, TEvents, TExtensions>,
+): TuilApp<TServices, TEvents, TExtensions> {
+  return new TuilApp<TServices, TEvents, TExtensions>(options);
 }
 
 const RuntimeContext = createContext<TuilRuntime | undefined>(undefined);
 
-export function TuilRuntimeProvider(props: {
-  readonly app: TuilRuntime;
+export function TuilRuntimeProvider<
+  TEvents extends EventMap,
+  TExtensions extends ExtensionPointMap,
+>(props: {
+  readonly app: TuilRuntime<TEvents, TExtensions>;
   readonly children?: ReactNode;
 }): ReactNode {
   return createElement(
     RuntimeContext.Provider,
-    { value: props.app },
+    { value: props.app as unknown as TuilRuntime },
     props.children,
   );
 }
 
-export function useApp(): TuilRuntime {
+export function useApp<
+  TEvents extends EventMap = EventMap,
+  TExtensions extends ExtensionPointMap = TuilExtensionPoints,
+>(): TuilRuntime<TEvents, TExtensions> {
   const app = useContext(RuntimeContext);
   if (!app) {
     throw new Error("useApp must be called within the tuil renderer");
   }
-  return app;
+  return app as TuilRuntime<TEvents, TExtensions>;
+}
+
+export function useExtensions<
+  TExtensions extends ExtensionPointMap = TuilExtensionPoints,
+  TKey extends keyof TExtensions = keyof TExtensions,
+>(key: TKey): readonly TExtensions[TKey][] {
+  const registry = useApp<EventMap, TExtensions>().extensions[key];
+  return useSyncExternalStore(
+    (observer) => registry.observe(observer),
+    () => registry.values(),
+    () => registry.values(),
+  );
 }
 
 export function useService<TValue>(id: string): TValue {

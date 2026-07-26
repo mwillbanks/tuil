@@ -12,16 +12,16 @@ Use the private
 
 ## Supported versions
 
-Security updates are provided for the current major version and, for six
-months after a new major release, the immediately preceding major version.
-Pre-release and development versions receive best-effort support.
+Before 1.0, tuil is alpha software. Security fixes are provided on a
+best-effort basis for the latest published 0.x minor line only. Users should
+expect to upgrade to receive a fix; older 0.x minors and unreleased development
+commits are not supported release lines.
 
 | Version | Support |
 | --- | :---: |
-| Current major | ✅ |
-| Previous major within the six-month transition | ✅ |
-| Older or expired majors | ❌ |
-| Pre-release and development builds | Best effort |
+| Latest published 0.x minor | Best effort |
+| Older 0.x minors | ❌ |
+| Development commits | ❌ |
 
 ## Reporting a vulnerability
 

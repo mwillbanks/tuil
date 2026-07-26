@@ -1,0 +1,56 @@
+name: Support question
+description: Ask for help using or diagnosing a tuil application.
+title: "support: "
+labels: ["question", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Community support is best effort. Remove credentials, private data, and sensitive terminal output before submitting.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Preflight
+      options:
+        - label: I searched the documentation and existing issues.
+          required: true
+        - label: This is not a security vulnerability or a reproducible tuil bug.
+          required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Package versions
+      description: Include every relevant @mwillbanks/tuil package and the Bun version.
+      placeholder: "@mwillbanks/tuil@0.1.0, Bun 1.3.14"
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include the operating system, terminal, shell, render mode, and relevant capabilities.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to do?
+      description: Describe the desired terminal workflow and the point where you are blocked.
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Minimal example
+      description: Provide the smallest sanitized code or repository link that demonstrates the question.
+      render: tsx
+    validations:
+      required: true
+  - type: textarea
+    id: attempts
+    attributes:
+      label: What have you tried?
+      description: Include relevant sanitized output and links to documentation you consulted.
+    validations:
+      required: true

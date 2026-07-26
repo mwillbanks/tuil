@@ -155,4 +155,70 @@ describe("event bus", () => {
       bus.register("project:create", event<{ name: string }>()),
     ).toThrow("disposed");
   });
+
+  test("keeps declaration disposers idempotent and identity safe", async () => {
+    const bus = new EventBus<TestEvents>();
+    const first = bus.register("project:create", event<{ name: string }>());
+    first();
+    const second = bus.register("project:create", event<{ name: string }>());
+    first();
+    await expect(
+      bus.emit("project:create", { name: "still-declared" }),
+    ).resolves.toMatchObject({ payload: { name: "still-declared" } });
+    second();
+    second();
+    await expect(
+      bus.emit("project:create", { name: "removed" }),
+    ).rejects.toThrow("has not been declared");
+  });
+
+  test("removes abort listeners when subscriptions are manually disposed", () => {
+    const bus = new EventBus<TestEvents>(
+      defineEvents({
+        "project:create": event<{ name: string }>(),
+        "auth:token": event<{ token: string }>(),
+      }),
+    );
+    const controller = new AbortController();
+    let additions = 0;
+    let removals = 0;
+    const add = controller.signal.addEventListener.bind(controller.signal);
+    const remove = controller.signal.removeEventListener.bind(
+      controller.signal,
+    );
+    controller.signal.addEventListener = ((...args: Parameters<typeof add>) => {
+      additions += 1;
+      return add(...args);
+    }) as typeof controller.signal.addEventListener;
+    controller.signal.removeEventListener = ((
+      ...args: Parameters<typeof remove>
+    ) => {
+      removals += 1;
+      return remove(...args);
+    }) as typeof controller.signal.removeEventListener;
+    const dispose = bus.on("project:create", () => {}, {
+      signal: controller.signal,
+    });
+    dispose();
+    dispose();
+    expect(additions).toBe(1);
+    expect(removals).toBe(1);
+
+    const anotherController = new AbortController();
+    let disposalRemovals = 0;
+    const anotherRemove = anotherController.signal.removeEventListener.bind(
+      anotherController.signal,
+    );
+    anotherController.signal.removeEventListener = ((
+      ...args: Parameters<typeof anotherRemove>
+    ) => {
+      disposalRemovals += 1;
+      return anotherRemove(...args);
+    }) as typeof anotherController.signal.removeEventListener;
+    bus.on("project:create", () => {}, {
+      signal: anotherController.signal,
+    });
+    bus.dispose();
+    expect(disposalRemovals).toBe(1);
+  });
 });

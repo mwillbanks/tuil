@@ -46,6 +46,61 @@ function item(content: string): RegistryItem {
 }
 
 describe("registry installer", () => {
+  test("rejects unsafe dependency and file metadata during parsing", () => {
+    const base = {
+      name: "safe-item",
+      type: "component",
+      files: [
+        {
+          path: "nested/source.ts",
+          target: "src/components/nested/source.ts",
+          content: "",
+        },
+      ],
+    };
+    expect(parseRegistryItem(base).files[0]?.target).toBe(
+      "src/components/nested/source.ts",
+    );
+    for (const dependency of [
+      "--cwd=/tmp",
+      "-D",
+      "package\n--production",
+      "package\0name",
+      " package",
+    ]) {
+      expect(() =>
+        parseRegistryItem({ ...base, dependencies: [dependency] }),
+      ).toThrow(/dependenc/);
+    }
+    expect(() => parseRegistryItem({ ...base, dependencies: "kleur" })).toThrow(
+      "must be an array",
+    );
+    expect(() =>
+      parseRegistryItem({ ...base, registryDependencies: ["../escape"] }),
+    ).toThrow("Invalid registry item path");
+    for (const target of ["../escape.ts", "/tmp/escape.ts", "src//bad.ts"]) {
+      expect(() =>
+        parseRegistryItem({
+          ...base,
+          files: [{ path: "source.ts", target, content: "" }],
+        }),
+      ).toThrow("file target");
+    }
+    expect(
+      () => new HttpRegistrySource("public", "http://registry.example.com"),
+    ).toThrow("must use HTTPS");
+    expect(
+      () => new HttpRegistrySource("private", "https://user:pass@example.com"),
+    ).toThrow("cannot contain credentials");
+    expect(
+      () => new HttpRegistrySource("query", "https://example.com/?token=one"),
+    ).toThrow("query or fragment");
+    expect(
+      new HttpRegistrySource("local", "http://127.0.0.1:4317/registry/")
+        .baseUrl,
+    ).toBe("http://127.0.0.1:4317/registry");
+  });
+
   test("installs, diffs, updates, and removes tracked source", async () => {
     const root = await mkdtemp(join(tmpdir(), "tuil-registry-"));
     directories.push(root);
@@ -77,15 +132,13 @@ describe("registry installer", () => {
     await expect(installer.install(item("incoming\n"))).rejects.toThrow(
       "locally modified",
     );
-    await expect(
-      installer.install(
-        parseRegistryItem({
-          name: "escape",
-          type: "component",
-          files: [{ path: "escape.ts", target: "../escape.ts", content: "" }],
-        }),
-      ),
-    ).rejects.toThrow("escapes project root");
+    expect(() =>
+      parseRegistryItem({
+        name: "escape",
+        type: "component",
+        files: [{ path: "escape.ts", target: "../escape.ts", content: "" }],
+      }),
+    ).toThrow("Invalid registry file target");
   });
 
   test("rejects targets beneath symbolic-link ancestors", async () => {

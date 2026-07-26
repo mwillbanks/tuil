@@ -13,6 +13,7 @@ description: Public package boundaries and their responsibilities.
 | `@mwillbanks/tuil-workflow` | Persistent step workflows |
 | `@mwillbanks/tuil-plugin` | Plugin lifecycle and extension points |
 | `@mwillbanks/tuil-theme` | Theme definitions and registries |
+| `@mwillbanks/tuil-events` | Typed declarations, dispatch, routing, redaction, and observation |
 | `@mwillbanks/tuil-testing` | Portable stories and semantic assertions |
 | `@mwillbanks/tuil-testing-ink` | Ink-backed tuil test renderer |
 | `@mwillbanks/tuil-story` | Story sessions, bridge, snapshots, and browser adapters |
@@ -52,7 +53,10 @@ returns them before their consumers.
 
 ```ts
 import { createApp } from "@mwillbanks/tuil"
-import { createDefaultThemeRegistry } from "@mwillbanks/tuil-theme"
+import {
+  createDefaultThemeRegistry,
+  createTheme,
+} from "@mwillbanks/tuil-theme"
 
 const themes = createDefaultThemeRegistry()
 const app = createApp({
@@ -63,6 +67,27 @@ const app = createApp({
 
 Use `new ThemeRegistry().register(...)` for application-owned theme catalogs;
 the returned registration is disposable.
+
+Switch a running application through its capability-aware controller:
+
+```ts
+app.themeController.set(themes.resolve("default-light"))
+app.themeController.set((current) =>
+  createTheme(current, { colors: { primary: { foreground: "yellow" } } })
+)
+```
+
+Ink subscribes to the controller, so mounted components using `useTheme()`
+rerender. Every selected theme is normalized for the active terminal.
+
+## Consume typed events and extensions
+
+`createApp` preserves application event payload types through `app.events`.
+Components can request the same surface with `useApp<MyEvents>()` and call
+`on()` or `emit()` without losing payload types. Extension registries expose
+typed `register()`, `values()`, and `observe()` operations. Use
+`useExtensions("routes")` in React code to rerender when contributions are
+registered or disposed.
 
 ## Mount runtime devtools
 

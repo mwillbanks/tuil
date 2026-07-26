@@ -23,8 +23,9 @@ bun install --frozen-lockfile
 3. Use public package exports rather than reaching across workspace internals.
 4. Keep interactive behavior paired with a deterministic static fallback.
 5. Update the documentation when public behavior, packages, or commands change.
-6. Run the focused package test while iterating.
-7. Run the complete quality gate before opening a pull request.
+6. Dispose event, extension, plugin, and theme observers in every teardown path.
+7. Run the focused package test while iterating.
+8. Run the complete quality gate before opening a pull request.
 
 Useful commands:
 
@@ -122,3 +123,7 @@ The publisher is idempotent and skips versions already present on npm.
 Never include vulnerability details, credentials, tokens, private keys, or
 other secrets in a public issue or pull request. Follow [SECURITY.md](SECURITY.md)
 for private reporting.
+
+By participating, you agree to follow [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+General usage questions belong in the channel described by
+[SUPPORT.md](SUPPORT.md), not in vulnerability reports.

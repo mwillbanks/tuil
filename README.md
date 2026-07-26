@@ -28,12 +28,13 @@ terminals, redirected output, tests, documentation, and Storybook.
 
 | Capability | What it provides |
 | --- | --- |
-| Application runtime | Explicit services, lifecycle, capabilities, commands, events, and teardown |
+| Application runtime | Explicit services, lifecycle, capabilities, typed events, and teardown |
 | Terminal-native UX | Focus scopes, hotkey sequences, overlays, forms, routing, and responsive layouts |
 | Deterministic output | Interactive, static, text, silent, and JSON modes from the same application |
 | Portable stories | One catalog for live previews, Storybook, snapshots, and generated documentation |
 | Semantic testing | Query roles and labels instead of brittle terminal coordinates |
 | Source ownership | Install inspectable components and blocks through the registry CLI |
+| Live composition | Observable plugin extensions and capability-normalized theme switching |
 
 ## Install
 
@@ -90,7 +91,9 @@ bun run security
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the complete workflow and pull
-request expectations.
+request expectations. Usage questions and maintenance expectations are in
+[SUPPORT.md](SUPPORT.md); community participation is governed by the
+[Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Security
 

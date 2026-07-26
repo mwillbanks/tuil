@@ -14,6 +14,16 @@ input, captures semantic and ANSI frames, and always closes the renderer.
 Fumadocs, Storybook, the showcase, and the playground consume that same story
 catalog.
 
-Plugins register through disposable, keyed registries. Applications retain
-ownership of plugin activation and teardown; plugins do not mutate global
-framework state.
+Plugins register through typed, disposable, observable extension registries.
+`useExtensions()` connects those registries to React rendering. Applications
+retain ownership of plugin activation and teardown; disposal is terminal for a
+plugin manager, aborts its shared signal, and prevents later registration or
+initialization.
+
+The runtime exposes the full typed event bus to application components. Event
+declarations, listeners, emission, bounded observation history, and redaction
+therefore share one contract instead of splitting UI and host capabilities.
+
+Theme selection is runtime state. `ThemeController` publishes live changes;
+the Ink adapter subscribes its `ThemeProvider`, and every replacement is
+normalized against the terminal's color, Unicode, and motion capabilities.

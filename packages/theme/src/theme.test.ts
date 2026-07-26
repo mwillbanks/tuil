@@ -10,6 +10,7 @@ import {
   normalizeTheme,
   resolveComponentProps,
   resolveSlotProps,
+  ThemeController,
   ThemeProvider,
   ThemeRegistry,
   useTheme,
@@ -47,6 +48,53 @@ test("themes merge tokens and degrade terminal capabilities", () => {
   });
   expect(unicodeMonochrome.borders.single).toEqual(theme.borders.single);
   expect(unicodeMonochrome.icons.success).toBe(theme.icons.success);
+});
+
+test("supports deeply partial semantic overrides", () => {
+  const theme = createTheme({
+    id: "deep-partial",
+    colors: { primary: { foreground: "yellow" } },
+    components: {
+      Button: { variants: { solid: { color: "yellow" } } },
+    },
+  });
+  expect(theme.colors.primary).toEqual({
+    foreground: "yellow",
+    background: "black",
+    border: "cyan",
+  });
+  expect(theme.components["Button"]?.variants?.["solid"]).toEqual({
+    color: "yellow",
+  });
+});
+
+test("theme controllers publish normalized live changes", () => {
+  const capabilities = {
+    width: 80,
+    height: 24,
+    colorDepth: 1 as const,
+    unicode: false,
+    hyperlinks: false,
+    interactive: false,
+    tty: false,
+    alternateScreen: false,
+    mouse: false,
+    images: false,
+    reducedMotion: false,
+    platform: "linux" as const,
+  };
+  const controller = new ThemeController(defaultTheme, capabilities);
+  let changes = 0;
+  const stop = controller.observe(() => {
+    changes += 1;
+  });
+  controller.set(createTheme({ id: "live", icons: { success: "unsafe" } }));
+  expect(controller.get().id).toBe("live");
+  expect(controller.get().icons.success).toBe("OK");
+  expect(changes).toBe(1);
+  stop();
+  controller.set((current) => createTheme(current, { id: "unobserved" }));
+  expect(changes).toBe(1);
 });
 
 test("ships resolvable dark and light defaults", () => {

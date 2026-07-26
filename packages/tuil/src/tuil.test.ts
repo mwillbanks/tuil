@@ -104,6 +104,38 @@ describe("application runtime", () => {
     expect(Object.isFrozen(config)).toBeTrue();
   });
 
+  test("exposes typed events and observable extension registries", async () => {
+    type UiEvents = { "ui:save": { id: string } };
+    const app = createApp<Record<string, never>, UiEvents>({
+      component: () => null,
+      events: defineEvents({ "ui:save": event<{ id: string }>() }),
+      terminal: { mode: "silent" },
+    });
+    const received: string[] = [];
+    app.events.on("ui:save", ({ payload }) => {
+      received.push(payload.id);
+    });
+    let extensionChanges = 0;
+    const stop = app.extensions.routes.observe(() => {
+      extensionChanges += 1;
+    });
+    const contribution = app.extensions.routes.register({ id: "settings" });
+    expect(app.extensions.routes.values()).toEqual([{ id: "settings" }]);
+    const duplicate = app.extensions.routes.register(
+      app.extensions.routes.values()[0],
+    );
+    expect(app.extensions.routes.values()).toHaveLength(2);
+    await app.events.emit("ui:save", { id: "document" });
+    contribution.dispose();
+    expect(app.extensions.routes.values()).toEqual([{ id: "settings" }]);
+    duplicate.dispose();
+    stop();
+    expect(received).toEqual(["document"]);
+    expect(extensionChanges).toBe(4);
+    expect(app.extensions.routes.values()).toEqual([]);
+    await app.stop();
+  });
+
   test("routes initialization failures through the error handler", async () => {
     const errors: string[] = [];
     const app = createApp({

@@ -122,7 +122,7 @@ function RuntimeTree(props: {
     { app: props.app },
     createElement(
       ThemeProvider,
-      { theme: props.app.theme },
+      { theme: props.app.themeController },
       createElement(
         FocusProvider,
         { manager: props.app.focus },

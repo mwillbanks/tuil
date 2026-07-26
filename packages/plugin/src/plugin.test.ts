@@ -9,7 +9,9 @@ import {
 } from "./index.ts";
 
 const extension: ExtensionRegistry = {
-  register() {},
+  register: () => ({ dispose() {} }),
+  values: () => [],
+  observe: () => () => {},
 };
 
 function manager(
@@ -134,17 +136,28 @@ describe("plugin manager", () => {
     await plugins.initialize();
     await plugins.dispose();
     expect(plugins.health()[0]?.status).toBe("disposed");
-    unregister();
-    expect(plugins.health()).toEqual([]);
+    expect(unregister).toThrow("disposed");
+    expect(() =>
+      plugins.register(
+        createPlugin({
+          id: "late",
+          version: "1.0.0",
+          setup() {},
+        }),
+      ),
+    ).toThrow("disposed");
+    await expect(plugins.initialize()).rejects.toThrow("disposed");
+    await plugins.dispose();
 
+    const fresh = manager();
     const removable = createPlugin({
       id: "removable",
       version: "1.0.0",
       setup() {},
     });
-    const remove = plugins.register(removable);
+    const remove = fresh.register(removable);
     remove();
-    expect(plugins.health()).toEqual([]);
+    expect(fresh.health()).toEqual([]);
   });
 
   test("records setup failures and aggregates disposal failures", async () => {

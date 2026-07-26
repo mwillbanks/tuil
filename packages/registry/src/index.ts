@@ -96,6 +96,71 @@ function validateRegistryPath(name: string): string {
   return name;
 }
 
+function validateRelativeFilePath(value: unknown, field: string): string {
+  if (typeof value !== "string" || value.length === 0) {
+    throw new TypeError(`Registry file ${field} must be a nonempty string`);
+  }
+  if (
+    isAbsolute(value) ||
+    value.includes("\0") ||
+    /[\r\n]/.test(value) ||
+    value
+      .split(/[\\/]/)
+      .some((segment) => !segment || segment === "." || segment === "..")
+  ) {
+    throw new TypeError(`Invalid registry file ${field} "${value}"`);
+  }
+  return value;
+}
+
+function validateStringArray(
+  value: unknown,
+  field: string,
+  validate: (entry: string) => string,
+): readonly string[] | undefined {
+  if (value === undefined) return undefined;
+  if (!Array.isArray(value)) {
+    throw new TypeError(`Registry item ${field} must be an array`);
+  }
+  return Object.freeze(
+    value.map((entry) => {
+      if (typeof entry !== "string" || !entry || entry !== entry.trim()) {
+        throw new TypeError(
+          `Registry item ${field} must contain nonempty strings`,
+        );
+      }
+      return validate(entry);
+    }),
+  );
+}
+
+function validatePackageSpecifier(specifier: string): string {
+  const packageSpecifier =
+    /^(?:@[a-zA-Z0-9][a-zA-Z0-9._-]*\/)?[a-zA-Z0-9][a-zA-Z0-9._-]*(?:@([a-zA-Z0-9@._~^*+=:/#%?|-]+))?$/.exec(
+      specifier,
+    );
+  if (
+    specifier.startsWith("-") ||
+    /[\s\0]/.test(specifier) ||
+    specifier === "." ||
+    specifier === ".." ||
+    !packageSpecifier
+  ) {
+    throw new TypeError(`Invalid registry package dependency "${specifier}"`);
+  }
+  return specifier;
+}
+
+function validateRegistryDependency(dependency: string): string {
+  const qualified = dependency.match(/^@([^/]+)\/(.+)$/);
+  if (qualified) {
+    validateRegistryPath(qualified[1] as string);
+    validateRegistryPath(qualified[2] as string);
+    return dependency;
+  }
+  return validateRegistryPath(dependency);
+}
+
 export function parseRegistryItem(value: unknown): RegistryItem {
   if (!value || typeof value !== "object") {
     throw new TypeError("Registry item must be an object");
@@ -116,33 +181,90 @@ export function parseRegistryItem(value: unknown): RegistryItem {
       throw new TypeError("Registry file must be an object");
     }
     const file = value as Record<string, unknown>;
-    const path = String(file["path"] ?? "");
-    const target = String(file["target"] ?? path);
-    const content = String(file["content"] ?? "");
-    if (!path || !target) {
-      throw new TypeError("Registry files require path and target");
+    const path = validateRelativeFilePath(file["path"], "path");
+    const target = validateRelativeFilePath(
+      file["target"] === undefined ? path : file["target"],
+      "target",
+    );
+    if (typeof file["content"] !== "string") {
+      throw new TypeError("Registry file content must be a string");
     }
+    const content = file["content"];
     return { path, target, content };
   });
-  const name = String(candidate["name"] ?? "");
-  if (!name) {
+  if (typeof candidate["name"] !== "string" || !candidate["name"]) {
     throw new TypeError("Registry item name cannot be empty");
   }
+  const name = validateRegistryPath(candidate["name"]);
+  const dependencies = validateStringArray(
+    candidate["dependencies"],
+    "dependencies",
+    validatePackageSpecifier,
+  );
+  const registryDependencies = validateStringArray(
+    candidate["registryDependencies"],
+    "registryDependencies",
+    validateRegistryDependency,
+  );
   return Object.freeze({
     ...candidate,
     name,
     type,
     title: String(candidate["title"] ?? name),
     description: String(candidate["description"] ?? ""),
+    dependencies,
+    registryDependencies,
     files,
   }) as RegistryItem;
 }
 
+function parseRegistrySourceItem(
+  value: unknown,
+  source: string,
+  name: string,
+): RegistryItem {
+  try {
+    return parseRegistryItem(value);
+  } catch (error) {
+    throw new TypeError(
+      `Registry "${source}" item "${name}" is invalid and must inline every file's content`,
+      { cause: error },
+    );
+  }
+}
+
+const loopbackRegistryHosts = new Set(["localhost", "127.0.0.1", "[::1]"]);
+
+function validateRegistryBaseUrl(value: string): string {
+  const url = new URL(value);
+  const loopback = loopbackRegistryHosts.has(url.hostname);
+  if (url.protocol !== "https:" && !(url.protocol === "http:" && loopback)) {
+    throw new TypeError(
+      "Registry URLs must use HTTPS, except for loopback development servers",
+    );
+  }
+  if (url.username || url.password) {
+    throw new TypeError("Registry URLs cannot contain credentials");
+  }
+  if (url.search || url.hash) {
+    throw new TypeError(
+      "Registry base URLs cannot contain a query or fragment",
+    );
+  }
+  return url.toString().replace(/\/$/, "");
+}
+
 export class HttpRegistrySource implements RegistrySource {
-  constructor(
-    readonly id: string,
-    readonly baseUrl: string,
-  ) {}
+  readonly id: string;
+  readonly baseUrl: string;
+
+  constructor(id: string, baseUrl: string) {
+    if (!id.trim()) {
+      throw new TypeError("Registry source id cannot be empty");
+    }
+    this.id = id;
+    this.baseUrl = validateRegistryBaseUrl(baseUrl);
+  }
 
   async get(
     name: string,
@@ -152,10 +274,9 @@ export class HttpRegistrySource implements RegistrySource {
       .split("/")
       .map(encodeURIComponent)
       .join("/");
-    const response = await fetch(
-      `${this.baseUrl.replace(/\/$/, "")}/${itemPath}.json`,
-      { signal },
-    );
+    const response = await fetch(`${this.baseUrl}/${itemPath}.json`, {
+      signal,
+    });
     if (response.status === 404) {
       return undefined;
     }
@@ -164,30 +285,11 @@ export class HttpRegistrySource implements RegistrySource {
         `Registry "${this.id}" returned ${response.status} for "${name}"`,
       );
     }
-    const value = await response.json();
-    if (
-      !value ||
-      typeof value !== "object" ||
-      !Array.isArray((value as Record<string, unknown>)["files"]) ||
-      (value as { files: unknown[] }).files.some(
-        (file) =>
-          !file ||
-          typeof file !== "object" ||
-          typeof (file as Record<string, unknown>)["content"] !== "string",
-      )
-    ) {
-      throw new TypeError(
-        `Registry "${this.id}" item "${name}" must inline every file's content`,
-      );
-    }
-    return parseRegistryItem(value);
+    return parseRegistrySourceItem(await response.json(), this.id, name);
   }
 
   async list(signal?: AbortSignal): Promise<readonly RegistryIndexEntry[]> {
-    const response = await fetch(
-      `${this.baseUrl.replace(/\/$/, "")}/registry.json`,
-      { signal },
-    );
+    const response = await fetch(`${this.baseUrl}/registry.json`, { signal });
     if (!response.ok) {
       throw new Error(`Registry "${this.id}" returned ${response.status}`);
     }
@@ -226,23 +328,7 @@ export class FileRegistrySource implements RegistrySource {
       const value = JSON.parse(
         await readFile(join(this.directory, `${itemPath}.json`), "utf8"),
       ) as unknown;
-      if (
-        !value ||
-        typeof value !== "object" ||
-        !Array.isArray((value as Record<string, unknown>)["files"]) ||
-        (value as { files: unknown[] }).files.some(
-          (file) =>
-            !file ||
-            typeof file !== "object" ||
-            typeof (file as Record<string, unknown>)["content"] !== "string",
-        )
-      ) {
-        throw new TypeError(
-          `Local registry "${this.id}" item "${name}" must inline every file's content`,
-        );
-      }
-      const item = parseRegistryItem(value);
-      return item;
+      return parseRegistrySourceItem(value, this.id, name);
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === "ENOENT") {
         return undefined;

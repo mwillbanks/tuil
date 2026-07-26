@@ -90,6 +90,7 @@ interface Subscription {
   readonly phase: EventPhase;
   readonly target?: string;
   readonly priority: number;
+  dispose?: () => void;
 }
 
 class MutableTuilEvent<TType extends string, TPayload>
@@ -148,9 +149,15 @@ export class EventBus<TEvents extends EventMap = EventMap> {
     if (type in this.#definitions) {
       throw new Error(`Event "${type}" is already declared`);
     }
-    this.#definitions[type] = definition as EventDefinition<unknown>;
+    const registered = definition as EventDefinition<unknown>;
+    this.#definitions[type] = registered;
+    let active = true;
     return () => {
-      delete this.#definitions[type];
+      if (!active) return;
+      active = false;
+      if (this.#definitions[type] === registered) {
+        delete this.#definitions[type];
+      }
     };
   }
 
@@ -168,12 +175,20 @@ export class EventBus<TEvents extends EventMap = EventMap> {
       priority: options.priority ?? 0,
     };
     this.#subscriptions.add(subscription);
-    const dispose = () => this.#subscriptions.delete(subscription);
-    if (options.signal) {
-      if (options.signal.aborted) {
+    let active = true;
+    const signal = options.signal;
+    const dispose = () => {
+      if (!active) return;
+      active = false;
+      this.#subscriptions.delete(subscription);
+      signal?.removeEventListener("abort", dispose);
+    };
+    subscription.dispose = dispose;
+    if (signal) {
+      if (signal.aborted) {
         dispose();
       } else {
-        options.signal.addEventListener("abort", dispose, { once: true });
+        signal.addEventListener("abort", dispose, { once: true });
       }
     }
     return dispose;
@@ -244,6 +259,9 @@ export class EventBus<TEvents extends EventMap = EventMap> {
 
   dispose(): void {
     this.#disposed = true;
+    for (const subscription of this.#subscriptions) {
+      subscription.dispose?.();
+    }
     this.#subscriptions.clear();
     this.#observers.clear();
     this.#history.length = 0;

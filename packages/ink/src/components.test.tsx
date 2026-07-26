@@ -1,9 +1,14 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { createApp, type TuilRuntime, useApp } from "@mwillbanks/tuil";
+import {
+  createApp,
+  type TuilRuntime,
+  useApp,
+  useExtensions,
+} from "@mwillbanks/tuil";
 import { FocusProvider, FocusScope, FocusTrap } from "@mwillbanks/tuil-focus";
 import { Hotkey, HotkeyProvider, useHotkeys } from "@mwillbanks/tuil-hotkeys";
 import { cleanup, renderTuil } from "@mwillbanks/tuil-testing-ink";
-import { createTheme } from "@mwillbanks/tuil-theme";
+import { createTheme, useTheme } from "@mwillbanks/tuil-theme";
 import { Text as InkText, type Key, renderToString } from "ink";
 import { useEffect, useState } from "react";
 import {
@@ -549,6 +554,30 @@ describe("foundational Ink components", () => {
     const view = renderTuil(<EmptyStoreProbe />);
     await view.ready;
     expect(view.screen.frame()).toContain("empty");
+    await view.cleanup();
+  });
+
+  test("reacts to live theme and extension changes", async () => {
+    function LiveRuntimeProbe() {
+      const theme = useTheme();
+      const routes = useExtensions("routes");
+      return (
+        <Text>
+          {theme.id}:{routes.length}
+        </Text>
+      );
+    }
+
+    const view = renderTuil(<LiveRuntimeProbe />);
+    await view.ready;
+    expect(view.screen.frame()).toContain("default-dark:0");
+    view.app.themeController.set(createTheme({ id: "live-theme" }));
+    const route = view.app.extensions.routes.register({ id: "settings" });
+    await Bun.sleep(0);
+    expect(view.screen.frame()).toContain("live-theme:1");
+    route.dispose();
+    await Bun.sleep(0);
+    expect(view.screen.frame()).toContain("live-theme:0");
     await view.cleanup();
   });
 });
