@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-theme",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Theme tokens, variants, utilities, capabilities, and registries for tuil.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

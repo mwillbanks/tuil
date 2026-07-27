@@ -8,9 +8,17 @@ test("release please independently versions every publishable package", async ()
   const config = (await Bun.file(
     join(workspace, "release-please-config.json"),
   ).json()) as {
+    readonly "group-pull-request-title-pattern": string;
+    readonly label: string;
     readonly plugins: readonly { readonly type: string }[];
+    readonly "release-label": string;
     readonly packages: Readonly<Record<string, unknown>>;
   };
+  expect(config["group-pull-request-title-pattern"]).toBe(
+    ["chore: release $", "{branch}"].join(""),
+  );
+  expect(config.label).toBe("autorelease: pending");
+  expect(config["release-label"]).toBe("autorelease: tagged");
   expect(config.plugins).toEqual([{ type: "node-workspace" }]);
 
   const publishablePackages = (
@@ -34,7 +42,58 @@ test("release please independently versions every publishable package", async ()
   expect(Object.keys(config.packages).sort()).toEqual(publishablePackages);
 });
 
+test("publishable packages declare every internal source import", async () => {
+  const findings: string[] = [];
+  for (const directory of await readdir(join(workspace, "packages"))) {
+    const packageDirectory = join(workspace, "packages", directory);
+    const manifestFile = Bun.file(join(packageDirectory, "package.json"));
+    if (!(await manifestFile.exists())) continue;
+    const manifest = (await manifestFile.json()) as {
+      readonly name: string;
+      readonly private?: boolean;
+      readonly dependencies?: Readonly<Record<string, string>>;
+      readonly optionalDependencies?: Readonly<Record<string, string>>;
+      readonly peerDependencies?: Readonly<Record<string, string>>;
+    };
+    if (manifest.private) continue;
+    const declared = new Set([
+      ...Object.keys(manifest.dependencies ?? {}),
+      ...Object.keys(manifest.optionalDependencies ?? {}),
+      ...Object.keys(manifest.peerDependencies ?? {}),
+    ]);
+    for await (const source of new Bun.Glob("src/**/*.{ts,tsx}").scan({
+      cwd: packageDirectory,
+      absolute: true,
+    })) {
+      if (/\.test\.tsx?$/.test(source)) continue;
+      const imports = new Bun.Transpiler({
+        loader: source.endsWith(".tsx") ? "tsx" : "ts",
+      }).scanImports(
+        (await Bun.file(source).text()).replace(/^#![^\n]*\n/, ""),
+      );
+      for (const { path } of imports) {
+        const dependency = path.match(/^(@mwillbanks\/[^/]+)/)?.[1];
+        if (
+          dependency &&
+          dependency !== manifest.name &&
+          !declared.has(dependency)
+        ) {
+          findings.push(
+            `${manifest.name} imports undeclared dependency ${dependency}`,
+          );
+        }
+      }
+    }
+  }
+  expect([...new Set(findings)].sort()).toEqual([]);
+});
+
 test("normal and recovery publishing share one trusted workflow identity", async () => {
+  const config = (await Bun.file(
+    join(workspace, "release-please-config.json"),
+  ).json()) as {
+    readonly packages: Readonly<Record<string, unknown>>;
+  };
   const ci = await readFile(
     join(workspace, ".github/workflows/ci.yml"),
     "utf8",
@@ -51,5 +110,15 @@ test("normal and recovery publishing share one trusted workflow identity", async
   expect(release).not.toContain("\n  workflow_dispatch:");
   expect(release).toContain("release_sha:");
   expect(release).toContain("inputs.release_sha");
+  expect(release).toContain("needs.release.outputs.release_sha");
+  expect(release).toContain("needs.release.outputs.release_sha != ''");
+  expect(release).toContain("needs.release.result == 'success'");
+  expect(release).toContain("needs.release.result == 'skipped'");
+  expect(release).not.toContain("inputs.release_sha || github.sha");
   expect(release).toContain("id-token: write");
+  expect(release).not.toContain("NPM_TOKEN");
+  expect(release).not.toContain("NODE_AUTH_TOKEN");
+  for (const path of Object.keys(config.packages)) {
+    expect(release).toContain(`steps.release.outputs['${path}--sha']`);
+  }
 });

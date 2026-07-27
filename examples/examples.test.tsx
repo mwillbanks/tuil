@@ -90,6 +90,40 @@ test("examples execute their interactive callbacks and cleanup paths", async () 
   await Bun.sleep(10);
   expect(wizard.screen.frame()).toContain("cancelled");
   await wizard.cleanup();
+
+  const completedWizard = renderTuil(
+    createElement(ExampleApplication, { kind: "project-wizard" }),
+  );
+  await completedWizard.ready;
+  const focusWhenReady = async (id: string): Promise<void> => {
+    for (let attempt = 0; attempt < 100; attempt += 1) {
+      if (completedWizard.app.focus.focus(id)) return;
+      await Bun.sleep(1);
+    }
+    throw new Error(`Focus target "${id}" was not registered`);
+  };
+  for (const id of [
+    "init-project-name",
+    "init-template",
+    "init-features",
+    "review-project",
+  ]) {
+    await focusWhenReady(id);
+    await completedWizard.user.press(
+      id === "init-features" ? "space" : "enter",
+    );
+    if (id === "init-template") await completedWizard.user.press("enter");
+    await Bun.sleep(10);
+  }
+  const confirm = completedWizard.screen.getByRole("button", {
+    name: "Create project",
+  });
+  expect(confirm.id).toBeDefined();
+  expect(completedWizard.app.focus.focus(confirm.id as string)).toBeTrue();
+  await completedWizard.user.press("enter");
+  await Bun.sleep(10);
+  expect(completedWizard.screen.frame()).toContain("created project-wizard");
+  await completedWizard.cleanup();
 });
 
 test("example runner stops cleanly on interrupt", async () => {
@@ -151,12 +185,28 @@ test("full-screen example transitions, handles menus, prompts, and resizes", asy
   expect(fullScreen.screen.frame()).toContain("Copy selection");
   await fullScreen.user.press("escape");
   await fullScreen.app.hotkeys.dispatch(
+    "h",
+    { alt: true },
+    { activeScopes: { application: true } },
+  );
+  await Bun.sleep(10);
+  expect(fullScreen.screen.frame()).toContain("Keyboard shortcuts");
+  await fullScreen.user.press("escape");
+  await fullScreen.app.hotkeys.dispatch(
     "f",
     { meta: true },
     { activeScopes: { application: true } },
   );
   await Bun.sleep(10);
   expect(fullScreen.screen.frame()).toContain("Open workspace");
+  await fullScreen.user.press("escape");
+  await fullScreen.app.hotkeys.dispatch(
+    "e",
+    { meta: true },
+    { activeScopes: { application: true } },
+  );
+  await Bun.sleep(10);
+  expect(fullScreen.screen.frame()).toContain("Clear activity");
   await fullScreen.user.press("escape");
   await fullScreen.user.type("Summarize this workspace");
   expect(

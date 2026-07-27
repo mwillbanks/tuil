@@ -109,14 +109,16 @@ release pull request for the public package suite. Merging that pull request
 creates GitHub releases and publishes unpublished package versions to npm with
 provenance.
 
-Repository automation requires `NPM_TOKEN` and `RELEASE_PLEASE_TOKEN` Actions
-secrets. The release token must belong to a dedicated maintainer or automation
-account and have repository contents, issues, and pull-request write access so
-Release Please pull requests trigger the normal CI checks. If publication is
-interrupted after GitHub releases are created, manually dispatch the **Release**
-workflow with the full release commit SHA. Recovery checks out that immutable
-commit and verifies every expected component release tag before publishing.
-The publisher is idempotent and skips versions already present on npm.
+Repository automation requires a `RELEASE_PLEASE_TOKEN` Actions secret. The
+release token must belong to a dedicated maintainer or automation account and
+have repository contents, issues, and pull-request write access so Release
+Please pull requests trigger the normal CI checks. npm publishing uses trusted
+publishing through the `ci.yml` GitHub Actions workflow and does not accept a
+long-lived npm token. If publication is interrupted after GitHub releases are
+created, manually dispatch the **CI** workflow with the full release commit
+SHA. Recovery checks out that immutable commit and verifies every expected
+component release tag before publishing. The publisher is idempotent and skips
+versions already present on npm.
 
 ## Security
 

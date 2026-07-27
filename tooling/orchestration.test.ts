@@ -239,19 +239,31 @@ test("release publishing handles existing, new, failed, and delayed artifacts", 
     workspaceDependencies: [],
   };
   const responses: number[] = [404, 200];
+  let publishEnvironment:
+    | Readonly<Record<string, string | undefined>>
+    | undefined;
   const runtime: PublishRuntime = {
     discover: () => Promise.resolve([artifact]),
+    environment: {
+      PATH: "/bin",
+      NODE_AUTH_TOKEN: "legacy-node-token",
+      NPM_TOKEN: "legacy-npm-token",
+    },
     fetch: (() =>
       Promise.resolve(
         new Response(null, { status: responses.shift() ?? 200 }),
       )) as unknown as typeof fetch,
-    spawn: () => ({ exited: Promise.resolve(0) }),
+    spawn: (_command, options) => {
+      publishEnvironment = options.env;
+      return { exited: Promise.resolve(0) };
+    },
     sleep: () => Promise.resolve(),
   };
   expect(await publishRelease("/workspace", "next", runtime)).toEqual({
     published: ["@scope/package@1.2.3"],
     releaseTag: "next",
   });
+  expect(publishEnvironment).toEqual({ PATH: "/bin" });
 
   await expect(
     publishRelease("/workspace", "latest", {
@@ -290,21 +302,37 @@ test("recovery verification requires the exact commit and release tags", async (
     await run(["git", "config", "user.email", "test@example.com"], root);
     await run(["git", "config", "user.name", "Tuil Test"], root);
     await mkdir(join(root, "packages/example"), { recursive: true });
+    await mkdir(join(root, "packages/stable"), { recursive: true });
     await writeFile(
       join(root, "release-please-config.json"),
       JSON.stringify({
-        packages: { "packages/example": { component: "example" } },
+        packages: {
+          "packages/example": { component: "example" },
+          "packages/stable": { component: "stable" },
+        },
       }),
     );
+    await writeFile(
+      join(root, "packages/example/package.json"),
+      JSON.stringify({ name: "example", version: "1.2.2" }),
+    );
+    await writeFile(
+      join(root, "packages/stable/package.json"),
+      JSON.stringify({ name: "stable", version: "4.5.6" }),
+    );
+    await run(["git", "add", "."], root);
+    await run(["git", "commit", "-qm", "test: seed recovery"], root);
+    await run(["git", "tag", "example-v1.2.2"], root);
+    await run(["git", "tag", "stable-v4.5.6"], root);
     await writeFile(
       join(root, "packages/example/package.json"),
       JSON.stringify({ name: "example", version: "1.2.3" }),
     );
     await run(["git", "add", "."], root);
-    await run(["git", "commit", "-qm", "test: seed recovery"], root);
+    await run(["git", "commit", "-qm", "chore: release example"], root);
     const sha = await run(["git", "rev-parse", "HEAD"], root);
     await run(["git", "tag", "example-v1.2.3"], root);
-    expect(await expectedReleaseTags(root)).toEqual(["example-v1.2.3"]);
+    expect(await expectedReleaseTags(root, sha)).toEqual(["example-v1.2.3"]);
     await verifyRecoveryRelease(root, sha);
     await expect(verifyRecoveryRelease(root, "invalid")).rejects.toThrow(
       "full 40-character",

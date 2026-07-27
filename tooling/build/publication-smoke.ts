@@ -74,6 +74,14 @@ for (const directory of packageDirectories) {
     await Bun.file(join(directory, "dist/README.md")).exists(),
     `${manifest.name} does not publish usage documentation`,
   );
+  for await (const path of new Bun.Glob("**/*").scan({
+    cwd: join(directory, "dist"),
+  })) {
+    assertPublication(
+      !path.startsWith("src/") && !/\.test\.[^.]+(?:\.map)?$/.test(path),
+      `${manifest.name} publishes stale build artifact "${path}"`,
+    );
+  }
   for (const version of Object.values({
     ...manifest.dependencies,
     ...manifest.peerDependencies,

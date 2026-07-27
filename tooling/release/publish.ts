@@ -11,6 +11,7 @@ interface PublishProcess {
 
 export interface PublishRuntime {
   readonly discover: (workspace: string) => Promise<readonly PublishArtifact[]>;
+  readonly environment: Readonly<Record<string, string | undefined>>;
   readonly fetch: typeof fetch;
   readonly spawn: (
     command: readonly string[],
@@ -26,10 +27,23 @@ export interface PublishRuntime {
 
 const defaultRuntime: PublishRuntime = {
   discover: discoverPublishArtifacts,
+  environment: process.env,
   fetch,
   spawn: Bun.spawn as unknown as PublishRuntime["spawn"],
   sleep: Bun.sleep,
 };
+
+const npmTokenVariables = new Set(["NODE_AUTH_TOKEN", "NPM_TOKEN"]);
+
+export function oidcPublishEnvironment(
+  environment: Readonly<Record<string, string | undefined>>,
+): Readonly<Record<string, string | undefined>> {
+  return Object.fromEntries(
+    Object.entries(environment).filter(
+      ([name]) => !npmTokenVariables.has(name),
+    ),
+  );
+}
 
 export async function publishRelease(
   workspace: string,
@@ -62,11 +76,7 @@ export async function publishRelease(
         cwd: artifact.artifactDirectory,
         stdout: "inherit",
         stderr: "inherit",
-        env: {
-          ...process.env,
-          NODE_AUTH_TOKEN:
-            process.env["NODE_AUTH_TOKEN"] ?? process.env["NPM_TOKEN"] ?? "",
-        },
+        env: oidcPublishEnvironment(runtime.environment),
       });
       if ((await publish.exited) !== 0) {
         throw new Error(`Failed to publish ${specifier}`);

@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-router",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Typed terminal routes, guards, history, loaders, layouts, and focus restoration for tuil.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",
