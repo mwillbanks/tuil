@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "CLI for initializing tuil applications and installing source-owned registry items and skills.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",
