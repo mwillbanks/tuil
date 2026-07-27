@@ -16,6 +16,7 @@ export async function buildPackage(directory = process.cwd()): Promise<void> {
   if (entries.length === 0) {
     throw new Error(`No package entrypoint found in ${directory}`);
   }
+  await rm(join(directory, "dist"), { recursive: true, force: true });
 
   const build = Bun.spawn(
     [

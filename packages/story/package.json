@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@mwillbanks/tuil": "workspace:*",
+    "@mwillbanks/tuil-core": "workspace:*",
     "@mwillbanks/tuil-testing": "workspace:*",
     "@mwillbanks/tuil-testing-ink": "workspace:*",
     "@mwillbanks/tuil-theme": "workspace:*",
