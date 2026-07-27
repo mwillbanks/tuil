@@ -6,7 +6,8 @@
   "group-pull-request-title-pattern": "chore: release ${branch}",
   "pull-request-header": "## Release summary",
   "pull-request-footer": "Automated from Conventional Commits by Release Please.",
-  "release-label": "autorelease: pending",
+  "label": "autorelease: pending",
+  "release-label": "autorelease: tagged",
   "plugins": [
     {
       "type": "node-workspace"
