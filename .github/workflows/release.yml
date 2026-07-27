@@ -2,17 +2,17 @@ name: Release
 
 on:
   workflow_call:
-    secrets:
-      NPM_TOKEN:
-        required: true
-      RELEASE_PLEASE_TOKEN:
-        required: true
-  workflow_dispatch:
     inputs:
       release_sha:
         description: Full commit SHA containing the existing release tags
-        required: true
+        required: false
         type: string
+        default: ""
+    secrets:
+      NPM_TOKEN:
+        required: false
+      RELEASE_PLEASE_TOKEN:
+        required: true
 
 permissions: {}
 
@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   release:
-    if: ${{ github.event_name == 'workflow_call' }}
+    if: ${{ inputs.release_sha == '' }}
     runs-on: ubuntu-latest
     outputs:
       releases_created: ${{ steps.release.outputs.releases_created }}
@@ -39,7 +39,7 @@ jobs:
 
   publish:
     needs: release
-    if: ${{ always() && ((github.event_name == 'workflow_call' && needs.release.outputs.releases_created == 'true') || github.event_name == 'workflow_dispatch') }}
+    if: ${{ always() && (needs.release.outputs.releases_created == 'true' || inputs.release_sha != '') }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -48,7 +48,7 @@ jobs:
       - uses: actions/checkout@v7.0.0
         with:
           fetch-depth: 0
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.release_sha || github.sha }}
+          ref: ${{ inputs.release_sha || github.sha }}
       - uses: oven-sh/setup-bun@v2.2.0
         with:
           bun-version: 1.3.14
@@ -60,7 +60,7 @@ jobs:
       - name: Install dependencies
         run: bun ci
       - name: Verify recovery release commit
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        if: ${{ inputs.release_sha != '' }}
         env:
           RELEASE_SHA: ${{ inputs.release_sha }}
         run: bun tooling/release/verify-recovery.ts

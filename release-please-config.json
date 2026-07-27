@@ -9,29 +9,7 @@
   "release-label": "autorelease: pending",
   "plugins": [
     {
-      "type": "linked-versions",
-      "groupName": "tuil",
-      "components": [
-        "tuil-cli",
-        "tuil-core",
-        "tuil-devtools",
-        "tuil-events",
-        "tuil-focus",
-        "tuil-form",
-        "tuil-hotkeys",
-        "tuil-ink",
-        "tuil-operations",
-        "tuil-plugin",
-        "tuil-registry",
-        "tuil-router",
-        "tuil-story",
-        "tuil-testing-ink",
-        "tuil-testing",
-        "tuil-theme",
-        "tuil",
-        "tuil-virtual",
-        "tuil-workflow"
-      ]
+      "type": "node-workspace"
     }
   ],
   "packages": {

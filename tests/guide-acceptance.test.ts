@@ -255,8 +255,10 @@ test("release automation preserves review and recovery contracts", async () => {
   ).text();
   expect(ci).toContain("secrets: inherit");
   expect(ci).toContain("issues: write");
+  expect(ci).toContain("workflow_dispatch:");
+  expect(ci).toContain("release_sha");
   expect(release).toContain("RELEASE_PLEASE_TOKEN");
-  expect(release).toContain("workflow_dispatch:");
+  expect(release).not.toContain("\n  workflow_dispatch:");
   expect(release).toContain("release_sha");
   expect(release).toContain("issues: write");
   expect(release).toContain("always()");
