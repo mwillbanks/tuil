@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-story",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Portable tuil stories, browser bridges, snapshots, documentation, and Storybook adapters.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

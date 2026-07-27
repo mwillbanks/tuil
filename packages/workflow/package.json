@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-workflow",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Persistent, resumable, observable multi-step workflows for tuil applications.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

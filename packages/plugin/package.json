@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-plugin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Dependency-aware plugin registration, resolution, activation, and teardown for tuil.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

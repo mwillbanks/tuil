@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-events",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Typed observable events and lifecycle signals for tuil applications.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",
