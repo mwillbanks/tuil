@@ -3,7 +3,7 @@
   "bootstrap-sha": "40eb97ae61f06aafaed257e4ee8736aff7d0940b",
   "always-update": true,
   "separate-pull-requests": false,
-  "group-pull-request-title-pattern": "chore: release tuil packages",
+  "group-pull-request-title-pattern": "chore: release ${branch}",
   "pull-request-header": "## Release summary",
   "pull-request-footer": "Automated from Conventional Commits by Release Please.",
   "release-label": "autorelease: pending",

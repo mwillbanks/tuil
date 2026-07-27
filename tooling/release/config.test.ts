@@ -8,9 +8,13 @@ test("release please independently versions every publishable package", async ()
   const config = (await Bun.file(
     join(workspace, "release-please-config.json"),
   ).json()) as {
+    readonly "group-pull-request-title-pattern": string;
     readonly plugins: readonly { readonly type: string }[];
     readonly packages: Readonly<Record<string, unknown>>;
   };
+  expect(config["group-pull-request-title-pattern"]).toBe(
+    ["chore: release $", "{branch}"].join(""),
+  );
   expect(config.plugins).toEqual([{ type: "node-workspace" }]);
 
   const publishablePackages = (
