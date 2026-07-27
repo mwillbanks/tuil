@@ -1,4 +1,13 @@
 {
   "title": "Guides",
-  "pages": ["index"]
+  "icon": "GraduationCap",
+  "pages": [
+    "ink-migration",
+    "agent-skills",
+    "authoring-plugins",
+    "theme-customization",
+    "custom-registries",
+    "devtools",
+    "testing"
+  ]
 }

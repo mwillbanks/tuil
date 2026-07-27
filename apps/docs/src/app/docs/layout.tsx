@@ -7,7 +7,7 @@ export default function Layout(props: {
   readonly children: ReactNode;
 }): ReactNode {
   return (
-    <DocsLayout tree={source.pageTree} {...baseOptions()}>
+    <DocsLayout tree={source.getPageTree("en")} {...baseOptions("en")}>
       {props.children}
     </DocsLayout>
   );

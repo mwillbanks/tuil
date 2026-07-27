@@ -1,0 +1,67 @@
+---
+title: "Project initializer"
+description: "A complete source-owned application block combining forms, navigation, dialogs, operations, themes, and workflow state into a project creator."
+icon: RocketLaunch
+---
+
+import { initializerStory as ComponentStory } from '@/components/reference-stories.story';
+
+## Overview
+
+A complete source-owned application block combining forms, navigation, dialogs, operations, themes, and workflow state into a project creator.
+
+## Installation
+
+```npm
+npx @mwillbanks/tuil add init-wizard
+```
+
+The CLI writes source-owned components beneath the destination configured in
+`tuil.config.ts`; the default import below assumes `src/components/tuil`.
+
+<ComponentStory.WithControl />
+
+## Components and subcomponents
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `InitWizard` | function | `registry/blocks/init-wizard.tsx` |
+
+## Interaction
+
+The guided flow validates names, template choice, features, confirmation, cancellation, and capability-aware static fallbacks.
+
+## API and events
+
+`onComplete` returns validated answers and `onCancel` reports abandonment.
+
+Every interactive component publishes semantic roles, labels, state, and focus
+identity through the renderer's `SemanticRegistry`. Callback failures flow to
+the owning application's error boundary.
+
+```mermaid
+flowchart LR
+  S0["props and runtime state"]
+  S1["semantic registration"]
+  S2["focus and input routing"]
+  S3["callback or state update"]
+  S4["rerender"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+```
+
+## Example
+
+```tsx
+import type { ComponentProps } from "react";
+import { InitWizard } from "@/components/tuil/blocks/init-wizard";
+
+export function Example(props: ComponentProps<typeof InitWizard>) {
+  return <InitWizard {...props} />;
+}
+```
+
+Registry-installed components are source-owned: customize the generated file in
+your application, and use the package reference for the shared runtime contracts.

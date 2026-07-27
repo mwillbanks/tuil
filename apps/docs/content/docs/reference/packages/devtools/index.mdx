@@ -1,0 +1,64 @@
+---
+title: "@mwillbanks/tuil-devtools"
+description: "Runtime inspector and developer overlay for tuil applications."
+icon: Package
+---
+
+## Overview
+
+Runtime inspector and developer overlay for tuil applications.
+
+`@mwillbanks/tuil-devtools` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-devtools
+```
+
+## How it operates
+
+Devtools subscribes to runtime snapshots without changing application state. The overlay exposes lifecycle, focus, services, commands, plugins, events, capabilities, and theme information.
+
+```mermaid
+flowchart LR
+  S0["mount inspector"]
+  S1["subscribe"]
+  S2["render snapshots"]
+  S3["unsubscribe"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `DevtoolsPanel` | type | `packages/devtools/src/index.tsx` |
+| `devtoolsPanels` | constant | `packages/devtools/src/index.tsx` |
+| `DevtoolsStore` | class | `packages/devtools/src/index.tsx` |
+| `inspectRuntime` | function | `packages/devtools/src/index.tsx` |
+| `RuntimeInspection` | interface | `packages/devtools/src/index.tsx` |
+| `TuilDevtools` | constant | `packages/devtools/src/index.tsx` |
+| `TuilDevtoolsProps` | interface | `packages/devtools/src/index.tsx` |
+
+## Events and lifecycle
+
+Reads the runtime event history and observer stream. It does not emit application events.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+render(<TuilDevtools />);
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

@@ -1,0 +1,154 @@
+---
+title: "@mwillbanks/tuil"
+description: "A production-ready React and Ink framework for composable terminal applications."
+icon: Package
+---
+
+## Overview
+
+A production-ready React and Ink framework for composable terminal applications.
+
+`@mwillbanks/tuil` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil
+```
+
+## How it operates
+
+The umbrella runtime owns the application boundary: lifecycle, services, commands, focus, hotkeys, event bus, terminal capabilities, theme controller, plugins, extension registries, and the root component.
+
+```mermaid
+flowchart LR
+  S0["configure"]
+  S1["initialize"]
+  S2["mount"]
+  S3["ready"]
+  S4["stop"]
+  S5["dispose all owned resources"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+  S4 --> S5
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `AppErrorPayload` | interface | `packages/tuil/src/index.ts` |
+| `AppEventMap` | type | `packages/tuil/src/index.ts` |
+| `AppLifecycleEvents` | type | `packages/tuil/src/index.ts` |
+| `AppLifecyclePayload` | interface | `packages/tuil/src/index.ts` |
+| `AppLifecycleState` | type | `packages/core/src/lifecycle.ts` |
+| `ColorDepth` | type | `packages/core/src/terminal.ts` |
+| `Command` | interface | `packages/core/src/commands.ts` |
+| `CommandContext` | interface | `packages/core/src/commands.ts` |
+| `CommandExecution` | interface | `packages/core/src/commands.ts` |
+| `CommandRegistry` | class | `packages/core/src/commands.ts` |
+| `CommandRegistryChange` | type | `packages/core/src/commands.ts` |
+| `createApp` | function | `packages/tuil/src/index.ts` |
+| `createOperation` | export | `packages/tuil/src/index.ts` |
+| `createPlugin` | export | `packages/tuil/src/index.ts` |
+| `createRouter` | export | `packages/tuil/src/index.ts` |
+| `createTheme` | export | `packages/tuil/src/index.ts` |
+| `createWorkflow` | export | `packages/tuil/src/index.ts` |
+| `defineCommand` | function | `packages/core/src/commands.ts` |
+| `defineConfig` | function | `packages/tuil/src/index.ts` |
+| `defineEvents` | export | `packages/tuil/src/index.ts` |
+| `defineOperation` | export | `packages/tuil/src/index.ts` |
+| `defineOperationStep` | export | `packages/tuil/src/index.ts` |
+| `defineRoutes` | export | `packages/tuil/src/index.ts` |
+| `defineService` | function | `packages/core/src/services.ts` |
+| `defineStep` | export | `packages/tuil/src/index.ts` |
+| `defineWorkflow` | export | `packages/tuil/src/index.ts` |
+| `deleteOnDispose` | function | `packages/core/src/disposable.ts` |
+| `detectTerminalCapabilities` | function | `packages/core/src/terminal.ts` |
+| `Disposable` | interface | `packages/core/src/disposable.ts` |
+| `DisposableStack` | class | `packages/core/src/disposable.ts` |
+| `Disposer` | type | `packages/core/src/disposable.ts` |
+| `ErrorHandler` | type | `packages/tuil/src/index.ts` |
+| `event` | export | `packages/tuil/src/index.ts` |
+| `EventDefinition` | export | `packages/tuil/src/index.ts` |
+| `EventDefinitions` | export | `packages/tuil/src/index.ts` |
+| `EventMap` | export | `packages/tuil/src/index.ts` |
+| `ExtensionRegistries` | type | `packages/tuil/src/index.ts` |
+| `Lifecycle` | class | `packages/core/src/lifecycle.ts` |
+| `NavigationEntry` | export | `packages/tuil/src/index.ts` |
+| `NavigationSurface` | export | `packages/tuil/src/index.ts` |
+| `NavigationTarget` | export | `packages/tuil/src/index.ts` |
+| `ObservedEvent` | export | `packages/tuil/src/index.ts` |
+| `OperationDefinition` | export | `packages/tuil/src/index.ts` |
+| `OperationExecutor` | export | `packages/tuil/src/index.ts` |
+| `OperationProgress` | export | `packages/tuil/src/index.ts` |
+| `OperationSnapshot` | export | `packages/tuil/src/index.ts` |
+| `OperationStatus` | export | `packages/tuil/src/index.ts` |
+| `PersistedWorkflow` | export | `packages/tuil/src/index.ts` |
+| `Plugin` | export | `packages/tuil/src/index.ts` |
+| `PluginCapability` | export | `packages/tuil/src/index.ts` |
+| `RenderMode` | export | `packages/tuil/src/index.ts` |
+| `RenderMode` | type | `packages/core/src/terminal.ts` |
+| `resolveRenderMode` | function | `packages/core/src/terminal.ts` |
+| `resolveTerminalViewport` | function | `packages/core/src/terminal.ts` |
+| `route` | export | `packages/tuil/src/index.ts` |
+| `RouteDefinition` | export | `packages/tuil/src/index.ts` |
+| `RouteMatch` | export | `packages/tuil/src/index.ts` |
+| `RouterEvent` | export | `packages/tuil/src/index.ts` |
+| `RouterState` | export | `packages/tuil/src/index.ts` |
+| `SemanticMetadata` | interface | `packages/core/src/semantics.ts` |
+| `SemanticRole` | type | `packages/core/src/semantics.ts` |
+| `ServiceContainer` | class | `packages/core/src/services.ts` |
+| `ServiceDefinition` | interface | `packages/core/src/services.ts` |
+| `ServiceFactoryContext` | interface | `packages/core/src/services.ts` |
+| `ServiceInput` | type | `packages/tuil/src/index.ts` |
+| `ServiceMap` | type | `packages/core/src/services.ts` |
+| `TerminalBounds` | interface | `packages/core/src/semantics.ts` |
+| `TerminalCapabilities` | interface | `packages/core/src/terminal.ts` |
+| `TerminalCapabilityInput` | interface | `packages/core/src/terminal.ts` |
+| `TerminalOptions` | interface | `packages/tuil/src/index.ts` |
+| `TerminalRouter` | export | `packages/tuil/src/index.ts` |
+| `TerminalViewport` | type | `packages/core/src/terminal.ts` |
+| `terminalViewportBreakpoints` | constant | `packages/core/src/terminal.ts` |
+| `Theme` | export | `packages/tuil/src/index.ts` |
+| `ThemeFactory` | export | `packages/tuil/src/index.ts` |
+| `toDisposable` | function | `packages/core/src/disposable.ts` |
+| `transition` | export | `packages/tuil/src/index.ts` |
+| `TuilApp` | class | `packages/tuil/src/index.ts` |
+| `TuilAppOptions` | interface | `packages/tuil/src/index.ts` |
+| `TuilConfig` | interface | `packages/tuil/src/index.ts` |
+| `TuilExtensionPoints` | interface | `packages/tuil/src/index.ts` |
+| `TuilRuntime` | interface | `packages/tuil/src/index.ts` |
+| `TuilRuntimeProvider` | function | `packages/tuil/src/index.ts` |
+| `useApp` | function | `packages/tuil/src/index.ts` |
+| `useExtensions` | function | `packages/tuil/src/index.ts` |
+| `useService` | function | `packages/tuil/src/index.ts` |
+| `WorkflowDefinition` | export | `packages/tuil/src/index.ts` |
+| `WorkflowEvent` | export | `packages/tuil/src/index.ts` |
+| `WorkflowRunner` | export | `packages/tuil/src/index.ts` |
+| `WorkflowSnapshot` | export | `packages/tuil/src/index.ts` |
+| `WorkflowStatus` | export | `packages/tuil/src/index.ts` |
+| `WorkflowStep` | export | `packages/tuil/src/index.ts` |
+
+## Events and lifecycle
+
+`app:configure`, `app:initialize`, `app:mount`, `app:ready`, `app:error`, `app:stop`, and `app:dispose` are always declared.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+const app = createApp({ id: "demo", component: App });
+render(<App />, { app });
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

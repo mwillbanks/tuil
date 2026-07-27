@@ -1,0 +1,36 @@
+---
+title: Custom Registries
+description: Publish validated source-owned components, blocks, themes, and dependencies.
+icon: Database
+---
+
+A registry item declares identity, kind, files, package dependencies, registry
+dependencies, integrity, and metadata. Keep items cohesive: a primitive should
+not pull an application block transitively.
+
+```json
+{
+  "name": "company-alert",
+  "type": "component",
+  "files": [{ "path": "components/company-alert.tsx" }],
+  "registryDependencies": ["text", "box"],
+  "dependencies": ["@mwillbanks/tuil-ink"]
+}
+```
+
+Configure sources in `tuil.config.ts`, using HTTPS outside explicit loopback
+development:
+
+```tsx
+export default defineConfig({
+  registry: {
+    sources: [
+      "https://registry.example.com/tuil/index.json",
+      { id: "local", url: "http://127.0.0.1:4100/index.json" },
+    ],
+  },
+});
+```
+
+Validate relative paths, reject credentials or query fragments in source URLs,
+pin integrity, and test dependency cycles before publishing.

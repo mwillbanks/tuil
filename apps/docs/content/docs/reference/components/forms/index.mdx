@@ -1,0 +1,84 @@
+---
+title: "Forms and controls"
+description: "Connect semantic terminal controls to typed form state, validation, descriptions, errors, hints, and submission."
+icon: BracketsCurly
+---
+
+import { formsStory as ComponentStory } from '@/components/reference-stories.story';
+
+## Overview
+
+Connect semantic terminal controls to typed form state, validation, descriptions, errors, hints, and submission.
+
+## Installation
+
+```npm
+npx @mwillbanks/tuil add field text-input text-area number-input checkbox switch radio-group select multi-select autocomplete
+```
+
+The CLI writes source-owned components beneath the destination configured in
+`tuil.config.ts`; the default import below assumes `src/components/tuil`.
+
+<ComponentStory.WithControl />
+
+## Components and subcomponents
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `Form` | function | `registry/forms/controls.tsx` |
+| `ValidationSummary` | function | `registry/forms/controls.tsx` |
+| `Field` | function | `registry/forms/controls.tsx` |
+| `FieldLabel` | constant | `registry/forms/controls.tsx` |
+| `FieldDescription` | constant | `registry/forms/controls.tsx` |
+| `FieldError` | constant | `registry/forms/controls.tsx` |
+| `FieldHint` | constant | `registry/forms/controls.tsx` |
+| `FieldGroup` | constant | `registry/forms/controls.tsx` |
+| `FieldSet` | constant | `registry/forms/controls.tsx` |
+| `TextInput` | function | `registry/forms/controls.tsx` |
+| `TextArea` | function | `registry/forms/controls.tsx` |
+| `NumberInput` | function | `registry/forms/controls.tsx` |
+| `Checkbox` | function | `registry/forms/controls.tsx` |
+| `Switch` | function | `registry/forms/controls.tsx` |
+| `RadioGroup` | function | `registry/forms/controls.tsx` |
+| `Select` | function | `registry/forms/controls.tsx` |
+| `MultiSelect` | function | `registry/forms/controls.tsx` |
+| `Autocomplete` | function | `registry/forms/controls.tsx` |
+
+## Interaction
+
+Text controls edit directly; choice controls use arrows and Space or Enter; `Form` coordinates validation and submission.
+
+## API and events
+
+Controls expose `onValueChange`, `onSubmit`, focus, selection, and validation callbacks.
+
+Every interactive component publishes semantic roles, labels, state, and focus
+identity through the renderer's `SemanticRegistry`. Callback failures flow to
+the owning application's error boundary.
+
+```mermaid
+flowchart LR
+  S0["props and runtime state"]
+  S1["semantic registration"]
+  S2["focus and input routing"]
+  S3["callback or state update"]
+  S4["rerender"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+```
+
+## Example
+
+```tsx
+import type { ComponentProps } from "react";
+import { Form } from "@/components/tuil/forms/controls";
+
+export function Example(props: ComponentProps<typeof Form>) {
+  return <Form {...props} />;
+}
+```
+
+Registry-installed components are source-owned: customize the generated file in
+your application, and use the package reference for the shared runtime contracts.

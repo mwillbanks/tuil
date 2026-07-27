@@ -1,0 +1,37 @@
+---
+title: Packages
+description: How the focused packages compose into the umbrella runtime.
+icon: Package
+---
+
+## Dependency direction
+
+```mermaid
+flowchart TB
+  Core["core"] --> Events["events"]
+  Core --> Focus["focus"]
+  Core --> Hotkeys["hotkeys"]
+  Core --> Theme["theme"]
+  Events --> Tuil["tuil runtime"]
+  Focus --> Tuil
+  Hotkeys --> Tuil
+  Theme --> Tuil
+  Tuil --> Ink["ink adapter"]
+  Tuil --> Router["router"]
+  Tuil --> Plugin["plugin"]
+  Tuil --> Operations["operations"]
+  Operations --> Workflow["workflow"]
+  Ink --> Components["registry components"]
+  Theme --> Components
+  Workflow --> Components
+  Components --> Story["story"]
+  Story --> Testing["testing adapters"]
+```
+
+Install `@mwillbanks/tuil` for the integrated application boundary. Install
+focused packages when building an adapter, plugin, test harness, or reusable
+library that should not depend on the full runtime.
+
+The [package reference](/docs/reference/packages) is generated from current
+source declarations and adds an operational model, lifecycle, events, and
+example for every workspace package.

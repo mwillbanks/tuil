@@ -168,7 +168,7 @@ test("phase five ships every ecosystem surface with executable validation", asyn
     "packages/story/src/browser.tsx",
     "packages/story/src/static.ts",
     "apps/docs/source.config.ts",
-    "apps/docs/content/docs/components/initializer-preview.tsx",
+    "apps/docs/src/components/reference-story.tsx",
     "apps/showcase/.storybook/main.ts",
     "packages/devtools/src/index.tsx",
     ".release-please-manifest.json",

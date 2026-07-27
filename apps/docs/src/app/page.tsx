@@ -19,6 +19,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Brand } from "@/components/brand";
+import { type DocsLocale, localizeDocsHref } from "@/lib/i18n";
 import { baseOptions } from "@/lib/layout.shared";
 
 const basePath = process.env["NEXT_PUBLIC_BASE_PATH"] ?? "";
@@ -51,10 +52,12 @@ const packageSignals = [
   ["workflows", "persistent + resumable"],
 ];
 
-export default function HomePage(): ReactNode {
+export function HomePageContent(props: {
+  readonly locale: DocsLocale;
+}): ReactNode {
   return (
-    <HomeLayout {...baseOptions()}>
-      <main className="home-shell">
+    <HomeLayout {...baseOptions(props.locale)}>
+      <main className="home-shell" lang={props.locale}>
         <section className="hero-section">
           <div className="hero-grid" aria-hidden="true" />
           <div className="hero-aurora hero-aurora-cyan" aria-hidden="true" />
@@ -80,7 +83,13 @@ export default function HomePage(): ReactNode {
               production runtime that stays out of your way.
             </p>
             <div className="hero-actions">
-              <Link className="primary-action" href="/docs">
+              <Link
+                className="primary-action"
+                href={localizeDocsHref(
+                  "/docs/introduction/quick-start",
+                  props.locale,
+                )}
+              >
                 Start building
                 <ArrowRight aria-hidden="true" className="action-icon" />
               </Link>
@@ -194,7 +203,13 @@ export default function HomePage(): ReactNode {
               boundaries. Every part shares typed contracts, deterministic
               teardown, and semantic testing.
             </p>
-            <Link className="architecture-action" href="/docs/architecture">
+            <Link
+              className="architecture-action"
+              href={localizeDocsHref(
+                "/docs/concepts/architecture",
+                props.locale,
+              )}
+            >
               Explore the architecture
               <ArrowRight className="action-icon" />
             </Link>
@@ -237,12 +252,16 @@ export default function HomePage(): ReactNode {
             <p>YOUR TERMINAL DESERVES A DESIGN SYSTEM</p>
             <h2>Ship an interface people want to use.</h2>
           </div>
-          <Link href="/docs/guides">
-            Read the guides
+          <Link href="/playground">
+            Open the playground
             <ArrowRight className="action-icon" />
           </Link>
         </section>
       </main>
     </HomeLayout>
   );
+}
+
+export default function HomePage(): ReactNode {
+  return <HomePageContent locale="en" />;
 }

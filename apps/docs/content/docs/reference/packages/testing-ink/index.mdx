@@ -1,0 +1,68 @@
+---
+title: "@mwillbanks/tuil-testing-ink"
+description: "Ink-backed renderer and interaction harness for testing tuil applications."
+icon: Package
+---
+
+## Overview
+
+Ink-backed renderer and interaction harness for testing tuil applications.
+
+`@mwillbanks/tuil-testing-ink` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-testing-ink
+```
+
+## How it operates
+
+The Ink test renderer creates a real tuil runtime and semantic registry around `ink-testing-library`, then coordinates input, resize, frame, event, focus, and cleanup helpers.
+
+```mermaid
+flowchart LR
+  S0["render runtime"]
+  S1["interact"]
+  S2["flush"]
+  S3["inspect"]
+  S4["unmount"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `cleanup` | function | `packages/testing-ink/src/index.ts` |
+| `normalizeTerminalFrame` | export | `packages/testing-ink/src/index.ts` |
+| `renderTuil` | function | `packages/testing-ink/src/index.ts` |
+| `screen` | constant | `packages/testing-ink/src/index.ts` |
+| `SemanticScreen` | export | `packages/testing-ink/src/index.ts` |
+| `TuilTestInstance` | interface | `packages/testing-ink/src/index.ts` |
+| `TuilUser` | class | `packages/testing-ink/src/index.ts` |
+| `user` | constant | `packages/testing-ink/src/index.ts` |
+
+## Events and lifecycle
+
+Tests can inspect event history and wait on rendered state after input settles.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+const view = renderTuil(<Button id="run">Run</Button>);
+await view.press("enter");
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

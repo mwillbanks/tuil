@@ -1,0 +1,81 @@
+---
+title: Quick Start
+description: Create, run, and extend your first tuil application.
+icon: RocketLaunch
+---
+
+## Prerequisites
+
+- Bun 1.3.14 or newer
+- A terminal with color and Unicode support
+- React experience; Ink experience is useful but not required
+
+## Create the application
+
+The initializer owns package selection, configuration, application structure,
+and the first runnable screen:
+
+```npm
+npx @mwillbanks/tuil create my-terminal-app
+cd my-terminal-app
+npm run dev
+```
+
+The generated entry point defines one application boundary and passes it to the
+Ink renderer:
+
+```tsx
+import { createApp } from "@mwillbanks/tuil";
+import { Box, Heading, Text, render } from "@mwillbanks/tuil-ink";
+
+function App() {
+  return (
+    <Box flexDirection="column" padding="md">
+      <Heading>My first tuil</Heading>
+      <Text label="Status">Runtime ready.</Text>
+    </Box>
+  );
+}
+
+const app = createApp({
+  id: "my-terminal-app",
+  component: App,
+});
+
+const instance = render(<App />, { app });
+await instance.waitUntilExit();
+```
+
+## Add a component
+
+Registry components are copied into your project so you own their source:
+
+```npm
+npx @mwillbanks/tuil add button field text-input
+```
+
+The CLI resolves transitive registry dependencies, detects every destination
+conflict before writing, and leaves unrelated project files untouched.
+
+## Add runtime behavior
+
+Define events next to the application boundary:
+
+```tsx
+import { createApp, defineEvents, event } from "@mwillbanks/tuil";
+
+const app = createApp({
+  component: App,
+  events: defineEvents({
+    "task:completed": event<{ id: string }>(),
+  }),
+});
+
+app.events.on("task:completed", ({ payload }) => {
+  console.log(`Completed ${payload.id}`);
+});
+```
+
+Continue with [What is tuil?](./what-is-tuil), then use the
+[architecture guide](/docs/concepts/architecture) to choose the right package
+boundaries.

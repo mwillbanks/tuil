@@ -1,0 +1,39 @@
+---
+title: Theming
+description: Tokens, variants, slots, registries, capabilities, and live theme state.
+icon: Palette
+---
+
+Themes are data, not global terminal mutations. A normalized theme contains
+color and spacing tokens, component defaults, variants, slots, and capability
+requirements.
+
+```tsx
+const ocean = createTheme({
+  id: "ocean",
+  colors: {
+    foreground: "#eafcff",
+    background: "#071014",
+    primary: "#16e0e6",
+  },
+});
+```
+
+## Resolution
+
+```mermaid
+flowchart LR
+  Props["component props"] --> Variant["theme variant"]
+  Variant --> Defaults["component defaults"]
+  Defaults --> Slots["slot props"]
+  Slots --> Capabilities["color and terminal capabilities"]
+  Capabilities --> Ink["resolved Ink props"]
+```
+
+`ThemeController` is the live state owner. React consumers subscribe with
+`useSyncExternalStore`, so theme updates are tear-free and observable outside
+React. Static `ThemeProvider` usage remains available for isolated rendering and
+tests.
+
+Use [Theme customization](/docs/guides/theme-customization) for an end-to-end
+example.

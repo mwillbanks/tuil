@@ -1,32 +1,56 @@
 ---
-title: tuil
-description: A production terminal UI framework for React and Ink.
+title: Introduction
+description: Build production terminal applications with one typed React runtime.
+icon: TerminalWindow
 ---
 
-tuil combines composable terminal components with application runtime services,
-forms, routing, workflows, operations, plugins, registries, testing, and
-portable component stories.
+tuil is a React and Ink framework for terminal applications that need more than
+rendered text. It coordinates lifecycle, typed events, services, commands,
+focus, hotkeys, routes, forms, workflows, operations, themes, plugins,
+source-owned components, semantic tests, and portable stories.
 
-## Start here
+## Choose a path
 
-Install the runtime and Ink adapter:
+<Cards>
+  <Card title="Build your first app" href="/docs/introduction/quick-start">
+    Scaffold a project with the CLI, run it, and understand the generated
+    runtime boundary.
+  </Card>
+  <Card title="Understand the architecture" href="/docs/concepts/architecture">
+    Follow ownership and data flow from the application runtime to terminal
+    rendering.
+  </Card>
+  <Card title="Browse packages" href="/docs/reference/packages">
+    Inspect every package, export, lifecycle contract, event surface, and
+    focused example.
+  </Card>
+  <Card title="Explore components" href="/docs/reference/components">
+    Open interactive stories for components, subcomponents, controls,
+    callbacks, and semantics.
+  </Card>
+</Cards>
 
-```npm
-npm install @mwillbanks/tuil @mwillbanks/tuil-ink ink react
+## The runtime at a glance
+
+```mermaid
+flowchart LR
+  CLI["CLI and registry"] --> App["TuilApp"]
+  App --> Services["services and commands"]
+  App --> Runtime["events, focus, hotkeys, routes"]
+  Runtime --> Ink["Ink adapter"]
+  Ink --> UI["components and application blocks"]
+  UI --> Semantics["semantic tests and stories"]
+  App --> Extensions["plugins and typed extension points"]
 ```
 
-Create a project with the self-hosted initializer:
+## Install
+
+Use the umbrella package when you want the complete runtime:
 
 ```npm
-npx @mwillbanks/tuil init
+npm install @mwillbanks/tuil @mwillbanks/tuil-ink react ink
 ```
 
-You can also use `createApp` and `@mwillbanks/tuil-ink` directly for a custom
-runtime.
-
-From a source checkout, the native playground is authoritative for input,
-focus, resizing, terminal capability, and theme behavior:
-
-```npm
-bun run playground
-```
+Focused packages are independently installable. The [package
+reference](/docs/reference/packages) documents ownership and compatibility for
+each boundary.

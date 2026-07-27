@@ -1,0 +1,35 @@
+---
+title: Testing
+description: Test terminal behavior through semantics, frames, events, focus, and portable stories.
+icon: TestTube
+---
+
+```tsx
+const view = renderTuil(
+  <Button id="run" label="Run build" onPress={() => calls.push("run")}>
+    Run
+  </Button>,
+);
+
+expect(view.screen.getByRole("button", { name: "Run build" })).toBeEnabled();
+await view.press("enter");
+expect(calls).toEqual(["run"]);
+await view.unmount();
+```
+
+## Test layers
+
+1. Pure unit tests for resolvers, reducers, virtual ranges, and formatters.
+2. Semantic component tests for role, label, state, focus, and callbacks.
+3. Frame assertions for output where visual layout is the contract.
+4. Runtime tests for lifecycle, events, plugins, routing, and teardown.
+5. Portable stories for cross-surface component states.
+
+## Capability matrix
+
+Test interactive and static modes, narrow and wide viewports, Unicode and ASCII,
+reduced motion, color depths, and non-TTY redirected output when the component
+branches on those capabilities.
+
+Portable story frames published in the [Playground](/playground) and
+[Showcase](/showcase) use the same renderer and semantic capture as tests.

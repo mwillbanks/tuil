@@ -1,0 +1,13 @@
+{
+  "title": "Concepts",
+  "icon": "TreeStructure",
+  "defaultOpen": true,
+  "pages": [
+    "architecture",
+    "events",
+    "theming",
+    "registry",
+    "packages",
+    "extensibility"
+  ]
+}

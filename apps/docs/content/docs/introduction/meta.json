@@ -1,0 +1,6 @@
+{
+  "title": "Introduction",
+  "icon": "RocketLaunch",
+  "defaultOpen": true,
+  "pages": ["quick-start", "what-is-tuil", "comparisons"]
+}

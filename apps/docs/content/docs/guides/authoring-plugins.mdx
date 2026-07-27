@@ -1,0 +1,42 @@
+---
+title: Authoring Plugins
+description: Build dependency-aware plugins with typed events and extension points.
+icon: Plugs
+---
+
+```tsx
+const analytics = createPlugin({
+  id: "analytics",
+  capabilities: ["events"],
+  register(context) {
+    const disposeRoute = context.extensions.routes.register({
+      id: "analytics",
+    });
+    return () => disposeRoute();
+  },
+  activate(context) {
+    return context.events.observe((event) => track(event));
+  },
+});
+```
+
+## Rules
+
+- IDs are stable and unique.
+- Dependencies name other plugins; capabilities name host features.
+- Registration creates definitions and extension contributions.
+- Activation starts behavior after all dependencies are registered.
+- Every hook returns or owns its teardown.
+- Health reporting must not mutate application state.
+
+```mermaid
+stateDiagram-v2
+  [*] --> resolved
+  resolved --> registered
+  registered --> initialized
+  initialized --> active
+  active --> inactive
+  inactive --> disposed
+  registered --> rolledBack: failure
+  initialized --> rolledBack: failure
+```

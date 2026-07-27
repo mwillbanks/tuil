@@ -1,0 +1,41 @@
+---
+title: Theme Customization
+description: Define tokens, variants, slots, capability fallbacks, and live switching.
+icon: Palette
+---
+
+```tsx
+const theme = createTheme({
+  id: "company-dark",
+  colors: {
+    foreground: "#eef3ff",
+    background: "#070a12",
+    primary: "#16e0e6",
+    accent: "#eb3eba",
+  },
+  spacing: {
+    sm: 1,
+    md: 2,
+    lg: 3,
+  },
+  components: {
+    Button: {
+      variants: {
+        danger: { color: "#ff6b8a", bold: true },
+      },
+    },
+  },
+});
+```
+
+Register themes once and switch the live controller:
+
+```tsx
+const themes = createDefaultThemeRegistry();
+themes.register(theme);
+app.themeController.set(themes.resolve("company-dark"));
+```
+
+Use slots when a component exposes internal structure, variants for named visual
+states, and `unstyled` when an application takes full rendering ownership.
+Always verify 1-bit, 4-bit, 8-bit, and truecolor capability fallbacks.

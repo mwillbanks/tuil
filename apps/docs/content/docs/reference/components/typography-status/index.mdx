@@ -1,0 +1,70 @@
+---
+title: "Typography and status"
+description: "Render styled terminal copy, hierarchy, separators, labels, and compact status signals with semantic metadata."
+icon: BookOpenText
+---
+
+import { typographyStory as ComponentStory } from '@/components/reference-stories.story';
+
+## Overview
+
+Render styled terminal copy, hierarchy, separators, labels, and compact status signals with semantic metadata.
+
+## Installation
+
+```npm
+npx @mwillbanks/tuil add text heading divider badge
+```
+
+The CLI writes source-owned components beneath the destination configured in
+`tuil.config.ts`; the default import below assumes `src/components/tuil`.
+
+<ComponentStory.WithControl />
+
+## Components and subcomponents
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `Text` | function | `registry/data-display/text.tsx` |
+| `Heading` | function | `registry/data-display/heading.tsx` |
+| `Divider` | function | `registry/data-display/divider.tsx` |
+| `Badge` | function | `registry/data-display/badge.tsx` |
+
+## Interaction
+
+Read-only presentation; accessibility lives in semantic role and label metadata.
+
+## API and events
+
+No events are emitted.
+
+Every interactive component publishes semantic roles, labels, state, and focus
+identity through the renderer's `SemanticRegistry`. Callback failures flow to
+the owning application's error boundary.
+
+```mermaid
+flowchart LR
+  S0["props and runtime state"]
+  S1["semantic registration"]
+  S2["focus and input routing"]
+  S3["callback or state update"]
+  S4["rerender"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+```
+
+## Example
+
+```tsx
+import type { ComponentProps } from "react";
+import { Text } from "@/components/tuil/data-display/text";
+
+export function Example(props: ComponentProps<typeof Text>) {
+  return <Text {...props} />;
+}
+```
+
+Registry-installed components are source-owned: customize the generated file in
+your application, and use the package reference for the shared runtime contracts.

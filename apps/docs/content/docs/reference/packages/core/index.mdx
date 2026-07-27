@@ -1,0 +1,92 @@
+---
+title: "@mwillbanks/tuil-core"
+description: "Core runtime, lifecycle, capability, command, semantic, and terminal contracts for tuil."
+icon: Package
+---
+
+## Overview
+
+Core runtime, lifecycle, capability, command, semantic, and terminal contracts for tuil.
+
+`@mwillbanks/tuil-core` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-core
+```
+
+## How it operates
+
+Core owns the framework-neutral contracts used by every adapter: lifecycle stages, services, commands, terminal capabilities, semantic metadata, disposables, and render-mode resolution.
+
+```mermaid
+flowchart LR
+  S0["configuration"]
+  S1["initialization"]
+  S2["mount"]
+  S3["ready"]
+  S4["stop"]
+  S5["disposal"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+  S4 --> S5
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `AppLifecycleState` | type | `packages/core/src/lifecycle.ts` |
+| `ColorDepth` | type | `packages/core/src/terminal.ts` |
+| `Command` | interface | `packages/core/src/commands.ts` |
+| `CommandContext` | interface | `packages/core/src/commands.ts` |
+| `CommandExecution` | interface | `packages/core/src/commands.ts` |
+| `CommandRegistry` | class | `packages/core/src/commands.ts` |
+| `CommandRegistryChange` | type | `packages/core/src/commands.ts` |
+| `defineCommand` | function | `packages/core/src/commands.ts` |
+| `defineService` | function | `packages/core/src/services.ts` |
+| `deleteOnDispose` | function | `packages/core/src/disposable.ts` |
+| `detectTerminalCapabilities` | function | `packages/core/src/terminal.ts` |
+| `Disposable` | interface | `packages/core/src/disposable.ts` |
+| `DisposableStack` | class | `packages/core/src/disposable.ts` |
+| `Disposer` | type | `packages/core/src/disposable.ts` |
+| `Lifecycle` | class | `packages/core/src/lifecycle.ts` |
+| `RenderMode` | type | `packages/core/src/terminal.ts` |
+| `resolveRenderMode` | function | `packages/core/src/terminal.ts` |
+| `resolveTerminalViewport` | function | `packages/core/src/terminal.ts` |
+| `SemanticMetadata` | interface | `packages/core/src/semantics.ts` |
+| `SemanticRole` | type | `packages/core/src/semantics.ts` |
+| `ServiceContainer` | class | `packages/core/src/services.ts` |
+| `ServiceDefinition` | interface | `packages/core/src/services.ts` |
+| `ServiceFactoryContext` | interface | `packages/core/src/services.ts` |
+| `ServiceMap` | type | `packages/core/src/services.ts` |
+| `TerminalBounds` | interface | `packages/core/src/semantics.ts` |
+| `TerminalCapabilities` | interface | `packages/core/src/terminal.ts` |
+| `TerminalCapabilityInput` | interface | `packages/core/src/terminal.ts` |
+| `TerminalViewport` | type | `packages/core/src/terminal.ts` |
+| `terminalViewportBreakpoints` | constant | `packages/core/src/terminal.ts` |
+| `toDisposable` | function | `packages/core/src/disposable.ts` |
+
+## Events and lifecycle
+
+Core defines lifecycle state but does not own the event transport. The umbrella runtime projects lifecycle transitions onto `app:*` events.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+const lifecycle = new Lifecycle();
+await lifecycle.transition("initializing");
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

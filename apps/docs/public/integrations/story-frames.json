@@ -1,0 +1,160 @@
+[
+  {
+    "id": "init-wizard:Default",
+    "storyId": "init-wizard",
+    "storyTitle": "Application/Initializer",
+    "variant": "Default",
+    "frame": "# tuil init\n[●] Name [○] Template [○] Features [○] Confirm\n\nRoute: starting\n\nProject name *\nmy-tuil-app▌\n\nNo operations\n\n [ Cancel ]\nTab navigate · Enter select · Ctrl+C cancel",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Project name (textbox)", "Cancel (button)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "init-wizard:StaticFallback",
+    "storyId": "init-wizard",
+    "storyTitle": "Application/Initializer",
+    "variant": "StaticFallback",
+    "frame": "# tuil init\n[*] Name [o] Template [o] Features [o] Confirm\n\nRoute: starting\n\nProject name *\nstatic-tuil-app\n\nNo operations\n\n-Cancel\nTab navigate · Enter select · Ctrl+C cancel",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Project name (textbox)", "Cancel (button)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": false
+    }
+  },
+  {
+    "id": "data:All",
+    "storyId": "data",
+    "storyTitle": "Components/Complex data",
+    "variant": "All",
+    "frame": "Task            Status\nAPI             ready\nDocs            running\nRelease         queued\n▾ src\n    app.tsx\n    theme.ts\n\nINFO compile complete\nINFO tests passed\nINFO release ready\nFollowing output · 3/3 visible · 3 retained",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Release tasks (table)", "Files (tree)", "Build logs (status)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "data:Release",
+    "storyId": "data",
+    "storyTitle": "Components/Complex data",
+    "variant": "Release",
+    "frame": "Task            Status\nAPI             ready\nDocs            running\nRelease         queued\n▾ src\n    app.tsx\n    theme.ts\n\nINFO release ready\n\n\nFollowing output · 1/3 visible · 3 retained",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Release tasks (table)", "Files (tree)", "Build logs (status)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "forms:Project",
+    "storyId": "forms",
+    "storyTitle": "Components/Forms",
+    "variant": "Project",
+    "frame": "Project name *\nmy-app▌\n[●] Initialize Git\n▶ TypeScript",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [
+      "Project name (textbox)",
+      "Initialize Git (checkbox)",
+      "Language (listbox)"
+    ],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "forms:JavaScript",
+    "storyId": "forms",
+    "storyTitle": "Components/Forms",
+    "variant": "JavaScript",
+    "frame": "Project name *\nterminal-app▌\n[●] Initialize Git\n▶ JavaScript",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [
+      "Project name (textbox)",
+      "Initialize Git (checkbox)",
+      "Language (listbox)"
+    ],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "foundation:Running",
+    "storyId": "foundation",
+    "storyTitle": "Components/Foundation",
+    "variant": "Running",
+    "frame": "╭──────────────────────────────────────────────────────────────────────────────╮\n│# Build pipeline                                                              │\n│[running]                                                                     │\n│[████████████░░░░░░░░] 62%                                                    │\n│▶[ Run build ]                                                                │\n╰──────────────────────────────────────────────────────────────────────────────╯",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Run build (button)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "foundation:Complete",
+    "storyId": "foundation",
+    "storyTitle": "Components/Foundation",
+    "variant": "Complete",
+    "frame": "╭──────────────────────────────────────────────────────────╮\n│# Build pipeline                                          │\n│[complete]                                                │\n│[████████████████████] 100%                               │\n│▶[ Run build ]                                            │\n╰──────────────────────────────────────────────────────────╯",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Run build (button)"],
+    "controls": {
+      "width": 60,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "navigation:Overview",
+    "storyId": "navigation",
+    "storyTitle": "Components/Navigation",
+    "variant": "Overview",
+    "frame": "Overview Settings\nOverview panel\nTab to focus",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Application sections (tab)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "navigation:Settings",
+    "storyId": "navigation",
+    "storyTitle": "Components/Navigation",
+    "variant": "Settings",
+    "frame": "Overview Settings\nSettings panel\nTab to focus",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Application sections (tab)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  }
+]

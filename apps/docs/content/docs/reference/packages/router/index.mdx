@@ -1,0 +1,79 @@
+---
+title: "@mwillbanks/tuil-router"
+description: "Typed terminal routes, guards, history, loaders, layouts, and focus restoration for tuil."
+icon: Package
+---
+
+## Overview
+
+Typed terminal routes, guards, history, loaders, layouts, and focus restoration for tuil.
+
+`@mwillbanks/tuil-router` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-router
+```
+
+## How it operates
+
+The terminal router matches typed routes, executes guards and loaders, manages history and layouts, exposes navigation surfaces, and restores focus after transitions.
+
+```mermaid
+flowchart LR
+  S0["intent"]
+  S1["match"]
+  S2["before guards"]
+  S3["loader"]
+  S4["commit"]
+  S5["focus restore"]
+  S6["after hooks"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+  S4 --> S5
+  S5 --> S6
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `createRouter` | function | `packages/router/src/index.ts` |
+| `defineRoutes` | function | `packages/router/src/index.ts` |
+| `FocusSnapshot` | interface | `packages/router/src/index.ts` |
+| `NavigationEntry` | interface | `packages/router/src/index.ts` |
+| `NavigationSurface` | type | `packages/router/src/index.ts` |
+| `NavigationTarget` | type | `packages/router/src/index.ts` |
+| `route` | function | `packages/router/src/index.ts` |
+| `RouteContext` | interface | `packages/router/src/index.ts` |
+| `RouteDefinition` | interface | `packages/router/src/index.ts` |
+| `RouteMatch` | interface | `packages/router/src/index.ts` |
+| `RouterEvent` | interface | `packages/router/src/index.ts` |
+| `RouterEventType` | type | `packages/router/src/index.ts` |
+| `RouterState` | interface | `packages/router/src/index.ts` |
+| `TerminalRouter` | class | `packages/router/src/index.ts` |
+| `TerminalRouterOptions` | interface | `packages/router/src/index.ts` |
+
+## Events and lifecycle
+
+`router:navigation-start`, `router:navigation-complete`, `router:navigation-cancel`, and `router:navigation-error` describe transition outcomes.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+const router = createRouter(defineRoutes({ home: route({ path: "/" }) }));
+await router.navigate("home");
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

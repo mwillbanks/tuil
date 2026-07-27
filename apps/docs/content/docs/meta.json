@@ -1,13 +1,12 @@
 {
+  "title": "tuil",
   "pages": [
     "index",
+    "introduction",
+    "concepts",
     "guides",
-    "api",
-    "components",
-    "registry",
-    "architecture",
-    "examples",
-    "skills",
-    "migration"
+    "reference",
+    "[Play][Playground](/playground)",
+    "[Sparkle][Showcase](/showcase)"
   ]
 }

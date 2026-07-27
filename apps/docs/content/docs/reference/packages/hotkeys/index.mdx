@@ -1,0 +1,75 @@
+---
+title: "@mwillbanks/tuil-hotkeys"
+description: "Scoped terminal hotkeys, chords, and key sequences for tuil."
+icon: Package
+---
+
+## Overview
+
+Scoped terminal hotkeys, chords, and key sequences for tuil.
+
+`@mwillbanks/tuil-hotkeys` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-hotkeys
+```
+
+## How it operates
+
+Hotkey bindings normalize terminal input, match chords and sequences, honor active scopes, resolve priorities, and dispose cleanly.
+
+```mermaid
+flowchart LR
+  S0["register"]
+  S1["scope match"]
+  S2["sequence match"]
+  S3["dispatch"]
+  S4["dispose"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `Hotkey` | function | `packages/hotkeys/src/index.ts` |
+| `HotkeyBinding` | interface | `packages/hotkeys/src/index.ts` |
+| `HotkeyConflict` | interface | `packages/hotkeys/src/index.ts` |
+| `HotkeyDispatchContext` | interface | `packages/hotkeys/src/index.ts` |
+| `HotkeyEvent` | interface | `packages/hotkeys/src/index.ts` |
+| `HotkeyLayer` | function | `packages/hotkeys/src/index.ts` |
+| `HotkeyManager` | class | `packages/hotkeys/src/index.ts` |
+| `HotkeyMetadata` | interface | `packages/hotkeys/src/index.ts` |
+| `HotkeyProvider` | function | `packages/hotkeys/src/index.ts` |
+| `HotkeyScope` | type | `packages/hotkeys/src/index.ts` |
+| `normalizeHotkeyNotation` | function | `packages/hotkeys/src/index.ts` |
+| `normalizeTerminalKey` | function | `packages/hotkeys/src/index.ts` |
+| `TerminalKey` | interface | `packages/hotkeys/src/index.ts` |
+| `useHotkey` | function | `packages/hotkeys/src/index.ts` |
+| `useHotkeyManager` | function | `packages/hotkeys/src/index.ts` |
+| `useHotkeys` | function | `packages/hotkeys/src/index.ts` |
+
+## Events and lifecycle
+
+Bindings invoke handlers directly. Dispatch failures are routed to the caller-supplied error handler.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+hotkeys.register({ keys: "ctrl+s", scope: "application", handler: save });
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

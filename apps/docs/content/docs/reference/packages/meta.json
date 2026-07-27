@@ -1,0 +1,26 @@
+{
+  "title": "Packages",
+  "icon": "Package",
+  "pages": [
+    "index",
+    "cli",
+    "core",
+    "devtools",
+    "events",
+    "focus",
+    "form",
+    "hotkeys",
+    "ink",
+    "operations",
+    "plugin",
+    "registry",
+    "router",
+    "story",
+    "testing",
+    "testing-ink",
+    "theme",
+    "tuil",
+    "virtual",
+    "workflow"
+  ]
+}

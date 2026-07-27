@@ -1,0 +1,60 @@
+---
+title: "@mwillbanks/tuil-virtual"
+description: "Terminal-aware virtual lists and viewport primitives for tuil."
+icon: Package
+---
+
+## Overview
+
+Terminal-aware virtual lists and viewport primitives for tuil.
+
+`@mwillbanks/tuil-virtual` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-virtual
+```
+
+## How it operates
+
+Terminal virtualization adapts TanStack Virtual measurements to rows and columns, returning visible indexes, overscan, before/after space, and fixed-width text fitting.
+
+```mermaid
+flowchart LR
+  S0["measure viewport"]
+  S1["project range"]
+  S2["render visible rows"]
+  S3["remeasure"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `getVisibleTerminalIndexes` | function | `packages/virtual/src/index.ts` |
+| `TerminalVirtualizerOptions` | interface | `packages/virtual/src/index.ts` |
+| `TerminalVirtualRange` | interface | `packages/virtual/src/index.ts` |
+
+## Events and lifecycle
+
+Virtualization is pure or subscription-driven at the component layer; no global events are emitted.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+const range = useTerminalVirtualizer({ count: 10_000, viewportSize: 20, scrollOffset });
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

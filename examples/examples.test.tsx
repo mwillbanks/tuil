@@ -178,7 +178,7 @@ test("full-screen example transitions, handles menus, prompts, and resizes", asy
     { meta: true },
     { activeScopes: { application: true } },
   );
-  await Bun.sleep(10);
+  await Bun.sleep(50);
   await fullScreen.user.press("enter");
   expect(fullScreen.screen.frame()).toContain("Selected Keyboard shortcuts");
 

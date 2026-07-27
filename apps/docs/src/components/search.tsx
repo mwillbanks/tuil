@@ -14,22 +14,26 @@ import {
   SearchDialogOverlay,
   type SharedProps,
 } from "fumadocs-ui/components/dialog/search";
+import { usePathname } from "next/navigation";
+import { localeFromPath } from "@/lib/i18n";
 
 const basePath = process.env["NEXT_PUBLIC_BASE_PATH"] ?? "";
 const searchEndpoint = `${basePath}/api/search`;
 
-function initOrama() {
+function initOrama(locale?: string) {
   return create({
-    language: "english",
+    language: locale === "es" ? "spanish" : "english",
     schema: { _: "string" },
   });
 }
 
 export default function StaticSearchDialog(props: SharedProps) {
+  const locale = localeFromPath(usePathname());
   const { query, search, setSearch } = useDocsSearch({
     client: oramaStaticClient({
       from: searchEndpoint,
       initOrama,
+      locale,
     }),
   });
 

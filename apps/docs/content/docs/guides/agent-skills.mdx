@@ -1,0 +1,21 @@
+---
+title: Agent Skills
+description: Install and use tuil's framework-specific authoring guidance.
+icon: MagicWand
+---
+
+The published CLI distributes skills for component authoring, applications,
+forms, plugins, workflows, registries, and testing.
+
+```npm
+npx @mwillbanks/tuil skills list
+npx @mwillbanks/tuil skills install
+```
+
+Installation validates every target and reports all collisions before writing.
+Use `--force` only when replacing colliding bundled skill directories is
+intentional.
+
+Skills describe package boundaries and verification expectations; they do not
+replace the [package reference](/docs/reference/packages) or application-specific
+repository instructions.

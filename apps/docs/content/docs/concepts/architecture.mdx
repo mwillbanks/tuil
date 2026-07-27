@@ -1,0 +1,134 @@
+---
+title: Architecture
+description: Runtime ownership, package layers, lifecycle, and end-to-end control flow.
+icon: TreeStructure
+---
+
+## System layers
+
+```mermaid
+flowchart TB
+  subgraph Authoring["Authoring and distribution"]
+    CLI["tuil CLI"]
+    Registry["component and skill registries"]
+    Stories["portable story catalog"]
+  end
+  subgraph Application["Application boundary"]
+    App["TuilApp"]
+    Lifecycle["Lifecycle"]
+    Services["ServiceContainer"]
+    Commands["CommandRegistry"]
+    Plugins["PluginManager and extension registries"]
+  end
+  subgraph Interaction["Interaction services"]
+    Events["EventBus"]
+    Focus["FocusManager"]
+    Hotkeys["HotkeyManager"]
+    Router["TerminalRouter"]
+    Forms["Forms"]
+    Workflows["Workflows and operations"]
+    Themes["ThemeController"]
+  end
+  subgraph Rendering["Rendering and verification"]
+    Ink["Ink adapter"]
+    Components["components and blocks"]
+    Semantics["SemanticRegistry"]
+    Tests["tests, docs, playground, showcase"]
+  end
+  CLI --> App
+  Registry --> Components
+  App --> Lifecycle
+  App --> Services
+  App --> Commands
+  App --> Plugins
+  App --> Events
+  App --> Focus
+  App --> Hotkeys
+  Plugins --> Router
+  Plugins --> Forms
+  Plugins --> Workflows
+  App --> Themes
+  App --> Ink
+  Ink --> Components
+  Components --> Semantics
+  Stories --> Tests
+  Semantics --> Tests
+```
+
+The `TuilApp` instance is the ownership root. It constructs runtime services,
+registers plugins, exposes typed extension registries, and disposes resources in
+reverse ownership order.
+
+## Application lifecycle
+
+```mermaid
+stateDiagram-v2
+  [*] --> configured
+  configured --> initializing: initialize()
+  initializing --> initialized: services + plugins ready
+  initialized --> mounting: mount()
+  mounting --> mounted: renderer attached
+  mounted --> ready: ready()
+  ready --> stopping: stop()
+  stopping --> disposed: reverse teardown
+  configured --> failed: reportError()
+  initializing --> failed: reportError()
+  mounting --> failed: reportError()
+  ready --> failed: reportError()
+  failed --> stopping
+  disposed --> [*]
+```
+
+Every stage has a matching `app:*` event. Errors are reported through
+`app:error`, then the configured error handler. Teardown is idempotent so error
+paths and normal exit share the same ownership rules.
+
+## Input flow
+
+```mermaid
+flowchart LR
+  Bytes["terminal bytes"] --> Ink["Ink useInput"]
+  Ink --> Overlay["top overlay handler"]
+  Overlay --> Layer["scoped input layer"]
+  Layer --> Hotkey["hotkey manager"]
+  Hotkey --> Focus["default focus traversal"]
+  Focus --> Component["semantic component callback"]
+  Component --> State["runtime or application state"]
+  State --> Render["React rerender"]
+```
+
+The first consumer that handles input stops the chain. Active overlays suppress
+application hotkeys, and input errors flow to `app.reportError()` instead of
+escaping through an unobserved promise.
+
+## Navigation flow
+
+```mermaid
+sequenceDiagram
+  participant UI as Component
+  participant Router as TerminalRouter
+  participant Guard as Guards
+  participant Loader as Loader
+  participant Focus as FocusManager
+  UI->>Router: navigate(target)
+  Router->>Guard: before hooks
+  Guard-->>Router: allow, redirect, or cancel
+  Router->>Loader: load route data
+  Loader-->>Router: result
+  Router->>Router: commit history and layout
+  Router->>Focus: restore route focus
+  Router-->>UI: navigation complete event
+```
+
+## Ownership rules
+
+- `TuilApp` owns core services, plugins, event definitions, and extension
+  registries.
+- Providers own React subscriptions and unregister on unmount.
+- Every runtime registration returns a disposer.
+- Plugins deactivate and dispose in reverse dependency order.
+- Workflow runners and operation executors own abort controllers and observers.
+- Stories and tests always close render sessions, even after a failed action.
+
+See [Events](./events), [Extensibility](./extensibility), and the
+[package reference](/docs/reference/packages) for the concrete contracts.

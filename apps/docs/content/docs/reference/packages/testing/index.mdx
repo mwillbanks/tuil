@@ -1,0 +1,69 @@
+---
+title: "@mwillbanks/tuil-testing"
+description: "Semantic assertions, screens, and portable story contracts for testing tuil applications."
+icon: Package
+---
+
+## Overview
+
+Semantic assertions, screens, and portable story contracts for testing tuil applications.
+
+`@mwillbanks/tuil-testing` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-testing
+```
+
+## How it operates
+
+Testing contracts query semantic output instead of terminal coordinates, define portable stories, and provide screen-style role, label, state, and text assertions.
+
+```mermaid
+flowchart LR
+  S0["render"]
+  S1["query semantics"]
+  S2["interact"]
+  S3["assert"]
+  S4["cleanup"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `defaultTerminalStoryControls` | constant | `packages/testing/src/index.ts` |
+| `defineTuilStories` | function | `packages/testing/src/index.ts` |
+| `normalizeTerminalFrame` | function | `packages/testing/src/index.ts` |
+| `QueryableSemanticNode` | interface | `packages/testing/src/index.ts` |
+| `SemanticQuery` | interface | `packages/testing/src/index.ts` |
+| `SemanticScreen` | class | `packages/testing/src/index.ts` |
+| `SemanticSnapshot` | interface | `packages/testing/src/index.ts` |
+| `TerminalStoryControls` | interface | `packages/testing/src/index.ts` |
+| `TuilStory` | interface | `packages/testing/src/index.ts` |
+| `TuilStoryDefinition` | interface | `packages/testing/src/index.ts` |
+
+## Events and lifecycle
+
+Story and test results expose captured runtime events for deterministic assertions.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+expect(screen.getByRole("button", { name: "Run" })).toBeEnabled();
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

@@ -1,0 +1,28 @@
+---
+title: Registry
+description: Source-owned components, dependency resolution, integrity, and secure remote sources.
+icon: Database
+---
+
+The registry distributes source files, not opaque runtime widgets. Applications
+can inspect and customize installed components while sharing package-level
+contracts.
+
+## Install flow
+
+```mermaid
+flowchart LR
+  Request["requested items"] --> Manifest["load and validate manifest"]
+  Manifest --> Graph["resolve dependencies"]
+  Graph --> Files["validate file paths and integrity"]
+  Files --> Plan["plan every destination"]
+  Plan --> Conflicts["detect conflicts"]
+  Conflicts --> Write["atomic scoped writes"]
+```
+
+Remote sources reject unsupported schemes, credentials in URLs, query or
+fragment ambiguity, unsafe relative paths, and invalid package or dependency
+metadata. Plain HTTP is limited to explicit loopback development hosts.
+
+See [Custom registries](/docs/guides/custom-registries) and the
+[`@mwillbanks/tuil-registry` reference](/docs/reference/packages/registry).

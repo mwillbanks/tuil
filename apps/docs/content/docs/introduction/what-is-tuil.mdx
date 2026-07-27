@@ -1,0 +1,46 @@
+---
+title: What is tuil
+description: The system model, design principles, and intended application scope.
+icon: Compass
+---
+
+tuil is an application framework for React terminal interfaces. Ink remains the
+renderer; tuil supplies the application services and component conventions that
+large terminal products otherwise rebuild independently.
+
+## What it owns
+
+- an explicit configure, initialize, mount, ready, stop, and dispose lifecycle
+- typed services, commands, events, plugins, and extension points
+- deterministic focus, hotkeys, input routing, overlays, and navigation
+- forms, operations, workflows, persistence, and compensation
+- theme tokens, variants, slots, capabilities, and live theme switching
+- semantic output for resilient tests and portable component stories
+- a source-owned component registry and project CLI
+
+## What it does not own
+
+tuil does not replace React, Ink, your domain model, data access layer, or
+deployment architecture. Runtime services are opt-in boundaries, and every
+focused package can be installed without the umbrella package when that better
+fits the application.
+
+## Design principles
+
+1. **Terminal-native.** Input, focus, layout, color depth, Unicode, images,
+   alternate screen, reduced motion, and redirected output are first-class.
+2. **Deterministic ownership.** Every registration has an owner and a disposer.
+3. **Typed extension.** Events, services, plugins, and extension points preserve
+   application-specific types.
+4. **Semantic behavior.** Tests query roles, labels, and state rather than
+   brittle rows and columns.
+5. **Portable output.** One component story can run in a terminal, a test,
+   documentation, a static snapshot, or Storybook.
+6. **Source ownership.** Registry UI is installed into the application, not
+   hidden behind an inflexible binary component dependency.
+
+## Best fit
+
+tuil is designed for developer tools, operations consoles, installers,
+configuration workflows, interactive agents, data explorers, and other terminal
+applications whose behavior must remain maintainable after the first screen.

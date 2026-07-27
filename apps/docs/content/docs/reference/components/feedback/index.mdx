@@ -1,0 +1,69 @@
+---
+title: "Feedback"
+description: "Communicate messages, completion, and pending work with theme tokens and reduced-motion behavior."
+icon: Lightning
+---
+
+import { feedbackStory as ComponentStory } from '@/components/reference-stories.story';
+
+## Overview
+
+Communicate messages, completion, and pending work with theme tokens and reduced-motion behavior.
+
+## Installation
+
+```npm
+npx @mwillbanks/tuil add alert progress spinner
+```
+
+The CLI writes source-owned components beneath the destination configured in
+`tuil.config.ts`; the default import below assumes `src/components/tuil`.
+
+<ComponentStory.WithControl />
+
+## Components and subcomponents
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `Alert` | function | `registry/feedback/alert.tsx` |
+| `Progress` | function | `registry/feedback/progress.tsx` |
+| `Spinner` | function | `registry/feedback/spinner.tsx` |
+
+## Interaction
+
+Read-only; update props as application state changes.
+
+## API and events
+
+No events are emitted.
+
+Every interactive component publishes semantic roles, labels, state, and focus
+identity through the renderer's `SemanticRegistry`. Callback failures flow to
+the owning application's error boundary.
+
+```mermaid
+flowchart LR
+  S0["props and runtime state"]
+  S1["semantic registration"]
+  S2["focus and input routing"]
+  S3["callback or state update"]
+  S4["rerender"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+```
+
+## Example
+
+```tsx
+import type { ComponentProps } from "react";
+import { Alert } from "@/components/tuil/feedback/alert";
+
+export function Example(props: ComponentProps<typeof Alert>) {
+  return <Alert {...props} />;
+}
+```
+
+Registry-installed components are source-owned: customize the generated file in
+your application, and use the package reference for the shared runtime contracts.

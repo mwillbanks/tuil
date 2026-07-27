@@ -1,0 +1,23 @@
+{
+  "title": "Components",
+  "icon": "Cube",
+  "pages": [
+    "index",
+    "application-shell",
+    "layout",
+    "button",
+    "typography-status",
+    "feedback",
+    "overlays",
+    "forms",
+    "transfer-list",
+    "navigation",
+    "tables",
+    "tree",
+    "structured-viewers",
+    "virtual-list",
+    "workflow",
+    "initializer",
+    "terminal-image"
+  ]
+}

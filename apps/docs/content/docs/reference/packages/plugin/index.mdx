@@ -1,0 +1,69 @@
+---
+title: "@mwillbanks/tuil-plugin"
+description: "Dependency-aware plugin registration, resolution, activation, and teardown for tuil."
+icon: Package
+---
+
+## Overview
+
+Dependency-aware plugin registration, resolution, activation, and teardown for tuil.
+
+`@mwillbanks/tuil-plugin` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-plugin
+```
+
+## How it operates
+
+Plugins declare capabilities and dependencies, register services, commands, events, and typed extension points, then activate in dependency order with deterministic reverse teardown.
+
+```mermaid
+flowchart LR
+  S0["resolve graph"]
+  S1["register"]
+  S2["initialize"]
+  S3["activate"]
+  S4["deactivate"]
+  S5["dispose"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+  S4 --> S5
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `DefaultExtensionPoints` | interface | `packages/plugin/src/index.ts` |
+| `ExtensionPointMap` | type | `packages/plugin/src/index.ts` |
+| `ExtensionRegistry` | interface | `packages/plugin/src/index.ts` |
+| `Plugin` | interface | `packages/plugin/src/index.ts` |
+| `PluginCapability` | type | `packages/plugin/src/index.ts` |
+| `PluginContext` | interface | `packages/plugin/src/index.ts` |
+| `PluginRegistryEntry` | interface | `packages/plugin/src/index.ts` |
+| `PluginRegistryQuery` | interface | `packages/plugin/src/index.ts` |
+
+## Events and lifecycle
+
+Plugins may declare or subscribe to the host application event map. Plugin health is exposed as an observable runtime surface.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+const plugin = createPlugin({ id: "analytics", activate(context) { return context.events.observe(track); } });
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

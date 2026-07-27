@@ -1,0 +1,32 @@
+---
+title: Devtools
+description: Integrate and operate the runtime inspector.
+icon: Wrench
+---
+
+Install and mount the inspector inside the renderer tree:
+
+```npm
+npm install @mwillbanks/tuil-devtools
+```
+
+```tsx
+import { TuilDevtools } from "@mwillbanks/tuil-devtools";
+
+function App() {
+  return (
+    <>
+      <Application />
+      {process.env.NODE_ENV !== "production" ? <TuilDevtools /> : null}
+    </>
+  );
+}
+```
+
+Devtools reads lifecycle, capabilities, theme, focus, commands, services,
+plugins, event history, and extension health. It subscribes to public runtime
+surfaces and does not mutate them.
+
+Use the overlay to diagnose focus ownership, missing command registration,
+plugin ordering, event payloads after redaction, and capability-specific output.
+Do not expose secrets through event payloads or service diagnostics.

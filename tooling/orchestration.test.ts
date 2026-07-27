@@ -8,6 +8,7 @@ import {
   coverageSources,
   missingCoverageSources,
 } from "./coverage/check.ts";
+import { generateReferenceDocs } from "./docs/generate-reference.ts";
 import { prepareDocsAssets } from "./docs/prepare-assets.ts";
 import {
   assertStaticDocs,
@@ -39,6 +40,7 @@ async function run(command: readonly string[], cwd: string): Promise<string> {
 }
 
 test("build, registry, documentation, and publication orchestration completes", async () => {
+  await generateReferenceDocs();
   await import("./registry/build.ts");
   const registryCheck = await import("./registry/check.ts");
   await registryCheck.checkRegistryArtifacts();
@@ -122,10 +124,23 @@ test("coverage and documentation gates own their complete source sets", async ()
 
     for (const path of [
       "api/search",
-      "docs/architecture/index.html",
-      "docs/guides/index.html",
+      "docs/concepts/architecture/index.html",
       "docs/index.html",
+      "docs/reference/components/forms/index.html",
+      "docs/reference/packages/cli/index.html",
+      "docs/reference/packages/tuil/index.html",
+      "es/docs/concepts/architecture/index.html",
+      "es/docs/index.html",
+      "es/index.html",
       "index.html",
+      "llms-full.txt",
+      "llms.mdx/en/docs/index.md",
+      "llms.mdx/es/docs/concepts/architecture/index.md",
+      "llms.mdx/es/docs/index.md",
+      "llms.txt",
+      "og/docs/en/image.webp",
+      "playground/index.html",
+      "showcase/index.html",
       "_next/static/chunks/app.css",
     ]) {
       const target = join(publicDirectory, path);
@@ -146,7 +161,65 @@ test("coverage and documentation gates own their complete source sets", async ()
     );
     await writeFile(
       join(publicDirectory, "api/search"),
-      JSON.stringify([{ url: "/docs" }]),
+      JSON.stringify([{ url: "/docs/reference/packages/tuil" }]),
+    );
+    await writeFile(
+      join(publicDirectory, "docs/index.html"),
+      [
+        '<meta property="og:image" content="https://mwillbanks.github.io/tuil/og/docs/en/image.webp">',
+        ...Array.from(
+          { length: 10 },
+          (_, index) =>
+            `<a data-active="false" href="/tuil/docs/page-${index}/"><svg></svg>Page</a>`,
+        ),
+      ].join(""),
+    );
+    await writeFile(
+      join(publicDirectory, "playground/index.html"),
+      "Portable story controls",
+    );
+    await writeFile(
+      join(publicDirectory, "showcase/index.html"),
+      "COMPONENT GALLERY",
+    );
+    await writeFile(
+      join(publicDirectory, "llms.txt"),
+      "[Architecture](/tuil/docs/concepts/architecture)\nPackage Reference",
+    );
+    await writeFile(
+      join(publicDirectory, "llms-full.txt"),
+      "# @mwillbanks/tuil\n# Architecture\nSource: /tuil/docs",
+    );
+    await writeFile(
+      join(publicDirectory, "llms.mdx/en/docs/index.md"),
+      "Source: /tuil/docs",
+    );
+    await writeFile(
+      join(publicDirectory, "es/index.html"),
+      '<!DOCTYPE html><html lang="es"><main><a href="/tuil/es/docs/">Docs</a></main></html>',
+    );
+    await writeFile(
+      join(publicDirectory, "es/docs/index.html"),
+      '<!DOCTYPE html><html lang="es"><a data-card="true" href="/tuil/es/docs/concepts/architecture/">Architecture</a></html>',
+    );
+    await writeFile(
+      join(publicDirectory, "es/docs/concepts/architecture/index.html"),
+      '<!DOCTYPE html><html lang="es"><main>Arquitectura</main></html>',
+    );
+    await writeFile(
+      join(publicDirectory, "llms.mdx/es/docs/index.md"),
+      [
+        "Source: /tuil/es/docs",
+        "[Architecture](/tuil/es/docs/concepts/architecture)",
+        '<Card href="/tuil/es/docs/reference" />',
+      ].join("\n"),
+    );
+    await writeFile(
+      join(publicDirectory, "llms.mdx/es/docs/concepts/architecture/index.md"),
+      [
+        "Source: /tuil/es/docs/concepts/architecture",
+        "[Introduction](/tuil/es/docs)",
+      ].join("\n"),
     );
     await validateStaticDocs({
       outDirectory: publicDirectory,

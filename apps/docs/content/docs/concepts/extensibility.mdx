@@ -1,0 +1,28 @@
+---
+title: Extensibility
+description: Plugins, services, commands, events, registries, and typed extension points.
+icon: PuzzlePiece
+---
+
+Plugins extend one application without replacing its ownership boundary.
+
+```mermaid
+flowchart LR
+  Plugin["Plugin"] --> Capabilities["required capabilities"]
+  Plugin --> Dependencies["plugin dependencies"]
+  Plugin --> Services["services and commands"]
+  Plugin --> Events["event definitions and handlers"]
+  Plugin --> Extensions["typed extension registries"]
+  Extensions --> Routes["routes"]
+  Extensions --> Workflows["workflows"]
+  Extensions --> Registry["registry contributions"]
+```
+
+Each extension registration tracks registration identity rather than value
+identity. The same object may be registered more than once and each registration
+can be observed or disposed independently.
+
+Plugins resolve in dependency order and tear down in reverse order. A failure
+during registration or activation rolls back already-owned resources.
+
+Continue with [Authoring plugins](/docs/guides/authoring-plugins).

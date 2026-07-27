@@ -1,0 +1,73 @@
+---
+title: "@mwillbanks/tuil-registry"
+description: "Source-owned component and block registry contracts for tuil."
+icon: Package
+---
+
+## Overview
+
+Source-owned component and block registry contracts for tuil.
+
+`@mwillbanks/tuil-registry` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-registry
+```
+
+## How it operates
+
+Registry sources describe source-owned components, blocks, themes, dependencies, files, and integrity metadata. HTTP sources enforce secure URL and package metadata boundaries.
+
+```mermaid
+flowchart LR
+  S0["load source"]
+  S1["validate manifest"]
+  S2["resolve dependencies"]
+  S3["verify files"]
+  S4["install"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `FileRegistrySource` | class | `packages/registry/src/index.ts` |
+| `HttpRegistrySource` | class | `packages/registry/src/index.ts` |
+| `InstallResult` | interface | `packages/registry/src/index.ts` |
+| `parseRegistryItem` | function | `packages/registry/src/index.ts` |
+| `RegistryClient` | class | `packages/registry/src/index.ts` |
+| `RegistryDiff` | interface | `packages/registry/src/index.ts` |
+| `RegistryFile` | interface | `packages/registry/src/index.ts` |
+| `RegistryIndexEntry` | interface | `packages/registry/src/index.ts` |
+| `RegistryInstaller` | class | `packages/registry/src/index.ts` |
+| `RegistryItem` | interface | `packages/registry/src/index.ts` |
+| `RegistryItemType` | type | `packages/registry/src/index.ts` |
+| `RegistrySource` | interface | `packages/registry/src/index.ts` |
+| `RegistryTransformOptions` | interface | `packages/registry/src/index.ts` |
+| `RemoveResult` | interface | `packages/registry/src/index.ts` |
+
+## Events and lifecycle
+
+Registry resolution returns explicit results and diagnostics. It does not emit runtime application events.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+const source = new HttpRegistrySource({ id: "official", url: "https://example.com/registry.json" });
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

@@ -1,0 +1,46 @@
+---
+title: Comparisons
+description: Understand when to use tuil, Ink alone, Blessed, or raw terminal output.
+icon: ListBullets
+---
+
+## tuil and Ink
+
+Ink is tuil's renderer, not a competitor. Use Ink alone when a small program only
+needs React components and input. Add tuil when the application needs consistent
+lifecycle, focus, events, routes, forms, workflows, plugins, themes, semantic
+tests, or portable stories.
+
+| Capability | Ink | tuil + Ink |
+| --- | --- | --- |
+| React reconciliation | Yes | Yes |
+| Terminal rendering and input | Yes | Yes |
+| Application lifecycle | Application-owned | Built in |
+| Typed event routing | Application-owned | Built in |
+| Focus scopes and restoration | Application-owned | Built in |
+| Routes, guards, and loaders | Application-owned | Built in |
+| Forms and workflows | Application-owned | Built in |
+| Plugins and extension points | Application-owned | Built in |
+| Semantic queries and stories | Application-owned | Built in |
+| Source-owned component registry | No | Yes |
+
+## tuil and Blessed-style widget systems
+
+Blessed-style libraries provide an imperative widget tree and screen manager.
+tuil favors React reconciliation, typed services, declarative composition, and
+Ink's ecosystem. Choose a widget system when direct screen mutation or its
+specific widget set is the primary requirement.
+
+## tuil and raw ANSI output
+
+Raw ANSI output is ideal for tightly bounded prompts, spinners, or formatters.
+It minimizes abstraction, but the application owns cursor state, redraws,
+teardown, input arbitration, accessibility semantics, testing, and capability
+fallbacks.
+
+## Decision guide
+
+- Choose **raw output** for a linear command with little or no persistent state.
+- Choose **Ink** for a focused React interface with a small behavior surface.
+- Choose **tuil + Ink** when the terminal is an application platform rather than
+  a single prompt.

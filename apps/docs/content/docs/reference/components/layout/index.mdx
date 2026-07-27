@@ -1,0 +1,74 @@
+---
+title: "Layout and panes"
+description: "Build capability-aware rows, columns, bounded containers, split panes, and keyboard-resizable regions."
+icon: Boxes
+---
+
+import { layoutStory as ComponentStory } from '@/components/reference-stories.story';
+
+## Overview
+
+Build capability-aware rows, columns, bounded containers, split panes, and keyboard-resizable regions.
+
+## Installation
+
+```npm
+npx @mwillbanks/tuil add box container stack split-pane resizable-pane
+```
+
+The CLI writes source-owned components beneath the destination configured in
+`tuil.config.ts`; the default import below assumes `src/components/tuil`.
+
+<ComponentStory.WithControl />
+
+## Components and subcomponents
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `Box` | function | `registry/primitives/box.tsx` |
+| `Container` | function | `registry/primitives/container.tsx` |
+| `Stack` | function | `registry/primitives/stack.tsx` |
+| `HStack` | function | `registry/primitives/stack.tsx` |
+| `VStack` | function | `registry/primitives/stack.tsx` |
+| `Pane` | component | `registry/primitives/box.tsx` |
+| `SplitPane` | function | `registry/layout/panes.tsx` |
+| `ResizablePane` | function | `registry/layout/resizable-pane.tsx` |
+
+## Interaction
+
+Resizable panes consume scoped arrow-key input while passive layout primitives only project Ink layout props.
+
+## API and events
+
+`ResizablePane` reports size changes through `onSizeChange`; other layout components are passive.
+
+Every interactive component publishes semantic roles, labels, state, and focus
+identity through the renderer's `SemanticRegistry`. Callback failures flow to
+the owning application's error boundary.
+
+```mermaid
+flowchart LR
+  S0["props and runtime state"]
+  S1["semantic registration"]
+  S2["focus and input routing"]
+  S3["callback or state update"]
+  S4["rerender"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+```
+
+## Example
+
+```tsx
+import type { ComponentProps } from "react";
+import { Box } from "@/components/tuil/primitives/box";
+
+export function Example(props: ComponentProps<typeof Box>) {
+  return <Box {...props} />;
+}
+```
+
+Registry-installed components are source-owned: customize the generated file in
+your application, and use the package reference for the shared runtime contracts.

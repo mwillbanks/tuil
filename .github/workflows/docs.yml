@@ -5,18 +5,26 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/docs.yml"
+      - "apps/playground/**"
+      - "apps/showcase/**"
       - "apps/docs/**"
       - "bun.lock"
       - "logo.svg"
       - "package.json"
+      - "packages/**"
+      - "registry/**"
       - "tooling/docs/**"
   pull_request:
     paths:
       - ".github/workflows/docs.yml"
+      - "apps/playground/**"
+      - "apps/showcase/**"
       - "apps/docs/**"
       - "bun.lock"
       - "logo.svg"
       - "package.json"
+      - "packages/**"
+      - "registry/**"
       - "tooling/docs/**"
   workflow_dispatch:
 

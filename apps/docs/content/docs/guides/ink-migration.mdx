@@ -1,0 +1,40 @@
+---
+title: Ink Migration
+description: Move an existing Ink application into a tuil runtime incrementally.
+icon: ArrowsClockwise
+---
+
+## 1. Keep the component tree
+
+tuil uses Ink, so begin by wrapping the existing root without rewriting its
+children:
+
+```tsx
+const app = createApp({ id: "existing-cli", component: ExistingApp });
+render(<ExistingApp />, { app });
+```
+
+## 2. Replace global input
+
+Move overlay-specific handlers to `TerminalInputLayer`, application shortcuts
+to `HotkeyManager`, and traversal to focusable semantic components. This
+prevents multiple `useInput` hooks from competing.
+
+## 3. Introduce ownership boundaries
+
+Move global singletons into services, teardown into lifecycle disposers, and
+cross-feature messages into declared events.
+
+## 4. Adopt components selectively
+
+Registry components are source-owned, so install only the primitives or blocks
+you need:
+
+```npm
+npx @mwillbanks/tuil add button field text-input dialog
+```
+
+## 5. Convert tests
+
+Keep frame assertions for visual regressions, then add semantic queries for
+behavior. Semantic assertions survive spacing, color, and viewport changes.

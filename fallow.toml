@@ -12,6 +12,7 @@ entry = [
   "registry/**/*.ts",
   "registry/**/*.tsx",
   "tooling/build/package.ts",
+  "tooling/docs/generate-reference.ts",
   "tooling/docs/prepare-assets.ts",
   "tooling/docs/validate-static.ts",
   "tooling/release/verify-recovery.ts",
