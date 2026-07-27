@@ -69,7 +69,9 @@ jobs:
     name: Dependency security
     uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.3.8
     permissions:
+      actions: read
       contents: read
+      security-events: write
     with:
       scan-args: |-
         --config=./osv-scanner.toml
