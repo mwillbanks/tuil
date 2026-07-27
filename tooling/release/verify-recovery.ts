@@ -23,21 +23,64 @@ export async function git(
 
 export async function expectedReleaseTags(
   workspace: string,
+  releaseSha: string,
 ): Promise<readonly string[]> {
-  const config = (await Bun.file(
-    resolve(workspace, "release-please-config.json"),
-  ).json()) as {
+  const config = JSON.parse(
+    await git(workspace, "show", `${releaseSha}:release-please-config.json`),
+  ) as {
     readonly packages: Readonly<Record<string, ReleasePleasePackage>>;
   };
-  const tags = await Promise.all(
-    Object.entries(config.packages).map(async ([path, releasePackage]) => {
-      const manifest = (await Bun.file(
-        resolve(workspace, path, "package.json"),
-      ).json()) as { readonly version: string };
-      return `${releasePackage.component}-v${manifest.version}`;
-    }),
-  );
+  const [, parent] = (
+    await git(workspace, "rev-list", "--parents", "-n", "1", releaseSha)
+  ).split(/\s+/);
+  const tags = (
+    await Promise.all(
+      Object.entries(config.packages).map(
+        async ([path, releasePackage]): Promise<string | undefined> => {
+          const manifestPath = `${path}/package.json`;
+          const manifest = JSON.parse(
+            await git(workspace, "show", `${releaseSha}:${manifestPath}`),
+          ) as { readonly version: string };
+          if (parent) {
+            try {
+              const previous = JSON.parse(
+                await git(workspace, "show", `${parent}:${manifestPath}`),
+              ) as { readonly version: string };
+              if (previous.version === manifest.version) return undefined;
+            } catch {
+              // A package absent from the first parent is a new release.
+            }
+          }
+          return `${releasePackage.component}-v${manifest.version}`;
+        },
+      ),
+    )
+  ).filter((tag): tag is string => tag !== undefined);
+  if (tags.length === 0) {
+    throw new Error(
+      `Release commit ${releaseSha} does not change a configured package version`,
+    );
+  }
   return Object.freeze(tags.sort());
+}
+
+async function missingReleaseTags(
+  workspace: string,
+  releaseSha: string,
+  tags: readonly string[],
+): Promise<readonly string[]> {
+  const missing: string[] = [];
+  for (const tag of tags) {
+    try {
+      const taggedSha = (
+        await git(workspace, "rev-parse", `${tag}^{commit}`)
+      ).toLowerCase();
+      if (taggedSha !== releaseSha) missing.push(tag);
+    } catch {
+      missing.push(tag);
+    }
+  }
+  return Object.freeze(missing);
 }
 
 export async function verifyRecoveryRelease(
@@ -57,13 +100,10 @@ export async function verifyRecoveryRelease(
     );
   }
 
-  const tags = new Set(
-    (await git(workspace, "tag", "--points-at", expectedSha))
-      .split("\n")
-      .filter(Boolean),
-  );
-  const missing = (await expectedReleaseTags(workspace)).filter(
-    (tag) => !tags.has(tag),
+  const missing = await missingReleaseTags(
+    workspace,
+    expectedSha,
+    await expectedReleaseTags(workspace, expectedSha),
   );
   if (missing.length > 0) {
     throw new Error(

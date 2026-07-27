@@ -85,6 +85,11 @@ test("publishable packages declare every internal source import", async () => {
 });
 
 test("normal and recovery publishing share one trusted workflow identity", async () => {
+  const config = (await Bun.file(
+    join(workspace, "release-please-config.json"),
+  ).json()) as {
+    readonly packages: Readonly<Record<string, unknown>>;
+  };
   const ci = await readFile(
     join(workspace, ".github/workflows/ci.yml"),
     "utf8",
@@ -101,5 +106,15 @@ test("normal and recovery publishing share one trusted workflow identity", async
   expect(release).not.toContain("\n  workflow_dispatch:");
   expect(release).toContain("release_sha:");
   expect(release).toContain("inputs.release_sha");
+  expect(release).toContain("needs.release.outputs.release_sha");
+  expect(release).toContain("needs.release.outputs.release_sha != ''");
+  expect(release).toContain("needs.release.result == 'success'");
+  expect(release).toContain("needs.release.result == 'skipped'");
+  expect(release).not.toContain("inputs.release_sha || github.sha");
   expect(release).toContain("id-token: write");
+  expect(release).not.toContain("NPM_TOKEN");
+  expect(release).not.toContain("NODE_AUTH_TOKEN");
+  for (const path of Object.keys(config.packages)) {
+    expect(release).toContain(`steps.release.outputs['${path}--sha']`);
+  }
 });

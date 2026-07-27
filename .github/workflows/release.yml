@@ -9,8 +9,6 @@ on:
         type: string
         default: ""
     secrets:
-      NPM_TOKEN:
-        required: false
       RELEASE_PLEASE_TOKEN:
         required: true
 
@@ -25,6 +23,7 @@ jobs:
     if: ${{ inputs.release_sha == '' }}
     runs-on: ubuntu-latest
     outputs:
+      release_sha: ${{ steps.release-commit.outputs.release_sha }}
       releases_created: ${{ steps.release.outputs.releases_created }}
     permissions:
       contents: write
@@ -36,10 +35,57 @@ jobs:
         id: release
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+      - uses: actions/checkout@v7.0.0
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+      - uses: oven-sh/setup-bun@v2.2.0
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        with:
+          bun-version: 1.3.14
+      - name: Resolve immutable release commit
+        id: release-commit
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        env:
+          RELEASED_PATHS: ${{ steps.release.outputs.paths_released }}
+          RELEASE_SHAS: |-
+            ${{ steps.release.outputs['packages/cli--sha'] }}
+            ${{ steps.release.outputs['packages/core--sha'] }}
+            ${{ steps.release.outputs['packages/devtools--sha'] }}
+            ${{ steps.release.outputs['packages/events--sha'] }}
+            ${{ steps.release.outputs['packages/focus--sha'] }}
+            ${{ steps.release.outputs['packages/form--sha'] }}
+            ${{ steps.release.outputs['packages/hotkeys--sha'] }}
+            ${{ steps.release.outputs['packages/ink--sha'] }}
+            ${{ steps.release.outputs['packages/operations--sha'] }}
+            ${{ steps.release.outputs['packages/plugin--sha'] }}
+            ${{ steps.release.outputs['packages/registry--sha'] }}
+            ${{ steps.release.outputs['packages/router--sha'] }}
+            ${{ steps.release.outputs['packages/story--sha'] }}
+            ${{ steps.release.outputs['packages/testing-ink--sha'] }}
+            ${{ steps.release.outputs['packages/testing--sha'] }}
+            ${{ steps.release.outputs['packages/theme--sha'] }}
+            ${{ steps.release.outputs['packages/tuil--sha'] }}
+            ${{ steps.release.outputs['packages/virtual--sha'] }}
+            ${{ steps.release.outputs['packages/workflow--sha'] }}
+        run: bun tooling/release/resolve-release-sha.ts
 
   publish:
     needs: release
-    if: ${{ always() && (needs.release.outputs.releases_created == 'true' || inputs.release_sha != '') }}
+    if: >-
+      ${{
+        always() &&
+        (
+          (
+            inputs.release_sha != '' &&
+            needs.release.result == 'skipped'
+          ) ||
+          (
+            inputs.release_sha == '' &&
+            needs.release.result == 'success' &&
+            needs.release.outputs.releases_created == 'true' &&
+            needs.release.outputs.release_sha != ''
+          )
+        )
+      }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -48,7 +94,7 @@ jobs:
       - uses: actions/checkout@v7.0.0
         with:
           fetch-depth: 0
-          ref: ${{ inputs.release_sha || github.sha }}
+          ref: ${{ inputs.release_sha || needs.release.outputs.release_sha }}
       - uses: oven-sh/setup-bun@v2.2.0
         with:
           bun-version: 1.3.14
@@ -65,7 +111,4 @@ jobs:
           RELEASE_SHA: ${{ inputs.release_sha }}
         run: bun tooling/release/verify-recovery.ts
       - name: Build and publish unpublished packages
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: "true"
         run: bun run release
