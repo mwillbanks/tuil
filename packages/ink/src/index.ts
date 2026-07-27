@@ -26,6 +26,7 @@ import { OverlayProvider, useOverlayStatus } from "./overlay.tsx";
 import { SemanticProvider, type SemanticRegistry } from "./semantics.ts";
 
 export * from "./components.tsx";
+export * from "./image.tsx";
 export type { TerminalInputHandler } from "./input.ts";
 export { TerminalInputLayer, useTerminalInput } from "./input.ts";
 export * from "./overlay.tsx";
@@ -204,6 +205,7 @@ export async function render(
     if (app.mode !== "silent") {
       ink = renderInk(createRuntimeElement(app, options.semanticRegistry), {
         exitOnCtrlC: app.mode === "interactive",
+        interactive: app.mode === "interactive",
         patchConsole: app.mode === "interactive",
         ...options,
       });

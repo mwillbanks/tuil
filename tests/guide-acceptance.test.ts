@@ -92,6 +92,7 @@ const exampleApplications = [
   "command-center",
   "file-browser",
   "ai-assistant",
+  "full-screen",
 ] as const;
 
 const skills = [

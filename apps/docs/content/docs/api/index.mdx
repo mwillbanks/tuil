@@ -80,6 +80,35 @@ app.themeController.set((current) =>
 Ink subscribes to the controller, so mounted components using `useTheme()`
 rerender. Every selected theme is normalized for the active terminal.
 
+## Render a full-screen image workspace
+
+```tsx
+import {
+  Box,
+  render,
+  TerminalImage,
+  useTerminalSize,
+  type TerminalImageSource,
+} from "@mwillbanks/tuil-ink"
+
+function Splash({ logo }: { logo: TerminalImageSource }) {
+  const { width, height } = useTerminalSize()
+  return (
+    <Box width={width} height={height} alignItems="center" justifyContent="center">
+      <TerminalImage source={logo} alt="Application logo" columns={28} />
+    </Box>
+  )
+}
+
+const instance = await render(app, { alternateScreen: true })
+```
+
+`TerminalImage` accepts validated RGBA pixel data, scales it to terminal
+columns, and uses 24-bit half-block rendering with a grayscale fallback.
+`useTerminalSize()` tracks both terminal dimensions across resize events.
+`alternateScreen` is honored only for interactive TTY output, and the renderer
+restores the original buffer when the Ink instance exits.
+
 ## Consume typed events and extensions
 
 `createApp` preserves application event payload types through `app.events`.

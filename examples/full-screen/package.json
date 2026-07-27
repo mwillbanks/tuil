@@ -1,0 +1,38 @@
+{
+  "name": "@mwillbanks/tuil-example-full-screen",
+  "version": "0.1.0",
+  "description": "A responsive full-screen tuil terminal application example.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "examples/full-screen"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "typescript",
+    "bun",
+    "example",
+    "full-screen",
+    "terminal-image"
+  ],
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun src/index.tsx",
+    "build": "bun build src/index.tsx --outdir dist --target bun --packages external",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test ../examples.test.tsx"
+  },
+  "dependencies": {
+    "react": "catalog:",
+    "sharp": "^0.35.3"
+  }
+}

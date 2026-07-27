@@ -169,6 +169,10 @@ export function renderTuil(
         configurable: true,
         value: width,
       });
+      Object.defineProperty(instance.stdout, "rows", {
+        configurable: true,
+        value: height,
+      });
       instance.stdout.emit("resize", { width, height });
     },
     async cleanup() {

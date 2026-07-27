@@ -115,6 +115,14 @@
         "react": "catalog:",
       },
     },
+    "examples/full-screen": {
+      "name": "@mwillbanks/tuil-example-full-screen",
+      "version": "0.1.0",
+      "dependencies": {
+        "react": "catalog:",
+        "sharp": "^0.35.3",
+      },
+    },
     "examples/minimal": {
       "name": "@mwillbanks/tuil-example-minimal",
       "version": "0.1.0",
@@ -634,6 +642,8 @@
     "@mwillbanks/tuil-example-file-browser": ["@mwillbanks/tuil-example-file-browser@workspace:examples/file-browser"],
 
     "@mwillbanks/tuil-example-forms": ["@mwillbanks/tuil-example-forms@workspace:examples/forms"],
+
+    "@mwillbanks/tuil-example-full-screen": ["@mwillbanks/tuil-example-full-screen@workspace:examples/full-screen"],
 
     "@mwillbanks/tuil-example-minimal": ["@mwillbanks/tuil-example-minimal@workspace:examples/minimal"],
 

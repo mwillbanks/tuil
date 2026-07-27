@@ -227,22 +227,36 @@ export interface ResponsiveStackProps extends Omit<StackProps, "direction"> {
 }
 
 export function useTerminalViewport(): TerminalViewport {
+  const { width } = useTerminalSize();
+  return resolveTerminalViewport(width);
+}
+
+export interface TerminalSize {
+  readonly width: number;
+  readonly height: number;
+}
+
+export function useTerminalSize(): TerminalSize {
   const app = useApp();
   const { stdout } = useStdout();
-  const [width, setWidth] = useState(
-    () => stdout.columns ?? app.capabilities.width,
-  );
+  const [size, setSize] = useState<TerminalSize>(() => ({
+    width: stdout.columns ?? app.capabilities.width,
+    height: stdout.rows ?? app.capabilities.height,
+  }));
   useEffect(() => {
-    const updateWidth = () => {
-      setWidth(stdout.columns ?? app.capabilities.width);
+    const updateSize = () => {
+      setSize({
+        width: stdout.columns ?? app.capabilities.width,
+        height: stdout.rows ?? app.capabilities.height,
+      });
     };
-    updateWidth();
-    stdout.on("resize", updateWidth);
+    updateSize();
+    stdout.on("resize", updateSize);
     return () => {
-      stdout.off("resize", updateWidth);
+      stdout.off("resize", updateSize);
     };
-  }, [app.capabilities.width, stdout]);
-  return resolveTerminalViewport(width);
+  }, [app.capabilities.height, app.capabilities.width, stdout]);
+  return size;
 }
 
 export function ResponsiveStack({

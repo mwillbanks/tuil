@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, test } from "bun:test";
+import { PassThrough } from "node:stream";
 import {
   createApp,
   type TuilRuntime,
@@ -31,10 +32,12 @@ import {
   Spinner,
   Stack,
   StatusBar,
+  TerminalImage,
   Text,
   useOptionalExternalStore,
   useOverlayStatus,
   useTerminalInput,
+  useTerminalSize,
   VStack,
 } from "./index.ts";
 import { TerminalInputRouter } from "./input.ts";
@@ -70,6 +73,34 @@ describe("foundational Ink components", () => {
     const rendered = await render(renderedApp, { patchConsole: false });
     expect(rendered.ink).toBeDefined();
     await rendered.unmount();
+  });
+
+  test("enters and restores the alternate screen for full-screen renders", async () => {
+    const stdout = new PassThrough();
+    Object.assign(stdout, { columns: 80, rows: 24, isTTY: true });
+    let output = "";
+    stdout.on("data", (chunk) => {
+      output += String(chunk);
+    });
+    const app = createApp({
+      component: () => <Text>Full screen</Text>,
+      terminal: {
+        mode: "interactive",
+        capabilities: {
+          alternateScreen: true,
+          interactive: true,
+          tty: true,
+        },
+      },
+    });
+    const instance = await render(app, {
+      alternateScreen: true,
+      patchConsole: false,
+      stdout: stdout as unknown as NodeJS.WriteStream,
+    });
+    expect(output).toContain("\u001b[?1049h");
+    await instance.unmount();
+    expect(output).toContain("\u001b[?1049l");
   });
 
   test("rolls back renderer and static-render failures", async () => {
@@ -182,6 +213,58 @@ describe("foundational Ink components", () => {
     });
     await wide.ready;
     expect(wide.screen.frame()).toContain("Alpha\nBeta");
+  });
+
+  test("terminal images expose semantics and adapt to terminal color support", async () => {
+    const source = {
+      width: 2,
+      height: 2,
+      data: new Uint8Array([
+        255, 0, 0, 255, 0, 255, 0, 255, 0, 0, 255, 255, 0, 0, 0, 0,
+      ]),
+    };
+    const color = renderTuil(
+      <TerminalImage source={source} alt="Test pixels" columns={2} />,
+      {
+        terminal: {
+          capabilities: { colorDepth: 24, unicode: true },
+        },
+      },
+    );
+    await color.ready;
+    expect(
+      color.screen.getByRole("image", { name: "Test pixels" }),
+    ).toBeDefined();
+    expect(color.screen.frame()).toContain("▀");
+    await color.cleanup();
+
+    const fallback = renderTuil(
+      <TerminalImage source={source} alt="ASCII pixels" columns={2} />,
+      {
+        terminal: {
+          capabilities: { colorDepth: 4, unicode: false },
+        },
+      },
+    );
+    await fallback.ready;
+    expect(fallback.screen.frame()).not.toContain("▀");
+    await fallback.cleanup();
+  });
+
+  test("terminal size tracks width and height resize events", async () => {
+    function SizeProbe() {
+      const size = useTerminalSize();
+      return <Text>{`${size.width}×${size.height}`}</Text>;
+    }
+    const view = renderTuil(<SizeProbe />, {
+      terminal: { capabilities: { width: 80, height: 24 } },
+    });
+    await view.ready;
+    expect(view.screen.frame()).toContain("80×24");
+    view.resize(42, 18);
+    await Bun.sleep(25);
+    expect(view.screen.frame()).toContain("42×18");
+    await view.cleanup();
   });
 
   test("layout, divider, and command button variants render and act", async () => {

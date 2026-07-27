@@ -23,6 +23,7 @@ export type SemanticRole =
   | "treeitem"
   | "button"
   | "heading"
+  | "image"
   | "text";
 
 export interface SemanticMetadata {
