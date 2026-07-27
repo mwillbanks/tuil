@@ -151,12 +151,28 @@ test("full-screen example transitions, handles menus, prompts, and resizes", asy
   expect(fullScreen.screen.frame()).toContain("Copy selection");
   await fullScreen.user.press("escape");
   await fullScreen.app.hotkeys.dispatch(
+    "h",
+    { alt: true },
+    { activeScopes: { application: true } },
+  );
+  await Bun.sleep(10);
+  expect(fullScreen.screen.frame()).toContain("Keyboard shortcuts");
+  await fullScreen.user.press("escape");
+  await fullScreen.app.hotkeys.dispatch(
     "f",
     { meta: true },
     { activeScopes: { application: true } },
   );
   await Bun.sleep(10);
   expect(fullScreen.screen.frame()).toContain("Open workspace");
+  await fullScreen.user.press("escape");
+  await fullScreen.app.hotkeys.dispatch(
+    "e",
+    { meta: true },
+    { activeScopes: { application: true } },
+  );
+  await Bun.sleep(10);
+  expect(fullScreen.screen.frame()).toContain("Clear activity");
   await fullScreen.user.press("escape");
   await fullScreen.user.type("Summarize this workspace");
   expect(
