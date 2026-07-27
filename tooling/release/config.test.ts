@@ -9,12 +9,16 @@ test("release please independently versions every publishable package", async ()
     join(workspace, "release-please-config.json"),
   ).json()) as {
     readonly "group-pull-request-title-pattern": string;
+    readonly label: string;
     readonly plugins: readonly { readonly type: string }[];
+    readonly "release-label": string;
     readonly packages: Readonly<Record<string, unknown>>;
   };
   expect(config["group-pull-request-title-pattern"]).toBe(
     ["chore: release $", "{branch}"].join(""),
   );
+  expect(config.label).toBe("autorelease: pending");
+  expect(config["release-label"]).toBe("autorelease: tagged");
   expect(config.plugins).toEqual([{ type: "node-workspace" }]);
 
   const publishablePackages = (
