@@ -1,0 +1,37 @@
+{
+  "name": "@mwillbanks/tuil-example-otel-console",
+  "version": "0.1.0",
+  "description": "Production-style OpenTelemetry console example for tuil.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "opentelemetry",
+    "example"
+  ],
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun src/index.tsx",
+    "build": "bun build src/index.tsx --outdir dist --target bun --packages external",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test ../examples.test.tsx"
+  },
+  "dependencies": {
+    "@mwillbanks/tuil": "workspace:*",
+    "@mwillbanks/tuil-devtools": "workspace:*",
+    "@mwillbanks/tuil-ink": "workspace:*",
+    "@mwillbanks/tuil-log-viewer": "workspace:*",
+    "@mwillbanks/tuil-logging": "workspace:*",
+    "@mwillbanks/tuil-operations": "workspace:*",
+    "@mwillbanks/tuil-plugin": "workspace:*",
+    "@mwillbanks/tuil-streaming": "workspace:*",
+    "react": "catalog:"
+  }
+}

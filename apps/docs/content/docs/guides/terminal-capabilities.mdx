@@ -1,0 +1,17 @@
+---
+title: Terminal capability matrix
+description: Understand output, input, and fallback behavior.
+icon: Desktop
+---
+
+| Capability | Ink | Cell | Fallback |
+| --- | --- | --- | --- |
+| ANSI color | yes | yes | theme-safe monochrome |
+| Mouse SGR | adapter | native | keyboard navigation |
+| Bracketed paste | yes | yes | ordinary input |
+| Focus reporting | adapter | session | internal focus only |
+| OSC 52 clipboard | opt-in | opt-in | application clipboard |
+| Alternate screen | yes | yes | inline static output |
+
+Capabilities are detected and reported, never guessed from color alone. Output
+sessions restore every enabled terminal mode on normal exit and errors.

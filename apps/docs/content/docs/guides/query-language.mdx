@@ -1,0 +1,16 @@
+---
+title: Log query language
+description: Filter normalized records with typed predicates.
+icon: MagnifyingGlass
+---
+
+Queries combine field comparisons, text search, boolean operators, and
+parentheses. Fields include `severity`, `source`, `message`, `timestamp`,
+`traceId`, `spanId`, and metadata paths.
+
+```text
+severity >= error and service.name = "api" and message contains "timeout"
+```
+
+Parsing returns a typed expression or a positioned diagnostic. Saved searches
+store source text and are reparsed on load so compatibility errors are visible.

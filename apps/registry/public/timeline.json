@@ -1,0 +1,23 @@
+{
+  "name": "timeline",
+  "type": "data-display",
+  "title": "Timeline",
+  "description": "Ordered event timeline.",
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["markdown-viewer"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink", "cell"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "integrity": "sha256-eda7824cb8818c626274432f724f5d4c22f3c9cbb2e2eb82b8f9f623d98c53b8"
+}

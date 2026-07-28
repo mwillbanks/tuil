@@ -1,0 +1,23 @@
+{
+  "name": "search-input",
+  "type": "form",
+  "title": "Search Input",
+  "description": "Search editor with submit and history behavior.",
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["field"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink", "cell"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "integrity": "sha256-1ee1b3e067f0f88b50c6f7ac0715fed7127b06d3c639d7872fe4dfc292fb65d3"
+}

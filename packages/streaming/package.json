@@ -1,0 +1,46 @@
+{
+  "name": "@mwillbanks/tuil-streaming",
+  "version": "0.2.0",
+  "description": "Extensible backpressure-aware streaming parsers, transformers, and projections for tuil.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/streaming"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "streaming",
+    "markdown",
+    "jsonl",
+    "syslog"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "bun ../../tooling/build/package.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "fast-xml-parser": "^5.10.1",
+    "mdast-util-from-markdown": "^2.0.3",
+    "mdast-util-gfm": "^3.1.0",
+    "micromark-extension-gfm": "^3.0.0",
+    "smol-toml": "^1.7.1",
+    "yaml": "^2.9.0"
+  }
+}

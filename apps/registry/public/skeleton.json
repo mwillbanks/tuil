@@ -1,0 +1,23 @@
+{
+  "name": "skeleton",
+  "type": "feedback",
+  "title": "Skeleton",
+  "description": "Non-color loading placeholder.",
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["dialog"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink", "cell"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "integrity": "sha256-4f01cb5842253cccfefe1259ca88c7f2a10f81c1afe9c29a94b7e4b8a62ab666"
+}

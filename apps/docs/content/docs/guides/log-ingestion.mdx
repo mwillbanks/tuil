@@ -1,0 +1,28 @@
+---
+title: Log ingestion
+description: Normalize, redact, enrich, retain, and export log streams.
+icon: ListMagnifyingGlass
+---
+
+The logging pipeline parses JSON, OpenTelemetry records, RFC 5424/3164 syslog,
+journald, container output, and text into a normalized record. Redaction runs
+before retention, querying, UI projection, recording, or export and also covers
+the original payload.
+
+Configure a bounded ring buffer, then add enrichers and saved queries. Parser
+errors become records with provenance rather than silently dropping input.
+
+Pausing a viewer freezes its visible historical window while ingestion
+continues into the bounded buffer. Capacity drops, sampling decisions, and
+rate-limited records remain observable in buffer statistics and the viewer
+header; resuming refreshes the window to the retained history.
+
+Use `useLogPipeline()` in React components so registration and release happen
+in effects rather than during render. Imperative application services can use
+`app.createLogPipeline()` and `app.releaseLogPipeline()`. `pipeline.clear()`
+resets retained records and the live sampling and rate-limit windows together.
+`query()` records a bounded user-search history; `filter()` applies the same
+validated query without turning every live refresh into a history entry.
+Historical `replay()` preserves every supplied record while reapplying
+enrichment and redaction, rather than applying the live sampling and rate-limit
+policy a second time.

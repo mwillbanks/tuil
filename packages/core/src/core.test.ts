@@ -1,11 +1,13 @@
 import { describe, expect, test } from "bun:test";
 import {
   CommandRegistry,
+  createGlobalSearchExpression,
   DisposableStack,
   defineCommand,
   defineService,
   deleteOnDispose,
   detectTerminalCapabilities,
+  hasTerminalControlCharacters,
   Lifecycle,
   resolveRenderMode,
   resolveTerminalViewport,
@@ -13,6 +15,22 @@ import {
   terminalViewportBreakpoints,
   toDisposable,
 } from "./index.ts";
+
+test("terminal control detection covers C0 and C1 without flagging Unicode", () => {
+  expect(hasTerminalControlCharacters("safe界")).toBeFalse();
+  expect(hasTerminalControlCharacters("escape\u001b")).toBeTrue();
+  expect(hasTerminalControlCharacters("c1\u0085")).toBeTrue();
+});
+
+test("global search expressions escape strings and preserve regex flags", () => {
+  expect([
+    ..."a.b ab".matchAll(createGlobalSearchExpression("a.b")),
+  ]).toHaveLength(1);
+  expect(createGlobalSearchExpression(/a/i).flags).toContain("g");
+  expect(createGlobalSearchExpression(/a/gi).flags).toBe("gi");
+  expect(() => createGlobalSearchExpression(/(a+)+$/)).toThrow("too complex");
+  expect(() => createGlobalSearchExpression(/(a|aa)+$/)).toThrow("too complex");
+});
 
 test("disposable stacks release resources once in reverse order", async () => {
   const events: string[] = [];

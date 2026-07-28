@@ -1,0 +1,32 @@
+{
+  "name": "@mwillbanks/tuil-example-log-explorer",
+  "version": "0.1.0",
+  "description": "Production-style terminal log explorer example for tuil.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "logging",
+    "example"
+  ],
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun src/index.tsx",
+    "build": "bun build src/index.tsx --outdir dist --target bun --packages external",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test ../examples.test.tsx"
+  },
+  "dependencies": {
+    "@mwillbanks/tuil": "workspace:*",
+    "@mwillbanks/tuil-log-viewer": "workspace:*",
+    "@mwillbanks/tuil-logging": "workspace:*",
+    "react": "catalog:"
+  }
+}

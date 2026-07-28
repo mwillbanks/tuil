@@ -2,7 +2,8 @@ import { useApp } from "@mwillbanks/tuil";
 import { useFocusable } from "@mwillbanks/tuil-focus";
 import {
   type CommonComponentProps,
-  useSemanticNode,
+  Box as SemanticBox,
+  usePointerEvents,
   useTerminalInput,
 } from "@mwillbanks/tuil-ink";
 import {
@@ -12,6 +13,7 @@ import {
 } from "@mwillbanks/tuil-theme";
 import { Box, type BoxProps, Text, type TextProps } from "ink";
 import {
+  type ComponentType,
   type ReactNode,
   useCallback,
   useEffect,
@@ -61,23 +63,23 @@ function SemanticItem(props: {
   readonly selected?: boolean;
   readonly expanded?: boolean;
   readonly disabled?: boolean;
-}): null {
-  useSemanticNode(
-    useMemo(
-      () => ({
-        key: props.id,
-        id: props.id,
-        role: props.role,
-        label: props.label,
-        description: props.description,
-        selected: props.selected,
-        expanded: props.expanded,
-        disabled: props.disabled,
-      }),
-      [props],
-    ),
+  readonly parentId: string;
+  readonly children?: ReactNode;
+}): ReactNode {
+  return (
+    <SemanticBox
+      id={props.id}
+      role={props.role}
+      label={props.label}
+      description={props.description}
+      selected={props.selected}
+      expanded={props.expanded}
+      disabled={props.disabled}
+      layout={{ parentId: props.parentId, zIndex: 1 }}
+    >
+      {props.children}
+    </SemanticBox>
   );
-  return null;
 }
 
 function SemanticContainer(props: {
@@ -87,19 +89,16 @@ function SemanticContainer(props: {
   readonly valueText?: string;
   readonly children?: ReactNode;
 }): ReactNode {
-  useSemanticNode(
-    useMemo(
-      () => ({
-        key: props.id,
-        id: props.id,
-        role: props.role,
-        label: props.label,
-        valueText: props.valueText,
-      }),
-      [props.id, props.label, props.role, props.valueText],
-    ),
+  return (
+    <SemanticBox
+      id={props.id}
+      role={props.role}
+      label={props.label}
+      valueText={props.valueText}
+    >
+      {props.children}
+    </SemanticBox>
   );
-  return props.children;
 }
 
 type NavigationSlots = {
@@ -146,8 +145,10 @@ export function Tabs({
   );
   const [active, setActive] = useState(selectedIndex);
   const activeRef = useRef(active);
-  activeRef.current = active;
-  const { focused } = useFocusable(
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
+  const { focused, focus } = useFocusable(
     useMemo(
       () => ({
         id,
@@ -178,6 +179,21 @@ export function Tabs({
       if (activationMode === "automatic") await select(next);
     },
     [activationMode, items, select],
+  );
+  usePointerEvents(
+    useMemo(
+      () =>
+        items.map((item, index) => ({
+          id: `${id}:tab:${item.id}`,
+          type: "click" as const,
+          enabled: !disabled && !item.disabled,
+          listener: async () => {
+            focus();
+            await select(index);
+          },
+        })),
+      [disabled, focus, id, items, select],
+    ),
   );
   useTerminalInput(
     async (input, key) => {
@@ -225,33 +241,35 @@ export function Tabs({
           {...resolveSlotProps(slotProps?.list, state, theme)}
         >
           {items.map((item, index) => (
-            <Item
+            <SemanticItem
               key={item.id}
-              bold={focused && index === active}
-              underline={item.id === selected}
-              dimColor={item.disabled}
-              color={
-                item.id === selected
-                  ? theme.colors.primary.foreground
-                  : undefined
-              }
-              {...resolveSlotProps(slotProps?.item, state, theme)}
+              id={`${id}:tab:${item.id}`}
+              parentId={id}
+              role="tab"
+              label={item.label}
+              description={item.description}
+              selected={item.id === selected}
+              disabled={item.disabled}
             >
-              <SemanticItem
-                id={`${id}:tab:${item.id}`}
-                role="tab"
-                label={item.label}
-                description={item.description}
-                selected={item.id === selected}
-                disabled={item.disabled}
-              />
-              {app.mode === "interactive" && focused && index === active
-                ? app.capabilities.unicode
-                  ? "▶ "
-                  : "> "
-                : ""}
-              {item.label}
-            </Item>
+              <Item
+                bold={focused && index === active}
+                underline={item.id === selected}
+                dimColor={item.disabled}
+                color={
+                  item.id === selected
+                    ? theme.colors.primary.foreground
+                    : undefined
+                }
+                {...resolveSlotProps(slotProps?.item, state, theme)}
+              >
+                {app.mode === "interactive" && focused && index === active
+                  ? app.capabilities.unicode
+                    ? "▶ "
+                    : "> "
+                  : ""}
+                {item.label}
+              </Item>
+            </SemanticItem>
           ))}
         </List>
         <SemanticContainer
@@ -307,15 +325,17 @@ export function Menu({
     Math.max(0, edgeIndex(items, false)),
   ]);
   const pathRef = useRef(activePath);
-  pathRef.current = activePath;
+  useEffect(() => {
+    pathRef.current = activePath;
+  }, [activePath]);
   const currentItems =
-    pathRef.current
+    activePath
       .slice(0, -1)
       .reduce<readonly NavigationItem[]>(
         (list, index) => list[index]?.items ?? [],
         items,
       ) ?? items;
-  const { focused } = useFocusable(
+  const { focused, focus } = useFocusable(
     useMemo(
       () => ({
         id,
@@ -348,6 +368,34 @@ export function Menu({
     await onSelect?.(item);
     await setOpen(false);
   }, [app.commands, currentItems, id, onSelect, setOpen]);
+  usePointerEvents(
+    useMemo(
+      () =>
+        currentItems.map((item, index) => ({
+          id: `${id}:item:${item.id}`,
+          type: "click" as const,
+          enabled: !disabled && !item.disabled,
+          listener: async () => {
+            focus();
+            setActivePath([...pathRef.current.slice(0, -1), index]);
+            if (item.items?.length) {
+              setActivePath([
+                ...pathRef.current.slice(0, -1),
+                index,
+                Math.max(0, edgeIndex(item.items, false)),
+              ]);
+              return;
+            }
+            if (item.command) {
+              await app.commands.execute(item.command, { source: id });
+            }
+            await onSelect?.(item);
+            await setOpen(false);
+          },
+        })),
+      [app.commands, currentItems, disabled, focus, id, onSelect, setOpen],
+    ),
+  );
   useTerminalInput(
     async (input, key) => {
       const path = pathRef.current;
@@ -396,25 +444,27 @@ export function Menu({
           {...resolveSlotProps(slotProps?.list, state, theme)}
         >
           {currentItems.map((item, index) => (
-            <Item
+            <SemanticItem
               key={item.id}
-              bold={focused && index === activePath.at(-1)}
-              dimColor={item.disabled}
-              {...resolveSlotProps(slotProps?.item, state, theme)}
+              id={`${id}:item:${item.id}`}
+              parentId={id}
+              role="menuitem"
+              label={item.label}
+              description={item.description}
+              disabled={item.disabled}
+              expanded={item.items ? index === activePath.at(-1) : undefined}
             >
-              <SemanticItem
-                id={`${id}:item:${item.id}`}
-                role="menuitem"
-                label={item.label}
-                description={item.description}
-                disabled={item.disabled}
-                expanded={item.items ? index === activePath.at(-1) : undefined}
-              />
-              {focused && index === activePath.at(-1) ? "> " : "  "}
-              {item.label}
-              {item.command ? ` (${item.command})` : ""}
-              {item.items ? " >" : ""}
-            </Item>
+              <Item
+                bold={focused && index === activePath.at(-1)}
+                dimColor={item.disabled}
+                {...resolveSlotProps(slotProps?.item, state, theme)}
+              >
+                {focused && index === activePath.at(-1) ? "> " : "  "}
+                {item.label}
+                {item.command ? ` (${item.command})` : ""}
+                {item.items ? " >" : ""}
+              </Item>
+            </SemanticItem>
           ))}
         </List>
       </Root>
@@ -460,7 +510,7 @@ export function Menubar({
     0,
     menus.findIndex((menu) => menu.id === selected),
   );
-  const { focused } = useFocusable(
+  const { focused, focus } = useFocusable(
     useMemo(
       () => ({
         id,
@@ -480,6 +530,21 @@ export function Menubar({
       await onValueChange?.(menu.id);
     },
     [menus, onValueChange, value],
+  );
+  usePointerEvents(
+    useMemo(
+      () =>
+        menus.map((candidate, index) => ({
+          id: `${id}:menu:${candidate.id}`,
+          type: "click" as const,
+          enabled: !disabled && !candidate.disabled,
+          listener: async () => {
+            focus();
+            await selectMenu(index);
+          },
+        })),
+      [disabled, focus, id, menus, selectMenu],
+    ),
   );
   useTerminalInput(
     async (_input, key) => {
@@ -512,22 +577,24 @@ export function Menubar({
           {...resolveSlotProps(slotProps?.list, state, theme)}
         >
           {menus.map((candidate, index) => (
-            <Item
+            <SemanticItem
               key={candidate.id}
-              bold={focused && index === active}
-              underline={index === active}
-              dimColor={candidate.disabled}
-              {...resolveSlotProps(slotProps?.item, state, theme)}
+              id={`${id}:menu:${candidate.id}`}
+              parentId={id}
+              role="menuitem"
+              label={candidate.label}
+              selected={index === active}
+              disabled={candidate.disabled}
             >
-              <SemanticItem
-                id={`${id}:menu:${candidate.id}`}
-                role="menuitem"
-                label={candidate.label}
-                selected={index === active}
-                disabled={candidate.disabled}
-              />
-              {candidate.label}
-            </Item>
+              <Item
+                bold={focused && index === active}
+                underline={index === active}
+                dimColor={candidate.disabled}
+                {...resolveSlotProps(slotProps?.item, state, theme)}
+              >
+                {candidate.label}
+              </Item>
+            </SemanticItem>
           ))}
         </List>
       </SemanticContainer>
@@ -559,6 +626,126 @@ export interface BreadcrumbsProps
   readonly onSelect?: (item: BreadcrumbItem) => void | Promise<void>;
 }
 
+function breadcrumbSeparator(
+  index: number,
+  separator: string | undefined,
+  unicode: boolean,
+): string {
+  if (index === 0) return "";
+  return ` ${separator ?? (unicode ? "›" : ">")} `;
+}
+
+function BreadcrumbTrail(props: {
+  readonly active: number;
+  readonly current: number;
+  readonly focused: boolean;
+  readonly id: string;
+  readonly itemComponent: ComponentType<TextProps>;
+  readonly items: readonly BreadcrumbItem[];
+  readonly separator?: string;
+  readonly slotProps:
+    | NonNullable<BreadcrumbsProps["slotProps"]>["item"]
+    | undefined;
+  readonly state: { readonly focused: boolean; readonly disabled: boolean };
+  readonly theme: ReturnType<typeof useTheme>;
+  readonly unicode: boolean;
+}): ReactNode {
+  const Item = props.itemComponent;
+  return props.items.map((item, index) => (
+    <SemanticItem
+      key={item.id}
+      id={`${props.id}:crumb:${item.id}`}
+      parentId={props.id}
+      role="button"
+      label={item.label}
+      selected={index === props.current}
+      disabled={item.disabled}
+    >
+      <Item
+        bold={
+          index === props.current || (props.focused && index === props.active)
+        }
+        dimColor={item.disabled}
+        {...resolveSlotProps(props.slotProps, props.state, props.theme)}
+      >
+        {breadcrumbSeparator(index, props.separator, props.unicode)}
+        {item.label}
+      </Item>
+    </SemanticItem>
+  ));
+}
+
+function useBreadcrumbController(options: {
+  readonly disabled: boolean;
+  readonly id: string;
+  readonly items: readonly BreadcrumbItem[];
+  readonly label: string;
+  readonly onSelect?: (item: BreadcrumbItem) => void | Promise<void>;
+}): {
+  readonly active: number;
+  readonly current: number;
+  readonly focused: boolean;
+  readonly unicode: boolean;
+} {
+  const { disabled, id, items, label, onSelect } = options;
+  const app = useApp();
+  const current = Math.max(0, items.length - 1);
+  const [active, setActive] = useState(current);
+  const { focused, focus } = useFocusable(
+    useMemo(
+      () => ({
+        id,
+        disabled,
+        hidden: false,
+        role: "navigation",
+        label,
+      }),
+      [disabled, id, label],
+    ),
+  );
+  const activate = useCallback(
+    async (index: number) => {
+      const item = items[index];
+      if (!item || item.disabled || disabled) return;
+      setActive(index);
+      focus();
+      if (item.command) {
+        await app.commands.execute(item.command, { source: id });
+      }
+      await onSelect?.(item);
+    },
+    [app.commands, disabled, focus, id, items, onSelect],
+  );
+  usePointerEvents(
+    useMemo(
+      () =>
+        items.map((item, index) => ({
+          id: `${id}:crumb:${item.id}`,
+          type: "click" as const,
+          enabled: !disabled && !item.disabled,
+          listener: () => activate(index),
+        })),
+      [activate, disabled, id, items],
+    ),
+  );
+  useTerminalInput(
+    async (_input, key) => {
+      if (key.leftArrow) setActive(enabledIndex(items, active, -1));
+      else if (key.rightArrow) setActive(enabledIndex(items, active, 1));
+      else if (key.return) await activate(active);
+      else return false;
+      return true;
+    },
+    { enabled: focused && !disabled, priority: 1_400 },
+  );
+  return {
+    active,
+    current,
+    focused,
+    unicode: app.capabilities.unicode,
+  };
+}
+
 export function Breadcrumbs({
   items,
   separator,
@@ -568,51 +755,20 @@ export function Breadcrumbs({
   disabled = false,
   ...props
 }: BreadcrumbsProps): ReactNode {
-  const app = useApp();
   const theme = useTheme();
   const generated = useId();
   const id = props.id ?? generated;
-  const current = Math.max(0, items.length - 1);
-  const [active, setActive] = useState(current);
-  const { focused } = useFocusable(
-    useMemo(
-      () => ({
-        id,
-        disabled,
-        hidden: false,
-        role: "navigation",
-        label: props.label ?? "Breadcrumbs",
-      }),
-      [disabled, id, props.label],
-    ),
-  );
-  useTerminalInput(
-    async (_input, key) => {
-      if (key.leftArrow) {
-        setActive(enabledIndex(items, active, -1));
-        return true;
-      }
-      if (key.rightArrow) {
-        setActive(enabledIndex(items, active, 1));
-        return true;
-      }
-      if (key.return) {
-        const item = items[active];
-        if (!item || item.disabled) return true;
-        if (item.command) {
-          await app.commands.execute(item.command, { source: id });
-        }
-        await onSelect?.(item);
-        return true;
-      }
-      return false;
-    },
-    { enabled: focused && !disabled, priority: 1_400 },
-  );
+  const controller = useBreadcrumbController({
+    disabled,
+    id,
+    items,
+    label: props.label ?? "Breadcrumbs",
+    onSelect,
+  });
   const Root = slots?.root ?? Box;
   const List = slots?.list ?? Box;
   const Item = slots?.item ?? Text;
-  const state = { focused, disabled };
+  const state = { focused: controller.focused, disabled };
   return (
     <SemanticContainer
       id={id}
@@ -624,26 +780,19 @@ export function Breadcrumbs({
           flexDirection="row"
           {...resolveSlotProps(slotProps?.list, state, theme)}
         >
-          {items.map((item, index) => (
-            <Item
-              key={item.id}
-              bold={index === current || (focused && index === active)}
-              dimColor={item.disabled}
-              {...resolveSlotProps(slotProps?.item, state, theme)}
-            >
-              <SemanticItem
-                id={`${id}:crumb:${item.id}`}
-                role="button"
-                label={item.label}
-                selected={index === current}
-                disabled={item.disabled}
-              />
-              {index > 0
-                ? ` ${separator ?? (app.capabilities.unicode ? "›" : ">")} `
-                : ""}
-              {item.label}
-            </Item>
-          ))}
+          <BreadcrumbTrail
+            active={controller.active}
+            current={controller.current}
+            focused={controller.focused}
+            id={id}
+            itemComponent={Item}
+            items={items}
+            separator={separator}
+            slotProps={slotProps?.item}
+            state={state}
+            theme={theme}
+            unicode={controller.unicode}
+          />
         </List>
       </Root>
     </SemanticContainer>
@@ -730,32 +879,134 @@ export function Stepper({
                         ? "○"
                         : "o";
             return (
-              <Item
+              <SemanticItem
                 key={step.id}
-                bold={status === "current"}
-                dimColor={status === "pending" || status === "skipped"}
-                color={
-                  status === "error"
-                    ? theme.colors.danger.foreground
-                    : status === "completed"
-                      ? theme.colors.success.foreground
-                      : undefined
-                }
-                {...resolveSlotProps(slotProps?.item, state, theme)}
+                id={`${id}:step:${step.id}`}
+                parentId={id}
+                role="button"
+                label={step.label}
+                description={step.description}
+                selected={status === "current"}
               >
-                <SemanticItem
-                  id={`${id}:step:${step.id}`}
-                  role="button"
-                  label={step.label}
-                  description={step.description}
-                  selected={status === "current"}
-                />
-                [{marker}] {step.label}
-              </Item>
+                <Item
+                  bold={status === "current"}
+                  dimColor={status === "pending" || status === "skipped"}
+                  color={
+                    status === "error"
+                      ? theme.colors.danger.foreground
+                      : status === "completed"
+                        ? theme.colors.success.foreground
+                        : undefined
+                  }
+                  {...resolveSlotProps(slotProps?.item, state, theme)}
+                >
+                  [{marker}] {step.label}
+                </Item>
+              </SemanticItem>
             );
           })}
         </List>
       </Root>
+    </SemanticContainer>
+  );
+}
+
+export type TabSelectProps = TabsProps;
+export const TabSelect = Tabs;
+
+export interface PaginationProps extends CommonComponentProps {
+  readonly page: number;
+  readonly pageCount: number;
+  readonly onPageChange?: (page: number) => void | Promise<void>;
+}
+
+export function Pagination({
+  page,
+  pageCount,
+  onPageChange,
+  disabled = false,
+  ...props
+}: PaginationProps): ReactNode {
+  const id = props.id ?? "pagination";
+  const safeCount = Math.max(1, Math.floor(pageCount));
+  const safePage = Math.max(1, Math.min(safeCount, Math.floor(page)));
+  const { focused } = useFocusable(
+    useMemo(
+      () => ({
+        id,
+        disabled,
+        hidden: false,
+        role: "button",
+        label: props.label ?? "Pagination",
+      }),
+      [disabled, id, props.label],
+    ),
+  );
+  useTerminalInput(
+    async (_input, key) => {
+      if (key.leftArrow || key.pageUp) {
+        await onPageChange?.(Math.max(1, safePage - 1));
+        return true;
+      }
+      if (key.rightArrow || key.pageDown) {
+        await onPageChange?.(Math.min(safeCount, safePage + 1));
+        return true;
+      }
+      if (key.home) {
+        await onPageChange?.(1);
+        return true;
+      }
+      if (key.end) {
+        await onPageChange?.(safeCount);
+        return true;
+      }
+      return false;
+    },
+    { enabled: focused, priority: 2_000 },
+  );
+  return (
+    <SemanticContainer
+      id={id}
+      role="navigation"
+      label={props.label ?? "Pagination"}
+      valueText={`${safePage} of ${safeCount}`}
+    >
+      <Text
+        bold={focused}
+        dimColor={disabled}
+      >{`‹ ${safePage}/${safeCount} ›`}</Text>
+    </SemanticContainer>
+  );
+}
+
+export interface OutlineItem {
+  readonly id: string;
+  readonly label: string;
+  readonly depth?: number;
+  readonly selected?: boolean;
+}
+
+export function Outline(props: {
+  readonly id?: string;
+  readonly label?: string;
+  readonly items: readonly OutlineItem[];
+}): ReactNode {
+  const id = props.id ?? "outline";
+  return (
+    <SemanticContainer
+      id={id}
+      role="navigation"
+      label={props.label ?? "Outline"}
+    >
+      <Box flexDirection="column">
+        {props.items.map((item) => (
+          <Text key={item.id} bold={item.selected}>
+            {"  ".repeat(item.depth ?? 0)}
+            {item.selected ? "› " : "  "}
+            {item.label}
+          </Text>
+        ))}
+      </Box>
     </SemanticContainer>
   );
 }

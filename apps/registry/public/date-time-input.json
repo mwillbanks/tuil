@@ -1,0 +1,23 @@
+{
+  "name": "date-time-input",
+  "type": "form",
+  "title": "Date Time Input",
+  "description": "Date and time text editor.",
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["field"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink", "cell"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "integrity": "sha256-bf4feb08aa99ba1a25447a4648be063df8d1dffe552b2e0d485037bc089e20f5"
+}

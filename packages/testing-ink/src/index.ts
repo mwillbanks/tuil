@@ -23,6 +23,39 @@ export interface TuilTestInstance {
   cleanup(): Promise<void>;
 }
 
+function measuredPointerCoordinates(
+  instance: TuilTestInstance,
+  id: string,
+): { readonly column: number; readonly row: number } {
+  const bounds = instance.app.layout.get(id)?.bounds;
+  if (!bounds || bounds.width < 1 || bounds.height < 1) {
+    throw new Error(`Pointer target "${id}" has no measured bounds`);
+  }
+  return { column: bounds.x + 1, row: bounds.y + 1 };
+}
+
+export async function clickPointerTarget(
+  instance: TuilTestInstance,
+  id: string,
+): Promise<void> {
+  const { column, row } = measuredPointerCoordinates(instance, id);
+  await instance.user.press(`\u001b[<0;${column};${row}M`);
+  await instance.user.press(`\u001b[<0;${column};${row}m`);
+}
+
+export async function dragPointerTarget(
+  instance: TuilTestInstance,
+  id: string,
+  delta: { readonly x?: number; readonly y?: number },
+): Promise<void> {
+  const { column, row } = measuredPointerCoordinates(instance, id);
+  const targetColumn = column + (delta.x ?? 0);
+  const targetRow = row + (delta.y ?? 0);
+  await instance.user.press(`\u001b[<0;${column};${row}M`);
+  await instance.user.press(`\u001b[<32;${targetColumn};${targetRow}M`);
+  await instance.user.press(`\u001b[<0;${targetColumn};${targetRow}m`);
+}
+
 const keySequences: Record<string, string> = {
   arrowUp: "\u001b[A",
   arrowDown: "\u001b[B",
@@ -49,7 +82,7 @@ export class TuilUser {
   async press(keys: string): Promise<void> {
     await this.ready;
     this.write(keySequences[keys] ?? keys);
-    await Bun.sleep(25);
+    await Bun.sleep(50);
   }
 
   async type(value: string): Promise<void> {
@@ -58,7 +91,7 @@ export class TuilUser {
       this.write(character);
       await Bun.sleep(0);
     }
-    await Bun.sleep(25);
+    await Bun.sleep(50);
   }
 }
 
@@ -104,6 +137,16 @@ export const user = {
   },
 };
 
+async function waitForInitialFrame(instance: {
+  readonly frames: readonly string[];
+}): Promise<void> {
+  for (let attempt = 0; attempt < 100; attempt += 1) {
+    if (instance.frames.length > 0) return;
+    await Bun.sleep(0);
+  }
+  throw new Error("Initial Ink frame did not flush");
+}
+
 export function renderTuil(
   component: ReactElement,
   options: Omit<TuilAppOptions, "component"> = {},
@@ -125,7 +168,7 @@ export function renderTuil(
       },
     },
   });
-  const registry = new SemanticRegistry();
+  const registry = new SemanticRegistry(app.layout);
   const runtimeReady = app.ready();
   let markRendered: (() => void) | undefined;
   const rendered = new Promise<void>((resolve) => {
@@ -142,7 +185,9 @@ export function renderTuil(
     width: app.capabilities.width,
     height: app.capabilities.height,
   });
-  const ready = Promise.all([runtimeReady, rendered]).then(() => undefined);
+  const ready = Promise.all([runtimeReady, rendered]).then(() =>
+    waitForInitialFrame(instance),
+  );
   let readyFailure: unknown;
   void ready.catch((error: unknown) => {
     readyFailure = error;

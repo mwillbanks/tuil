@@ -1,12 +1,12 @@
 ---
 title: "@mwillbanks/tuil"
-description: "A production-ready React and Ink framework for composable terminal applications."
+description: "A renderer-neutral terminal application runtime with React Ink compatibility."
 icon: Package
 ---
 
 ## Overview
 
-A production-ready React and Ink framework for composable terminal applications.
+A renderer-neutral terminal application runtime with React Ink compatibility.
 
 `@mwillbanks/tuil` is independently installable and also participates in the
 umbrella `@mwillbanks/tuil` runtime where applicable.
@@ -51,14 +51,13 @@ flowchart LR
 | `CommandExecution` | interface | `packages/core/src/commands.ts` |
 | `CommandRegistry` | class | `packages/core/src/commands.ts` |
 | `CommandRegistryChange` | type | `packages/core/src/commands.ts` |
-| `createApp` | function | `packages/tuil/src/index.ts` |
+| `createGlobalSearchExpression` | function | `packages/core/src/text.ts` |
 | `createOperation` | export | `packages/tuil/src/index.ts` |
 | `createPlugin` | export | `packages/tuil/src/index.ts` |
 | `createRouter` | export | `packages/tuil/src/index.ts` |
 | `createTheme` | export | `packages/tuil/src/index.ts` |
 | `createWorkflow` | export | `packages/tuil/src/index.ts` |
 | `defineCommand` | function | `packages/core/src/commands.ts` |
-| `defineConfig` | function | `packages/tuil/src/index.ts` |
 | `defineEvents` | export | `packages/tuil/src/index.ts` |
 | `defineOperation` | export | `packages/tuil/src/index.ts` |
 | `defineOperationStep` | export | `packages/tuil/src/index.ts` |
@@ -72,11 +71,14 @@ flowchart LR
 | `DisposableStack` | class | `packages/core/src/disposable.ts` |
 | `Disposer` | type | `packages/core/src/disposable.ts` |
 | `ErrorHandler` | type | `packages/tuil/src/index.ts` |
+| `escapeTerminalControlCharacters` | function | `packages/core/src/text.ts` |
 | `event` | export | `packages/tuil/src/index.ts` |
 | `EventDefinition` | export | `packages/tuil/src/index.ts` |
 | `EventDefinitions` | export | `packages/tuil/src/index.ts` |
 | `EventMap` | export | `packages/tuil/src/index.ts` |
 | `ExtensionRegistries` | type | `packages/tuil/src/index.ts` |
+| `hasTerminalControlCharacters` | function | `packages/core/src/text.ts` |
+| `isSafeRegularExpressionSource` | function | `packages/core/src/text.ts` |
 | `Lifecycle` | class | `packages/core/src/lifecycle.ts` |
 | `NavigationEntry` | export | `packages/tuil/src/index.ts` |
 | `NavigationSurface` | export | `packages/tuil/src/index.ts` |
@@ -99,6 +101,13 @@ flowchart LR
 | `RouteMatch` | export | `packages/tuil/src/index.ts` |
 | `RouterEvent` | export | `packages/tuil/src/index.ts` |
 | `RouterState` | export | `packages/tuil/src/index.ts` |
+| `RuntimeComponentContribution` | interface | `packages/tuil/src/index.ts` |
+| `RuntimeLogPipelineOptions` | type | `packages/tuil/src/index.ts` |
+| `RuntimeRenderSnapshot` | interface | `packages/tuil/src/index.ts` |
+| `RuntimeRenderTelemetry` | class | `packages/tuil/src/index.ts` |
+| `RuntimeResourceEntry` | interface | `packages/tuil/src/index.ts` |
+| `RuntimeResourceRegistry` | class | `packages/tuil/src/index.ts` |
+| `RuntimeStreamingPipelineOptions` | type | `packages/tuil/src/index.ts` |
 | `SemanticMetadata` | interface | `packages/core/src/semantics.ts` |
 | `SemanticRole` | type | `packages/core/src/semantics.ts` |
 | `ServiceContainer` | class | `packages/core/src/services.ts` |
@@ -106,32 +115,33 @@ flowchart LR
 | `ServiceFactoryContext` | interface | `packages/core/src/services.ts` |
 | `ServiceInput` | type | `packages/tuil/src/index.ts` |
 | `ServiceMap` | type | `packages/core/src/services.ts` |
+| `sliceTerminalText` | function | `packages/core/src/text.ts` |
 | `TerminalBounds` | interface | `packages/core/src/semantics.ts` |
 | `TerminalCapabilities` | interface | `packages/core/src/terminal.ts` |
 | `TerminalCapabilityInput` | interface | `packages/core/src/terminal.ts` |
+| `TerminalInputProbe` | interface | `packages/core/src/terminal.ts` |
 | `TerminalOptions` | interface | `packages/tuil/src/index.ts` |
+| `TerminalOutputProbe` | interface | `packages/core/src/terminal.ts` |
+| `TerminalPlatform` | type | `packages/core/src/terminal.ts` |
 | `TerminalRouter` | export | `packages/tuil/src/index.ts` |
+| `terminalTextWidth` | function | `packages/core/src/text.ts` |
 | `TerminalViewport` | type | `packages/core/src/terminal.ts` |
 | `terminalViewportBreakpoints` | constant | `packages/core/src/terminal.ts` |
 | `Theme` | export | `packages/tuil/src/index.ts` |
 | `ThemeFactory` | export | `packages/tuil/src/index.ts` |
 | `toDisposable` | function | `packages/core/src/disposable.ts` |
 | `transition` | export | `packages/tuil/src/index.ts` |
-| `TuilApp` | class | `packages/tuil/src/index.ts` |
+| `truncateTerminalText` | function | `packages/core/src/text.ts` |
 | `TuilAppOptions` | interface | `packages/tuil/src/index.ts` |
-| `TuilConfig` | interface | `packages/tuil/src/index.ts` |
 | `TuilExtensionPoints` | interface | `packages/tuil/src/index.ts` |
 | `TuilRuntime` | interface | `packages/tuil/src/index.ts` |
-| `TuilRuntimeProvider` | function | `packages/tuil/src/index.ts` |
-| `useApp` | function | `packages/tuil/src/index.ts` |
-| `useExtensions` | function | `packages/tuil/src/index.ts` |
-| `useService` | function | `packages/tuil/src/index.ts` |
 | `WorkflowDefinition` | export | `packages/tuil/src/index.ts` |
 | `WorkflowEvent` | export | `packages/tuil/src/index.ts` |
 | `WorkflowRunner` | export | `packages/tuil/src/index.ts` |
 | `WorkflowSnapshot` | export | `packages/tuil/src/index.ts` |
 | `WorkflowStatus` | export | `packages/tuil/src/index.ts` |
 | `WorkflowStep` | export | `packages/tuil/src/index.ts` |
+| `wrapTerminalText` | function | `packages/core/src/text.ts` |
 
 ## Events and lifecycle
 

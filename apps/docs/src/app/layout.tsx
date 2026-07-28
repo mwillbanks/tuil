@@ -13,14 +13,14 @@ export const metadata: Metadata = {
     template: "%s · tuil",
   },
   description:
-    "A production-ready React and Ink framework for composable terminal applications.",
+    "A renderer-neutral terminal application runtime with React Ink compatibility and deterministic cell rendering.",
   icons: {
     icon: `${basePath}/logo.svg`,
   },
   metadataBase: new URL("https://mwillbanks.github.io/"),
   openGraph: {
     description:
-      "Build polished terminal applications with one runtime for interactive, static, test, and story surfaces.",
+      "Build polished Ink-compatible or cell-rendered terminal applications with one runtime for interactive, static, test, and story surfaces.",
     siteName: "tuil",
     title: "tuil — terminal UI, without the runtime tax",
     type: "website",

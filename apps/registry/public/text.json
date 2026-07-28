@@ -21,10 +21,20 @@
   },
   "files": [
     {
-      "path": "../../../registry/data-display/text.tsx",
+      "path": "src/components/tuil/data-display/text.tsx",
       "target": "src/components/tuil/data-display/text.tsx",
-      "content": "import {\n  type TextProps as TuilTextProps,\n  useSemanticNode,\n} from \"@mwillbanks/tuil-ink\";\nimport {\n  resolveComponentProps,\n  resolveSlotProps,\n  useTheme,\n} from \"@mwillbanks/tuil-theme\";\nimport { Text as InkText } from \"ink\";\nimport { type ReactNode, useId, useMemo } from \"react\";\n\nexport type TextProps = TuilTextProps;\n\nexport function Text({\n  slots,\n  slotProps,\n  children,\n  id,\n  testId,\n  role,\n  label,\n  description,\n  disabled,\n  readOnly,\n  selected,\n  checked,\n  expanded,\n  valueText,\n  unstyled,\n  variant,\n  size,\n  className,\n  ...props\n}: TextProps): ReactNode {\n  const theme = useTheme();\n  const generated = useId();\n  const key = id ?? generated;\n  const text =\n    typeof children === \"string\" || typeof children === \"number\"\n      ? String(children)\n      : undefined;\n  const semantics = useMemo(\n    () => ({\n      key,\n      id: id ?? key,\n      testId,\n      role: role ?? \"text\",\n      label: label ?? text,\n      text,\n      description,\n      disabled,\n      readOnly,\n      selected,\n      checked,\n      expanded,\n      valueText,\n    }),\n    [\n      checked,\n      description,\n      disabled,\n      expanded,\n      id,\n      key,\n      label,\n      readOnly,\n      role,\n      selected,\n      testId,\n      text,\n      valueText,\n    ],\n  );\n  useSemanticNode(semantics);\n  const Root = slots?.root ?? InkText;\n  const customization = resolveComponentProps(\n    \"Text\",\n    { variant, size, unstyled, className },\n    {},\n    theme,\n  );\n  return (\n    <Root\n      {...(customization as TuilTextProps)}\n      {...props}\n      {...resolveSlotProps(slotProps?.root, {}, theme)}\n    >\n      {children}\n    </Root>\n  );\n}\n"
+      "content": "import {\n  type TextProps as TuilTextProps,\n  useSemanticNode,\n} from \"@mwillbanks/tuil-ink\";\nimport {\n  resolveComponentProps,\n  resolveSlotProps,\n  useTheme,\n} from \"@mwillbanks/tuil-theme\";\nimport { Text as InkText } from \"ink\";\nimport { type ReactNode, useId, useMemo } from \"react\";\n\nexport type TextProps = TuilTextProps;\n\nexport function Text({\n  slots,\n  slotProps,\n  children,\n  id,\n  testId,\n  role,\n  label,\n  description,\n  disabled,\n  readOnly,\n  selected,\n  checked,\n  expanded,\n  valueText,\n  unstyled,\n  variant,\n  size,\n  className,\n  ...props\n}: TextProps): ReactNode {\n  const theme = useTheme();\n  const generated = useId();\n  const key = id ?? generated;\n  const text =\n    typeof children === \"string\" || typeof children === \"number\"\n      ? String(children)\n      : undefined;\n  const semantics = useMemo(\n    () => ({\n      key,\n      id: id ?? key,\n      testId,\n      role: role ?? \"text\",\n      label: label ?? text,\n      text,\n      description,\n      disabled,\n      readOnly,\n      selected,\n      checked,\n      expanded,\n      valueText,\n    }),\n    [\n      checked,\n      description,\n      disabled,\n      expanded,\n      id,\n      key,\n      label,\n      readOnly,\n      role,\n      selected,\n      testId,\n      text,\n      valueText,\n    ],\n  );\n  useSemanticNode(semantics);\n  const Root = slots?.root ?? InkText;\n  const customization = resolveComponentProps(\n    \"Text\",\n    { variant, size, unstyled, className },\n    {},\n    theme,\n  );\n  return (\n    <Root\n      {...(customization as TuilTextProps)}\n      {...props}\n      {...resolveSlotProps(slotProps?.root, {}, theme)}\n    >\n      {children}\n    </Root>\n  );\n}\n",
+      "source": "registry/data-display/text.tsx"
     }
   ],
-  "registryDependencies": []
+  "registryDependencies": [],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "integrity": "sha256-07f7b79fec3fad1af4227a59fd86a9385f9c31d33f2ad32e455557016bdc055b"
 }

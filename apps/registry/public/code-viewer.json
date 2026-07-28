@@ -1,0 +1,23 @@
+{
+  "name": "code-viewer",
+  "type": "data-display",
+  "title": "Code Viewer",
+  "description": "Highlighted code projection.",
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["markdown-viewer"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink", "cell"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "integrity": "sha256-24e19d6ae8fc1e1462af26195b70f7a527c2375f3ec23848393a491ca826d8e0"
+}

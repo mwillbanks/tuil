@@ -1,0 +1,60 @@
+---
+title: "@mwillbanks/tuil-content"
+description: "Shared Markdown code diff JSON structured-content projections and selection models for tuil."
+icon: Package
+---
+
+## Overview
+
+Shared Markdown code diff JSON structured-content projections and selection models for tuil.
+
+`@mwillbanks/tuil-content` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-content
+```
+
+## How it operates
+
+Content models retain structured paths and diff source positions while exposing raw, tree, table, unified, and split projections.
+
+```mermaid
+flowchart LR
+  S0["parse model"]
+  S1["navigate/search"]
+  S2["select/copy"]
+  S3["project"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `resolveJsonPath` | function | `packages/content/src/index.ts` |
+| `StructuredContentModel` | class | `packages/content/src/index.ts` |
+| `TreeRow` | interface | `packages/content/src/index.ts` |
+
+## Events and lifecycle
+
+Models are deterministic values and expose results directly without global events.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+const model = new StructuredContentModel({ service: { ready: true } });
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

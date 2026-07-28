@@ -16,13 +16,42 @@ import { Box, Text } from "ink";
 import { useState } from "react";
 import { DataTable, Table } from "./data-display/complex-data.tsx";
 import { createLineDiff, DiffViewer } from "./data-display/diff-viewer.tsx";
-import { JsonViewer } from "./data-display/json-viewer.tsx";
+import { flattenJson, JsonViewer } from "./data-display/json-viewer.tsx";
 import { type LogEntry, LogViewer } from "./data-display/log-viewer.tsx";
 import { Tree } from "./data-display/tree.tsx";
 import { VirtualList } from "./data-display/virtual-list.tsx";
+import { ErrorBoundary } from "./feedback/overlays.tsx";
 import { TransferList } from "./forms/transfer-list.tsx";
 import { SplitPane } from "./layout/panes.tsx";
 import { ResizablePane } from "./layout/resizable-pane.tsx";
+
+async function clickMeasured(
+  view: ReturnType<typeof renderTuil>,
+  id: string,
+): Promise<void> {
+  const bounds = view.app.layout.get(id)?.bounds;
+  expect(bounds).toBeDefined();
+  if (!bounds) throw new Error(`Pointer target "${id}" was not measured`);
+  const column = bounds.x + 1;
+  const row = bounds.y + 1;
+  await view.user.press(`\u001b[<0;${column};${row}M`);
+  await view.user.press(`\u001b[<0;${column};${row}m`);
+}
+
+async function dragMeasured(
+  view: ReturnType<typeof renderTuil>,
+  id: string,
+  deltaX: number,
+): Promise<void> {
+  const bounds = view.app.layout.get(id)?.bounds;
+  expect(bounds).toBeDefined();
+  if (!bounds) throw new Error(`Pointer target "${id}" was not measured`);
+  const column = bounds.x + 1;
+  const row = bounds.y + 1;
+  await view.user.press(`\u001b[<0;${column};${row}M`);
+  await view.user.press(`\u001b[<32;${column + deltaX};${row}M`);
+  await view.user.press(`\u001b[<0;${column + deltaX};${row}m`);
+}
 
 test("terminal virtualization is bounded, fast, and ANSI width safe", () => {
   const adapter = new TerminalVirtualizerAdapter({
@@ -91,6 +120,31 @@ test("virtual lists honor overscan and accept falsey items", async () => {
   expect(selected).toBe(0);
   expect(view.screen.frame()).toContain("0");
   await view.cleanup();
+});
+
+test("virtual lists share scroll restoration and pointer selection", async () => {
+  let selected = "";
+  const renderList = () =>
+    renderTuil(
+      <VirtualList
+        id="restored-list"
+        items={Array.from({ length: 20 }, (_value, index) => `item-${index}`)}
+        height={3}
+        getItemKey={(item) => item}
+        renderItem={(item) => item}
+        onSelect={(item) => {
+          selected = item;
+        }}
+      />,
+    );
+  const first = renderList();
+  await first.ready;
+  expect(first.app.focus.focus("restored-list")).toBeTrue();
+  await first.user.press("end");
+  expect(first.app.scroll.get("restored-list")?.snapshot().atBottom).toBeTrue();
+  await clickMeasured(first, "restored-list:item:item-19");
+  expect(selected).toBe("item-19");
+  await first.cleanup();
 });
 
 test("virtual lists keep rendering bounded and scroll active focus into view", async () => {
@@ -177,6 +231,7 @@ test("tables lazily project rows and support uncontrolled selection", async () =
     value: index,
   }));
   let projections = 0;
+  const activations: number[] = [];
   const selectionChanges: string[][] = [];
   const table = renderTuil(
     <Table
@@ -199,10 +254,15 @@ test("tables lazily project rows and support uncontrolled selection", async () =
       onSelectionChange={(selected) => {
         selectionChanges.push([...selected]);
       }}
+      onActivate={(_row, _column, rowIndex) => {
+        activations.push(rowIndex);
+      }}
     />,
   );
   await table.ready;
   expect(projections).toBeLessThanOrEqual(4);
+  await clickMeasured(table, "lazy-table:cell:row-0:value");
+  expect(activations).toEqual([0]);
   expect(table.app.focus.focus("lazy-table")).toBeTrue();
   await table.user.press(" ");
   await table.user.press(" ");
@@ -382,6 +442,32 @@ test("data tables preserve rich header and cell render results", async () => {
   await rendered.cleanup();
 });
 
+test("source tables preserve mixed and empty iterable cell results", async () => {
+  const view = renderTuil(
+    <Table
+      rows={[{ id: "one" }]}
+      getRowKey={(row) => row.id}
+      columns={[
+        {
+          id: "mixed",
+          header: "Mixed",
+          width: 8,
+          cell: () => ["A", <Text key="mixed-node">B</Text>],
+        },
+        {
+          id: "empty",
+          header: "Empty",
+          width: 8,
+          cell: () => new Set([null, false]),
+        },
+      ]}
+    />,
+  );
+  await view.ready;
+  expect(view.screen.frame()).toContain("AB");
+  await view.cleanup();
+});
+
 test("tables integrate TanStack sorting, row selection, and raw cell models", async () => {
   const dataView = renderTuil(<DataTableHarness />);
   await dataView.ready;
@@ -510,9 +596,7 @@ test("tree, transfer, and JSON viewers preserve structured interaction", async (
     />,
   );
   await tree.ready;
-  expect(tree.app.focus.focus("tree")).toBeTrue();
-  await tree.user.press("arrowRight");
-  await tree.user.press("enter");
+  await clickMeasured(tree, "tree:item:readme");
   expect(treeSelection).toBe("readme");
   expect(
     tree.screen.getByRole("treeitem", { name: "README.md" }).selected,
@@ -601,6 +685,50 @@ test("JSON inspection never executes accessors before redaction", async () => {
   await json.cleanup();
 });
 
+test("JSON flattening preserves exotic and inaccessible values", () => {
+  const inaccessible = new Proxy(
+    {},
+    {
+      ownKeys() {
+        throw new Error("blocked");
+      },
+    },
+  );
+  let descriptorCalls = 0;
+  const descriptorFailure = new Proxy(
+    { value: true },
+    {
+      getOwnPropertyDescriptor(_target, key) {
+        descriptorCalls += 1;
+        if (descriptorCalls === 1) {
+          return {
+            configurable: true,
+            enumerable: true,
+            value: key === "value",
+            writable: true,
+          };
+        }
+        throw new Error("blocked");
+      },
+    },
+  );
+  const options = {
+    expandedPaths: new Set(["$", "$/descriptor"]),
+    maxDepth: 4,
+    sortKeys: true,
+    redactKeys: /token/i,
+  };
+  expect(flattenJson(Symbol("value"), options)[0]?.value).toBe(
+    '"Symbol(value)"',
+  );
+  expect(flattenJson(inaccessible, options)).toHaveLength(1);
+  expect(
+    flattenJson({ descriptor: descriptorFailure }, options).some(
+      (node) => node.value === '"[Inaccessible]"',
+    ),
+  ).toBeTrue();
+});
+
 test("log and diff viewers bound streams and expose real line changes", async () => {
   const inaccessible: LogEntry = {
     id: "old",
@@ -621,12 +749,14 @@ test("log and diff viewers bound streams and expose real line changes", async ()
     />,
   );
   await log.ready;
+  expect(log.app.logPipelines.values()).toHaveLength(1);
   expect(log.screen.frame()).toContain("line 99");
   expect(log.screen.frame()).not.toContain("line 0");
   expect(log.app.focus.focus("logs")).toBeTrue();
   await log.user.press("home");
   expect(log.screen.frame()).toContain("line 80");
   await log.cleanup();
+  expect(log.app.logPipelines.values()).toEqual([]);
 
   const multiline = renderTuil(
     <LogViewer id="multiline-logs" lines={["a\nb"]} height={1} maxLines={2} />,
@@ -692,8 +822,7 @@ test("split and resizable panes enforce constrained keyboard resizing", async ()
   }
   const split = renderTuil(<SplitHarness />);
   await split.ready;
-  expect(split.app.focus.focus("split")).toBeTrue();
-  await split.user.press("arrowRight");
+  await dragMeasured(split, "split:divider:files", 1);
   expect(splitSizes.map(Math.round)).toEqual([55, 45]);
   await split.user.press("arrowRight");
   expect(splitSizes.map(Math.round)).toEqual([60, 40]);
@@ -756,6 +885,37 @@ test("split and resizable panes enforce constrained keyboard resizing", async ()
   await pane.user.press("arrowRight");
   expect(extent).toBe(12);
   await pane.cleanup();
+});
+
+test("split panes reject invalid size contracts", async () => {
+  const cases = [
+    [
+      { id: "one", content: <Text>One</Text>, minSize: -1 },
+      { id: "two", content: <Text>Two</Text> },
+    ],
+    [
+      { id: "one", content: <Text>One</Text>, maxSize: 101 },
+      { id: "two", content: <Text>Two</Text> },
+    ],
+    [
+      { id: "one", content: <Text>One</Text>, minSize: 60, maxSize: 40 },
+      { id: "two", content: <Text>Two</Text> },
+    ],
+    [
+      { id: "one", content: <Text>One</Text>, minSize: 60 },
+      { id: "two", content: <Text>Two</Text>, minSize: 60 },
+    ],
+  ] as const;
+  for (const [index, panes] of cases.entries()) {
+    const view = renderTuil(
+      <ErrorBoundary fallback={(error) => <Text>{error.message}</Text>}>
+        <SplitPane id={`invalid-split-${index}`} panes={panes} />
+      </ErrorBoundary>,
+    );
+    await view.ready;
+    expect(view.screen.frame()).not.toBeEmpty();
+    await view.cleanup();
+  }
 });
 
 test("complex data components degrade to bounded static output", async () => {
@@ -918,6 +1078,12 @@ test("structured viewers cover complete keyboard navigation contracts", async ()
   await json.user.press("pageUp");
   await json.user.press("end");
   await json.user.press("home");
+  await json.user.press("arrowUp");
+  await json.user.press("arrowRight");
+  await json.user.press("arrowDown");
+  await json.user.press("arrowRight");
+  await json.user.press("arrowDown");
+  await json.user.press("arrowLeft");
   await json.user.press("space");
   await json.user.press("unhandled");
   expect(jsonChanges.length).toBeGreaterThan(0);
@@ -1141,8 +1307,7 @@ test("data viewers cover bounded navigation, empty, and static overflow states",
   ]) {
     await logs.user.press(key);
   }
-  expect(following).toContain(false);
-  expect(following).toContain(true);
+  expect(following).toEqual([false]);
   await logs.cleanup();
 
   const paneSizes: number[] = [];
@@ -1219,6 +1384,11 @@ test("data viewers cover bounded navigation, empty, and static overflow states",
           { id: "one", label: "One" },
           { id: "two", label: "Two" },
         ]}
+      />
+      <JsonViewer
+        value={{ one: 1, two: 2 }}
+        defaultExpandedDepth={1}
+        staticLimit={1}
       />
     </Box>,
     { terminal: { mode: "static" } },

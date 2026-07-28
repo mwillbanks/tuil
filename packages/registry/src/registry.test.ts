@@ -10,13 +10,19 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
+  applyRegistryCodemods,
+  createRegistryLockfile,
   FileRegistrySource,
   HttpRegistrySource,
   parseRegistryItem,
+  provenanceComment,
   RegistryClient,
   RegistryInstaller,
   type RegistryItem,
   type RegistrySource,
+  registryCompatibilityIssues,
+  registryIntegrity,
+  verifyRegistryLockfile,
 } from "./index.ts";
 
 const directories: string[] = [];
@@ -45,7 +51,145 @@ function item(content: string): RegistryItem {
   });
 }
 
+function remoteIndexEntry(
+  name: string,
+  type: string,
+  title = name,
+  description = "",
+) {
+  return {
+    name,
+    type,
+    title,
+    description,
+    version: "0.2.0",
+    ownership: "source",
+    integrity: `sha256-${"0".repeat(64)}`,
+    compatibility: { tuil: "^0.2.0", renderers: ["ink", "cell"] },
+    provenance: { source: "test", license: "MIT", mode: "replace" },
+    codemods: [],
+    files: [],
+  };
+}
+
+function remoteRegistryResponse(
+  path: string,
+  remoteWithoutIntegrity: RegistryItem,
+  staleIntegrity: string,
+): Response {
+  const fixedResponses: Readonly<Record<string, () => Response>> = {
+    "/good/registry.json": () =>
+      Response.json({
+        items: [
+          remoteIndexEntry("button", "registry:tuil-ui"),
+          remoteIndexEntry(
+            "workflow",
+            "registry:tuil-workflow",
+            "Workflow",
+            "Flows",
+          ),
+        ],
+      }),
+    "/array/registry.json": () =>
+      Response.json([remoteIndexEntry("field", "form", "Field")]),
+    "/bad/registry.json": () => Response.json({ items: "invalid" }),
+    "/oversized/registry.json": () =>
+      new Response("x".repeat(2 * 1_024 * 1_024 + 1)),
+    "/invalid-json/registry.json": () => new Response("{"),
+    "/error/registry.json": () => new Response("failed", { status: 500 }),
+    "/good/failure.json": () => new Response("failed", { status: 500 }),
+    "/good/invalid.json": () =>
+      Response.json({
+        name: "invalid",
+        type: "component",
+        files: [{ path: "invalid.ts" }],
+      }),
+    "/good/incomplete.json": () =>
+      Response.json({
+        name: "incomplete",
+        type: "component",
+        files: [],
+      }),
+    "/good/tampered.json": () =>
+      Response.json({
+        ...remoteWithoutIntegrity,
+        integrity: staleIntegrity,
+        files: remoteWithoutIntegrity.files.map((file) => ({
+          ...file,
+          content: "tampered\n",
+        })),
+      }),
+  };
+  return fixedResponses[path]?.() ?? new Response("not found", { status: 404 });
+}
+
 describe("registry installer", () => {
+  test("versions, provenance, codemods, integrity, lockfiles, compatibility, and deprecation remain inspectable", () => {
+    const versioned = parseRegistryItem({
+      name: "editor",
+      type: "component",
+      version: "2.0.0",
+      provenance: {
+        source: "official",
+        license: "MIT",
+        mode: "adapt",
+      },
+      compatibility: {
+        tuil: ">=0.2",
+        renderers: ["cell"],
+        capabilities: ["pointer"],
+      },
+      deprecated: {
+        message: "Use code-editor",
+        replacement: "code-editor",
+      },
+      codemods: [
+        {
+          id: "rename",
+          description: "Rename old API",
+          replacements: [{ from: "Old", to: "New" }],
+        },
+      ],
+      files: [
+        {
+          path: "editor.ts",
+          target: "src/editor.ts",
+          content: "export const Old = true;\n",
+        },
+      ],
+    });
+    expect(registryIntegrity(versioned)).toStartWith("sha256-");
+    expect(provenanceComment(versioned)).toContain("editor@2.0.0");
+    expect(
+      applyRegistryCodemods(
+        versioned.files[0]?.content ?? "",
+        versioned.codemods ?? [],
+      ),
+    ).toEqual({
+      content: "export const New = true;\n",
+      applied: ["rename"],
+    });
+    const lock = createRegistryLockfile([versioned]);
+    expect(verifyRegistryLockfile(lock, [versioned])).toEqual([]);
+    expect(
+      registryCompatibilityIssues(versioned, {
+        renderer: "ink",
+        capabilities: new Set(),
+      }),
+    ).toEqual([
+      'renderer "ink" is unsupported',
+      'missing capability "pointer"',
+      'TUIL version is required to verify ">=0.2"',
+      "deprecated: Use code-editor",
+    ]);
+    expect(
+      registryCompatibilityIssues(versioned, {
+        renderer: "cell",
+        capabilities: new Set(["pointer"]),
+        tuilVersion: "0.2.0",
+      }),
+    ).toEqual(["deprecated: Use code-editor"]);
+  });
   test("rejects unsafe dependency and file metadata during parsing", () => {
     const base = {
       name: "safe-item",
@@ -78,6 +222,30 @@ describe("registry installer", () => {
     expect(() =>
       parseRegistryItem({ ...base, registryDependencies: ["../escape"] }),
     ).toThrow("Invalid registry item path");
+    for (const metadata of [
+      { provenance: {} },
+      { deprecated: {} },
+      {
+        codemods: [
+          {
+            description: "Missing id",
+            replacements: [{ from: "before", to: "after" }],
+          },
+        ],
+      },
+      {
+        codemods: [
+          {
+            id: "missing-description",
+            replacements: [{ from: "before", to: "after" }],
+          },
+        ],
+      },
+    ]) {
+      expect(() => parseRegistryItem({ ...base, ...metadata })).toThrow(
+        "must be a nonempty string",
+      );
+    }
     for (const target of ["../escape.ts", "/tmp/escape.ts", "src//bad.ts"]) {
       expect(() =>
         parseRegistryItem({
@@ -106,6 +274,10 @@ describe("registry installer", () => {
     directories.push(root);
     const installer = new RegistryInstaller(root);
     const first = await installer.install(item("export const value = 1;\n"));
+    expect(
+      JSON.parse(await readFile(join(root, ".tuil/registry-lock.json"), "utf8"))
+        .items.button.integrity,
+    ).toStartWith("sha256-");
     expect(first.created).toEqual(["src/components/tuil/button.tsx"]);
     expect(
       (await installer.diff(item("export const value = 1;\n")))[0]?.status,
@@ -118,6 +290,115 @@ describe("registry installer", () => {
     expect(await installer.remove("button")).toEqual([
       "src/components/tuil/button.tsx",
     ]);
+  });
+
+  test("enforces compatibility and frozen lockfiles before writing", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tuil-registry-lock-"));
+    directories.push(root);
+    const installer = new RegistryInstaller(root);
+    const compatible = parseRegistryItem({
+      ...item("export const value = 1;\n"),
+      version: "0.2.0",
+      compatibility: { tuil: "^0.2.0", renderers: ["cell"] },
+    });
+    await expect(
+      installer.install(compatible, {
+        environment: {
+          renderer: "ink",
+          capabilities: new Set(),
+          tuilVersion: "0.2.0",
+        },
+      }),
+    ).rejects.toThrow("incompatible");
+    await installer.install(compatible, {
+      environment: {
+        renderer: "cell",
+        capabilities: new Set(),
+        tuilVersion: "0.2.0",
+      },
+    });
+    const updated = parseRegistryItem({
+      ...compatible,
+      version: "0.2.1",
+      files: compatible.files.map((file) => ({
+        ...file,
+        content: "export const value = 2;\n",
+      })),
+    });
+    await expect(
+      installer.install(updated, {
+        frozenLockfile: true,
+        environment: {
+          renderer: "cell",
+          capabilities: new Set(),
+          tuilVersion: "0.2.0",
+        },
+      }),
+    ).rejects.toThrow("lockfile verification failed");
+  });
+
+  test("locks every executable input and escapes provenance metadata", async () => {
+    const base = parseRegistryItem({
+      ...item("export const value = 1;\n"),
+      version: "1.0.0",
+      sourceId: "official",
+      dependencies: ["safe-package@1.0.0"],
+      provenance: { source: "https://example.test/component" },
+    });
+    const lock = createRegistryLockfile([base]);
+    const mutations = [
+      { dependencies: ["unsafe-package@1.0.0"] },
+      {
+        codemods: [
+          {
+            id: "inject",
+            description: "Inject code",
+            replacements: [{ from: "1", to: "execute()" }],
+          },
+        ],
+      },
+      { sourceId: "mirror" },
+      { packageName: "package-owned@2.0.0" },
+      { registryDependencies: ["dialog"] },
+    ];
+    for (const mutation of mutations) {
+      const changed = parseRegistryItem({ ...base, ...mutation });
+      expect(verifyRegistryLockfile(lock, [changed])).not.toEqual([]);
+      if (!("sourceId" in mutation)) {
+        expect(registryIntegrity(changed)).not.toBe(registryIntegrity(base));
+      }
+    }
+    const escaped = parseRegistryItem({
+      ...base,
+      provenance: { source: "trusted\nexport const compromised = true" },
+    });
+    expect(provenanceComment(escaped)).not.toContain("\n");
+    expect(provenanceComment(escaped)).toContain("%0A");
+  });
+
+  test("install and diff share codemod and provenance transformations", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tuil-registry-diff-"));
+    directories.push(root);
+    const installer = new RegistryInstaller(root);
+    const versioned = parseRegistryItem({
+      ...item("export const Old = 1;\n"),
+      version: "1.0.0",
+      provenance: { source: "official" },
+      codemods: [
+        {
+          id: "rename",
+          description: "Rename symbol",
+          replacements: [{ from: "Old", to: "New" }],
+        },
+      ],
+    });
+    await installer.install(versioned);
+    expect((await installer.diff(versioned))[0]?.status).toBe("unchanged");
+    await writeFile(
+      join(root, "src/components/tuil/button.tsx"),
+      `${provenanceComment(versioned)}\nexport const New = 2;\n`,
+    );
+    expect((await installer.diff(versioned))[0]?.status).toBe("modified");
   });
 
   test("protects local modifications and path traversal", async () => {
@@ -328,9 +609,13 @@ describe("registry installer", () => {
       id,
       async get(name) {
         if (name !== "button") return undefined;
-        return parseRegistryItem({
+        const published = parseRegistryItem({
           name: "button",
           type: "component",
+          version: "0.2.0",
+          ownership: "source",
+          compatibility: { tuil: "^0.2.0", renderers: ["ink", "cell"] },
+          provenance: { source: id, license: "MIT", mode: "replace" },
           files: [
             {
               path: "button.ts",
@@ -338,6 +623,10 @@ describe("registry installer", () => {
               content: `export const source = "${id}";\n`,
             },
           ],
+        });
+        return parseRegistryItem({
+          ...published,
+          integrity: registryIntegrity(published),
         });
       },
       async list() {
@@ -350,7 +639,13 @@ describe("registry installer", () => {
     ]);
     const plan = await client.resolvePlan(["@first/button", "@second/button"]);
     const installer = new RegistryInstaller(root);
-    const results = await installer.installMany(plan);
+    const results = await installer.installMany(plan, {
+      environment: {
+        renderer: "ink",
+        capabilities: new Set(),
+        tuilVersion: "0.2.0",
+      },
+    });
     expect(results.map((result) => result.item)).toEqual([
       "@first/button",
       "@second/button",
@@ -411,21 +706,30 @@ describe("registry installer", () => {
   test("installs a registry item delivered over HTTP with inline content", async () => {
     const root = await mkdtemp(join(tmpdir(), "tuil-registry-"));
     directories.push(root);
+    const itemWithoutIntegrity = parseRegistryItem({
+      name: "button",
+      type: "component",
+      version: "0.2.0",
+      ownership: "source",
+      compatibility: { tuil: "^0.2.0", renderers: ["ink", "cell"] },
+      provenance: { source: "test", license: "MIT", mode: "replace" },
+      files: [
+        {
+          path: "button.ts",
+          target: "src/button.ts",
+          content: "export const button = true;\n",
+        },
+      ],
+    });
+    const publishedItem = {
+      ...itemWithoutIntegrity,
+      integrity: registryIntegrity(itemWithoutIntegrity),
+    };
     const server = Bun.serve({
       port: 0,
       fetch(request) {
         if (new URL(request.url).pathname === "/button.json") {
-          return Response.json({
-            name: "button",
-            type: "component",
-            files: [
-              {
-                path: "button.ts",
-                target: "src/button.ts",
-                content: "export const button = true;\n",
-              },
-            ],
-          });
+          return Response.json(publishedItem);
         }
         return new Response("not found", { status: 404 });
       },
@@ -437,7 +741,13 @@ describe("registry installer", () => {
       );
       const remote = await source.get("button");
       expect(remote).toBeDefined();
-      await new RegistryInstaller(root).install(remote as RegistryItem);
+      await new RegistryInstaller(root).install(remote as RegistryItem, {
+        environment: {
+          renderer: "ink",
+          capabilities: new Set(),
+          tuilVersion: "0.2.0",
+        },
+      });
       expect(await readFile(join(root, "src/button.ts"), "utf8")).toContain(
         "button = true",
       );
@@ -447,48 +757,43 @@ describe("registry installer", () => {
   });
 
   test("normalizes HTTP indexes and reports malformed remote responses", async () => {
+    const remoteWithoutIntegrity = parseRegistryItem({
+      name: "tampered",
+      type: "component",
+      version: "0.2.0",
+      ownership: "source",
+      compatibility: { tuil: "^0.2.0", renderers: ["ink"] },
+      provenance: { source: "test", license: "MIT", mode: "replace" },
+      files: [
+        {
+          path: "tampered.ts",
+          target: "tampered.ts",
+          content: "safe\n",
+        },
+      ],
+    });
+    const staleIntegrity = registryIntegrity(remoteWithoutIntegrity);
     const server = Bun.serve({
       port: 0,
-      fetch(request) {
-        const path = new URL(request.url).pathname;
-        if (path === "/good/registry.json") {
-          return Response.json({
-            items: [
-              { name: "button", type: "registry:tuil-ui" },
-              {
-                name: "workflow",
-                type: "registry:tuil-workflow",
-                title: "Workflow",
-                description: "Flows",
-              },
-            ],
-          });
-        }
-        if (path === "/array/registry.json") {
-          return Response.json([
-            { name: "field", type: "form", title: "Field" },
-          ]);
-        }
-        if (path === "/bad/registry.json") {
-          return Response.json({ items: "invalid" });
-        }
-        if (path === "/error/registry.json" || path === "/good/failure.json") {
-          return new Response("failed", { status: 500 });
-        }
-        if (path === "/good/invalid.json") {
-          return Response.json({
-            name: "invalid",
-            type: "component",
-            files: [{ path: "invalid.ts" }],
-          });
-        }
-        return new Response("not found", { status: 404 });
-      },
+      fetch: (request) =>
+        remoteRegistryResponse(
+          new URL(request.url).pathname,
+          remoteWithoutIntegrity,
+          staleIntegrity,
+        ),
     });
     try {
       const origin = `http://127.0.0.1:${server.port}`;
       const good = new HttpRegistrySource("good", `${origin}/good/`);
-      expect(await good.list()).toEqual([
+      const listed = await good.list();
+      expect(
+        listed.map(({ name, type, title, description }) => ({
+          name,
+          type,
+          title,
+          description,
+        })),
+      ).toEqual([
         {
           name: "button",
           type: "component",
@@ -502,11 +807,28 @@ describe("registry installer", () => {
           description: "Flows",
         },
       ]);
+      expect(listed.every((entry) => entry.version === "0.2.0")).toBeTrue();
+      expect(
+        listed.every((entry) => entry.integrity?.startsWith("sha256-")),
+      ).toBeTrue();
+      expect(listed[0]).toMatchObject({
+        ownership: "source",
+        compatibility: { tuil: "^0.2.0", renderers: ["ink", "cell"] },
+        codemods: [],
+        provenance: { source: "test", license: "MIT", mode: "replace" },
+        files: [],
+      });
       expect(
         await new HttpRegistrySource("array", `${origin}/array`).list(),
       ).toHaveLength(1);
       expect(await good.get("missing")).toBeUndefined();
       await expect(good.get("invalid")).rejects.toThrow("inline every file");
+      await expect(good.get("incomplete")).rejects.toThrow(
+        "missing version, integrity",
+      );
+      await expect(good.get("tampered")).rejects.toThrow(
+        "failed integrity verification",
+      );
       await expect(good.get("failure")).rejects.toThrow("returned 500");
       await expect(
         new HttpRegistrySource("bad", `${origin}/bad`).list(),
@@ -514,6 +836,12 @@ describe("registry installer", () => {
       await expect(
         new HttpRegistrySource("error", `${origin}/error`).list(),
       ).rejects.toThrow("returned 500");
+      await expect(
+        new HttpRegistrySource("oversized", `${origin}/oversized`).list(),
+      ).rejects.toThrow("response exceeds");
+      await expect(
+        new HttpRegistrySource("invalid-json", `${origin}/invalid-json`).list(),
+      ).rejects.toThrow("returned invalid JSON");
     } finally {
       server.stop(true);
     }

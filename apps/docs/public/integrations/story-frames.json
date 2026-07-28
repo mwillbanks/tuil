@@ -4,7 +4,7 @@
     "storyId": "init-wizard",
     "storyTitle": "Application/Initializer",
     "variant": "Default",
-    "frame": "# tuil init\n[●] Name [○] Template [○] Features [○] Confirm\n\nRoute: starting\n\nProject name *\nmy-tuil-app▌\n\nNo operations\n\n [ Cancel ]\nTab navigate · Enter select · Ctrl+C cancel",
+    "frame": "# tuil init\n[●] Name [○] Template [○] Features [○] Confirm\n\nRoute: starting\n\nProject name *\n▌my-tuil-app\n\nNo operations\n\n [ Cancel ]\nTab navigate · Enter select · Ctrl+C cancel",
     "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
     "focus": ["Project name (textbox)", "Cancel (button)"],
     "controls": {
@@ -30,13 +30,1369 @@
     }
   },
   {
+    "id": "production-applications:GitClient",
+    "storyId": "production-applications",
+    "storyTitle": "Applications/Production",
+    "variant": "GitClient",
+    "frame": "# TUIL Git client [ Refresh ]\n▌No items                               │   0    0 No selected change\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 1 records · revision 0 · ctrl+r refresh",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [
+      "Refresh (button)",
+      "Search (textbox)",
+      "Repository branches (tree)",
+      "Diff viewer (application)",
+      "Split pane (application)"
+    ],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "production-applications:LogExplorer",
+    "storyId": "production-applications",
+    "storyTitle": "Applications/Production",
+    "variant": "LogExplorer",
+    "frame": "# TUIL log explorer [ Refresh ]\n▌/LIVE · 0 records\n  No log records\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 1 records · revision 0 · ctrl+r refresh",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [
+      "Refresh (button)",
+      "Search (textbox)",
+      "Log viewer (application)"
+    ],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "production-applications:OpenTelemetryConsole",
+    "storyId": "production-applications",
+    "storyTitle": "Applications/Production",
+    "variant": "OpenTelemetryConsole",
+    "frame": "# TUIL OpenTelemetry console [ Refresh ]\n▌OpenTelemetry stream and trace correlation\n LIVE · 0 records                                     │Trace correlation\n No log records                                        No record selected\n                                                       [░░░░░░░░░░░░░░░░░░░░] 0%\n                                                       operation: running ·\n                                                       transformer: pending\n d detail · e static export · p pause · r resume · arrows navigate\n export: not exported\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 1 records · revision 0 · ctrl+r refresh",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [
+      "Refresh (button)",
+      "Search (textbox)",
+      "Log viewer (application)",
+      "OpenTelemetry stream and trace correlation (application)"
+    ],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "production-applications:AiCodingAssistant",
+    "storyId": "production-applications",
+    "storyTitle": "Applications/Production",
+    "variant": "AiCodingAssistant",
+    "frame": "# TUIL AI coding assistant [ Refresh ]\n▌Fix the streaming parser               │\n  [ Submit to provider ]\n Tool providers: ai-coding-assistant:\n ready revision=1\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 1 records · revision 1 · ctrl+r refresh",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [
+      "Refresh (button)",
+      "Search (textbox)",
+      "Prompt (textbox)",
+      "Submit to provider (button)",
+      "Code viewer (application)",
+      "Split pane (application)"
+    ],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "production-applications:DeploymentDashboard",
+    "storyId": "production-applications",
+    "storyTitle": "Applications/Production",
+    "variant": "DeploymentDashboard",
+    "frame": "# TUIL deployment dashboard [ Refresh ]\n▌[████████████████████] 100%Service       … Status        … Region        …\n                            local           unknown         local\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 2 records · revision 1 · ctrl+r refresh",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Refresh (button)", "Search (textbox)", "Deployments (table)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "production-applications:FileManager",
+    "storyId": "production-applications",
+    "storyTitle": "Applications/Production",
+    "variant": "FileManager",
+    "frame": "# TUIL file manager [ Refresh ]\n▌  file-manager: ready revision=0       │Preview: README.mdLoading preview…\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 1 records · revision 0 · ctrl+r refresh",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [
+      "Refresh (button)",
+      "Search (textbox)",
+      "Files (tree)",
+      "Split pane (application)"
+    ],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "production-applications:WorkflowRunner",
+    "storyId": "production-applications",
+    "storyTitle": "Applications/Production",
+    "variant": "WorkflowRunner",
+    "frame": "# TUIL workflow runner [ Refresh ]\n▌[ Run workflow ][████████████████████]    └ 1 workflow-runner —  ready\n                 100%                      revision=1\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 1 records · revision 1 · ctrl+r refresh",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Refresh (button)", "Search (textbox)", "Run workflow (button)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "production-applications:DocumentationBrowser",
+    "storyId": "production-applications",
+    "storyTitle": "Applications/Production",
+    "variant": "DocumentationBrowser",
+    "frame": "# TUIL terminal documentation browser [ Refresh ]\n▌                                       │# TUIL DOCS\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 1 records · revision 0 · ctrl+r refresh",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [
+      "Refresh (button)",
+      "Search (textbox)",
+      "Markdown viewer (application)",
+      "Split pane (application)"
+    ],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Alert",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Alert",
+    "frame": "╭────────────────────────────╮\n│                            │\n│ alert         alert        │\n╰─acceptance────content──────╯\nacceptance-state:alert · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:AppBar",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "AppBar",
+    "frame": "app-bar content\n\n\nacceptance-state:app-bar · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:AppShell",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "AppShell",
+    "frame": "app-shell content\n\n\nacceptance-state:app-shell · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Autocomplete",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Autocomplete",
+    "frame": "▌\nacceptance-state:autocomplete · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["autocomplete acceptance (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Badge",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Badge",
+    "frame": "[badge content]\nacceptance-state:badge · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:BarChart",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "BarChart",
+    "frame": "One          ██████████████████████████████ 1\nacceptance-state:bar-chart · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Box",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Box",
+    "frame": "box content\n\n\nacceptance-state:box · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Breadcrumbs",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Breadcrumbs",
+    "frame": "One › Two\nacceptance-state:breadcrumbs · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["breadcrumbs acceptance (navigation)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Button",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Button",
+    "frame": "▶[ button content ]\nacceptance-state:button · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["button acceptance (button)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Checkbox",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Checkbox",
+    "frame": "[●] checkbox content\nacceptance-state:checkbox · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["checkbox acceptance (checkbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:CodeEditor",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "CodeEditor",
+    "frame": "▌acceptance\nacceptance-state:code-editor · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["code-editor acceptance (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:CodeViewer",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "CodeViewer",
+    "frame": "acceptance-state:code-viewer · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["code-viewer acceptance (application)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:CommandLine",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "CommandLine",
+    "frame": "▌acceptance\nacceptance-state:command-line · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["command-line acceptance (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:CommandPalette",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "CommandPalette",
+    "frame": "╭────────────────────────────────────────────────────────────────────╮\n│ Commands                                                           │\n│ ▌                                                                  │\n│ > Acceptance command                                               │\n╰────────────────────────────────────────────────────────────────────╯\nacceptance-state:command-palette · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Command search (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:ConfirmDialog",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "ConfirmDialog",
+    "frame": "╭──────────────────────────────────────────────────────────╮\n│ confirm-dialog acceptance                                │\n│                                                          │\n│ ▶[ Cancel ]  [ Confirm ]                                 │\n╰──────────────────────────────────────────────────────────╯\nacceptance-state:confirm-dialog · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Cancel (button)", "Confirm (button)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Container",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Container",
+    "frame": "container content\n\n\nacceptance-state:container · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:DataTable",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "DataTable",
+    "frame": "Value\nOne\n\n\nacceptance-state:data-table · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["data-table acceptance (table)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:DateTimeInput",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "DateTimeInput",
+    "frame": "▌acceptance\nacceptance-state:date-time-input · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["date-time-input acceptance (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:ThemePreview",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "ThemePreview",
+    "frame": "tuil-default theme tokens\nacceptance-state:default · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Dialog",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Dialog",
+    "frame": "╭──────────────────────────────────────────────────────────╮\n│ dialog acceptance                                        │\n│ dialog content                                           │\n╰──────────────────────────────────────────────────────────╯\nacceptance-state:dialog · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:DiffViewer",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "DiffViewer",
+    "frame": "      1:  - old\n       :1 + new\n\n+1 -1\nacceptance-state:diff-viewer · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["diff-viewer acceptance (status)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Divider",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Divider",
+    "frame": "── divider acceptance ────────\nacceptance-state:divider · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Drawer",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Drawer",
+    "frame": "╭──────────────────────────────────────────────────────────╮\n│ drawer acceptance                                        │\n│ drawer content                                           │\n╰──────────────────────────────────────────────────────────╯\nacceptance-state:drawer · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:EditableTableCell",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "EditableTableCell",
+    "frame": "▌acceptance\nacceptance-state:editable-table-cell · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["editable-table-cell acceptance (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:EditableTreeNode",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "EditableTreeNode",
+    "frame": "▌acceptance\nacceptance-state:editable-tree-node · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["editable-tree-node acceptance (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:ErrorBoundary",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "ErrorBoundary",
+    "frame": "error-boundary content\nacceptance-state:error-boundary · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Field",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Field",
+    "frame": "field acceptance\nfield content\nacceptance-state:field · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Footer",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Footer",
+    "frame": "footer content\n\n\nacceptance-state:footer · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:FormFieldEditor",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "FormFieldEditor",
+    "frame": "▌acceptance\nacceptance-state:form-field-editor · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["form-field-editor acceptance (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Header",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Header",
+    "frame": "header content\n\n\nacceptance-state:header · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Heading",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Heading",
+    "frame": "# heading content\nacceptance-state:heading · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:HelpOverlay",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "HelpOverlay",
+    "frame": "╭──────────────────────────────────────────────────────────╮\n│ help-overlay acceptance                                  │\n│ Search registered commands and their hotkeys.            │\n│ ▌                                                        │\n│ No commands found                                        │\n│                                                          │\n│  [ Close ]                                               │\n╰──────────────────────────────────────────────────────────╯\nacceptance-state:help-overlay · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Search help (textbox)", "Close (button)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:InitWizard",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "InitWizard",
+    "frame": "# tuil init\n[●] Name [○] Template [○] Features [○] Confirm\n\nRoute: starting\n\nProject name *\n▌acceptance-app\n\nNo operations\n\n [ Cancel ]\nTab navigate · Enter select · Ctrl+C cancel\nacceptance-state:init-wizard · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Project name (textbox)", "Cancel (button)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:InlineEditor",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "InlineEditor",
+    "frame": "▌acceptance\nacceptance-state:inline-editor · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["inline-editor acceptance (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:JsonViewer",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "JsonViewer",
+    "frame": "▾ $: {1}\n    acceptance: true\n\nacceptance-state:json-viewer · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["json-viewer acceptance (tree)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:LogViewer",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "LogViewer",
+    "frame": "LIVE · 1 records\n▶ INFO INFO acceptance\nacceptance-state:log-viewer · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["log-viewer acceptance (application)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:MarkdownViewer",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "MarkdownViewer",
+    "frame": "# ACCEPTANCE\nSecond\nacceptance-state:markdown-viewer · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["markdown-viewer acceptance (application)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Menu",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Menu",
+    "frame": "  One\n  Two\nacceptance-state:menu · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["menu acceptance (menu)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Menubar",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Menubar",
+    "frame": "One\n  One\n  Two\nacceptance-state:menubar · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["One (menu)", "menubar acceptance (menu)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:MultiSelect",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "MultiSelect",
+    "frame": "One\n> [x] One\n  [ ] Two\nacceptance-state:multi-select · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["multi-select acceptance (listbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:NumberInput",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "NumberInput",
+    "frame": "▌1\nacceptance-state:number-input · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["number-input acceptance (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:OperationList",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "OperationList",
+    "frame": "No operations\nacceptance-state:operation-list · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:OperationTree",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "OperationTree",
+    "frame": "  ▾ [ ] One\n      [] Child\nacceptance-state:operation-tree · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Operation tree (tree)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Outline",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Outline",
+    "frame": "  One\n  Two\nacceptance-state:outline · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Pagination",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Pagination",
+    "frame": "‹ 1/3 ›\nacceptance-state:pagination · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["pagination acceptance (button)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:PaneTabs",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "PaneTabs",
+    "frame": "One\npane-tabs content\nacceptance-state:pane-tabs · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:PasswordInput",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "PasswordInput",
+    "frame": "▌••••••••••\nacceptance-state:password-input · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["password-input acceptance (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Popover",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Popover",
+    "frame": "╭──────────────────────────────────────────────────────────╮\n│ popover acceptance                                       │\n│ popover content                                          │\n╰──────────────────────────────────────────────────────────╯\nacceptance-state:popover · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Progress",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Progress",
+    "frame": "[███░░░░░░░░░░░░░░░░░░░░░░░░░░░] 10%\nacceptance-state:progress · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:RadioGroup",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "RadioGroup",
+    "frame": "● One\n○ Two\nacceptance-state:radio-group · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["One (radio)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:ResizablePane",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "ResizablePane",
+    "frame": "resizable│\n-pane\ncontent\nacceptance-state:resizable-pane · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["resizable-pane acceptance (application)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:RichDiffViewer",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "RichDiffViewer",
+    "frame": "          @@ -1 +1 @@\n   1      -old\n        1 +new\nacceptance-state:rich-diff-viewer · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["rich-diff-viewer acceptance (application)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:ScrollArea",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "ScrollArea",
+    "frame": "INFO acceptance\n\n\nacceptance-state:scroll-area · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["scroll-area acceptance (region)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:SearchInput",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "SearchInput",
+    "frame": "▌acceptance\nacceptance-state:search-input · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["search-input acceptance (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Select",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Select",
+    "frame": "▶ One\nacceptance-state:select · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["select acceptance (listbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Sidebar",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Sidebar",
+    "frame": "sidebar content\n\n\nacceptance-state:sidebar · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Skeleton",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Skeleton",
+    "frame": "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\nacceptance-state:skeleton · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Slider",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Slider",
+    "frame": "───●────────────────────────── 1\nacceptance-state:slider · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["slider acceptance (slider)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Spinner",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Spinner",
+    "frame": "⠋ spinner acceptance\nacceptance-state:spinner · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:SplashScreen",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "SplashScreen",
+    "frame": "                            splash-screen acceptance\nacceptance-state:splash-screen · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:SplitPane",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "SplitPane",
+    "frame": "One pane      │Two pane\n←/→ resize · [/] divider\n\nacceptance-state:split-pane · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["split-pane acceptance (application)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Stack",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Stack",
+    "frame": "stack content\n\n\nacceptance-state:stack · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:StatusBar",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "StatusBar",
+    "frame": "status-bar content\n\n\nacceptance-state:status-bar · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Stepper",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Stepper",
+    "frame": "[○] One\nacceptance-state:stepper · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:StructuredContentSummary",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "StructuredContentSummary",
+    "frame": "$: undefined\nacceptance-state:structured-content · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Switch",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Switch",
+    "frame": "[ON] switch content\nacceptance-state:switch · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["switch acceptance (switch)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:TabSelect",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "TabSelect",
+    "frame": "One Two\nOne panel\nTab to focus\nacceptance-state:tab-select · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["tab-select acceptance (tab)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Table",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Table",
+    "frame": "Value\nOne\n\n\nacceptance-state:table · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["table acceptance (table)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Tabs",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Tabs",
+    "frame": "One Two\nOne panel\nTab to focus\nacceptance-state:tabs · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["tabs acceptance (tab)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:TerminalPlatformPlugin",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "TerminalPlatformPlugin",
+    "frame": "plugin terminal-platform-plugin@0.2.0\nacceptance-state:terminal-platform-plugin · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:TextArea",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "TextArea",
+    "frame": "▌acceptance\nacceptance-state:text-area · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["text-area acceptance (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:TextInput",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "TextInput",
+    "frame": "▌acceptance\nacceptance-state:text-input · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["text-input acceptance (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Text",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Text",
+    "frame": "text content\nacceptance-state:text · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Timeline",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Timeline",
+    "frame": "├\n└\nacceptance-state:timeline · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Toast",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Toast",
+    "frame": "┌──────────────────────────────────────────────────────────────────────────────┐\n│ Acceptance                                                                   │\n└──────────────────────────────────────────────────────────────────────────────┘\nacceptance-state:toast · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Tooltip",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Tooltip",
+    "frame": "Tooltip target\ntooltip content\nacceptance-state:tooltip · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Tooltip target (button)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:TransferList",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "TransferList",
+    "frame": "┌──────────────────────────────────┐ ← →   Selected (1)\n│Available (1)                     │ Enter   One\n│▶ Two                             │ A all\n└──────────────────────────────────┘\nacceptance-state:transfer-list · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["transfer-list acceptance (listbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Tree",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Tree",
+    "frame": "▸ One\n  Two\n\nacceptance-state:tree · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["tree acceptance (tree)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:VirtualList",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "VirtualList",
+    "frame": "One\nTwo\n↓ 2 more\nacceptance-state:virtual-list · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["virtual-list acceptance (listbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "component-acceptance:Workflow",
+    "storyId": "component-acceptance",
+    "storyTitle": "Components/Acceptance",
+    "variant": "Workflow",
+    "frame": "[○] Ready\nacceptance-state:workflow · events:none · theme:default-dark",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
     "id": "data:All",
     "storyId": "data",
     "storyTitle": "Components/Complex data",
     "variant": "All",
-    "frame": "Task            Status\nAPI             ready\nDocs            running\nRelease         queued\n▾ src\n    app.tsx\n    theme.ts\n\nINFO compile complete\nINFO tests passed\nINFO release ready\nFollowing output · 3/3 visible · 3 retained",
+    "frame": "Task            Status\nAPI             ready\nDocs            running\nRelease         queued\n▾ src\n    app.tsx\n    theme.ts\n\nLIVE · 3 records\n▶ INFO compile complete\n\n  INFO tests passed\n\n  INFO release ready",
     "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
-    "focus": ["Release tasks (table)", "Files (tree)", "Build logs (status)"],
+    "focus": [
+      "Release tasks (table)",
+      "Files (tree)",
+      "Build logs (application)"
+    ],
     "controls": {
       "width": 80,
       "height": 24,
@@ -49,9 +1405,13 @@
     "storyId": "data",
     "storyTitle": "Components/Complex data",
     "variant": "Release",
-    "frame": "Task            Status\nAPI             ready\nDocs            running\nRelease         queued\n▾ src\n    app.tsx\n    theme.ts\n\nINFO release ready\n\n\nFollowing output · 1/3 visible · 3 retained",
+    "frame": "Task            Status\nAPI             ready\nDocs            running\nRelease         queued\n▾ src\n    app.tsx\n    theme.ts\n\n/body contains \"release\"\nLIVE · 1 records\n▶ INFO release ready",
     "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
-    "focus": ["Release tasks (table)", "Files (tree)", "Build logs (status)"],
+    "focus": [
+      "Release tasks (table)",
+      "Files (tree)",
+      "Build logs (application)"
+    ],
     "controls": {
       "width": 80,
       "height": 24,
@@ -64,7 +1424,7 @@
     "storyId": "forms",
     "storyTitle": "Components/Forms",
     "variant": "Project",
-    "frame": "Project name *\nmy-app▌\n[●] Initialize Git\n▶ TypeScript",
+    "frame": "Project name *\n▌my-app\n[●] Initialize Git\n▶ TypeScript",
     "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
     "focus": [
       "Project name (textbox)",
@@ -83,7 +1443,7 @@
     "storyId": "forms",
     "storyTitle": "Components/Forms",
     "variant": "JavaScript",
-    "frame": "Project name *\nterminal-app▌\n[●] Initialize Git\n▶ JavaScript",
+    "frame": "Project name *\n▌terminal-app\n[●] Initialize Git\n▶ JavaScript",
     "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
     "focus": [
       "Project name (textbox)",
@@ -150,6 +1510,156 @@
     "frame": "Overview Settings\nSettings panel\nTab to focus",
     "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
     "focus": ["Application sections (tab)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "platform-expansion:Renderer",
+    "storyId": "platform-expansion",
+    "storyTitle": "Platform/Expansion",
+    "variant": "Renderer",
+    "frame": "╭──────────────────────────────────────────────────────────────────────────────╮\n│ # Renderer                                                                   │\n│ Ink and Bun cell backends · 80×24 · dirty cells 12                           │\n│ LayoutProjection v1 · 80×24 · 1 measured node                                │\n╰──────────────────────────────────────────────────────────────────────────────╯",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "platform-expansion:PointerScroll",
+    "storyId": "platform-expansion",
+    "storyTitle": "Platform/Expansion",
+    "variant": "PointerScroll",
+    "frame": "╭──────────────────────────────────────────────────────────────────────────────╮\n│ # Pointer and scroll                                                         │\n│ SGR mouse · captured drag · viewport 120/100000                              │\n│ ▶[ Click, focus, or press Enter ]                                            │\n╰──────────────────────────────────────────────────────────────────────────────╯",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Click, focus, or press Enter (button)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "platform-expansion:Editors",
+    "storyId": "platform-expansion",
+    "storyTitle": "Platform/Expansion",
+    "variant": "Editors",
+    "frame": "╭──────────────────────────────────────────────────────────────────────────────╮\n│ # Editors                                                                    │\n│ NORMAL · 3 selections · undo 8 · diagnostics 1                               │\n│ ▌const ready = true;                                                         │\n╰──────────────────────────────────────────────────────────────────────────────╯",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Editor buffer (textbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "platform-expansion:RichDocuments",
+    "storyId": "platform-expansion",
+    "storyTitle": "Platform/Expansion",
+    "variant": "RichDocuments",
+    "frame": "╭──────────────────────────────────────────────────────────────────────────────╮\n│ # Rich documents                                                             │\n│ tree-native search · unknown callout node · lossless JSON                    │\n│ ▾ document                                                                   │\n│   ▾ callout (plugin)                                                         │\n│       Caution                                                                │\n│                                                                              │\n│                                                                              │\n│                                                                              │\n│                                                                              │\n│                                                                              │\n│                                                                              │\n│                                                                              │\n│                                                                              │\n│                                                                              │\n╰──────────────────────────────────────────────────────────────────────────────╯",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Rich document tree (tree)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "platform-expansion:StreamingContent",
+    "storyId": "platform-expansion",
+    "storyTitle": "Platform/Expansion",
+    "variant": "StreamingContent",
+    "frame": "╭──────────────────────────────────────────────────────────────────────────────╮\n│ # Streaming content                                                          │\n│ Markdown → transformer → table + raw projection                              │\n│ json parser · json · complete:true · diagnostics:0                           │\n╰──────────────────────────────────────────────────────────────────────────────╯",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "platform-expansion:Logging",
+    "storyId": "platform-expansion",
+    "storyTitle": "Platform/Expansion",
+    "variant": "Logging",
+    "frame": "╭──────────────────────────────────────────────────────────────────────────────╮\n│ # Logging                                                                    │\n│ LIVE · 100000 records · severity >= warn                                     │\n│ LIVE · 3 records                                                             │\n│ ▶ INFO INFO api ready                                                        │\n│                                                                              │\n│   INFO WARN worker retry                                                     │\n│                                                                              │\n│   INFO INFO release done                                                     │\n╰──────────────────────────────────────────────────────────────────────────────╯",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Live records (application)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "platform-expansion:Devtools",
+    "storyId": "platform-expansion",
+    "storyTitle": "Platform/Expansion",
+    "variant": "Devtools",
+    "frame": "╭──────────────────────────────────────────────────────────────────────────────╮\n│ # Devtools                                                                   │\n│ Focus tree · frames · editor · logs · action history                         │\n│ inspectRuntime · Focus:1 · mouse: keyboard fallback · hit regions: 0         │\n╰──────────────────────────────────────────────────────────────────────────────╯",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "platform-expansion:RegistryPlugins",
+    "storyId": "platform-expansion",
+    "storyTitle": "Platform/Expansion",
+    "variant": "RegistryPlugins",
+    "frame": "╭──────────────────────────────────────────────────────────────────────────────╮\n│ # Registry and plugins                                                       │\n│ version 2.0.0 · integrity verified · upgrade available                       │\n│ acceptance-plugin@0.2.0 · sha256-d392a7d3… · compatibility:0                 │\n╰──────────────────────────────────────────────────────────────────────────────╯",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": [],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "platform-expansion:Components",
+    "storyId": "platform-expansion",
+    "storyTitle": "Platform/Expansion",
+    "variant": "Components",
+    "frame": "╭──────────────────────────────────────────────────────────────────────────────╮\n│ # Component families                                                         │\n│ input · navigation · data · feedback · layout                                │\n│ [ready] [●] Enabled                                                          │\n╰──────────────────────────────────────────────────────────────────────────────╯",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Enabled (checkbox)"],
+    "controls": {
+      "width": 80,
+      "height": 24,
+      "theme": "default-dark",
+      "interactive": true
+    }
+  },
+  {
+    "id": "platform-expansion:ProductionApps",
+    "storyId": "platform-expansion",
+    "storyTitle": "Platform/Expansion",
+    "variant": "ProductionApps",
+    "frame": "╭──────────────────────────────────────────────────────────────────────────────╮\n│ # Production applications                                                    │\n│ Git · logs · OTEL · AI · deploy · files · workflow · docs                    │\n│   Git client                                                                 │\n│   Log explorer                                                               │\n│   OTEL console                                                               │\n│   AI coding assistant                                                        │\n│                                                                              │\n│                                                                              │\n│                                                                              │\n│                                                                              │\n│                                                                              │\n│                                                                              │\n│                                                                              │\n│                                                                              │\n╰──────────────────────────────────────────────────────────────────────────────╯",
+    "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
+    "focus": ["Production examples (tree)"],
     "controls": {
       "width": 80,
       "height": 24,

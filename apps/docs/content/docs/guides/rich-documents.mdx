@@ -1,0 +1,57 @@
+---
+title: Rich documents
+description: Edit structured blocks with deterministic terminal projections.
+icon: Article
+---
+
+Rich documents are ordered blocks with stable identifiers, block types, text,
+and attributes. Editing commands transform the model and record reversible
+history. Rendering projects blocks into cells while preserving a source
+position map for selection and diagnostics.
+
+Serialize the document model rather than terminal output. Unknown block types
+must remain lossless so newer plugin content can round-trip through older apps.
+
+The shared `EditorSession` view contains projected document text, not serialized
+JSON. Search and replace therefore operate on text leaves in the rich tree and
+cannot accidentally match node names or attributes. Edits may cross adjacent
+marked text leaves, while changes to structural separators use `rich.dispatch`
+with an explicit node transaction.
+
+```ts
+import {
+  createRichEditorProvider,
+  type RichEditorSession,
+} from "@mwillbanks/tuil-editor/rich";
+
+const provider = createRichEditorProvider({
+  nodes: [{
+    type: "callout",
+    validate: (node) => {
+      if (!node.attributes?.tone) throw new Error("callout tone is required");
+    },
+    markdown: (node, children) =>
+      `> [!${String(node.attributes?.tone).toUpperCase()}] ${children}\n`,
+  }],
+});
+
+const editor = provider.create({
+  value: JSON.stringify({
+    type: "document",
+    children: [{
+      type: "callout",
+      attributes: { tone: "warning" },
+      pluginData: { revision: 2 },
+      children: [{ type: "text", text: "Caution" }],
+    }],
+  }),
+}) as RichEditorSession;
+
+editor.replace("Caution", "Stop");
+editor.serialize("json"); // pluginData and the unknown node remain intact
+```
+
+Node providers are explicit application configuration. They may validate a
+plugin node and define its text or Markdown projection, but cannot replace
+built-in node behavior. Without a provider, an unknown node still round-trips
+losslessly and projects its text and children with the generic fallback.

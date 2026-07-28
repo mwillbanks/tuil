@@ -15,10 +15,20 @@
   },
   "files": [
     {
-      "path": "../../../registry/components/app-bar.tsx",
+      "path": "src/components/tuil/components/app-bar.tsx",
       "target": "src/components/tuil/components/app-bar.tsx",
-      "content": "import type { ReactNode } from \"react\";\nimport { Box, type BoxProps } from \"../primitives/box\";\n\nexport function AppBar(props: BoxProps): ReactNode {\n  return <Box flexDirection=\"row\" {...props} />;\n}\n"
+      "content": "import type { ReactNode } from \"react\";\nimport { Box, type BoxProps } from \"../primitives/box\";\n\nexport function AppBar(props: BoxProps): ReactNode {\n  return <Box flexDirection=\"row\" {...props} />;\n}\n",
+      "source": "registry/components/app-bar.tsx"
     }
   ],
-  "registryDependencies": ["box"]
+  "registryDependencies": ["box"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "integrity": "sha256-41ebd8a632609380e46f746e02771def184e6398de75ca942a805d63328a69fc"
 }

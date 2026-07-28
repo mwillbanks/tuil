@@ -1,0 +1,23 @@
+{
+  "name": "tab-select",
+  "type": "navigation",
+  "title": "Tab Select",
+  "description": "Compact tab selection control.",
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["tabs"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink", "cell"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "integrity": "sha256-b8c24f2d04e7ab7a65bad94715a69fe31010ad0d045c09a57f88aa7d449c9206"
+}

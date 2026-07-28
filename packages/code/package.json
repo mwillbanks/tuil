@@ -1,0 +1,42 @@
+{
+  "name": "@mwillbanks/tuil-code",
+  "version": "0.2.0",
+  "description": "Incremental parser-pluggable code highlighting and terminal code view models for tuil.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/code"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "code",
+    "tree-sitter",
+    "highlighting"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "dependencies": {
+    "@mwillbanks/tuil-core": "workspace:*",
+    "@vscode/tree-sitter-wasm": "^0.3.1"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "bun ../../tooling/build/package.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "files": [
+    "dist"
+  ]
+}

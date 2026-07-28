@@ -1,0 +1,12 @@
+---
+title: Syslog
+description: Ingest RFC 5424 and RFC 3164 messages safely.
+icon: TerminalWindow
+---
+
+The syslog parser derives facility and severity from PRI, recognizes RFC 5424
+structured data, and falls back to RFC 3164 timestamps and host fields. Keep the
+unparsed message in redacted form for troubleshooting.
+
+Streams may contain mixed formats. Let parser detection operate per record and
+display the detected source so operators can find forwarding misconfiguration.

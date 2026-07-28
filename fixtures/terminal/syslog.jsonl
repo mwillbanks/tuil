@@ -1,0 +1,2 @@
+{"format":"rfc5424","input":"<34>1 2003-10-11T22:14:15.003Z host app 123 ID47 [exampleSDID@32473 iut=\"3\"] event"}
+{"format":"rfc3164","input":"<34>Oct 11 22:14:15 host app[123]: event"}

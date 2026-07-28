@@ -1,7 +1,11 @@
 import { afterEach, expect, test } from "bun:test";
 import { defineCommand, useApp } from "@mwillbanks/tuil";
 import { createOperation, defineOperation } from "@mwillbanks/tuil-operations";
-import { cleanup, renderTuil } from "@mwillbanks/tuil-testing-ink";
+import {
+  cleanup,
+  clickPointerTarget,
+  renderTuil,
+} from "@mwillbanks/tuil-testing-ink";
 import {
   createWorkflow,
   defineOperationStep,
@@ -11,6 +15,7 @@ import {
 } from "@mwillbanks/tuil-workflow";
 import { Box, Text } from "ink";
 import { useEffect } from "react";
+import { ErrorBoundary } from "./feedback/overlays.tsx";
 import {
   Breadcrumbs,
   Menu,
@@ -54,8 +59,7 @@ test("tabs, menus, menubars, breadcrumbs, and steppers navigate and expose seman
     />,
   );
   await tabs.ready;
-  await tabs.user.press("tab");
-  await tabs.user.press("arrowRight");
+  await clickPointerTarget(tabs, "sections:tab:settings");
   expect(selected).toEqual(["settings"]);
   expect(
     tabs.screen.getByRole("tab", { name: "Settings" }).selected,
@@ -92,9 +96,7 @@ test("tabs, menus, menubars, breadcrumbs, and steppers navigate and expose seman
   const menu = renderTuil(<MenuHarness />);
   await menu.ready;
   expect(menu.screen.getByRole("menu", { name: "File" })).toBeDefined();
-  await menu.user.press("tab");
-  await menu.user.press("arrowDown");
-  await menu.user.press("enter");
+  await clickPointerTarget(menu, "file:item:open");
   expect(commands).toEqual(["open"]);
   await menu.cleanup();
 
@@ -139,7 +141,15 @@ test("navigation components cover manual, nested, and command keyboard contracts
       items={[
         { id: "one", label: "One", content: 1 },
         { id: "disabled", label: "Disabled", disabled: true },
-        { id: "three", label: "Three", content: <Box>Three panel</Box> },
+        {
+          id: "three",
+          label: "Three",
+          content: (
+            <Box>
+              <Text>Three panel</Text>
+            </Box>
+          ),
+        },
       ]}
       onValueChange={(value) => {
         tabSelections.push(value);
@@ -206,7 +216,31 @@ test("navigation components cover manual, nested, and command keyboard contracts
   }
   expect(menuSelections).toContain("child");
   expect(openChanges).toContain(false);
+  await menu.user.press("enter");
+  await menu.user.press("arrowRight");
+  await menu.user.press("arrowLeft");
+  await menu.user.press("escape");
   await menu.cleanup();
+
+  const nestedBack = renderTuil(
+    <Menu
+      id="nested-back-menu"
+      items={[
+        {
+          id: "parent",
+          label: "Parent",
+          items: [{ id: "child", label: "Child" }],
+        },
+      ]}
+    />,
+  );
+  await nestedBack.ready;
+  expect(nestedBack.app.focus.focus("nested-back-menu")).toBeTrue();
+  await nestedBack.user.press("arrowRight");
+  await nestedBack.user.press("arrowLeft");
+  await nestedBack.user.press("unhandled");
+  await nestedBack.user.press("escape");
+  await nestedBack.cleanup();
 
   const menubarChanges: string[] = [];
   const menubar = renderTuil(
@@ -438,6 +472,55 @@ test("workflow auto-start reports startup failures", async () => {
   await view.cleanup();
 });
 
+test("workflow startup preserves both startup and reporter failures", async () => {
+  const runner = createWorkflow(
+    defineWorkflow({
+      id: "double-startup-failure",
+      version: 1,
+      initialState: {},
+      steps: {
+        start: defineStep({
+          enter() {
+            throw new Error("startup failed");
+          },
+        }),
+      },
+      transitions: [],
+    }),
+  );
+  const view = renderTuil(
+    <ErrorBoundary fallback={(error) => <Text>{error.message}</Text>}>
+      <Workflow workflow={runner}>
+        <Workflow.Content />
+      </Workflow>
+    </ErrorBoundary>,
+    {
+      errorHandler() {
+        throw new Error("report failed");
+      },
+    },
+  );
+  await view.ready;
+  await Bun.sleep(50);
+  expect(
+    view.frames.some((frame) =>
+      frame.includes("Workflow startup and error reporting failed"),
+    ),
+  ).toBeTrue();
+  await view.cleanup();
+});
+
+test("workflow compound components require their parent context", async () => {
+  const view = renderTuil(
+    <ErrorBoundary fallback={(error) => <Text>{error.message}</Text>}>
+      <Workflow.Content />
+    </ErrorBoundary>,
+  );
+  await view.ready;
+  expect(view.screen.frame()).toContain("require a Workflow parent");
+  await view.cleanup();
+});
+
 test("operation views apply deterministic waiting feedback", async () => {
   const operation = (
     id: string,
@@ -491,6 +574,34 @@ test("operation views apply deterministic waiting feedback", async () => {
   expect(output).not.toContain("4 Indexing");
 });
 
+test("live operation feedback advances its stalled duration clock", async () => {
+  const startedAt = Date.now() - 10_000;
+  const view = renderTuil(
+    <OperationList
+      operations={[
+        {
+          id: "live",
+          title: "Live",
+          status: "running",
+          attempt: 1,
+          startedAt,
+          children: [],
+          metadata: {},
+          logs: [],
+        },
+      ]}
+      showDuration
+    />,
+  );
+  await view.ready;
+  const before = view.screen.frame();
+  await Bun.sleep(1_100);
+  const after = view.screen.frame();
+  expect(before).not.toBeEmpty();
+  expect(after).not.toBeEmpty();
+  await view.cleanup();
+});
+
 test("operation views, splash fallback, and live command help render", async () => {
   const parent = createOperation(
     defineOperation({
@@ -509,6 +620,12 @@ test("operation views, splash fallback, and live command help render", async () 
   await parent.execute();
   const staticView = renderTuil(
     <>
+      <OperationList
+        operations={[parent.state]}
+        expandable
+        showAttempts
+        showDuration
+      />
       <OperationTree operations={[parent.state]} showAttempts showDuration />
       <SplashScreen
         title="Starting"
@@ -560,7 +677,18 @@ test("operation views, splash fallback, and live command help render", async () 
   await tree.user.press("enter");
   expect(tree.screen.frame()).not.toContain("Child");
   expect(expandedChanges.at(-1)).toEqual([]);
+  await tree.user.press("unhandled");
   await tree.cleanup();
+
+  const parentNavigation = renderTuil(
+    <OperationTree id="parent-navigation" operations={[parent.state]} />,
+  );
+  await parentNavigation.ready;
+  expect(parentNavigation.app.focus.focus("parent-navigation")).toBeTrue();
+  await parentNavigation.user.press("arrowDown");
+  await parentNavigation.user.press("arrowLeft");
+  expect(parentNavigation.screen.frame()).toContain("Parent");
+  await parentNavigation.cleanup();
 
   const duplicateChildren = await Promise.all(
     ["left", "right"].map(async (id) => {
@@ -692,5 +820,37 @@ test("workflow content renders component steps, help, and commands", async () =>
   await Bun.sleep(25);
   expect(view.screen.frame()).toContain("Functional content");
   expect(view.screen.frame()).toContain("Commands: form.submit");
+  await view.cleanup();
+});
+
+test("workflow content exposes the active nested workflow", async () => {
+  const nested = defineWorkflow({
+    id: "nested-content",
+    version: 1,
+    initialState: {},
+    steps: {
+      child: defineStep({ component: "Child content" }),
+    },
+    transitions: [],
+  });
+  const runner = createWorkflow(
+    defineWorkflow({
+      id: "outer-content",
+      version: 1,
+      initialState: {},
+      steps: {
+        parent: defineStep({ component: "Parent content", nested }),
+      },
+      transitions: [],
+    }),
+  );
+  const view = renderTuil(
+    <Workflow workflow={runner}>
+      <Workflow.Content />
+    </Workflow>,
+  );
+  await view.ready;
+  await Bun.sleep(25);
+  expect(view.screen.frame()).toContain("Nested: child (running)");
   await view.cleanup();
 });

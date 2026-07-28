@@ -1,0 +1,1129 @@
+---
+title: Component acceptance catalog
+description: Executable story, semantics, keyboard, pointer, theme, static, and test contracts for every public registry item.
+icon: BookOpenText
+---
+
+# Component acceptance catalog
+
+Every public registry item below is backed by its own Storybook export and executable terminal fixture. The acceptance suite validates real component semantics, live theme updates, and committed deterministic output for every entry, plus callback state, keyboard input, focus, and measured pointer routing for each component that exposes those capabilities.
+
+## Alert
+
+- Registry name: `alert`
+- Story: `component-acceptance--alert`
+- Fixture: `acceptance-alert`
+- Semantics: role `alert` labelled `alert acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `alert:theme-render`
+- Static: deterministic output asserted by `alert:deterministic-static`
+- Behavior: Semantic terminal alert.
+
+## App Bar
+
+- Registry name: `app-bar`
+- Story: `component-acceptance--app-bar`
+- Fixture: `acceptance-app-bar`
+- Semantics: role `application` labelled `app-bar acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `app-bar:theme-render`
+- Static: deterministic output asserted by `app-bar:deterministic-static`
+- Behavior: Application header region.
+
+## App Shell
+
+- Registry name: `app-shell`
+- Story: `component-acceptance--app-shell`
+- Fixture: `acceptance-app-shell`
+- Semantics: role `application` labelled `app-shell acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `app-shell:theme-render`
+- Static: deterministic output asserted by `app-shell:deterministic-static`
+- Behavior: Compound application shell.
+
+## Autocomplete
+
+- Registry name: `autocomplete`
+- Story: `component-acceptance--autocomplete`
+- Fixture: `acceptance-autocomplete`
+- Semantics: role `textbox` labelled `autocomplete acceptance`
+- Callbacks: `onValueChange`, `onOptionSelect`
+- Keyboard: `t`, `w`, `o`, `enter` -> `value:t`, `option:two`
+- Focus: id `acceptance-autocomplete`
+- Pointer: measured target `acceptance-autocomplete:two`; callback state asserted
+- Theme: live update asserted by `autocomplete:theme-render`
+- Static: deterministic output asserted by `autocomplete:deterministic-static`
+- Behavior: Text input with filtered typed suggestions and keyboard selection.
+
+## Badge
+
+- Registry name: `badge`
+- Story: `component-acceptance--badge`
+- Fixture: `acceptance-badge`
+- Semantics: role `application` labelled `badge acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `badge:theme-render`
+- Static: deterministic output asserted by `badge:deterministic-static`
+- Behavior: Semantic status badge.
+
+## Bar Chart
+
+- Registry name: `bar-chart`
+- Story: `component-acceptance--bar-chart`
+- Fixture: `acceptance-bar-chart`
+- Semantics: role `text`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `bar-chart:theme-render`
+- Static: deterministic output asserted by `bar-chart:deterministic-static`
+- Behavior: Textually labelled terminal bar chart.
+
+## Box
+
+- Registry name: `box`
+- Story: `component-acceptance--box`
+- Fixture: `acceptance-box`
+- Semantics: role `application` labelled `box acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `box:theme-render`
+- Static: deterministic output asserted by `box:deterministic-static`
+- Behavior: Theme-aware Ink layout primitive.
+
+## Breadcrumbs
+
+- Registry name: `breadcrumbs`
+- Story: `component-acceptance--breadcrumbs`
+- Fixture: `acceptance-breadcrumbs`
+- Semantics: role `navigation` labelled `breadcrumbs acceptance`
+- Callbacks: `onSelect`
+- Keyboard: `enter` -> `select:two`
+- Focus: id `acceptance-breadcrumbs`
+- Pointer: measured target `acceptance-breadcrumbs:crumb:one`; callback state asserted
+- Theme: live update asserted by `breadcrumbs:theme-render`
+- Static: deterministic output asserted by `breadcrumbs:deterministic-static`
+- Behavior: Semantic route breadcrumbs with keyboard and command activation.
+
+## Button
+
+- Registry name: `button`
+- Story: `component-acceptance--button`
+- Fixture: `acceptance-button`
+- Semantics: role `button` labelled `button acceptance`
+- Callbacks: `onPress`
+- Keyboard: `enter` -> `press`
+- Focus: id `acceptance-button`
+- Pointer: measured target `acceptance-button`; callback state asserted
+- Theme: live update asserted by `button:theme-render`
+- Static: deterministic output asserted by `button:deterministic-static`
+- Behavior: Focusable command-aware button.
+
+## Checkbox
+
+- Registry name: `checkbox`
+- Story: `component-acceptance--checkbox`
+- Fixture: `acceptance-checkbox`
+- Semantics: role `checkbox` labelled `checkbox acceptance`
+- Callbacks: `onCheckedChange`
+- Keyboard: `space` -> `checked:false`
+- Focus: id `acceptance-checkbox`
+- Pointer: not supported
+- Theme: live update asserted by `checkbox:theme-render`
+- Static: deterministic output asserted by `checkbox:deterministic-static`
+- Behavior: Focusable controlled or uncontrolled checkbox.
+
+## Code Editor
+
+- Registry name: `code-editor`
+- Story: `component-acceptance--code-editor`
+- Fixture: `acceptance-code-editor`
+- Semantics: role `textbox` labelled `code-editor acceptance`
+- Callbacks: `onValueChange`
+- Keyboard: `Z` -> `value:acceptanceZ`
+- Focus: id `acceptance-code-editor`
+- Pointer: measured target `acceptance-code-editor`; hit testing and focus asserted
+- Theme: live update asserted by `code-editor:theme-render`
+- Static: deterministic output asserted by `code-editor:deterministic-static`
+- Behavior: Multiline code editing control.
+
+## Code Viewer
+
+- Registry name: `code-viewer`
+- Story: `component-acceptance--code-viewer`
+- Fixture: `acceptance-code-viewer`
+- Semantics: role `application` labelled `code-viewer acceptance`
+- Callbacks: `onSelectedLineChange`, `onCopy`
+- Keyboard: `arrowDown`, `ctrl+c` -> `line:1`, `copy:`
+- Focus: id `acceptance-code-viewer`
+- Pointer: measured target `acceptance-code-viewer`; hit testing and focus asserted
+- Theme: live update asserted by `code-viewer:theme-render`
+- Static: deterministic output asserted by `code-viewer:deterministic-static`
+- Behavior: Highlighted code projection.
+
+## Command Line
+
+- Registry name: `command-line`
+- Story: `component-acceptance--command-line`
+- Fixture: `acceptance-command-line`
+- Semantics: role `textbox` labelled `command-line acceptance`
+- Callbacks: `onValueChange`, `onSubmit`
+- Keyboard: `Z`, `enter` -> `value:acceptanceZ`, `submit:acceptanceZ`
+- Focus: id `acceptance-command-line`
+- Pointer: measured target `acceptance-command-line`; hit testing and focus asserted
+- Theme: live update asserted by `command-line:theme-render`
+- Static: deterministic output asserted by `command-line:deterministic-static`
+- Behavior: Command editor with submission and history.
+
+## Command Palette
+
+- Registry name: `command-palette`
+- Story: `component-acceptance--command-palette`
+- Fixture: `acceptance-command-palette`
+- Semantics: role `dialog` labelled `Command palette`
+- Callbacks: `commands.execute`
+- Keyboard: `enter` -> `command`
+- Focus: role `textbox` and label `Command search`
+- Pointer: not supported
+- Theme: live update asserted by `command-palette:theme-render`
+- Static: deterministic output asserted by `command-palette:deterministic-static`
+- Behavior: Searchable command registry overlay with keyboard execution.
+
+## Confirm Dialog
+
+- Registry name: `confirm-dialog`
+- Story: `component-acceptance--confirm-dialog`
+- Fixture: `acceptance-confirm-dialog`
+- Semantics: role `dialog` labelled `confirm-dialog acceptance`
+- Callbacks: `onConfirm`
+- Keyboard: `tab`, `enter` -> `confirm`
+- Focus: role `button` and label `Cancel`
+- Pointer: not supported
+- Theme: live update asserted by `confirm-dialog:theme-render`
+- Static: deterministic output asserted by `confirm-dialog:deterministic-static`
+- Behavior: Confirmation dialog with cancel, danger, and asynchronous confirm behavior.
+
+## Container
+
+- Registry name: `container`
+- Story: `component-acceptance--container`
+- Fixture: `acceptance-container`
+- Semantics: role `application` labelled `container acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `container:theme-render`
+- Static: deterministic output asserted by `container:deterministic-static`
+- Behavior: Width-constrained terminal container.
+
+## Data Table
+
+- Registry name: `data-table`
+- Story: `component-acceptance--data-table`
+- Fixture: `acceptance-data-table`
+- Semantics: role `table` labelled `data-table acceptance`
+- Callbacks: `onActivate`
+- Keyboard: `enter` -> `activate:one:value`
+- Focus: id `acceptance-data-table`
+- Pointer: measured target `acceptance-data-table:cell:0:value`; callback state asserted
+- Theme: live update asserted by `data-table:theme-render`
+- Static: deterministic output asserted by `data-table:deterministic-static`
+- Behavior: TanStack Table adapter for sortable and selectable terminal data grids.
+
+## Date Time Input
+
+- Registry name: `date-time-input`
+- Story: `component-acceptance--date-time-input`
+- Fixture: `acceptance-date-time-input`
+- Semantics: role `textbox` labelled `date-time-input acceptance`
+- Callbacks: `onValueChange`, `onSubmit`
+- Keyboard: `Z`, `enter` -> `value:acceptanceZ`, `submit:acceptanceZ`
+- Focus: id `acceptance-date-time-input`
+- Pointer: measured target `acceptance-date-time-input`; hit testing and focus asserted
+- Theme: live update asserted by `date-time-input:theme-render`
+- Static: deterministic output asserted by `date-time-input:deterministic-static`
+- Behavior: Date and time text editor.
+
+## Default Theme
+
+- Registry name: `default`
+- Story: `component-acceptance--default`
+- Fixture: `acceptance-default`
+- Semantics: role `application` labelled `default acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `default:theme-render`
+- Static: deterministic output asserted by `default:deterministic-static`
+- Behavior: Default tuil theme.
+
+## Dialog
+
+- Registry name: `dialog`
+- Story: `component-acceptance--dialog`
+- Fixture: `acceptance-dialog`
+- Semantics: role `dialog` labelled `dialog acceptance`
+- Callbacks: `onOpenChange`
+- Keyboard: `escape` -> `open:false`
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `dialog:theme-render`
+- Static: deterministic output asserted by `dialog:deterministic-static`
+- Behavior: Compound modal with focus trapping, input suppression, dismissal, and restoration.
+
+## Diff Viewer
+
+- Registry name: `diff-viewer`
+- Story: `component-acceptance--diff-viewer`
+- Fixture: `acceptance-diff-viewer`
+- Semantics: role `status` labelled `diff-viewer acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `diff-viewer:theme-render`
+- Static: deterministic output asserted by `diff-viewer:deterministic-static`
+- Behavior: Virtualized line diff with context filtering and old/new line coordinates.
+
+## Divider
+
+- Registry name: `divider`
+- Story: `component-acceptance--divider`
+- Fixture: `acceptance-divider`
+- Semantics: role `application` labelled `divider acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `divider:theme-render`
+- Static: deterministic output asserted by `divider:deterministic-static`
+- Behavior: Terminal-safe divider.
+
+## Drawer
+
+- Registry name: `drawer`
+- Story: `component-acceptance--drawer`
+- Fixture: `acceptance-drawer`
+- Semantics: role `dialog` labelled `drawer acceptance`
+- Callbacks: `onOpenChange`
+- Keyboard: `escape` -> `open:false`
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `drawer:theme-render`
+- Static: deterministic output asserted by `drawer:deterministic-static`
+- Behavior: Edge-aligned overlay panel.
+
+## Editable Table Cell
+
+- Registry name: `editable-table-cell`
+- Story: `component-acceptance--editable-table-cell`
+- Fixture: `acceptance-editable-table-cell`
+- Semantics: role `textbox` labelled `editable-table-cell acceptance`
+- Callbacks: `onValueChange`, `onSubmit`
+- Keyboard: `Z`, `enter` -> `value:acceptanceZ`, `submit:acceptanceZ`
+- Focus: id `acceptance-editable-table-cell`
+- Pointer: measured target `acceptance-editable-table-cell`; hit testing and focus asserted
+- Theme: live update asserted by `editable-table-cell:theme-render`
+- Static: deterministic output asserted by `editable-table-cell:deterministic-static`
+- Behavior: Inline table-cell editor.
+
+## Editable Tree Node
+
+- Registry name: `editable-tree-node`
+- Story: `component-acceptance--editable-tree-node`
+- Fixture: `acceptance-editable-tree-node`
+- Semantics: role `textbox` labelled `editable-tree-node acceptance`
+- Callbacks: `onValueChange`, `onSubmit`
+- Keyboard: `Z`, `enter` -> `value:acceptanceZ`, `submit:acceptanceZ`
+- Focus: id `acceptance-editable-tree-node`
+- Pointer: measured target `acceptance-editable-tree-node`; hit testing and focus asserted
+- Theme: live update asserted by `editable-tree-node:theme-render`
+- Static: deterministic output asserted by `editable-tree-node:deterministic-static`
+- Behavior: Inline tree-node editor.
+
+## Error Boundary
+
+- Registry name: `error-boundary`
+- Story: `component-acceptance--error-boundary`
+- Fixture: `acceptance-error-boundary`
+- Semantics: role `text` labelled `error-boundary content`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `error-boundary:theme-render`
+- Static: deterministic output asserted by `error-boundary:deterministic-static`
+- Behavior: Recoverable component error boundary.
+
+## Field
+
+- Registry name: `field`
+- Story: `component-acceptance--field`
+- Fixture: `acceptance-field`
+- Semantics: role `form` labelled `field acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `field:theme-render`
+- Static: deterministic output asserted by `field:deterministic-static`
+- Behavior: Semantic form field structure with label, description, errors, and hints.
+
+## Footer
+
+- Registry name: `footer`
+- Story: `component-acceptance--footer`
+- Fixture: `acceptance-footer`
+- Semantics: role `text` labelled `footer content`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `footer:theme-render`
+- Static: deterministic output asserted by `footer:deterministic-static`
+- Behavior: Application footer region.
+
+## Form Field Editor
+
+- Registry name: `form-field-editor`
+- Story: `component-acceptance--form-field-editor`
+- Fixture: `acceptance-form-field-editor`
+- Semantics: role `textbox` labelled `form-field-editor acceptance`
+- Callbacks: `onValueChange`
+- Keyboard: `Z` -> `value:acceptanceZ`
+- Focus: id `acceptance-form-field-editor`
+- Pointer: measured target `acceptance-form-field-editor`; hit testing and focus asserted
+- Theme: live update asserted by `form-field-editor:theme-render`
+- Static: deterministic output asserted by `form-field-editor:deterministic-static`
+- Behavior: Editor-backed semantic form field.
+
+## Header
+
+- Registry name: `header`
+- Story: `component-acceptance--header`
+- Fixture: `acceptance-header`
+- Semantics: role `text` labelled `header content`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `header:theme-render`
+- Static: deterministic output asserted by `header:deterministic-static`
+- Behavior: Application header region.
+
+## Heading
+
+- Registry name: `heading`
+- Story: `component-acceptance--heading`
+- Fixture: `acceptance-heading`
+- Semantics: role `heading` labelled `heading acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `heading:theme-render`
+- Static: deterministic output asserted by `heading:deterministic-static`
+- Behavior: Semantic terminal heading.
+
+## Help Overlay
+
+- Registry name: `help-overlay`
+- Story: `component-acceptance--help-overlay`
+- Fixture: `acceptance-help-overlay`
+- Semantics: role `dialog` labelled `help-overlay acceptance`
+- Callbacks: `onOpenChange`
+- Keyboard: `escape` -> `open:false`
+- Focus: id `acceptance-help-overlay:search`
+- Pointer: not supported
+- Theme: live update asserted by `help-overlay:theme-render`
+- Static: deterministic output asserted by `help-overlay:deterministic-static`
+- Behavior: Hotkey-opened searchable help generated from the live command registry.
+
+## Project Initializer
+
+- Registry name: `init-wizard`
+- Story: `component-acceptance--init-wizard`
+- Fixture: `acceptance-init-wizard`
+- Semantics: role `application` labelled `Workflow tuil.init`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `init-wizard:theme-render`
+- Static: deterministic output asserted by `init-wizard:deterministic-static`
+- Behavior: Complete self-hosted tuil init application block.
+
+## Inline Editor
+
+- Registry name: `inline-editor`
+- Story: `component-acceptance--inline-editor`
+- Fixture: `acceptance-inline-editor`
+- Semantics: role `textbox` labelled `inline-editor acceptance`
+- Callbacks: `onValueChange`, `onSubmit`
+- Keyboard: `Z`, `enter` -> `value:acceptanceZ`, `submit:acceptanceZ`
+- Focus: id `acceptance-inline-editor`
+- Pointer: measured target `acceptance-inline-editor`; hit testing and focus asserted
+- Theme: live update asserted by `inline-editor:theme-render`
+- Static: deterministic output asserted by `inline-editor:deterministic-static`
+- Behavior: Commit or cancel inline edits.
+
+## JSON Viewer
+
+- Registry name: `json-viewer`
+- Story: `component-acceptance--json-viewer`
+- Fixture: `acceptance-json-viewer`
+- Semantics: role `tree` labelled `json-viewer acceptance`
+- Callbacks: `onExpandedChange`
+- Keyboard: `enter` -> `expanded:`
+- Focus: id `acceptance-json-viewer`
+- Pointer: not supported
+- Theme: live update asserted by `json-viewer:theme-render`
+- Static: deterministic output asserted by `json-viewer:deterministic-static`
+- Behavior: Expandable virtual JSON tree with circular-reference safety and key redaction.
+
+## Log Viewer
+
+- Registry name: `log-viewer`
+- Story: `component-acceptance--log-viewer`
+- Fixture: `acceptance-log-viewer`
+- Semantics: role `application` labelled `log-viewer acceptance`
+- Callbacks: `onFollowChange`
+- Keyboard: `p` -> `follow:false`
+- Focus: id `acceptance-log-viewer`
+- Pointer: not supported
+- Theme: live update asserted by `log-viewer:theme-render`
+- Static: deterministic output asserted by `log-viewer:deterministic-static`
+- Behavior: Bounded virtual log stream with filtering, severity styling, and follow mode.
+
+## Markdown Viewer
+
+- Registry name: `markdown-viewer`
+- Story: `component-acceptance--markdown-viewer`
+- Fixture: `acceptance-markdown-viewer`
+- Semantics: role `application` labelled `markdown-viewer acceptance`
+- Callbacks: `onSelectedBlockChange`
+- Keyboard: `arrowDown` -> `block:1`
+- Focus: id `acceptance-markdown-viewer`
+- Pointer: measured target `acceptance-markdown-viewer`; hit testing and focus asserted
+- Theme: live update asserted by `markdown-viewer:theme-render`
+- Static: deterministic output asserted by `markdown-viewer:deterministic-static`
+- Behavior: Rendered Markdown projection.
+
+## Menu
+
+- Registry name: `menu`
+- Story: `component-acceptance--menu`
+- Fixture: `acceptance-menu`
+- Semantics: role `menu` labelled `menu acceptance`
+- Callbacks: `onSelect`, `onOpenChange`
+- Keyboard: `enter` -> `select:one`, `open:false`
+- Focus: id `acceptance-menu`
+- Pointer: measured target `acceptance-menu:item:one`; callback state asserted
+- Theme: live update asserted by `menu:theme-render`
+- Static: deterministic output asserted by `menu:deterministic-static`
+- Behavior: Keyboard-driven command menu with nested submenu support.
+
+## Menubar
+
+- Registry name: `menubar`
+- Story: `component-acceptance--menubar`
+- Fixture: `acceptance-menubar`
+- Semantics: role `menu` labelled `menubar acceptance`
+- Callbacks: `onValueChange`
+- Keyboard: `arrowRight` -> `value:one`
+- Focus: id `acceptance-menubar`
+- Pointer: measured target `acceptance-menubar:menu:one`; callback state asserted
+- Theme: live update asserted by `menubar:theme-render`
+- Static: deterministic output asserted by `menubar:deterministic-static`
+- Behavior: Terminal menubar with horizontal menu switching and command execution.
+
+## Multi Select
+
+- Registry name: `multi-select`
+- Story: `component-acceptance--multi-select`
+- Fixture: `acceptance-multi-select`
+- Semantics: role `listbox` labelled `multi-select acceptance`
+- Callbacks: `onValueChange`
+- Keyboard: `space` -> `value:`
+- Focus: id `acceptance-multi-select`
+- Pointer: measured target `acceptance-multi-select:one`; callback state asserted
+- Theme: live update asserted by `multi-select:theme-render`
+- Static: deterministic output asserted by `multi-select:deterministic-static`
+- Behavior: Typed multiple-selection listbox with selection limits.
+
+## Number Input
+
+- Registry name: `number-input`
+- Story: `component-acceptance--number-input`
+- Fixture: `acceptance-number-input`
+- Semantics: role `textbox` labelled `number-input acceptance`
+- Callbacks: `onValueChange`
+- Keyboard: `arrowUp` -> `value:2`
+- Focus: id `acceptance-number-input`
+- Pointer: not supported
+- Theme: live update asserted by `number-input:theme-render`
+- Static: deterministic output asserted by `number-input:deterministic-static`
+- Behavior: Bounded numeric editor with keyboard stepping.
+
+## Operation List
+
+- Registry name: `operation-list`
+- Story: `component-acceptance--operation-list`
+- Fixture: `acceptance-operation-list`
+- Semantics: role `status` labelled `Operations`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `operation-list:theme-render`
+- Static: deterministic output asserted by `operation-list:deterministic-static`
+- Behavior: Observable operation status, progress, attempts, duration, errors, and children.
+
+## Operation Tree
+
+- Registry name: `operation-tree`
+- Story: `component-acceptance--operation-tree`
+- Fixture: `acceptance-operation-tree`
+- Semantics: role `tree` labelled `Operation tree`
+- Callbacks: `onValueChange`, `onExpandedChange`
+- Keyboard: `arrowRight`, `enter` -> `operation:`, `operation-expanded:`
+- Focus: id `acceptance-operation-tree`
+- Pointer: not supported
+- Theme: live update asserted by `operation-tree:theme-render`
+- Static: deterministic output asserted by `operation-tree:deterministic-static`
+- Behavior: Expandable hierarchical operation display.
+
+## Outline
+
+- Registry name: `outline`
+- Story: `component-acceptance--outline`
+- Fixture: `acceptance-outline`
+- Semantics: role `navigation` labelled `outline acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `outline:theme-render`
+- Static: deterministic output asserted by `outline:deterministic-static`
+- Behavior: Hierarchical document navigation.
+
+## Pagination
+
+- Registry name: `pagination`
+- Story: `component-acceptance--pagination`
+- Fixture: `acceptance-pagination`
+- Semantics: role `navigation` labelled `pagination acceptance`
+- Callbacks: `onPageChange`
+- Keyboard: `arrowRight` -> `page:2`
+- Focus: id `acceptance-pagination`
+- Pointer: not supported
+- Theme: live update asserted by `pagination:theme-render`
+- Static: deterministic output asserted by `pagination:deterministic-static`
+- Behavior: Paged navigation control.
+
+## Pane Tabs
+
+- Registry name: `pane-tabs`
+- Story: `component-acceptance--pane-tabs`
+- Fixture: `acceptance-pane-tabs`
+- Semantics: role `text` labelled `pane-tabs content`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `pane-tabs:theme-render`
+- Static: deterministic output asserted by `pane-tabs:deterministic-static`
+- Behavior: Tabbed pane region.
+
+## Password Input
+
+- Registry name: `password-input`
+- Story: `component-acceptance--password-input`
+- Fixture: `acceptance-password-input`
+- Semantics: role `textbox` labelled `password-input acceptance`
+- Callbacks: `onValueChange`, `onSubmit`
+- Keyboard: `Z`, `enter` -> `value:[redacted]`, `submit:[redacted]`
+- Focus: id `acceptance-password-input`
+- Pointer: measured target `acceptance-password-input`; hit testing and focus asserted
+- Theme: live update asserted by `password-input:theme-render`
+- Static: deterministic output asserted by `password-input:deterministic-static`
+- Behavior: Masked terminal text input.
+
+## Popover
+
+- Registry name: `popover`
+- Story: `component-acceptance--popover`
+- Fixture: `acceptance-popover`
+- Semantics: role `dialog` labelled `popover acceptance`
+- Callbacks: `onOpenChange`
+- Keyboard: `escape` -> `open:false`
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `popover:theme-render`
+- Static: deterministic output asserted by `popover:deterministic-static`
+- Behavior: Contextual overlay content.
+
+## Progress
+
+- Registry name: `progress`
+- Story: `component-acceptance--progress`
+- Fixture: `acceptance-progress`
+- Semantics: role `progressbar` labelled `progress acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `progress:theme-render`
+- Static: deterministic output asserted by `progress:deterministic-static`
+- Behavior: Bounded terminal progress bar.
+
+## Radio Group
+
+- Registry name: `radio-group`
+- Story: `component-acceptance--radio-group`
+- Fixture: `acceptance-radio-group`
+- Semantics: role `radio` labelled `One`
+- Callbacks: `onValueChange`
+- Keyboard: `arrowRight`, `enter` -> `value:two`
+- Focus: id `acceptance-radio-group`
+- Pointer: measured target `acceptance-radio-group:one`; callback state asserted
+- Theme: live update asserted by `radio-group:theme-render`
+- Static: deterministic output asserted by `radio-group:deterministic-static`
+- Behavior: Roving single-selection control with disabled-option handling.
+
+## Resizable Pane
+
+- Registry name: `resizable-pane`
+- Story: `component-acceptance--resizable-pane`
+- Fixture: `acceptance-resizable-pane`
+- Semantics: role `application` labelled `resizable-pane acceptance`
+- Callbacks: `onSizeChange`
+- Keyboard: `end` -> `size:30`
+- Focus: id `acceptance-resizable-pane`
+- Pointer: not supported
+- Theme: live update asserted by `resizable-pane:theme-render`
+- Static: deterministic output asserted by `resizable-pane:deterministic-static`
+- Behavior: Single constrained pane with controlled or uncontrolled keyboard resizing.
+
+## Rich Diff Viewer
+
+- Registry name: `rich-diff-viewer`
+- Story: `component-acceptance--rich-diff-viewer`
+- Fixture: `acceptance-rich-diff-viewer`
+- Semantics: role `application` labelled `rich-diff-viewer acceptance`
+- Callbacks: `onResolveHunk`
+- Keyboard: `a` -> `resolve:0:apply`
+- Focus: id `acceptance-rich-diff-viewer`
+- Pointer: measured target `acceptance-rich-diff-viewer`; hit testing and focus asserted
+- Theme: live update asserted by `rich-diff-viewer:theme-render`
+- Static: deterministic output asserted by `rich-diff-viewer:deterministic-static`
+- Behavior: Unified or split diff projection.
+
+## Scroll Area
+
+- Registry name: `scroll-area`
+- Story: `component-acceptance--scroll-area`
+- Fixture: `acceptance-scroll-area`
+- Semantics: role `application` labelled `scroll-area acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `scroll-area:theme-render`
+- Static: deterministic output asserted by `scroll-area:deterministic-static`
+- Behavior: Viewport and scrollbar region.
+
+## Search Input
+
+- Registry name: `search-input`
+- Story: `component-acceptance--search-input`
+- Fixture: `acceptance-search-input`
+- Semantics: role `textbox` labelled `search-input acceptance`
+- Callbacks: `onValueChange`, `onSubmit`
+- Keyboard: `Z`, `enter` -> `value:acceptanceZ`, `submit:acceptanceZ`
+- Focus: id `acceptance-search-input`
+- Pointer: measured target `acceptance-search-input`; hit testing and focus asserted
+- Theme: live update asserted by `search-input:theme-render`
+- Static: deterministic output asserted by `search-input:deterministic-static`
+- Behavior: Search editor with submit and history behavior.
+
+## Select
+
+- Registry name: `select`
+- Story: `component-acceptance--select`
+- Fixture: `acceptance-select`
+- Semantics: role `listbox` labelled `select acceptance`
+- Callbacks: `onValueChange`, `onOpenChange`
+- Keyboard: `enter`, `arrowDown`, `enter` -> `value:two`, `open:`
+- Focus: id `acceptance-select`
+- Pointer: measured target `acceptance-select:two`; callback state asserted
+- Theme: live update asserted by `select:theme-render`
+- Static: deterministic output asserted by `select:deterministic-static`
+- Behavior: Searchable single-selection listbox with typed values.
+
+## Sidebar
+
+- Registry name: `sidebar`
+- Story: `component-acceptance--sidebar`
+- Fixture: `acceptance-sidebar`
+- Semantics: role `text` labelled `sidebar content`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `sidebar:theme-render`
+- Static: deterministic output asserted by `sidebar:deterministic-static`
+- Behavior: Application side region.
+
+## Skeleton
+
+- Registry name: `skeleton`
+- Story: `component-acceptance--skeleton`
+- Fixture: `acceptance-skeleton`
+- Semantics: role `text`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `skeleton:theme-render`
+- Static: deterministic output asserted by `skeleton:deterministic-static`
+- Behavior: Non-color loading placeholder.
+
+## Slider
+
+- Registry name: `slider`
+- Story: `component-acceptance--slider`
+- Fixture: `acceptance-slider`
+- Semantics: role `slider` labelled `slider acceptance`
+- Callbacks: `onValueChange`
+- Keyboard: `arrowRight` -> `value:2`
+- Focus: id `acceptance-slider`
+- Pointer: measured target `acceptance-slider`; callback state asserted
+- Theme: live update asserted by `slider:theme-render`
+- Static: deterministic output asserted by `slider:deterministic-static`
+- Behavior: Keyboard, click, and drag operated numeric range input.
+
+## Spinner
+
+- Registry name: `spinner`
+- Story: `component-acceptance--spinner`
+- Fixture: `acceptance-spinner`
+- Semantics: role `status` labelled `spinner acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `spinner:theme-render`
+- Static: deterministic output asserted by `spinner:deterministic-static`
+- Behavior: Capability-aware activity spinner.
+
+## Splash Screen
+
+- Registry name: `splash-screen`
+- Story: `component-acceptance--splash-screen`
+- Fixture: `acceptance-splash-screen`
+- Semantics: role `status` labelled `splash-screen acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `splash-screen:theme-render`
+- Static: deterministic output asserted by `splash-screen:deterministic-static`
+- Behavior: Unicode-aware startup status and determinate progress screen.
+
+## Split Pane
+
+- Registry name: `split-pane`
+- Story: `component-acceptance--split-pane`
+- Fixture: `acceptance-split-pane`
+- Semantics: role `application` labelled `split-pane acceptance`
+- Callbacks: `onSizesChange`
+- Keyboard: `arrowRight` -> `sizes:`
+- Focus: id `acceptance-split-pane`
+- Pointer: not supported
+- Theme: live update asserted by `split-pane:theme-render`
+- Static: deterministic output asserted by `split-pane:deterministic-static`
+- Behavior: Constrained multi-pane terminal layout with keyboard-resizable separators.
+
+## Stack
+
+- Registry name: `stack`
+- Story: `component-acceptance--stack`
+- Fixture: `acceptance-stack`
+- Semantics: role `application` labelled `stack acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `stack:theme-render`
+- Static: deterministic output asserted by `stack:deterministic-static`
+- Behavior: Vertical, horizontal, and configurable stack layouts.
+
+## Status Bar
+
+- Registry name: `status-bar`
+- Story: `component-acceptance--status-bar`
+- Fixture: `acceptance-status-bar`
+- Semantics: role `status` labelled `status-bar acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `status-bar:theme-render`
+- Static: deterministic output asserted by `status-bar:deterministic-static`
+- Behavior: Persistent status region.
+
+## Stepper
+
+- Registry name: `stepper`
+- Story: `component-acceptance--stepper`
+- Fixture: `acceptance-stepper`
+- Semantics: role `status` labelled `stepper acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `stepper:theme-render`
+- Static: deterministic output asserted by `stepper:deterministic-static`
+- Behavior: Accessible workflow step progress for horizontal and vertical layouts.
+
+## Structured Content
+
+- Registry name: `structured-content`
+- Story: `component-acceptance--structured-content`
+- Fixture: `acceptance-structured-content`
+- Semantics: role `text`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `structured-content:theme-render`
+- Static: deterministic output asserted by `structured-content:deterministic-static`
+- Behavior: Structured data summary projection.
+
+## Switch
+
+- Registry name: `switch`
+- Story: `component-acceptance--switch`
+- Fixture: `acceptance-switch`
+- Semantics: role `switch` labelled `switch acceptance`
+- Callbacks: `onCheckedChange`
+- Keyboard: `space` -> `checked:false`
+- Focus: id `acceptance-switch`
+- Pointer: not supported
+- Theme: live update asserted by `switch:theme-render`
+- Static: deterministic output asserted by `switch:deterministic-static`
+- Behavior: Focusable controlled or uncontrolled boolean switch.
+
+## Tab Select
+
+- Registry name: `tab-select`
+- Story: `component-acceptance--tab-select`
+- Fixture: `acceptance-tab-select`
+- Semantics: role `navigation` labelled `tab-select acceptance`
+- Callbacks: `onValueChange`
+- Keyboard: `arrowRight` -> `value:two`
+- Focus: id `acceptance-tab-select`
+- Pointer: measured target `acceptance-tab-select:tab:one`; callback state asserted
+- Theme: live update asserted by `tab-select:theme-render`
+- Static: deterministic output asserted by `tab-select:deterministic-static`
+- Behavior: Compact tab selection control.
+
+## Table
+
+- Registry name: `table`
+- Story: `component-acceptance--table`
+- Fixture: `acceptance-table`
+- Semantics: role `table` labelled `table acceptance`
+- Callbacks: `onActivate`, `onSelectionChange`
+- Keyboard: `space`, `enter` -> `activate:one:value`, `selection:one`
+- Focus: id `acceptance-table`
+- Pointer: measured target `acceptance-table:cell:one:value`; callback state asserted
+- Theme: live update asserted by `table:theme-render`
+- Static: deterministic output asserted by `table:deterministic-static`
+- Behavior: Virtualized terminal table with cell focus, frozen columns, horizontal navigation, and static output.
+
+## Tabs
+
+- Registry name: `tabs`
+- Story: `component-acceptance--tabs`
+- Fixture: `acceptance-tabs`
+- Semantics: role `navigation` labelled `tabs acceptance`
+- Callbacks: `onValueChange`
+- Keyboard: `arrowRight` -> `value:two`
+- Focus: id `acceptance-tabs`
+- Pointer: measured target `acceptance-tabs:tab:one`; callback state asserted
+- Theme: live update asserted by `tabs:theme-render`
+- Static: deterministic output asserted by `tabs:deterministic-static`
+- Behavior: Controlled or uncontrolled terminal tabs with roving keyboard navigation.
+
+## Terminal Platform Plugin
+
+- Registry name: `terminal-platform-plugin`
+- Story: `component-acceptance--terminal-platform-plugin`
+- Fixture: `acceptance-terminal-platform-plugin`
+- Semantics: role `application` labelled `terminal-platform-plugin acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `terminal-platform-plugin:theme-render`
+- Static: deterministic output asserted by `terminal-platform-plugin:deterministic-static`
+- Behavior: Package-owned plugin entry point for terminal platform contributions.
+
+## Text Area
+
+- Registry name: `text-area`
+- Story: `component-acceptance--text-area`
+- Fixture: `acceptance-text-area`
+- Semantics: role `textbox` labelled `text-area acceptance`
+- Callbacks: `onValueChange`
+- Keyboard: `Z` -> `value:acceptanceZ`
+- Focus: id `acceptance-text-area`
+- Pointer: measured target `acceptance-text-area`; hit testing and focus asserted
+- Theme: live update asserted by `text-area:theme-render`
+- Static: deterministic output asserted by `text-area:deterministic-static`
+- Behavior: Multiline terminal text editor with cursor and validation behavior.
+
+## Text Input
+
+- Registry name: `text-input`
+- Story: `component-acceptance--text-input`
+- Fixture: `acceptance-text-input`
+- Semantics: role `textbox` labelled `text-input acceptance`
+- Callbacks: `onValueChange`, `onSubmit`
+- Keyboard: `Z`, `enter` -> `value:acceptanceZ`, `submit:acceptanceZ`
+- Focus: id `acceptance-text-input`
+- Pointer: measured target `acceptance-text-input`; hit testing and focus asserted
+- Theme: live update asserted by `text-input:theme-render`
+- Static: deterministic output asserted by `text-input:deterministic-static`
+- Behavior: Controlled or uncontrolled terminal text editor with validation.
+
+## Text
+
+- Registry name: `text`
+- Story: `component-acceptance--text`
+- Fixture: `acceptance-text`
+- Semantics: role `text`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `text:theme-render`
+- Static: deterministic output asserted by `text:deterministic-static`
+- Behavior: Semantic terminal text.
+
+## Timeline
+
+- Registry name: `timeline`
+- Story: `component-acceptance--timeline`
+- Fixture: `acceptance-timeline`
+- Semantics: role `text`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `timeline:theme-render`
+- Static: deterministic output asserted by `timeline:deterministic-static`
+- Behavior: Ordered event timeline.
+
+## Toast
+
+- Registry name: `toast`
+- Story: `component-acceptance--toast`
+- Fixture: `acceptance-toast`
+- Semantics: role `status` labelled `Acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `toast:theme-render`
+- Static: deterministic output asserted by `toast:deterministic-static`
+- Behavior: Disposable notification queue with actions, promises, updates, and live semantics.
+
+## Tooltip
+
+- Registry name: `tooltip`
+- Story: `component-acceptance--tooltip`
+- Fixture: `acceptance-tooltip`
+- Semantics: role `status` labelled `Help for acceptance-tooltip`
+- Callbacks: `onOpenChange`
+- Keyboard: `f1` -> `open:false`
+- Focus: id `acceptance-tooltip`
+- Pointer: not supported
+- Theme: live update asserted by `tooltip:theme-render`
+- Static: deterministic output asserted by `tooltip:deterministic-static`
+- Behavior: Delayed focus and explicit-help tooltip with accessible metadata.
+
+## Transfer List
+
+- Registry name: `transfer-list`
+- Story: `component-acceptance--transfer-list`
+- Fixture: `acceptance-transfer-list`
+- Semantics: role `form` labelled `transfer-list acceptance`
+- Callbacks: `onValueChange`, `onTransfer`
+- Keyboard: `enter` -> `value:one,two`, `transfer:two:select`
+- Focus: id `acceptance-transfer-list`
+- Pointer: not supported
+- Theme: live update asserted by `transfer-list:theme-render`
+- Static: deterministic output asserted by `transfer-list:deterministic-static`
+- Behavior: Dual-pane controlled or uncontrolled item transfer with keyboard navigation.
+
+## Tree
+
+- Registry name: `tree`
+- Story: `component-acceptance--tree`
+- Fixture: `acceptance-tree`
+- Semantics: role `tree` labelled `tree acceptance`
+- Callbacks: `onSelect`, `onExpandedChange`
+- Keyboard: `arrowRight`, `enter` -> `select:one`, `expanded:one`
+- Focus: id `acceptance-tree`
+- Pointer: measured target `acceptance-tree:item:one`; callback state asserted
+- Theme: live update asserted by `tree:theme-render`
+- Static: deterministic output asserted by `tree:deterministic-static`
+- Behavior: Virtualized hierarchical tree with expansion, selection, and keyboard traversal.
+
+## Virtual List
+
+- Registry name: `virtual-list`
+- Story: `component-acceptance--virtual-list`
+- Fixture: `acceptance-virtual-list`
+- Semantics: role `listbox` labelled `virtual-list acceptance`
+- Callbacks: `onOffsetChange`, `onActiveIndexChange`, `onSelect`
+- Keyboard: `arrowDown`, `arrowDown`, `arrowDown`, `enter` -> `offset:`, `active:`, `virtual-select:four`
+- Focus: id `acceptance-virtual-list`
+- Pointer: measured target `acceptance-virtual-list:item:one`; callback state asserted
+- Theme: live update asserted by `virtual-list:theme-render`
+- Static: deterministic output asserted by `virtual-list:deterministic-static`
+- Behavior: Fixed-cell terminal virtual list with focus-driven scrolling and bounded static output.
+
+## Workflow
+
+- Registry name: `workflow`
+- Story: `component-acceptance--workflow`
+- Fixture: `acceptance-workflow`
+- Semantics: role `application` labelled `Workflow acceptance`
+- Callbacks: none
+- Keyboard: not supported
+- Focus: not focusable
+- Pointer: not supported
+- Theme: live update asserted by `workflow:theme-render`
+- Static: deterministic output asserted by `workflow:deterministic-static`
+- Behavior: Replaceable compound UI for real persistable workflow runners.

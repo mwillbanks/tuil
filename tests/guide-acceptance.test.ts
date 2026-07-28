@@ -82,6 +82,17 @@ const foundationPackages = [
   "router",
   "workflow",
   "operations",
+  "renderer",
+  "cell",
+  "pointer",
+  "scroll",
+  "editor",
+  "code",
+  "content",
+  "streaming",
+  "logging",
+  "log-viewer",
+  "protocol",
 ] as const;
 
 const exampleApplications = [
@@ -93,6 +104,14 @@ const exampleApplications = [
   "file-browser",
   "ai-assistant",
   "full-screen",
+  "git-client",
+  "log-explorer",
+  "otel-console",
+  "ai-coding-assistant",
+  "deployment-dashboard",
+  "file-manager",
+  "workflow-runner",
+  "docs-browser",
 ] as const;
 
 const skills = [
@@ -155,6 +174,8 @@ test("phase five ships every ecosystem surface with executable validation", asyn
     "Commands",
     "Routes",
     "Focus",
+    "Layout",
+    "Pointer",
     "Hotkeys",
     "Plugins",
     "Workflows",
@@ -208,6 +229,87 @@ test("phase five ships every ecosystem surface with executable validation", asyn
       ).exists(),
     ).toBeTrue();
   }
+});
+
+test("platform architecture artifacts are substantive and machine readable", async () => {
+  const rfcs = Array.from(
+    { length: 8 },
+    (_, index) =>
+      `docs/rfcs/${String(index + 1).padStart(4, "0")}-${
+        [
+          "renderer-contract",
+          "cell-buffer",
+          "layout-bounds",
+          "pointer-routing",
+          "scroll-model",
+          "editor-contract",
+          "log-model-query",
+          "devtools-protocol",
+        ][index]
+      }.md`,
+  );
+  for (const path of rfcs) {
+    const content = await Bun.file(join(root, path)).text();
+    expect(content.split("\n").length).toBeGreaterThanOrEqual(20);
+    expect(content).toContain("Status: accepted");
+  }
+  const baseline = (await Bun.file(
+    join(root, "benchmarks/baseline.json"),
+  ).json()) as {
+    readonly schemaVersion: number;
+    readonly environment: {
+      readonly architecture: string;
+      readonly bunVersion: string;
+      readonly cpuCount: number;
+      readonly cpuModel: string;
+      readonly operatingSystem: string;
+      readonly operatingSystemRelease: string;
+      readonly profile: string;
+    };
+    readonly policy: {
+      readonly maximumNormalizedP95Ratio: number;
+      readonly minimumNormalizedP95Budget: number;
+    };
+    readonly results: readonly {
+      readonly name: string;
+      readonly iterations: number;
+      readonly milliseconds: number;
+    }[];
+  };
+  expect(baseline.schemaVersion).toBe(3);
+  expect(baseline.environment.cpuCount).toBeGreaterThan(0);
+  expect(baseline.environment.cpuModel.length).toBeGreaterThan(0);
+  expect(baseline.environment.bunVersion.length).toBeGreaterThan(0);
+  expect(baseline.policy.maximumNormalizedP95Ratio).toBeGreaterThan(1);
+  expect(baseline.results.map((result) => result.name)).toEqual([
+    "calibration.integer-1m",
+    "scroll.list-1k",
+    "scroll.list-100k",
+    "streaming.jsonl-logs",
+    "streaming.markdown-128k",
+    "content.split-diff",
+    "renderer.cell-diff",
+    "renderer.cell-diff.native-prototype",
+    "renderer.resize-storm",
+    "renderer.animated-frame",
+    "renderer.large-table",
+    "logging.bounded-retention",
+    "comparison.full-frame.ink",
+    "comparison.full-frame.opentui",
+    "comparison.full-frame.tuil-cell",
+  ]);
+  for (const result of baseline.results) {
+    expect(result.iterations).toBeGreaterThan(0);
+    expect(result.milliseconds).toBeGreaterThan(0);
+  }
+  const capabilities = (await Bun.file(
+    join(root, "fixtures/terminal/capabilities.json"),
+  ).json()) as {
+    readonly mouse: readonly string[];
+    readonly modes: readonly string[];
+  };
+  expect(capabilities.mouse).toContain("drag");
+  expect(capabilities.modes).toContain("alternate-screen");
 });
 
 test("package metadata and coordinated release coverage stay complete", async () => {

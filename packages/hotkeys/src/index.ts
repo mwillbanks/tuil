@@ -3,7 +3,7 @@ import {
   createElement,
   type ReactNode,
   useContext,
-  useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
 } from "react";
@@ -196,15 +196,18 @@ export class HotkeyManager {
       current.push(binding);
       groups.set(key, current);
     }
-    return [...groups.entries()]
-      .filter(([, bindings]) => bindings.length > 1)
-      .map(([keys, bindings]) => ({
+    const conflicts: HotkeyConflict[] = [];
+    for (const [keys, bindings] of groups) {
+      if (bindings.length < 2) continue;
+      conflicts.push({
         keys,
         bindings,
-        resolved: [...bindings].sort(
+        resolved: bindings.toSorted(
           (left, right) => this.#rank(right) - this.#rank(left),
         )[0] as HotkeyBinding,
-      }));
+      });
+    }
+    return conflicts;
   }
 
   observe(observer: (event: HotkeyEvent) => void): () => void {
@@ -429,8 +432,10 @@ export function useHotkey(
   const manager = useHotkeyManager();
   const layer = useContext(HotkeyLayerContext);
   const handlerRef = useRef(handler);
-  handlerRef.current = handler;
-  useEffect(
+  useLayoutEffect(() => {
+    handlerRef.current = handler;
+  }, [handler]);
+  useLayoutEffect(
     () =>
       manager.register({
         ...options,
@@ -450,7 +455,7 @@ export function useHotkeys(
 ): void {
   const manager = useHotkeyManager();
   const layer = useContext(HotkeyLayerContext);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const disposers = Object.entries(bindings).map(([keys, handler]) =>
       manager.register({
         ...options,

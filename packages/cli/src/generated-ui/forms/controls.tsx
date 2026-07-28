@@ -1,4 +1,13 @@
 import { useApp } from "@mwillbanks/tuil";
+import {
+  type EditorClipboardAdapter,
+  type EditorPosition,
+  type EditorProvider,
+  type EditorProviderOptions,
+  type EditorSession,
+  position,
+  selection,
+} from "@mwillbanks/tuil-editor";
 import { useFocusable } from "@mwillbanks/tuil-focus";
 import {
   type AdaptedTanStackField,
@@ -12,6 +21,8 @@ import {
 } from "@mwillbanks/tuil-form";
 import {
   type CommonComponentProps,
+  Text as SemanticText,
+  usePointerEvent,
   useSemanticNode,
   useTerminalInput,
 } from "@mwillbanks/tuil-ink";
@@ -20,12 +31,14 @@ import {
   type SlottedComponentProps,
   useTheme,
 } from "@mwillbanks/tuil-theme";
-import { Box, type BoxProps, Text, type TextProps } from "ink";
+import { Box, type BoxProps, type Key, Text, type TextProps } from "ink";
 import {
   type ReactNode,
+  type RefObject,
   useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -94,6 +107,33 @@ function useFieldBlur<T>(
     }
     wasFocused.current = focused;
   }, [adaptedField, field, focused, onBlur, reportAsync]);
+}
+
+function useListboxFieldFocus<T>(options: {
+  readonly id: string;
+  readonly label: string;
+  readonly disabled: boolean;
+  readonly autoFocus: boolean | undefined;
+  readonly field: TerminalFieldBinding<T>;
+  readonly adaptedField: AdaptedTanStackField<T> | undefined;
+  readonly onBlur: (() => void | Promise<void>) | undefined;
+}): { readonly focused: boolean; readonly focus: () => void } {
+  const focusable = useMemo(
+    () => ({
+      id: options.id,
+      disabled: options.disabled,
+      hidden: false,
+      role: "listbox",
+      label: options.label,
+    }),
+    [options.disabled, options.id, options.label],
+  );
+  const { focused, focus } = useFocusable(focusable);
+  useFieldBlur(focused, options.field, options.adaptedField, options.onBlur);
+  useEffect(() => {
+    if (options.autoFocus) focus();
+  }, [focus, options.autoFocus]);
+  return { focused, focus };
 }
 
 export interface FormProps {
@@ -329,6 +369,10 @@ export const FieldGroup: typeof Box = Box;
 export const FieldSet: typeof Box = Box;
 
 interface TextEditorProps extends CommonComponentProps {
+  readonly session?: EditorSession;
+  readonly editorProvider?: EditorProvider;
+  readonly clipboard?: EditorClipboardAdapter;
+  readonly documentType?: string;
   readonly field?: AdaptedTanStackField<string>;
   readonly value?: string;
   readonly defaultValue?: string;
@@ -351,195 +395,627 @@ function characters(value: string): string[] {
   return Array.from(value);
 }
 
-function TextEditor({
-  value,
-  defaultValue = "",
-  onValueChange,
-  onSubmit,
-  onBlur,
-  field: adaptedField,
-  validators,
-  placeholder,
-  multiline = false,
-  mask,
-  autoFocus,
-  focusOrder,
-  maxLength,
-  onArrowUp,
-  onArrowDown,
-  registerWithForm = true,
-  disabled = false,
-  readOnly = false,
-  ...props
-}: TextEditorProps): ReactNode {
+function documentEnd(value: string): {
+  readonly line: number;
+  readonly column: number;
+} {
+  const lines = value.split("\n");
+  return { line: lines.length - 1, column: lines.at(-1)?.length ?? 0 };
+}
+
+function replaceEditorDocument(
+  session: EditorSession,
+  current: string,
+  value: string,
+): void {
+  if (current === value) return;
+  session.dispatch({
+    changes: [
+      {
+        range: {
+          anchor: { line: 0, column: 0 },
+          head: documentEnd(current),
+        },
+        insert: value,
+      },
+    ],
+  });
+}
+
+interface TextInputState {
+  readonly session: EditorSession;
+  readonly value: () => string;
+  readonly disabled: boolean;
+  readonly readOnly: boolean;
+  readonly multiline: boolean;
+  readonly maxLength?: number;
+  readonly onArrowUp?: () => void | Promise<void>;
+  readonly onArrowDown?: () => void | Promise<void>;
+  readonly onSubmit?: (value: string) => void | Promise<void>;
+  readonly validate: () => Promise<boolean>;
+}
+
+function adjacentEditorPosition(
+  cursor: EditorPosition,
+  lines: readonly string[],
+  direction: -1 | 1,
+): EditorPosition {
+  if (direction < 0 && cursor.column === 0 && cursor.line > 0) {
+    return position(
+      cursor.line - 1,
+      characters(lines[cursor.line - 1] ?? "").length,
+    );
+  }
+  if (
+    direction > 0 &&
+    cursor.column >= characters(lines[cursor.line] ?? "").length &&
+    cursor.line < lines.length - 1
+  ) {
+    return position(cursor.line + 1, 0);
+  }
+  return position(cursor.line, cursor.column + direction);
+}
+
+function moveEditorCursor(session: EditorSession, direction: -1 | 1): void {
+  const cursor = session.snapshot().selections[0]?.head ?? position(0, 0);
+  const next = adjacentEditorPosition(
+    cursor,
+    session.serialize().split("\n"),
+    direction,
+  );
+  session.dispatch({ selections: [selection(next)], addToHistory: false });
+}
+
+async function handleEditorNavigation(
+  state: TextInputState,
+  key: Key,
+): Promise<boolean> {
+  if (key.upArrow && state.onArrowUp) {
+    await state.onArrowUp();
+    return true;
+  }
+  if (key.downArrow && state.onArrowDown) {
+    await state.onArrowDown();
+    return true;
+  }
+  if (key.leftArrow) {
+    moveEditorCursor(state.session, -1);
+    return true;
+  }
+  if (key.rightArrow) {
+    moveEditorCursor(state.session, 1);
+    return true;
+  }
+  return false;
+}
+
+function removeBeforeCursor(state: TextInputState): void {
+  const cursor = state.session.snapshot().selections[0]?.head ?? position(0, 0);
+  const lines = state.session.serialize().split("\n");
+  const anchor =
+    cursor.column > 0
+      ? position(cursor.line, cursor.column - 1)
+      : cursor.line > 0
+        ? position(
+            cursor.line - 1,
+            characters(lines[cursor.line - 1] ?? "").length,
+          )
+        : cursor;
+  state.session.dispatch({
+    changes: [{ range: { anchor, head: cursor }, insert: "" }],
+  });
+}
+
+function handleEditorRemoval(state: TextInputState, key: Key): boolean {
+  if (!key.backspace && !key.delete) return false;
+  if (!state.readOnly && !state.disabled) removeBeforeCursor(state);
+  return true;
+}
+
+async function handleEditorReturn(
+  state: TextInputState,
+  key: Key,
+): Promise<boolean> {
+  if (!key.return) return false;
+  if (state.multiline && !key.ctrl && !key.meta) {
+    insertEditorNewline(state);
+    return true;
+  }
+  if (await state.validate()) {
+    await state.onSubmit?.(state.value());
+  }
+  return true;
+}
+
+function insertEditorNewline(state: TextInputState): void {
+  if (state.readOnly || state.disabled) return;
+  const cursor = state.session.snapshot().selections[0]?.head ?? position(0, 0);
+  state.session.dispatch({
+    changes: [{ range: { anchor: cursor, head: cursor }, insert: "\n" }],
+  });
+}
+
+function rejectsTextInput(
+  input: string,
+  key: Key,
+  state: TextInputState,
+): boolean {
+  return (
+    !input ||
+    key.ctrl ||
+    key.meta ||
+    key.escape ||
+    key.tab ||
+    state.readOnly ||
+    state.disabled
+  );
+}
+
+async function handleTextInput(
+  input: string,
+  key: Key,
+  state: TextInputState,
+): Promise<boolean> {
+  const keyName = editorKeyName(input, key);
+  if (await handleEditorControlInput(keyName, key, state)) return true;
+  if (rejectsTextInput(input, key, state)) return false;
+  if (exceedsEditorLength(input, state)) return true;
+  const cursor = state.session.snapshot().selections[0]?.head ?? position(0, 0);
+  state.session.dispatch({
+    changes: [{ range: { anchor: cursor, head: cursor }, insert: input }],
+  });
+  return true;
+}
+
+async function handleEditorControlInput(
+  keyName: string,
+  key: Key,
+  state: TextInputState,
+): Promise<boolean> {
+  if (state.session.key?.(keyName)) return true;
+  if (await handleEditorNavigation(state, key)) return true;
+  if (handleEditorRemoval(state, key)) return true;
+  return handleEditorReturn(state, key);
+}
+
+function editorKeyName(input: string, key: Key): string {
+  const entries: readonly [boolean | undefined, string][] = [
+    [key.escape, "escape"],
+    [key.return, "enter"],
+    [key.backspace || key.delete, "backspace"],
+    [key.leftArrow, "left"],
+    [key.rightArrow, "right"],
+    [key.upArrow, "up"],
+    [key.downArrow, "down"],
+  ];
+  return entries.find(([active]) => active)?.[1] ?? input;
+}
+
+function exceedsEditorLength(input: string, state: TextInputState): boolean {
+  if (state.maxLength === undefined) return false;
+  return (
+    characters(state.value()).length + characters(input).length >
+    state.maxLength
+  );
+}
+
+function textEditorDisplay(
+  value: string,
+  options: {
+    readonly placeholder?: string;
+    readonly mask?: string;
+    readonly focused: boolean;
+    readonly interactive: boolean;
+    readonly unicode: boolean;
+    readonly cursor: number;
+  },
+): string {
+  const raw =
+    value.length === 0 && !options.focused
+      ? (options.placeholder ?? "")
+      : options.mask
+        ? options.mask.repeat(characters(value).length)
+        : value;
+  if (!options.interactive || !options.focused) return raw;
+  const units = characters(raw);
+  const cursor = options.unicode ? "▌" : "|";
+  return `${units.slice(0, options.cursor).join("")}${cursor}${units.slice(options.cursor).join("")}`;
+}
+
+interface EditorSessionBindingOptions {
+  readonly providedSession?: EditorSession;
+  readonly provider?: EditorProvider;
+  readonly clipboard?: EditorClipboardAdapter;
+  readonly id: string;
+  readonly documentType: string;
+  readonly field: TerminalFieldBinding<string>;
+  readonly readOnly: boolean;
+  readonly masked: boolean;
+  readonly reportAsync: (work: Promise<unknown>, phase: string) => void;
+  readonly createSession: (options: EditorProviderOptions) => EditorSession;
+}
+
+function useEditorSessionBinding(options: EditorSessionBindingOptions): {
+  readonly editor: EditorSession;
+  readonly snapshot: ReturnType<EditorSession["snapshot"]>;
+  readonly value: () => string;
+} {
+  const fieldRef = useRef(options.field);
+  const applyingControlledValue = useRef(false);
+  useLayoutEffect(() => {
+    fieldRef.current = options.field;
+  }, [options.field]);
+  const valueRef = useRef(options.field.value);
+  const synchronizeValue = useCallback(
+    (next: string) => {
+      valueRef.current = next;
+      if (applyingControlledValue.current) return;
+      options.reportAsync(
+        fieldRef.current.setValue(next),
+        "editor-session-change",
+      );
+    },
+    [options.reportAsync],
+  );
+  const [internalEditor] = useState<EditorSession | undefined>(() => {
+    if (options.providedSession) return undefined;
+    const providerOptions = {
+      id: options.id,
+      documentType: options.documentType,
+      value: options.field.value,
+      readOnly: options.readOnly,
+      masked: options.masked,
+      clipboard: options.clipboard,
+      onDocumentChange: synchronizeValue,
+    };
+    return options.provider
+      ? options.provider.create(providerOptions)
+      : options.createSession(providerOptions);
+  });
+  const editor = options.providedSession ?? internalEditor;
+  if (!editor) throw new Error("Text editor session creation failed");
+  const [snapshot, setSnapshot] = useState(() => editor.snapshot());
+  useEffect(() => {
+    if (internalEditor) void internalEditor.execute("cursor-end");
+  }, [internalEditor]);
+
+  useEffect(() => {
+    applyingControlledValue.current = true;
+    try {
+      replaceEditorDocument(editor, valueRef.current, options.field.value);
+      valueRef.current = options.field.value;
+    } finally {
+      applyingControlledValue.current = false;
+    }
+  }, [editor, options.field.value]);
+  useEffect(
+    () => () => {
+      internalEditor?.dispose();
+    },
+    [internalEditor],
+  );
+  useEffect(
+    () =>
+      editor.subscribe((next) => {
+        setSnapshot(next);
+        if (options.masked) return;
+        const value = editor.serialize();
+        if (value !== valueRef.current) synchronizeValue(value);
+      }),
+    [editor, options.masked, synchronizeValue],
+  );
+
+  return { editor, snapshot, value: () => valueRef.current };
+}
+
+function editorCursorOffset(
+  editor: EditorSession,
+  snapshot: ReturnType<EditorSession["snapshot"]>,
+): number {
+  const cursor = snapshot.selections[0]?.head;
+  if (!cursor) return 0;
+  return (
+    editor
+      .serialize()
+      .split("\n")
+      .slice(0, cursor.line)
+      .reduce((sum, line) => sum + characters(line).length + 1, 0) +
+    cursor.column
+  );
+}
+
+interface TextEditorViewModel {
+  readonly id: string;
+  readonly testId?: string;
+  readonly label: string;
+  readonly description?: string;
+  readonly disabled: boolean;
+  readonly readOnly: boolean;
+  readonly masked: boolean;
+  readonly value: string;
+  readonly display: string;
+  readonly focused: boolean;
+  readonly hasErrors: boolean;
+  readonly isPlaceholder: boolean;
+  readonly primaryColor: string;
+  readonly dangerColor: string;
+}
+
+function TextEditorSemanticView({
+  model,
+}: {
+  readonly model: TextEditorViewModel;
+}): ReactNode {
+  const color = model.hasErrors
+    ? model.dangerColor
+    : model.focused
+      ? model.primaryColor
+      : undefined;
+  return (
+    <SemanticText
+      id={model.id}
+      testId={model.testId}
+      role="textbox"
+      label={model.label}
+      description={model.description}
+      disabled={model.disabled}
+      readOnly={model.readOnly}
+      valueText={model.masked ? "[REDACTED]" : model.value}
+      color={color}
+      dimColor={model.disabled || model.isPlaceholder}
+    >
+      {model.display}
+    </SemanticText>
+  );
+}
+
+function editorIdentity(
+  props: Pick<TextEditorProps, "id" | "label">,
+  generated: string,
+): { readonly id: string; readonly label: string } {
+  const id = props.id ?? generated;
+  return { id, label: props.label ?? id };
+}
+
+function controlledEditorValue(
+  field: AdaptedTanStackField<string> | undefined,
+  value: string | undefined,
+): string | undefined {
+  return field?.value ?? value;
+}
+
+function editorHasErrors(
+  field: TerminalFieldBinding<string>,
+  adaptedField: AdaptedTanStackField<string> | undefined,
+): boolean {
+  return field.errors.length > 0 || (adaptedField?.errors.length ?? 0) > 0;
+}
+
+function useTextEditorFieldBinding(options: {
+  readonly id: string;
+  readonly defaultValue: string;
+  readonly value?: string;
+  readonly onValueChange?: (value: string) => void | Promise<void>;
+  readonly adaptedField?: AdaptedTanStackField<string>;
+  readonly validators?: FieldValidators<string>;
+  readonly disabled: boolean;
+  readonly readOnly: boolean;
+  readonly masked: boolean;
+  readonly registerWithForm: boolean;
+}): {
+  readonly field: TerminalFieldBinding<string>;
+  readonly reportAsync: ReturnType<typeof useRuntimeAsync>;
+} {
+  const reportAsync = useRuntimeAsync();
+  const handleValueChange = useCallback(
+    async (next: string) => {
+      options.adaptedField?.setValue(next);
+      await options.onValueChange?.(next);
+    },
+    [options.adaptedField, options.onValueChange],
+  );
+  const fieldOptions = useMemo(
+    () => ({
+      name: options.id,
+      initialValue: options.defaultValue,
+      value: controlledEditorValue(options.adaptedField, options.value),
+      onValueChange: handleValueChange,
+      validators: options.validators,
+      disabled: options.disabled,
+      readOnly: options.readOnly,
+      secret: options.masked,
+    }),
+    [
+      handleValueChange,
+      options.adaptedField,
+      options.defaultValue,
+      options.disabled,
+      options.id,
+      options.masked,
+      options.readOnly,
+      options.validators,
+      options.value,
+    ],
+  );
+  const field = useTerminalField(fieldOptions);
+  useRegisterTerminalField(
+    field,
+    options.registerWithForm,
+    options.adaptedField,
+  );
+  return { field, reportAsync };
+}
+
+function useTextEditorInteraction(options: {
+  readonly id: string;
+  readonly label: string;
+  readonly disabled: boolean;
+  readonly readOnly: boolean;
+  readonly autoFocus?: boolean;
+  readonly focusOrder?: number;
+  readonly multiline: boolean;
+  readonly maxLength?: number;
+  readonly onArrowUp?: () => void | Promise<void>;
+  readonly onArrowDown?: () => void | Promise<void>;
+  readonly onSubmit?: (value: string) => void | Promise<void>;
+  readonly onBlur?: () => void | Promise<void>;
+  readonly adaptedField?: AdaptedTanStackField<string>;
+  readonly field: TerminalFieldBinding<string>;
+  readonly editor: EditorSession;
+  readonly value: () => string;
+}): boolean {
+  const focusable = useMemo(
+    () => ({
+      id: options.id,
+      disabled: options.disabled,
+      hidden: false,
+      order: options.focusOrder,
+      role: "textbox",
+      label: options.label,
+    }),
+    [options.disabled, options.focusOrder, options.id, options.label],
+  );
+  const { focused, focus } = useFocusable(focusable);
+  usePointerEvent(options.id, "click", focus, {
+    enabled: !options.disabled,
+  });
+  useEffect(() => {
+    if (options.autoFocus) focus();
+  }, [focus, options.autoFocus]);
+  useFieldBlur(focused, options.field, options.adaptedField, options.onBlur);
+  useTerminalInput(
+    (input, key) =>
+      handleTextInput(input, key, {
+        session: options.editor,
+        value: options.value,
+        disabled: options.disabled,
+        readOnly: options.readOnly,
+        multiline: options.multiline,
+        maxLength: options.maxLength,
+        onArrowUp: options.onArrowUp,
+        onArrowDown: options.onArrowDown,
+        onSubmit: options.onSubmit,
+        validate: async () => (await options.field.validate("submit")).valid,
+      }),
+    { enabled: focused, priority: 2_000 },
+  );
+  return focused;
+}
+
+function TextEditorControl({
+  options,
+}: {
+  readonly options: TextEditorProps;
+}): ReactNode {
+  const {
+    session: providedSession,
+    editorProvider,
+    clipboard,
+    documentType = "text/plain",
+    value,
+    defaultValue = "",
+    onValueChange,
+    onSubmit,
+    onBlur,
+    field: adaptedField,
+    validators,
+    placeholder,
+    multiline = false,
+    mask,
+    autoFocus,
+    focusOrder,
+    maxLength,
+    onArrowUp,
+    onArrowDown,
+    registerWithForm = true,
+    disabled = false,
+    readOnly = false,
+    ...props
+  } = options;
   const app = useApp();
   const generated = useId();
-  const id = props.id ?? generated;
-  const label = props.label ?? id;
-  const reportAsync = useRuntimeAsync();
-  const terminalField = useTerminalField({
-    name: id,
-    initialValue: defaultValue,
-    value: adaptedField?.value ?? value,
-    onValueChange: async (next) => {
-      adaptedField?.setValue(next);
-      await onValueChange?.(next);
-    },
+  const { id, label } = editorIdentity(props, generated);
+  const { field: terminalField, reportAsync } = useTextEditorFieldBinding({
+    id,
+    defaultValue,
+    value,
+    onValueChange,
+    adaptedField,
     validators,
     disabled,
     readOnly,
-    secret: Boolean(mask),
+    masked: Boolean(mask),
+    registerWithForm,
   });
-  useRegisterTerminalField(terminalField, registerWithForm, adaptedField);
-  const [cursor, setCursor] = useState(
-    () => characters(terminalField.value).length,
+  const createEditorSession = useCallback(
+    (sessionOptions: EditorProviderOptions) =>
+      app.createEditorSession(sessionOptions),
+    [app],
   );
-  const focusable = useMemo(
-    () => ({
-      id,
-      disabled,
-      hidden: false,
-      order: focusOrder,
-      role: "textbox",
-      label,
-    }),
-    [disabled, focusOrder, id, label],
-  );
-  const { focused, focus } = useFocusable(focusable);
-  const wasFocused = useRef(false);
-  useEffect(() => {
-    if (autoFocus) focus();
-  }, [autoFocus, focus]);
-  useEffect(() => {
-    setCursor((position) =>
-      Math.min(position, characters(terminalField.value).length),
-    );
-  }, [terminalField.value]);
-  useEffect(() => {
-    if (wasFocused.current && !focused) {
-      reportAsync(
-        terminalField
-          .blur()
-          .then(() => adaptedField?.blur())
-          .then(() => onBlur?.()),
-        "field-blur",
-      );
-    }
-    wasFocused.current = focused;
-  }, [adaptedField, focused, onBlur, reportAsync, terminalField]);
-  const semantic = useMemo(
-    () => ({
-      key: id,
-      id,
-      testId: props.testId,
-      role: "textbox" as const,
-      label,
-      description: props.description,
-      disabled,
-      readOnly,
-      valueText: mask ? "[REDACTED]" : terminalField.value,
-    }),
-    [
-      disabled,
-      terminalField.value,
-      id,
-      label,
-      mask,
-      props.description,
-      props.testId,
-      readOnly,
-    ],
-  );
-  useSemanticNode(semantic);
-  useTerminalInput(
-    async (input, key) => {
-      if (key.upArrow && onArrowUp) {
-        await onArrowUp();
-        return true;
-      }
-      if (key.downArrow && onArrowDown) {
-        await onArrowDown();
-        return true;
-      }
-      const current = characters(terminalField.value);
-      if (key.leftArrow) {
-        setCursor((position) => Math.max(0, position - 1));
-        return true;
-      }
-      if (key.rightArrow) {
-        setCursor((position) => Math.min(current.length, position + 1));
-        return true;
-      }
-      if (key.backspace || key.delete) {
-        if (readOnly || disabled) return true;
-        if (cursor === 0) return true;
-        current.splice(cursor - 1, 1);
-        setCursor(cursor - 1);
-        await terminalField.setValue(current.join(""));
-        return true;
-      }
-      if (key.return) {
-        if (multiline && !key.ctrl && !key.meta) {
-          if (readOnly || disabled) return true;
-          current.splice(cursor, 0, "\n");
-          setCursor(cursor + 1);
-          await terminalField.setValue(current.join(""));
-        } else {
-          const state = await terminalField.validate("submit");
-          if (state.valid) await onSubmit?.(terminalField.value);
-        }
-        return true;
-      }
-      if (
-        !input ||
-        key.ctrl ||
-        key.meta ||
-        key.escape ||
-        key.tab ||
-        readOnly ||
-        disabled
-      ) {
-        return false;
-      }
-      const inserted = characters(input);
-      if (
-        maxLength !== undefined &&
-        current.length + inserted.length > maxLength
-      ) {
-        return true;
-      }
-      current.splice(cursor, 0, ...inserted);
-      setCursor(cursor + inserted.length);
-      await terminalField.setValue(current.join(""));
-      return true;
-    },
-    { enabled: focused, priority: 2_000 },
-  );
-  const rawDisplay =
-    terminalField.value.length === 0 && !focused
-      ? (placeholder ?? "")
-      : mask
-        ? mask.repeat(characters(terminalField.value).length)
-        : terminalField.value;
-  const display =
-    app.mode === "interactive" && focused
-      ? `${characters(rawDisplay).slice(0, cursor).join("")}${app.capabilities.unicode ? "▌" : "|"}${characters(rawDisplay).slice(cursor).join("")}`
-      : rawDisplay;
+  const session = useEditorSessionBinding({
+    providedSession,
+    provider: editorProvider,
+    clipboard,
+    id,
+    documentType,
+    field: terminalField,
+    readOnly,
+    masked: Boolean(mask),
+    reportAsync,
+    createSession: createEditorSession,
+  });
+  const { editor, snapshot: editorSnapshot } = session;
+  const focused = useTextEditorInteraction({
+    id,
+    label,
+    disabled,
+    readOnly,
+    autoFocus,
+    focusOrder,
+    multiline,
+    maxLength,
+    onArrowUp,
+    onArrowDown,
+    onSubmit,
+    onBlur,
+    adaptedField,
+    field: terminalField,
+    editor,
+    value: session.value,
+  });
+  const cursorOffset = editorCursorOffset(editor, editorSnapshot);
+  const display = textEditorDisplay(editorSnapshot.document.text, {
+    placeholder,
+    mask,
+    focused,
+    interactive: app.mode === "interactive",
+    unicode: app.capabilities.unicode,
+    cursor: cursorOffset,
+  });
   return (
-    <Text
-      color={
-        terminalField.errors.length > 0 ||
-        (adaptedField?.errors.length ?? 0) > 0
-          ? app.theme.colors.danger.foreground
-          : focused
-            ? app.theme.colors.primary.foreground
-            : undefined
-      }
-      dimColor={disabled || (terminalField.value.length === 0 && !focused)}
-    >
-      {display}
-    </Text>
+    <TextEditorSemanticView
+      model={{
+        id,
+        testId: props.testId,
+        label,
+        description: props.description,
+        disabled,
+        readOnly,
+        masked: Boolean(mask),
+        value: terminalField.value,
+        display,
+        focused,
+        hasErrors: editorHasErrors(terminalField, adaptedField),
+        isPlaceholder: terminalField.value.length === 0 && !focused,
+        primaryColor: app.theme.colors.primary.foreground,
+        dangerColor: app.theme.colors.danger.foreground,
+      }}
+    />
   );
+}
+
+function TextEditor(props: TextEditorProps): ReactNode {
+  return <TextEditorControl options={props} />;
 }
 
 export type TextInputProps = Omit<TextEditorProps, "multiline">;
@@ -552,6 +1028,100 @@ export type TextAreaProps = Omit<TextEditorProps, "multiline" | "mask">;
 
 export function TextArea(props: TextAreaProps): ReactNode {
   return <TextEditor {...props} multiline />;
+}
+
+export type PasswordInputProps = Omit<TextInputProps, "mask"> & {
+  readonly mask?: string;
+};
+
+export function PasswordInput({
+  mask = "•",
+  ...props
+}: PasswordInputProps): ReactNode {
+  if (props.session) {
+    throw new TypeError(
+      "PasswordInput does not accept a provided editor session; use editorProvider so the control can install its secret-safe change sink",
+    );
+  }
+  return <TextInput {...props} mask={mask} />;
+}
+
+export type SearchInputProps = TextInputProps;
+
+export function SearchInput(props: SearchInputProps): ReactNode {
+  return (
+    <TextInput
+      placeholder="Search…"
+      {...props}
+      label={props.label ?? "Search"}
+    />
+  );
+}
+
+export type CommandLineProps = TextInputProps;
+
+export function CommandLine(props: CommandLineProps): ReactNode {
+  return (
+    <TextInput
+      placeholder=":"
+      {...props}
+      label={props.label ?? "Command line"}
+    />
+  );
+}
+
+export type CodeEditorProps = TextAreaProps;
+
+export function CodeEditor(props: CodeEditorProps): ReactNode {
+  return (
+    <TextArea
+      {...props}
+      label={props.label ?? "Code editor"}
+      description={
+        props.description ??
+        "Multiline editor backed by the tuil editor contract"
+      }
+    />
+  );
+}
+
+export type InlineEditorProps = TextInputProps;
+export const InlineEditor = TextInput;
+
+export type EditableTableCellProps = TextInputProps;
+export const EditableTableCell = TextInput;
+
+export type EditableTreeNodeProps = TextInputProps;
+export const EditableTreeNode = TextInput;
+
+export type FormFieldEditorProps = TextAreaProps;
+export const FormFieldEditor = TextArea;
+
+export interface DateTimeInputProps
+  extends Omit<TextInputProps, "onValueChange"> {
+  readonly onValueChange?: (
+    value: string,
+    date: Date | undefined,
+  ) => void | Promise<void>;
+}
+
+export function DateTimeInput({
+  onValueChange,
+  ...props
+}: DateTimeInputProps): ReactNode {
+  return (
+    <TextInput
+      placeholder="2026-07-27T12:00"
+      {...props}
+      onValueChange={(value) => {
+        const parsed = new Date(value);
+        return onValueChange?.(
+          value,
+          Number.isNaN(parsed.valueOf()) ? undefined : parsed,
+        );
+      }}
+    />
+  );
 }
 
 export interface NumberInputProps
@@ -587,28 +1157,47 @@ export function NumberInput({
 }: NumberInputProps): ReactNode {
   const generated = useId();
   const id = props.id ?? generated;
-  const field = useTerminalField({
-    name: id,
-    initialValue: defaultValue,
-    value: adaptedField?.value ?? value,
-    onValueChange: async (next) => {
+  const handleNumberValueChange = useCallback(
+    async (next: number) => {
       adaptedField?.setValue(next);
       await onValueChange?.(next);
     },
-    validators,
-    disabled: props.disabled,
-    readOnly: props.readOnly,
-  });
+    [adaptedField, onValueChange],
+  );
+  const fieldOptions = useMemo(
+    () => ({
+      name: id,
+      initialValue: defaultValue,
+      value: adaptedField?.value ?? value,
+      onValueChange: handleNumberValueChange,
+      validators,
+      disabled: props.disabled,
+      readOnly: props.readOnly,
+    }),
+    [
+      adaptedField,
+      defaultValue,
+      handleNumberValueChange,
+      id,
+      props.disabled,
+      props.readOnly,
+      validators,
+      value,
+    ],
+  );
+  const field = useTerminalField(fieldOptions);
   useRegisterTerminalField(field, true, adaptedField);
   const current = field.value;
-  const [draft, setDraft] = useState(String(current));
-  useEffect(() => {
-    setDraft(String(current));
-  }, [current]);
+  const [draftState, setDraftState] = useState(() => ({
+    source: current,
+    value: String(current),
+  }));
+  const draft =
+    draftState.source === current ? draftState.value : String(current);
   const commit = async (candidate: number) => {
     if (!Number.isFinite(candidate)) return;
     const next = Math.min(max, Math.max(min, candidate));
-    setDraft(String(next));
+    setDraftState({ source: next, value: String(next) });
     await field.setValue(next);
   };
   return (
@@ -623,7 +1212,7 @@ export function NumberInput({
         await props.onBlur?.();
       }}
       onValueChange={async (next) => {
-        setDraft(next);
+        setDraftState({ source: current, value: next });
         if (next.trim() === "") return;
         const parsed = Number(next);
         if (Number.isFinite(parsed)) await commit(parsed);
@@ -664,18 +1253,35 @@ function ToggleControl({
   const app = useApp();
   const generated = useId();
   const id = props.id ?? generated;
-  const field = useTerminalField({
-    name: id,
-    initialValue: defaultChecked,
-    value: adaptedField?.value ?? checked,
-    onValueChange: async (next) => {
+  const handleCheckedChange = useCallback(
+    async (next: boolean) => {
       adaptedField?.setValue(next);
       await onCheckedChange?.(next);
     },
-    validators,
-    disabled,
-    readOnly,
-  });
+    [adaptedField, onCheckedChange],
+  );
+  const fieldOptions = useMemo(
+    () => ({
+      name: id,
+      initialValue: defaultChecked,
+      value: adaptedField?.value ?? checked,
+      onValueChange: handleCheckedChange,
+      validators,
+      disabled,
+      readOnly,
+    }),
+    [
+      adaptedField,
+      checked,
+      defaultChecked,
+      disabled,
+      handleCheckedChange,
+      id,
+      readOnly,
+      validators,
+    ],
+  );
+  const field = useTerminalField(fieldOptions);
   useRegisterTerminalField(field, true, adaptedField);
   const selected = field.value;
   const label = props.label ?? String(children ?? id);
@@ -710,35 +1316,18 @@ function ToggleControl({
     },
     { enabled: focused, priority: 2_000 },
   );
-  useSemanticNode(
-    useMemo(
-      () => ({
-        key: id,
-        id,
-        testId: props.testId,
-        role,
-        label,
-        description: props.description,
-        disabled,
-        readOnly,
-        checked: selected,
-      }),
-      [
-        disabled,
-        id,
-        label,
-        props.description,
-        props.testId,
-        readOnly,
-        role,
-        selected,
-      ],
-    ),
-  );
   const on = app.capabilities.unicode ? "●" : "x";
   const off = app.capabilities.unicode ? "○" : " ";
   return (
-    <Text
+    <SemanticText
+      id={id}
+      testId={props.testId}
+      role={role}
+      label={label}
+      description={props.description}
+      disabled={disabled}
+      readOnly={readOnly}
+      checked={selected}
       bold={focused}
       dimColor={disabled}
       color={selected ? app.theme.colors.primary.foreground : undefined}
@@ -747,7 +1336,7 @@ function ToggleControl({
         ? `[${selected ? "ON" : "OFF"}]`
         : `[${selected ? on : off}]`}{" "}
       {children}
-    </Text>
+    </SemanticText>
   );
 }
 
@@ -757,6 +1346,195 @@ export function Checkbox(props: ToggleProps): ReactNode {
 
 export function Switch(props: ToggleProps): ReactNode {
   return <ToggleControl {...props} role="switch" />;
+}
+
+export interface SliderProps extends CommonComponentProps {
+  readonly value?: number;
+  readonly defaultValue?: number;
+  readonly min?: number;
+  readonly max?: number;
+  readonly step?: number;
+  readonly width?: number;
+  readonly autoFocus?: boolean;
+  readonly onValueChange?: (value: number) => void | Promise<void>;
+}
+
+function useSliderValue(options: {
+  readonly value?: number;
+  readonly defaultValue: number;
+  readonly min: number;
+  readonly max: number;
+  readonly step: number;
+  readonly disabled: boolean;
+  readonly readOnly: boolean;
+  readonly onValueChange?: (value: number) => void | Promise<void>;
+}): {
+  readonly current: number;
+  readonly setValue: (next: number) => Promise<void>;
+} {
+  const [internal, setInternal] = useState(options.defaultValue);
+  const current = options.value ?? internal;
+  const setValue = useCallback(
+    async (next: number) => {
+      if (options.disabled || options.readOnly) return;
+      const steps = Math.round((next - options.min) / options.step);
+      const resolved = Math.min(
+        options.max,
+        Math.max(options.min, steps * options.step + options.min),
+      );
+      if (options.value === undefined) setInternal(resolved);
+      await options.onValueChange?.(resolved);
+    },
+    [options],
+  );
+  return { current, setValue };
+}
+
+function sliderKeyValue(
+  current: number,
+  key: {
+    readonly leftArrow?: boolean;
+    readonly rightArrow?: boolean;
+    readonly upArrow?: boolean;
+    readonly downArrow?: boolean;
+    readonly home?: boolean;
+    readonly end?: boolean;
+  },
+  min: number,
+  max: number,
+  step: number,
+): number | undefined {
+  if (key.leftArrow || key.downArrow) return current - step;
+  if (key.rightArrow || key.upArrow) return current + step;
+  if (key.home) return min;
+  if (key.end) return max;
+  return undefined;
+}
+
+function useSliderInteraction(options: {
+  readonly id: string;
+  readonly current: number;
+  readonly min: number;
+  readonly max: number;
+  readonly step: number;
+  readonly disabled: boolean;
+  readonly readOnly: boolean;
+  readonly autoFocus: boolean;
+  readonly label: string;
+  readonly description?: string;
+  readonly testId?: string;
+  readonly setValue: (next: number) => Promise<void>;
+}): boolean {
+  const app = useApp();
+  const { focused, focus } = useFocusable(
+    useMemo(
+      () => ({
+        id: options.id,
+        disabled: options.disabled,
+        hidden: false,
+        role: "slider",
+        label: options.label,
+      }),
+      [options.disabled, options.id, options.label],
+    ),
+  );
+  useEffect(() => {
+    if (options.autoFocus) focus();
+  }, [focus, options.autoFocus]);
+  const setFromPointer = useCallback(
+    async (event: { readonly x: number }) => {
+      focus();
+      const bounds = app.layout.get(options.id)?.bounds;
+      if (!bounds) {
+        await options.setValue(options.current + options.step);
+        return;
+      }
+      const ratio = Math.min(
+        1,
+        Math.max(0, (event.x - bounds.x) / Math.max(1, bounds.width - 1)),
+      );
+      await options.setValue(options.min + ratio * (options.max - options.min));
+    },
+    [app.layout, focus, options],
+  );
+  usePointerEvent(options.id, "click", setFromPointer, {
+    enabled: !options.disabled,
+  });
+  usePointerEvent(options.id, "drag", setFromPointer, {
+    enabled: !options.disabled,
+  });
+  useTerminalInput(
+    async (_input, key) => {
+      const next = sliderKeyValue(
+        options.current,
+        key,
+        options.min,
+        options.max,
+        options.step,
+      );
+      if (next === undefined) return false;
+      await options.setValue(next);
+      return true;
+    },
+    { enabled: focused, priority: 2_000 },
+  );
+  return focused;
+}
+
+export function Slider(props: SliderProps): ReactNode {
+  const generated = useId();
+  const id = props.id ?? generated;
+  const min = props.min ?? 0;
+  const max = props.max ?? 100;
+  const step = props.step ?? 1;
+  const disabled = props.disabled ?? false;
+  const readOnly = props.readOnly ?? false;
+  const { current, setValue } = useSliderValue({
+    value: props.value,
+    defaultValue: props.defaultValue ?? 0,
+    min,
+    max,
+    step,
+    disabled,
+    readOnly,
+    onValueChange: props.onValueChange,
+  });
+  const focused = useSliderInteraction({
+    id,
+    current,
+    min,
+    max,
+    step,
+    disabled,
+    readOnly,
+    autoFocus: props.autoFocus ?? false,
+    label: props.label ?? id,
+    description: props.description,
+    testId: props.testId,
+    setValue,
+  });
+  const width = props.width ?? 20;
+  const cells = Math.max(1, Math.floor(width));
+  const ratio = max <= min ? 0 : (current - min) / (max - min);
+  const thumb = Math.min(
+    cells - 1,
+    Math.max(0, Math.round(ratio * (cells - 1))),
+  );
+  return (
+    <SemanticText
+      bold={focused}
+      id={id}
+      testId={props.testId}
+      role="slider"
+      label={props.label ?? id}
+      description={props.description}
+      disabled={disabled}
+      readOnly={readOnly}
+      valueText={String(current)}
+    >
+      {"─".repeat(thumb)}●{"─".repeat(cells - thumb - 1)} {current}
+    </SemanticText>
+  );
 }
 
 export interface SelectOption<T extends string = string> {
@@ -786,23 +1564,79 @@ function SemanticOption(props: {
   readonly selected: boolean;
   readonly disabled?: boolean;
   readonly role?: "option" | "radio";
+  readonly onPointerSelect?: () => void | Promise<void>;
 }): null {
-  useSemanticNode(
+  const selectFromPointer = useCallback(() => {
+    if (!props.disabled) void props.onPointerSelect?.();
+  }, [props.disabled, props.onPointerSelect]);
+  usePointerEvent(props.id, "click", selectFromPointer, {
+    enabled: !props.disabled && Boolean(props.onPointerSelect),
+  });
+  return null;
+}
+
+function useActiveSelection(initial: number): {
+  readonly active: number;
+  readonly activeRef: RefObject<number>;
+  readonly setActiveIndex: (index: number) => void;
+} {
+  const [active, setActive] = useState(initial);
+  const activeRef = useRef(initial);
+  const setActiveIndex = useCallback((index: number) => {
+    activeRef.current = index;
+    setActive(index);
+  }, []);
+  return { active, activeRef, setActiveIndex };
+}
+
+function useSingleSelectionField<T extends string>(options: {
+  readonly id: string | undefined;
+  readonly defaultValue: T | undefined;
+  readonly value: T | undefined;
+  readonly adaptedField: AdaptedTanStackField<T | undefined> | undefined;
+  readonly validators: FieldValidators<T | undefined> | undefined;
+  readonly disabled: boolean;
+  readonly readOnly: boolean;
+  readonly onValueChange: ((value: T) => void | Promise<void>) | undefined;
+}): {
+  readonly id: string;
+  readonly field: TerminalFieldBinding<T | undefined>;
+} {
+  const generated = useId();
+  const id = options.id ?? generated;
+  const handleValueChange = useCallback(
+    async (next: T | undefined) => {
+      if (next === undefined) return;
+      options.adaptedField?.setValue(next);
+      await options.onValueChange?.(next);
+    },
+    [options.adaptedField, options.onValueChange],
+  );
+  const field = useTerminalField<T | undefined>(
     useMemo(
       () => ({
-        key: props.id,
-        id: props.id,
-        role: props.role ?? ("option" as const),
-        label: props.label,
-        description: props.description,
-        selected: props.selected,
-        checked: props.role === "radio" ? props.selected : undefined,
-        disabled: props.disabled,
+        name: id,
+        initialValue: options.defaultValue,
+        value: options.adaptedField?.value ?? options.value,
+        onValueChange: handleValueChange,
+        validators: options.validators,
+        disabled: options.disabled,
+        readOnly: options.readOnly,
       }),
-      [props],
+      [
+        handleValueChange,
+        options.adaptedField,
+        options.defaultValue,
+        options.disabled,
+        id,
+        options.readOnly,
+        options.validators,
+        options.value,
+      ],
     ),
   );
-  return null;
+  useRegisterTerminalField(field, true, options.adaptedField);
+  return { id, field };
 }
 
 export function RadioGroup<T extends string>({
@@ -820,34 +1654,22 @@ export function RadioGroup<T extends string>({
   ...props
 }: RadioGroupProps<T>): ReactNode {
   const app = useApp();
-  const generated = useId();
-  const id = props.id ?? generated;
-  const field = useTerminalField<T | undefined>({
-    name: id,
-    initialValue: defaultValue,
-    value: adaptedField?.value ?? value,
-    onValueChange: async (next) => {
-      if (next !== undefined) {
-        adaptedField?.setValue(next);
-        await onValueChange?.(next);
-      }
-    },
+  const { id, field } = useSingleSelectionField({
+    id: props.id,
+    defaultValue,
+    value,
+    adaptedField,
     validators,
     disabled,
     readOnly,
+    onValueChange,
   });
-  useRegisterTerminalField(field, true, adaptedField);
   const selected = field.value;
   const initial = Math.max(
     0,
     options.findIndex((option) => option.value === selected),
   );
-  const [active, setActive] = useState(initial);
-  const activeRef = useRef(initial);
-  const setActiveIndex = (index: number) => {
-    activeRef.current = index;
-    setActive(index);
-  };
+  const { active, activeRef, setActiveIndex } = useActiveSelection(initial);
   const { focused, focus } = useFocusable(
     useMemo(
       () => ({
@@ -869,9 +1691,8 @@ export function RadioGroup<T extends string>({
       0,
       options.findIndex((option) => option.value === selected),
     );
-    activeRef.current = index;
-    setActive(index);
-  }, [options, selected]);
+    setActiveIndex(index);
+  }, [options, selected, setActiveIndex]);
   const move = (delta: number) => {
     if (options.length === 0) return;
     let next = activeRef.current;
@@ -909,8 +1730,15 @@ export function RadioGroup<T extends string>({
   return (
     <Box flexDirection={orientation === "horizontal" ? "row" : "column"}>
       {options.map((option, index) => (
-        <Text
+        <SemanticText
           key={option.value}
+          id={`${id}:${option.value}`}
+          role="radio"
+          label={option.label}
+          description={option.description}
+          selected={option.value === selected}
+          checked={option.value === selected}
+          disabled={option.disabled}
           bold={focused && index === active}
           dimColor={option.disabled}
           color={
@@ -926,6 +1754,11 @@ export function RadioGroup<T extends string>({
             selected={option.value === selected}
             disabled={option.disabled}
             role="radio"
+            onPointerSelect={async () => {
+              focus();
+              setActiveIndex(index);
+              if (!disabled && !readOnly) await field.setValue(option.value);
+            }}
           />
           {option.value === selected
             ? app.capabilities.unicode
@@ -936,7 +1769,7 @@ export function RadioGroup<T extends string>({
               : "( )"}{" "}
           {option.label}
           {orientation === "horizontal" ? "  " : ""}
-        </Text>
+        </SemanticText>
       ))}
     </Box>
   );
@@ -1006,29 +1839,24 @@ export function Select<T extends string>({
 }: SelectProps<T>): ReactNode {
   const app = useApp();
   const theme = useTheme();
-  const generated = useId();
-  const id = props.id ?? generated;
-  const field = useTerminalField<T | undefined>({
-    name: id,
-    initialValue: defaultValue,
-    value: adaptedField?.value ?? value,
-    onValueChange: async (next) => {
-      if (next !== undefined) {
-        adaptedField?.setValue(next);
-        await onValueChange?.(next);
-      }
-    },
+  const { id, field } = useSingleSelectionField({
+    id: props.id,
+    defaultValue,
+    value,
+    adaptedField,
     validators,
     disabled,
     readOnly,
+    onValueChange,
   });
-  useRegisterTerminalField(field, true, adaptedField);
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const [query, setQuery] = useState("");
   const selected = field.value;
   const expanded = open ?? internalOpen;
   const expandedRef = useRef(expanded);
-  expandedRef.current = expanded;
+  useEffect(() => {
+    expandedRef.current = expanded;
+  }, [expanded]);
   const visible = useMemo(
     () => filteredOptions(options, searchable ? query : ""),
     [options, query, searchable],
@@ -1037,36 +1865,24 @@ export function Select<T extends string>({
     0,
     visible.findIndex((option) => option.value === selected),
   );
-  const [active, setActive] = useState(selectedIndex);
-  const activeRef = useRef(selectedIndex);
-  const setActiveIndex = (index: number) => {
-    activeRef.current = index;
-    setActive(index);
-  };
-  const { focused, focus } = useFocusable(
-    useMemo(
-      () => ({
-        id,
-        disabled,
-        hidden: false,
-        role: "listbox",
-        label: props.label ?? id,
-      }),
-      [disabled, id, props.label],
-    ),
-  );
-  useFieldBlur(focused, field, adaptedField, onBlur);
-  useEffect(() => {
-    if (autoFocus) focus();
-  }, [autoFocus, focus]);
+  const { active, activeRef, setActiveIndex } =
+    useActiveSelection(selectedIndex);
+  const { focused, focus } = useListboxFieldFocus({
+    id,
+    label: props.label ?? id,
+    disabled,
+    autoFocus,
+    field,
+    adaptedField,
+    onBlur,
+  });
   useEffect(() => {
     const index = Math.max(
       0,
       visible.findIndex((option) => option.value === selected),
     );
-    activeRef.current = index;
-    setActive(index);
-  }, [selected, visible]);
+    setActiveIndex(index);
+  }, [selected, setActiveIndex, visible]);
   const setOpen = async (next: boolean) => {
     expandedRef.current = next;
     if (open === undefined) setInternalOpen(next);
@@ -1132,32 +1948,6 @@ export function Select<T extends string>({
     },
     { enabled: focused, priority: 2_000 },
   );
-  useSemanticNode(
-    useMemo(
-      () => ({
-        key: id,
-        id,
-        testId: props.testId,
-        role: "listbox" as const,
-        label: props.label ?? id,
-        description: props.description,
-        disabled,
-        readOnly,
-        expanded,
-        valueText: selected,
-      }),
-      [
-        disabled,
-        expanded,
-        id,
-        props.description,
-        props.label,
-        props.testId,
-        readOnly,
-        selected,
-      ],
-    ),
-  );
   const Root = slots?.root ?? Box;
   const Indicator = slots?.indicator ?? Text;
   const List = slots?.list ?? Box;
@@ -1170,21 +1960,33 @@ export function Select<T extends string>({
       flexDirection="column"
       {...resolveSlotProps(slotProps?.root, state, theme)}
     >
-      <Indicator
-        bold={focused}
-        color={focused ? theme.colors.primary.foreground : undefined}
-        {...resolveSlotProps(slotProps?.indicator, state, theme)}
+      <SemanticText
+        id={id}
+        testId={props.testId}
+        role="listbox"
+        label={props.label ?? id}
+        description={props.description}
+        disabled={disabled}
+        readOnly={readOnly}
+        expanded={expanded}
+        valueText={selected}
       >
-        {expanded
-          ? app.capabilities.unicode
-            ? "▼"
-            : "v"
-          : app.capabilities.unicode
-            ? "▶"
-            : ">"}{" "}
-        {selectedOption?.label ?? placeholder}
-        {searchable && expanded && query ? ` /${query}` : ""}
-      </Indicator>
+        <Indicator
+          bold={focused}
+          color={focused ? theme.colors.primary.foreground : undefined}
+          {...resolveSlotProps(slotProps?.indicator, state, theme)}
+        >
+          {expanded
+            ? app.capabilities.unicode
+              ? "▼"
+              : "v"
+            : app.capabilities.unicode
+              ? "▶"
+              : ">"}{" "}
+          {selectedOption?.label ?? placeholder}
+          {searchable && expanded && query ? ` /${query}` : ""}
+        </Indicator>
+      </SemanticText>
       {expanded ? (
         <List
           flexDirection="column"
@@ -1205,27 +2007,44 @@ export function Select<T extends string>({
                 disabled: option.disabled ?? false,
               };
               return (
-                <Option
+                <SemanticText
                   key={option.value}
-                  bold={optionState.active}
-                  dimColor={option.disabled}
-                  color={
-                    optionState.selected
-                      ? theme.colors.primary.foreground
-                      : undefined
-                  }
-                  {...resolveSlotProps(slotProps?.option, optionState, theme)}
+                  id={`${id}:${option.value}`}
+                  role="option"
+                  label={option.label}
+                  description={option.description}
+                  selected={optionState.selected}
+                  disabled={option.disabled}
                 >
-                  <SemanticOption
-                    id={`${id}:${option.value}`}
-                    label={option.label}
-                    description={option.description}
-                    selected={optionState.selected}
-                    disabled={option.disabled}
-                  />
-                  {optionState.active ? ">" : " "}{" "}
-                  {optionState.selected ? "*" : " "} {option.label}
-                </Option>
+                  <Option
+                    bold={optionState.active}
+                    dimColor={option.disabled}
+                    color={
+                      optionState.selected
+                        ? theme.colors.primary.foreground
+                        : undefined
+                    }
+                    {...resolveSlotProps(slotProps?.option, optionState, theme)}
+                  >
+                    <SemanticOption
+                      id={`${id}:${option.value}`}
+                      label={option.label}
+                      description={option.description}
+                      selected={optionState.selected}
+                      disabled={option.disabled}
+                      onPointerSelect={async () => {
+                        focus();
+                        setActiveIndex(index);
+                        if (!option.disabled && !disabled && !readOnly) {
+                          await field.setValue(option.value);
+                          await setOpen(false);
+                        }
+                      }}
+                    />
+                    {optionState.active ? ">" : " "}{" "}
+                    {optionState.selected ? "*" : " "} {option.label}
+                  </Option>
+                </SemanticText>
               );
             })
           )}
@@ -1268,46 +2087,52 @@ export function MultiSelect<T extends string>({
     () => defaultValue ?? Object.freeze([]),
     [defaultValue],
   );
-  const field = useTerminalField<readonly T[]>({
-    name: id,
-    initialValue,
-    value: adaptedField?.value ?? value,
-    onValueChange: async (next) => {
+  const handleMultiSelectValueChange = useCallback(
+    async (next: readonly T[]) => {
       adaptedField?.setValue(next);
       await onValueChange?.(next);
     },
-    validators,
-    disabled,
-    readOnly,
-  });
+    [adaptedField, onValueChange],
+  );
+  const fieldOptions = useMemo(
+    () => ({
+      name: id,
+      initialValue,
+      value: adaptedField?.value ?? value,
+      onValueChange: handleMultiSelectValueChange,
+      validators,
+      disabled,
+      readOnly,
+    }),
+    [
+      adaptedField,
+      disabled,
+      handleMultiSelectValueChange,
+      id,
+      initialValue,
+      readOnly,
+      validators,
+      value,
+    ],
+  );
+  const field = useTerminalField<readonly T[]>(fieldOptions);
   useRegisterTerminalField(field, true, adaptedField);
   const selected = field.value;
   const selectedRef = useRef(selected);
-  selectedRef.current = selected;
-  const [active, setActive] = useState(0);
-  const activeRef = useRef(0);
-  const setActiveIndex = (index: number) => {
-    activeRef.current = index;
-    setActive(index);
-  };
-  const { focused, focus } = useFocusable(
-    useMemo(
-      () => ({
-        id,
-        disabled,
-        hidden: false,
-        role: "listbox",
-        label: props.label ?? id,
-      }),
-      [disabled, id, props.label],
-    ),
-  );
-  useFieldBlur(focused, field, adaptedField, onBlur);
   useEffect(() => {
-    if (autoFocus) focus();
-  }, [autoFocus, focus]);
-  const toggle = async () => {
-    const option = options[activeRef.current];
+    selectedRef.current = selected;
+  }, [selected]);
+  const { active, activeRef, setActiveIndex } = useActiveSelection(0);
+  const { focused, focus } = useListboxFieldFocus({
+    id,
+    label: props.label ?? id,
+    disabled,
+    autoFocus,
+    field,
+    adaptedField,
+    onBlur,
+  });
+  const toggleOption = async (option: SelectOption<T> | undefined) => {
     if (!option || option.disabled || disabled || readOnly) return;
     const current = selectedRef.current;
     const contains = current.includes(option.value);
@@ -1337,52 +2162,46 @@ export function MultiSelect<T extends string>({
         return true;
       }
       if (key.return || input === " ") {
-        await toggle();
+        await toggleOption(options[activeRef.current]);
         return true;
       }
       return false;
     },
     { enabled: focused && options.length > 0, priority: 2_000 },
   );
-  useSemanticNode(
-    useMemo(
-      () => ({
-        key: id,
-        id,
-        testId: props.testId,
-        role: "listbox" as const,
-        label: props.label ?? id,
-        description: props.description,
-        disabled,
-        readOnly,
-        valueText: selected.join(","),
-      }),
-      [
-        disabled,
-        id,
-        props.description,
-        props.label,
-        props.testId,
-        readOnly,
-        selected,
-      ],
-    ),
-  );
   return (
     <Box flexDirection="column">
-      <Text bold={focused}>
+      <SemanticText
+        id={id}
+        testId={props.testId}
+        role="listbox"
+        label={props.label ?? id}
+        description={props.description}
+        disabled={disabled}
+        readOnly={readOnly}
+        valueText={selected.join(",")}
+        bold={focused}
+      >
         {selected.length > 0
           ? options
-              .filter((option) => selected.includes(option.value))
-              .map((option) => option.label)
+              .flatMap((option) =>
+                selected.includes(option.value) ? [option.label] : [],
+              )
               .join(", ")
           : placeholder}
-      </Text>
+      </SemanticText>
       {options.map((option, index) => {
         const checked = selected.includes(option.value);
         return (
-          <Text
+          <SemanticText
             key={option.value}
+            id={`${id}:${option.value}`}
+            role="option"
+            label={option.label}
+            description={option.description}
+            selected={checked}
+            checked={checked}
+            disabled={option.disabled}
             bold={focused && index === active}
             dimColor={option.disabled}
             color={checked ? app.theme.colors.primary.foreground : undefined}
@@ -1393,10 +2212,15 @@ export function MultiSelect<T extends string>({
               description={option.description}
               selected={checked}
               disabled={option.disabled}
+              onPointerSelect={async () => {
+                focus();
+                setActiveIndex(index);
+                await toggleOption(option);
+              }}
             />
             {focused && index === active ? ">" : " "} [{checked ? "x" : " "}]{" "}
             {option.label}
-          </Text>
+          </SemanticText>
         );
       })}
     </Box>
@@ -1435,12 +2259,7 @@ export function Autocomplete<T extends string>({
   const [internal, setInternal] = useState(defaultValue);
   const query = field?.value ?? value ?? internal;
   const visible = filteredOptions(options, query);
-  const [active, setActive] = useState(0);
-  const activeRef = useRef(0);
-  const setActiveIndex = (index: number) => {
-    activeRef.current = index;
-    setActive(index);
-  };
+  const { active, activeRef, setActiveIndex } = useActiveSelection(0);
   useTerminalInput(
     async (_input, key) => {
       if (app.focus.focusedId !== id) return false;
@@ -1488,8 +2307,14 @@ export function Autocomplete<T extends string>({
       />
       {query
         ? visible.map((option, index) => (
-            <Text
+            <SemanticText
               key={option.value}
+              id={`${id}:${option.value}`}
+              role="option"
+              label={option.label}
+              description={option.description}
+              selected={index === active}
+              disabled={option.disabled}
               bold={index === active}
               dimColor={option.disabled}
             >
@@ -1499,9 +2324,18 @@ export function Autocomplete<T extends string>({
                 description={option.description}
                 selected={index === active}
                 disabled={option.disabled}
+                onPointerSelect={async () => {
+                  app.focus.focus(id);
+                  setActiveIndex(index);
+                  if (option.disabled || disabled || readOnly) return;
+                  if (value === undefined) setInternal(option.label);
+                  field?.setValue(option.label);
+                  await onValueChange?.(option.label);
+                  await onOptionSelect?.(option);
+                }}
               />
               {index === active ? ">" : " "} {option.label}
-            </Text>
+            </SemanticText>
           ))
         : null}
     </Box>

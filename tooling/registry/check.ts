@@ -1,9 +1,16 @@
 import { readFile, rm, writeFile } from "node:fs/promises";
 import { relative, resolve } from "node:path";
+import {
+  parseRegistryItem,
+  type RegistryItem,
+  registryIntegrity,
+} from "../../packages/registry/src/index.ts";
 
 const repositoryRoot = resolve(import.meta.dir, "../..");
 const generatedPatterns = [
   "apps/registry/public/**/*.json",
+  "apps/showcase/src/component-acceptance.stories.tsx",
+  "apps/docs/content/docs/reference/components/acceptance-catalog.mdx",
   "packages/cli/src/generated-registry.ts",
   "packages/cli/src/generated-ui/**/*.tsx",
   "registry/blocks/init-wizard.tsx",
@@ -39,6 +46,114 @@ async function snapshot(
   );
 }
 
+const indexedMetadataFields = [
+  "name",
+  "type",
+  "tier",
+  "version",
+  "integrity",
+  "ownership",
+  "packageName",
+  "compatibility",
+  "deprecated",
+  "codemods",
+  "title",
+  "description",
+  "renderer",
+  "capabilities",
+  "semantics",
+  "provenance",
+  "dependencies",
+  "registryDependencies",
+  "slots",
+] as const;
+
+function hasCompletePublishedMetadata(item: RegistryItem): boolean {
+  const required = [
+    item.version,
+    item.integrity,
+    item.compatibility?.tuil,
+    item.compatibility?.renderers?.length,
+    item.provenance?.source,
+    item.ownership,
+  ];
+  return required.every(Boolean);
+}
+
+function validatePublishedItem(item: RegistryItem): void {
+  if (!hasCompletePublishedMetadata(item)) {
+    throw new Error(`Registry item "${item.name}" has incomplete metadata`);
+  }
+  if (item.integrity !== registryIntegrity(item)) {
+    throw new Error(`Registry item "${item.name}" has stale integrity`);
+  }
+  const ownedPackage =
+    item.ownership === "package" || item.ownership === "plugin";
+  if (ownedPackage && !item.packageName) {
+    throw new Error(
+      `Registry item "${item.name}" is missing its owned package`,
+    );
+  }
+}
+
+function sameJsonValue(left: unknown, right: unknown): boolean {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function validateIndexedItem(
+  item: RegistryItem,
+  indexItem: Readonly<Record<string, unknown>> | undefined,
+): void {
+  const itemRecord = item as unknown as Readonly<Record<string, unknown>>;
+  for (const field of indexedMetadataFields) {
+    if (!sameJsonValue(indexItem?.[field], itemRecord[field])) {
+      throw new Error(
+        `Registry index metadata for "${item.name}" is missing ${field}`,
+      );
+    }
+  }
+  const fileDescriptors = item.files.map(({ path, target, source }) => ({
+    path,
+    target,
+    source,
+  }));
+  if (!sameJsonValue(indexItem?.["files"], fileDescriptors)) {
+    throw new Error(
+      `Registry index metadata for "${item.name}" is missing files`,
+    );
+  }
+}
+
+async function checkPublishedManifest(
+  path: string,
+  indexed: ReadonlyMap<string, Readonly<Record<string, unknown>>>,
+): Promise<void> {
+  const item = parseRegistryItem(
+    JSON.parse(await readFile(path, "utf8")) as unknown,
+  );
+  validatePublishedItem(item);
+  validateIndexedItem(item, indexed.get(item.name));
+}
+
+async function checkPublishedMetadata(): Promise<void> {
+  const publicDirectory = resolve(repositoryRoot, "apps/registry/public");
+  const index = JSON.parse(
+    await readFile(resolve(publicDirectory, "registry.json"), "utf8"),
+  ) as { readonly items?: readonly Record<string, unknown>[] };
+  const indexed = new Map(
+    (index.items ?? []).map((item) => [String(item["name"]), item]),
+  );
+  const manifests = new Bun.Glob("*.json");
+  for await (const path of manifests.scan({
+    cwd: publicDirectory,
+    absolute: true,
+    onlyFiles: true,
+  })) {
+    if (path.endsWith("/registry.json")) continue;
+    await checkPublishedManifest(path, indexed);
+  }
+}
+
 export async function checkRegistryArtifacts(): Promise<void> {
   const paths = await generatedFiles();
   const before = await snapshot(paths);
@@ -59,6 +174,7 @@ export async function checkRegistryArtifacts(): Promise<void> {
         `Registry generation failed during verification:\n${stdout}${stderr}`,
       );
     }
+    await checkPublishedMetadata();
     afterPaths = await generatedFiles();
     const after = await snapshot(afterPaths);
     const changed = [...new Set([...paths, ...afterPaths])].filter(

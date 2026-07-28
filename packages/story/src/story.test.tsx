@@ -16,10 +16,13 @@ import {
   createStoryHttpHandler,
   defineTuilStories,
   generateStoryCatalogSnapshots,
+  handleStoryHttpRequest,
   renderStoryRequest,
   storyFrameToMarkdown,
+  storyHttpLimits,
   TuilStoryCatalog,
   TuilStorySession,
+  validateStoryBridgeRequest,
 } from "./index.tsx";
 import {
   createStaticStoryHttpHandler,
@@ -152,6 +155,209 @@ test("serves normalized frames through the browser bridge", async () => {
   expect(
     (await handler(new Request("http://localhost/api/tuil-story"))).status,
   ).toBe(405);
+});
+
+test("HTTP story boundaries reject malformed and oversized requests", async () => {
+  const handler = createStoryHttpHandler(catalog());
+  const bodies: readonly unknown[] = [
+    [],
+    {},
+    { storyId: "greeting", variant: "Default", unknown: true },
+    {
+      storyId: "greeting",
+      variant: "Default",
+      controls: { width: storyHttpLimits.maxWidth + 1 },
+    },
+    {
+      storyId: "greeting",
+      variant: "Default",
+      controls: { platform: "browser" },
+    },
+    {
+      storyId: "greeting",
+      variant: "Default",
+      controls: { height: 0 },
+    },
+    {
+      storyId: "greeting",
+      variant: "Default",
+      controls: { unicode: "yes" },
+    },
+    {
+      storyId: "greeting",
+      variant: "Default",
+      controls: { theme: "" },
+    },
+    {
+      storyId: "greeting",
+      variant: "Default",
+      controls: { unexpected: true },
+    },
+    {
+      storyId: "greeting",
+      variant: "Default",
+      args: [],
+    },
+    {
+      storyId: "greeting",
+      variant: "Default",
+      args: { value: "x".repeat(storyHttpLimits.maxStringLength + 1) },
+    },
+    {
+      storyId: "greeting",
+      variant: "Default",
+      inputs: Array.from(
+        { length: storyHttpLimits.maxInputs + 1 },
+        () => "tab",
+      ),
+    },
+  ];
+  for (const body of bodies) {
+    const response = await handler(
+      new Request("http://localhost/api/tuil-story", {
+        method: "POST",
+        body: JSON.stringify(body),
+      }),
+    );
+    expect(response.status).toBe(400);
+  }
+  expect(
+    (
+      await handler(
+        new Request("http://localhost/api/tuil-story", {
+          method: "POST",
+          body: "{",
+        }),
+      )
+    ).status,
+  ).toBe(400);
+  expect(
+    (
+      await handler(
+        new Request("http://localhost/api/tuil-story", {
+          method: "POST",
+          body: "x".repeat(storyHttpLimits.maxBodyBytes + 1),
+        }),
+      )
+    ).status,
+  ).toBe(400);
+  expect(() =>
+    validateStoryBridgeRequest({
+      storyId: "greeting",
+      variant: "Default",
+      controls: { colorDepth: 16 },
+    }),
+  ).toThrow("colorDepth");
+  expect(() =>
+    validateStoryBridgeRequest({
+      storyId: "greeting",
+      variant: "Default",
+      args: { invalid: Number.NaN },
+    }),
+  ).toThrow("JSON data");
+  expect(() =>
+    validateStoryBridgeRequest({
+      storyId: "greeting",
+      variant: "Default",
+      args: {
+        values: Array.from(
+          { length: storyHttpLimits.maxArrayLength + 1 },
+          () => true,
+        ),
+      },
+    }),
+  ).toThrow("array");
+  expect(() =>
+    validateStoryBridgeRequest({
+      storyId: "greeting",
+      variant: "Default",
+      args: Object.fromEntries(
+        Array.from(
+          { length: storyHttpLimits.maxArgsEntries + 1 },
+          (_value, index) => [`key-${index}`, index],
+        ),
+      ),
+    }),
+  ).toThrow("entry count");
+  expect(() =>
+    validateStoryBridgeRequest({
+      storyId: "greeting",
+      variant: "Default",
+      args: { ["x".repeat(storyHttpLimits.maxIdentifierLength + 1)]: true },
+    }),
+  ).toThrow("key");
+  expect(() =>
+    createStoryHttpHandler(catalog(), {
+      timeoutMs: storyHttpLimits.maxTimeoutMs + 1,
+    }),
+  ).toThrow("timeout");
+});
+
+test("HTTP render timeout includes time waiting for the global render lock", async () => {
+  const stories = catalog();
+  const session = await TuilStorySession.open(stories, {
+    storyId: "greeting",
+    variant: "Default",
+  });
+  try {
+    const response = await createStoryHttpHandler(stories, { timeoutMs: 20 })(
+      new Request("http://localhost/api/tuil-story", {
+        method: "POST",
+        body: JSON.stringify({
+          storyId: "greeting",
+          variant: "Default",
+        }),
+      }),
+    );
+    expect(response.status).toBe(504);
+    expect(await response.json()).toEqual({
+      error: "Story rendering timed out",
+    });
+  } finally {
+    await session.close();
+  }
+  expect(
+    (
+      await createStoryHttpHandler(stories, { timeoutMs: 1_000 })(
+        new Request("http://localhost/api/tuil-story", {
+          method: "POST",
+          body: JSON.stringify({
+            storyId: "greeting",
+            variant: "Default",
+          }),
+        }),
+      )
+    ).status,
+  ).toBe(200);
+});
+
+test("shared HTTP handler enforces bounded bodies before invoking render", async () => {
+  let calls = 0;
+  const response = await handleStoryHttpRequest(
+    new Request("http://localhost/story", {
+      method: "POST",
+      body: "x".repeat(9),
+    }),
+    async () => {
+      calls += 1;
+      throw new Error("must not render");
+    },
+    { maxBodyBytes: 8 },
+  );
+  expect(response.status).toBe(400);
+  expect(calls).toBe(0);
+  const timeoutResponse = await handleStoryHttpRequest(
+    new Request("http://localhost/story", {
+      method: "POST",
+      body: JSON.stringify({
+        storyId: "greeting",
+        variant: "Default",
+      }),
+    }),
+    () => new Promise(() => {}),
+    { timeoutMs: 20 },
+  );
+  expect(timeoutResponse.status).toBe(504);
 });
 
 test("renders browser frames and reports bridge failures", async () => {

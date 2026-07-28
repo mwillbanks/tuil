@@ -1,0 +1,23 @@
+{
+  "name": "scroll-area",
+  "type": "layout",
+  "title": "Scroll Area",
+  "description": "Viewport and scrollbar region.",
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["split-pane"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink", "cell"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "integrity": "sha256-762f344d16f2cb18afe269cf29fb6207ff3df57a81d7f5cb659ca528f0814e56"
+}

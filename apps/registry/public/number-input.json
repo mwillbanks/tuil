@@ -15,5 +15,14 @@
   },
   "files": [],
   "dependencies": [],
-  "registryDependencies": ["field"]
+  "registryDependencies": ["field"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "integrity": "sha256-8c305fe28cc1e87d80c8ae762d4f4b4c5e72b719d512bc09acbcfd3d94a856c4"
 }

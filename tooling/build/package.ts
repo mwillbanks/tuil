@@ -9,6 +9,11 @@ export async function buildPackage(directory = process.cwd()): Promise<void> {
     "src/index.tsx",
     "src/static.ts",
     "src/bin.ts",
+    "src/buffer.ts",
+    "src/vim.ts",
+    "src/rich.ts",
+    "src/testing.ts",
+    "src/worker.ts",
   ]
     .map((candidate) => join(directory, candidate))
     .filter(existsSync);
@@ -152,7 +157,14 @@ export async function buildPackage(directory = process.cwd()): Promise<void> {
   await cp(join(workspaceRoot, "LICENSE"), join(directory, "dist/LICENSE"));
   await cp(join(workspaceRoot, "README.md"), join(directory, "dist/README.md"));
 
-  if (basename(directory) === "tuil") {
+  if (basename(directory) === "cell") {
+    await cp(join(directory, "native"), join(directory, "dist/native"), {
+      recursive: true,
+    });
+    await cp(join(directory, "prebuilds"), join(directory, "dist/prebuilds"), {
+      recursive: true,
+    });
+  } else if (basename(directory) === "tuil") {
     const cli = Bun.spawn(
       [
         "bun",

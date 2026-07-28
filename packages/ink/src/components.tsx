@@ -3,10 +3,12 @@ import {
   resolveTerminalViewport,
   type SemanticMetadata,
   type SemanticRole,
+  type TerminalBounds,
   type TerminalViewport,
 } from "@mwillbanks/tuil-core";
 import { useFocusable } from "@mwillbanks/tuil-focus";
 import { useHotkey, useHotkeys } from "@mwillbanks/tuil-hotkeys";
+import type { LayoutNodeInput } from "@mwillbanks/tuil-renderer";
 import {
   resolveComponentProps,
   resolveSlotProps,
@@ -15,27 +17,43 @@ import {
   useTheme,
 } from "@mwillbanks/tuil-theme";
 import {
+  type DOMElement,
   Box as InkBox,
   type BoxProps as InkBoxProps,
   Text as InkText,
   type TextProps as InkTextProps,
+  measureElement,
   useStdout,
 } from "ink";
 import {
   type PropsWithChildren,
   type ReactNode,
+  type RefObject,
+  useCallback,
   useEffect,
   useId,
+  useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
-import { resolveSemanticNode, useSemanticNode } from "./semantics.ts";
+import { usePointerEvent } from "./pointer.ts";
+import {
+  resolveSemanticNode,
+  useSemanticNode,
+  useSemanticRegistry,
+} from "./semantics.ts";
+
+const emptyHotkeys: readonly string[] = Object.freeze([]);
 
 export interface CommonComponentProps extends SemanticMetadata {
   readonly variant?: string;
   readonly size?: "sm" | "md" | "lg";
   readonly unstyled?: boolean;
   readonly className?: string;
+  readonly layout?: Partial<
+    Omit<LayoutNodeInput, "id" | "semantics" | "children">
+  >;
 }
 
 export interface TerminalSemanticNodeProps {
@@ -74,16 +92,7 @@ export function TerminalSemanticNode(props: TerminalSemanticNodeProps): null {
         props.expanded,
         props.id,
         props.label,
-        props.metadata?.checked,
-        props.metadata?.description,
-        props.metadata?.disabled,
-        props.metadata?.expanded,
-        props.metadata?.label,
-        props.metadata?.readOnly,
-        props.metadata?.role,
-        props.metadata?.selected,
-        props.metadata?.testId,
-        props.metadata?.valueText,
+        props.metadata,
         props.role,
         props.selected,
         props.valueText,
@@ -97,25 +106,136 @@ function semanticKey(id: string | undefined, generated: string): string {
   return id ?? generated;
 }
 
+function fallback<T>(value: T | undefined, defaultValue: T): T {
+  return value === undefined ? defaultValue : value;
+}
+
+function semanticRegistration(
+  node: SemanticMetadata & { readonly key: string },
+  props: CommonComponentProps,
+  measured: TerminalBounds | undefined,
+  viewport: { readonly width: number; readonly height: number },
+) {
+  const layout: Partial<NonNullable<CommonComponentProps["layout"]>> =
+    props.layout ?? {};
+  const bounds = layout.bounds ?? measured;
+  if (!bounds) return { ...node, layout: undefined };
+  const role = node.role ?? "";
+  return {
+    ...node,
+    layout: {
+      parentId: layout.parentId,
+      bounds,
+      clip: fallback(layout.clip, { x: 0, y: 0, ...viewport }),
+      zIndex: fallback(layout.zIndex, 0),
+      focusable: fallback(
+        layout.focusable,
+        ["button", "checkbox", "link", "textbox"].includes(role),
+      ),
+      pointerEvents: fallback(layout.pointerEvents, "auto" as const),
+      scrollContainerId: layout.scrollContainerId,
+    },
+  };
+}
+
 function useSemantics(
   props: CommonComponentProps,
   defaults: SemanticMetadata & { readonly text?: string },
-): string {
+): RefObject<DOMElement | null> {
+  const app = useApp();
+  const registry = useSemanticRegistry();
+  const ref = useRef<DOMElement | null>(null);
   const generated = useId();
   const key = semanticKey(props.id, generated);
-  const node = useMemo(() => {
-    const overrides = Object.fromEntries(
-      Object.entries(props).filter(([, value]) => value !== undefined),
-    );
-    return {
-      ...defaults,
-      ...overrides,
+  const semanticDefaults = useMemo(
+    () => ({
+      id: defaults.id,
+      testId: defaults.testId,
+      role: defaults.role,
+      label: defaults.label,
+      description: defaults.description,
+      disabled: defaults.disabled,
+      readOnly: defaults.readOnly,
+      selected: defaults.selected,
+      checked: defaults.checked,
+      expanded: defaults.expanded,
+      valueText: defaults.valueText,
+      text: defaults.text,
+    }),
+    [
+      defaults.checked,
+      defaults.description,
+      defaults.disabled,
+      defaults.expanded,
+      defaults.id,
+      defaults.label,
+      defaults.readOnly,
+      defaults.role,
+      defaults.selected,
+      defaults.testId,
+      defaults.text,
+      defaults.valueText,
+    ],
+  );
+  const semanticProps = useMemo(
+    () => ({
+      id: props.id,
+      testId: props.testId,
+      role: props.role,
+      label: props.label,
+      description: props.description,
+      disabled: props.disabled,
+      readOnly: props.readOnly,
+      selected: props.selected,
+      checked: props.checked,
+      expanded: props.expanded,
+      valueText: props.valueText,
+      layout: props.layout,
+    }),
+    [
+      props.checked,
+      props.description,
+      props.disabled,
+      props.expanded,
+      props.id,
+      props.label,
+      props.layout,
+      props.readOnly,
+      props.role,
+      props.selected,
+      props.testId,
+      props.valueText,
+    ],
+  );
+  const node = useMemo(
+    () => ({
+      ...semanticDefaults,
+      ...Object.fromEntries(
+        Object.entries(semanticProps).filter(
+          ([, value]) => value !== undefined,
+        ),
+      ),
       key,
-      id: props.id ?? key,
-    };
-  }, [defaults, key, props]);
-  useSemanticNode(node);
-  return key;
+      id: semanticProps.id ?? key,
+    }),
+    [key, semanticDefaults, semanticProps],
+  );
+  useLayoutEffect(() => {
+    const measured = ref.current ? measureElement(ref.current) : undefined;
+    return registry.register(
+      semanticRegistration(node, semanticProps, measured, {
+        width: app.capabilities.width,
+        height: app.capabilities.height,
+      }),
+    );
+  }, [
+    app.capabilities.height,
+    app.capabilities.width,
+    node,
+    registry,
+    semanticProps,
+  ]);
+  return ref;
 }
 
 function useSpacing(
@@ -159,10 +279,11 @@ export function Box({
   variant,
   size,
   className,
+  layout,
   ...props
 }: BoxProps): ReactNode {
   const theme = useTheme();
-  useSemantics(
+  const semanticRef = useSemantics(
     {
       id,
       testId,
@@ -175,6 +296,7 @@ export function Box({
       checked,
       expanded,
       valueText,
+      layout,
     },
     {},
   );
@@ -188,6 +310,7 @@ export function Box({
   const resolved = resolveSlotProps(slotProps?.root, {}, theme);
   return (
     <Root
+      ref={semanticRef}
       {...(customization as InkBoxProps)}
       {...props}
       {...resolved}
@@ -309,6 +432,7 @@ export function Text({
   variant,
   size,
   className,
+  layout,
   ...props
 }: TextProps): ReactNode {
   const theme = useTheme();
@@ -316,7 +440,7 @@ export function Text({
     typeof children === "string" || typeof children === "number"
       ? String(children)
       : undefined;
-  useSemantics(
+  const semanticRef = useSemantics(
     {
       id,
       testId,
@@ -329,6 +453,7 @@ export function Text({
       checked,
       expanded,
       valueText,
+      layout,
     },
     { role: role ?? "text", text: value, label: label ?? value },
   );
@@ -340,13 +465,15 @@ export function Text({
     theme,
   );
   return (
-    <Root
-      {...(customization as InkTextProps)}
-      {...props}
-      {...resolveSlotProps(slotProps?.root, {}, theme)}
-    >
-      {children}
-    </Root>
+    <InkBox ref={semanticRef}>
+      <Root
+        {...(customization as InkTextProps)}
+        {...props}
+        {...resolveSlotProps(slotProps?.root, {}, theme)}
+      >
+        {children}
+      </Root>
+    </InkBox>
   );
 }
 
@@ -440,7 +567,7 @@ export function Button({
   children,
   onPress,
   command,
-  hotkeys = [],
+  hotkeys = emptyHotkeys,
   autoFocus,
   focusOrder,
   focusScopeId,
@@ -477,34 +604,51 @@ export function Button({
   useEffect(() => {
     if (autoFocus) focus();
   }, [autoFocus, focus]);
-  const activate = async () => {
+  const activate = useCallback(async () => {
     if (disabled || readOnly) return;
     if (command) {
       await app.commands.execute(command, { source: id });
     }
     await onPress?.();
-  };
-  useHotkey("enter", activate, {
-    scope: "application",
-    priority: 100,
-    enabled: () => app.focus.focusedId === id && !disabled && !readOnly,
-    title: label,
-    commandId: command,
-  });
-  useHotkey("space", activate, {
-    scope: "application",
-    priority: 100,
-    enabled: () => app.focus.focusedId === id && !disabled && !readOnly,
-    title: label,
-    commandId: command,
-  });
-  useHotkeys(Object.fromEntries(hotkeys.map((keys) => [keys, activate])), {
-    scope: "application",
-    enabled: () => !disabled && !readOnly,
-    title: label,
-    commandId: command,
-  });
-  useSemantics(
+  }, [app.commands, command, disabled, id, onPress, readOnly]);
+  const activateFromPointer = useCallback(() => {
+    void activate();
+  }, [activate]);
+  const enabled = !disabled && !readOnly;
+  const isFocusedAndEnabled = useCallback(
+    () => app.focus.focusedId === id && enabled,
+    [app.focus, enabled, id],
+  );
+  const isEnabled = useCallback(() => enabled, [enabled]);
+  const hotkeyOptions = useMemo(
+    () => ({
+      scope: "application" as const,
+      priority: 100,
+      enabled: isFocusedAndEnabled,
+      title: label,
+      commandId: command,
+    }),
+    [command, isFocusedAndEnabled, label],
+  );
+  const groupedHotkeys = useMemo(
+    () => Object.fromEntries(hotkeys.map((keys) => [keys, activate])),
+    [activate, hotkeys],
+  );
+  const groupedHotkeyOptions = useMemo(
+    () => ({
+      scope: "application" as const,
+      enabled: isEnabled,
+      title: label,
+      commandId: command,
+    }),
+    [command, isEnabled, label],
+  );
+  const pointerOptions = useMemo(() => ({ enabled }), [enabled]);
+  usePointerEvent(id, "click", activateFromPointer, pointerOptions);
+  useHotkey("enter", activate, hotkeyOptions);
+  useHotkey("space", activate, hotkeyOptions);
+  useHotkeys(groupedHotkeys, groupedHotkeyOptions);
+  const semanticRef = useSemantics(
     { ...props, id, label, disabled, readOnly, role: "button" },
     { role: "button", label },
   );
@@ -533,6 +677,7 @@ export function Button({
   );
   return (
     <Root
+      ref={semanticRef}
       {...(customization as InkBoxProps)}
       {...resolveSlotProps(slotProps?.root, state, theme)}
     >

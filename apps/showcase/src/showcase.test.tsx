@@ -9,8 +9,13 @@ import {
   createEcosystemStoryCatalog,
   StoryCatalogSummary,
 } from "../../../registry/stories/ecosystem.tsx";
+import { platformBrowserStorySet } from "../../../registry/stories/platform-story-data.ts";
 import { renderShowcase } from "./index.tsx";
 import { startStoryServer, storyServerMessage } from "./story-server.ts";
+import {
+  createShowcaseStorybookAdapter,
+  showcaseStory,
+} from "./storybook-adapter.ts";
 import {
   runStorySurface,
   type StorySurfaceProcess,
@@ -30,6 +35,14 @@ function surfaceProcess(exitCode: number | null): StorySurfaceProcess & {
   };
 }
 
+test("storybook adapter exposes portable variants and rejects missing stories", () => {
+  const adapter = createShowcaseStorybookAdapter(platformBrowserStorySet);
+  expect(showcaseStory(adapter, "Renderer", "platform")).toBeDefined();
+  expect(() => showcaseStory(adapter, "Missing", "platform")).toThrow(
+    'Missing platform story "Missing"',
+  );
+});
+
 test("showcase renders every portable application story", async () => {
   const output = await renderShowcase();
   expect(output).toContain("Running");
@@ -39,7 +52,7 @@ test("showcase renders every portable application story", async () => {
   expect(output).toContain("100%");
   const summary = renderTuil(<StoryCatalogSummary />);
   await summary.ready;
-  expect(summary.screen.frame()).toContain("5 portable story sets");
+  expect(summary.screen.frame()).toContain("8 portable story sets");
   await summary.cleanup();
 });
 
@@ -162,18 +175,21 @@ test("generates bounded snapshots and documentation for the entire catalog", asy
   const options = { themeRegistry: createDefaultThemeRegistry() };
   const snapshots = await generateStoryCatalogSnapshots(catalog, options);
   expect(Object.keys(snapshots).sort()).toEqual([
+    "component-acceptance",
     "data",
     "forms",
     "foundation",
     "init-wizard",
     "navigation",
+    "platform-expansion",
+    "production-applications",
   ]);
   expect(
     Object.values(snapshots).reduce(
       (count, variants) => count + Object.keys(variants).length,
       0,
     ),
-  ).toBe(10);
+  ).toBe(108);
   expect(JSON.stringify(snapshots)).not.toContain('"events"');
   expect(JSON.stringify(snapshots)).not.toContain('"actions"');
   const documentation = await generateStoryCatalogDocumentation(
@@ -183,8 +199,8 @@ test("generates bounded snapshots and documentation for the entire catalog", asy
   expect(documentation["init-wizard"]).toContain("# Application/Initializer");
   expect(documentation["foundation"]).toContain("## Complete");
   await expect(
-    generateStoryCatalogSnapshots(catalog, { ...options, maxStories: 9 }),
-  ).rejects.toThrow("9 story limit");
+    generateStoryCatalogSnapshots(catalog, { ...options, maxStories: 26 }),
+  ).rejects.toThrow("26 story limit");
   const controller = new AbortController();
   controller.abort();
   await expect(
@@ -193,4 +209,4 @@ test("generates bounded snapshots and documentation for the entire catalog", asy
       signal: controller.signal,
     }),
   ).rejects.toThrow();
-});
+}, 20_000);

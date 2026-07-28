@@ -1,0 +1,99 @@
+---
+title: "@mwillbanks/tuil-editor"
+description: "Renderer-neutral editor contracts and tree-shakeable terminal editor implementations for tuil."
+icon: Package
+---
+
+## Overview
+
+Renderer-neutral editor contracts and tree-shakeable terminal editor implementations for tuil.
+
+`@mwillbanks/tuil-editor` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-editor
+```
+
+## How it operates
+
+Editor providers own documents, selections, history, composition, clipboard, commands, static output, and buffer, Vim, or rich editing behavior behind one contract.
+
+```mermaid
+flowchart LR
+  S0["register provider"]
+  S1["create editor"]
+  S2["edit/command"]
+  S3["undo"]
+  S4["dispose"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `applyEditorTransactions` | function | `packages/editor/src/testing.ts` |
+| `assertEditorInvariant` | function | `packages/editor/src/testing.ts` |
+| `BuiltInRichNodeType` | type | `packages/editor/src/rich.ts` |
+| `EditorBackend` | interface | `packages/editor/src/index.ts` |
+| `EditorCapability` | type | `packages/editor/src/index.ts` |
+| `EditorChange` | interface | `packages/editor/src/index.ts` |
+| `EditorCommand` | interface | `packages/editor/src/index.ts` |
+| `EditorDecoration` | interface | `packages/editor/src/index.ts` |
+| `EditorDiagnostic` | interface | `packages/editor/src/index.ts` |
+| `EditorDocument` | interface | `packages/editor/src/index.ts` |
+| `EditorMode` | type | `packages/editor/src/index.ts` |
+| `EditorPosition` | interface | `packages/editor/src/index.ts` |
+| `EditorProvider` | interface | `packages/editor/src/index.ts` |
+| `EditorProviderFactory` | type | `packages/editor/src/index.ts` |
+| `EditorProviderOptions` | interface | `packages/editor/src/index.ts` |
+| `EditorRange` | interface | `packages/editor/src/index.ts` |
+| `EditorSelection` | interface | `packages/editor/src/index.ts` |
+| `EditorSession` | interface | `packages/editor/src/index.ts` |
+| `EditorSnapshot` | interface | `packages/editor/src/index.ts` |
+| `EditorTransaction` | interface | `packages/editor/src/index.ts` |
+| `insertText` | function | `packages/editor/src/buffer.ts` |
+| `RichDocument` | interface | `packages/editor/src/rich.ts` |
+| `RichDocumentSession` | class | `packages/editor/src/rich.ts` |
+| `RichEditorDocument` | interface | `packages/editor/src/rich.ts` |
+| `RichEditorProviderOptions` | interface | `packages/editor/src/rich.ts` |
+| `RichMark` | interface | `packages/editor/src/rich.ts` |
+| `RichNode` | interface | `packages/editor/src/rich.ts` |
+| `RichNodeProvider` | interface | `packages/editor/src/rich.ts` |
+| `RichNodeType` | type | `packages/editor/src/rich.ts` |
+| `RichTransaction` | interface | `packages/editor/src/rich.ts` |
+| `runEditorProviderConformance` | function | `packages/editor/src/testing.ts` |
+| `textBufferProvider` | constant | `packages/editor/src/buffer.ts` |
+| `TextBufferSession` | class | `packages/editor/src/buffer.ts` |
+| `vimEditorProvider` | constant | `packages/editor/src/vim.ts` |
+| `VimEditorSession` | class | `packages/editor/src/vim.ts` |
+| `VimKeymap` | interface | `packages/editor/src/vim.ts` |
+| `VimMode` | type | `packages/editor/src/vim.ts` |
+| `VimState` | interface | `packages/editor/src/vim.ts` |
+
+## Events and lifecycle
+
+Editors publish typed snapshots and command outcomes through provider-owned subscriptions.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+import { TextBufferSession } from "@mwillbanks/tuil-editor/buffer";
+
+const editor = new TextBufferSession({ value: "hello" });
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

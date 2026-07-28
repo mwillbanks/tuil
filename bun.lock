@@ -4,6 +4,7 @@
   "workspaces": {
     "": {
       "dependencies": {
+        "@opentui/core": "^0.4.5",
         "@tanstack/react-table": "catalog:",
         "diff": "catalog:",
         "ink": "^7.1.1",
@@ -92,6 +93,14 @@
         "react": "catalog:",
       },
     },
+    "examples/ai-coding-assistant": {
+      "name": "@mwillbanks/tuil-example-ai-coding-assistant",
+      "version": "0.1.0",
+      "dependencies": {
+        "@mwillbanks/tuil-ink": "workspace:*",
+        "react": "catalog:",
+      },
+    },
     "examples/command-center": {
       "name": "@mwillbanks/tuil-example-command-center",
       "version": "0.1.0",
@@ -106,10 +115,33 @@
         "react": "catalog:",
       },
     },
+    "examples/deployment-dashboard": {
+      "name": "@mwillbanks/tuil-example-deployment-dashboard",
+      "version": "0.1.0",
+      "dependencies": {
+        "@mwillbanks/tuil-ink": "workspace:*",
+        "react": "catalog:",
+      },
+    },
+    "examples/docs-browser": {
+      "name": "@mwillbanks/tuil-example-docs-browser",
+      "version": "0.1.0",
+      "dependencies": {
+        "react": "catalog:",
+      },
+    },
     "examples/file-browser": {
       "name": "@mwillbanks/tuil-example-file-browser",
       "version": "0.1.0",
       "dependencies": {
+        "react": "catalog:",
+      },
+    },
+    "examples/file-manager": {
+      "name": "@mwillbanks/tuil-example-file-manager",
+      "version": "0.1.0",
+      "dependencies": {
+        "@mwillbanks/tuil-ink": "workspace:*",
         "react": "catalog:",
       },
     },
@@ -128,10 +160,36 @@
         "sharp": "^0.35.3",
       },
     },
+    "examples/git-client": {
+      "name": "@mwillbanks/tuil-example-git-client",
+      "version": "0.1.0",
+      "dependencies": {
+        "react": "catalog:",
+      },
+    },
+    "examples/log-explorer": {
+      "name": "@mwillbanks/tuil-example-log-explorer",
+      "version": "0.1.0",
+      "dependencies": {
+        "@mwillbanks/tuil-log-viewer": "workspace:*",
+        "@mwillbanks/tuil-logging": "workspace:*",
+        "react": "catalog:",
+      },
+    },
     "examples/minimal": {
       "name": "@mwillbanks/tuil-example-minimal",
       "version": "0.1.0",
       "dependencies": {
+        "react": "catalog:",
+      },
+    },
+    "examples/otel-console": {
+      "name": "@mwillbanks/tuil-example-otel-console",
+      "version": "0.1.0",
+      "dependencies": {
+        "@mwillbanks/tuil-ink": "workspace:*",
+        "@mwillbanks/tuil-log-viewer": "workspace:*",
+        "@mwillbanks/tuil-logging": "workspace:*",
         "react": "catalog:",
       },
     },
@@ -142,15 +200,33 @@
         "react": "catalog:",
       },
     },
+    "examples/workflow-runner": {
+      "name": "@mwillbanks/tuil-example-workflow-runner",
+      "version": "0.1.0",
+      "dependencies": {
+        "@mwillbanks/tuil-ink": "workspace:*",
+        "react": "catalog:",
+      },
+    },
+    "packages/cell": {
+      "name": "@mwillbanks/tuil-cell",
+      "version": "0.2.0",
+      "dependencies": {
+        "@mwillbanks/tuil-core": "workspace:*",
+        "@mwillbanks/tuil-renderer": "workspace:*",
+        "string-width": "catalog:",
+      },
+    },
     "packages/cli": {
       "name": "@mwillbanks/tuil-cli",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "bin": {
         "tuil": "./dist/bin.js",
       },
       "dependencies": {
         "@mwillbanks/tuil": "workspace:*",
         "@mwillbanks/tuil-core": "workspace:*",
+        "@mwillbanks/tuil-editor": "workspace:*",
         "@mwillbanks/tuil-focus": "workspace:*",
         "@mwillbanks/tuil-form": "workspace:*",
         "@mwillbanks/tuil-hotkeys": "workspace:*",
@@ -164,29 +240,55 @@
         "react": "catalog:",
       },
     },
+    "packages/code": {
+      "name": "@mwillbanks/tuil-code",
+      "version": "0.2.0",
+      "dependencies": {
+        "@mwillbanks/tuil-core": "workspace:*",
+        "@vscode/tree-sitter-wasm": "^0.3.1",
+      },
+    },
+    "packages/content": {
+      "name": "@mwillbanks/tuil-content",
+      "version": "0.2.0",
+      "dependencies": {
+        "@mwillbanks/tuil-streaming": "workspace:*",
+      },
+    },
     "packages/core": {
       "name": "@mwillbanks/tuil-core",
-      "version": "0.1.0",
+      "version": "0.2.0",
+      "dependencies": {
+        "string-width": "catalog:",
+      },
     },
     "packages/devtools": {
       "name": "@mwillbanks/tuil-devtools",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@mwillbanks/tuil": "workspace:*",
         "@mwillbanks/tuil-ink": "workspace:*",
+        "@mwillbanks/tuil-protocol": "workspace:*",
       },
       "peerDependencies": {
         "ink": "catalog:",
         "react": "catalog:",
       },
     },
+    "packages/editor": {
+      "name": "@mwillbanks/tuil-editor",
+      "version": "0.2.0",
+      "dependencies": {
+        "@mwillbanks/tuil-core": "workspace:*",
+      },
+    },
     "packages/events": {
       "name": "@mwillbanks/tuil-events",
-      "version": "0.1.0",
+      "version": "0.2.0",
     },
     "packages/focus": {
       "name": "@mwillbanks/tuil-focus",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@mwillbanks/tuil-core": "workspace:*",
       },
@@ -196,7 +298,7 @@
     },
     "packages/form": {
       "name": "@mwillbanks/tuil-form",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "peerDependencies": {
         "@tanstack/react-form": "catalog:",
         "react": "catalog:",
@@ -204,29 +306,57 @@
     },
     "packages/hotkeys": {
       "name": "@mwillbanks/tuil-hotkeys",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "peerDependencies": {
         "react": "catalog:",
       },
     },
     "packages/ink": {
       "name": "@mwillbanks/tuil-ink",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@mwillbanks/tuil": "workspace:*",
         "@mwillbanks/tuil-core": "workspace:*",
         "@mwillbanks/tuil-focus": "workspace:*",
         "@mwillbanks/tuil-hotkeys": "workspace:*",
+        "@mwillbanks/tuil-pointer": "workspace:*",
+        "@mwillbanks/tuil-renderer": "workspace:*",
+        "@mwillbanks/tuil-scroll": "workspace:*",
         "@mwillbanks/tuil-theme": "workspace:*",
+        "chalk": "^5.6.2",
       },
       "peerDependencies": {
         "ink": "catalog:",
         "react": "catalog:",
       },
     },
+    "packages/log-viewer": {
+      "name": "@mwillbanks/tuil-log-viewer",
+      "version": "0.2.0",
+      "dependencies": {
+        "@mwillbanks/tuil-editor": "workspace:*",
+        "@mwillbanks/tuil-focus": "workspace:*",
+        "@mwillbanks/tuil-ink": "workspace:*",
+        "@mwillbanks/tuil-logging": "workspace:*",
+        "@mwillbanks/tuil-scroll": "workspace:*",
+        "ink": "catalog:",
+        "react": "catalog:",
+      },
+      "devDependencies": {
+        "@mwillbanks/tuil-testing-ink": "workspace:*",
+        "ink-testing-library": "catalog:",
+      },
+    },
+    "packages/logging": {
+      "name": "@mwillbanks/tuil-logging",
+      "version": "0.2.0",
+      "dependencies": {
+        "@mwillbanks/tuil-core": "workspace:*",
+      },
+    },
     "packages/operations": {
       "name": "@mwillbanks/tuil-operations",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@tanstack/pacer": "catalog:",
         "nusm": "catalog:",
@@ -234,26 +364,54 @@
     },
     "packages/plugin": {
       "name": "@mwillbanks/tuil-plugin",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@mwillbanks/tuil-core": "workspace:*",
         "@mwillbanks/tuil-events": "workspace:*",
       },
     },
+    "packages/pointer": {
+      "name": "@mwillbanks/tuil-pointer",
+      "version": "0.2.0",
+      "dependencies": {
+        "@mwillbanks/tuil-renderer": "workspace:*",
+      },
+    },
+    "packages/protocol": {
+      "name": "@mwillbanks/tuil-protocol",
+      "version": "0.2.0",
+    },
     "packages/registry": {
       "name": "@mwillbanks/tuil-registry",
-      "version": "0.1.0",
+      "version": "0.2.0",
+      "dependencies": {
+        "semver": "^7.7.2",
+      },
+      "devDependencies": {
+        "@types/semver": "^7.7.1",
+      },
+    },
+    "packages/renderer": {
+      "name": "@mwillbanks/tuil-renderer",
+      "version": "0.2.0",
+      "dependencies": {
+        "@mwillbanks/tuil-core": "workspace:*",
+      },
     },
     "packages/router": {
       "name": "@mwillbanks/tuil-router",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "nusm": "catalog:",
       },
     },
+    "packages/scroll": {
+      "name": "@mwillbanks/tuil-scroll",
+      "version": "0.2.0",
+    },
     "packages/story": {
       "name": "@mwillbanks/tuil-story",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@mwillbanks/tuil": "workspace:*",
         "@mwillbanks/tuil-core": "workspace:*",
@@ -276,9 +434,21 @@
         "@storybook/react",
       ],
     },
+    "packages/streaming": {
+      "name": "@mwillbanks/tuil-streaming",
+      "version": "0.2.0",
+      "dependencies": {
+        "fast-xml-parser": "^5.10.1",
+        "mdast-util-from-markdown": "^2.0.3",
+        "mdast-util-gfm": "^3.1.0",
+        "micromark-extension-gfm": "^3.0.0",
+        "smol-toml": "^1.7.1",
+        "yaml": "^2.9.0",
+      },
+    },
     "packages/testing": {
       "name": "@mwillbanks/tuil-testing",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@mwillbanks/tuil-core": "workspace:*",
       },
@@ -288,7 +458,7 @@
     },
     "packages/testing-ink": {
       "name": "@mwillbanks/tuil-testing-ink",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@mwillbanks/tuil": "workspace:*",
         "@mwillbanks/tuil-ink": "workspace:*",
@@ -302,7 +472,7 @@
     },
     "packages/theme": {
       "name": "@mwillbanks/tuil-theme",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@mwillbanks/tuil-core": "workspace:*",
       },
@@ -315,18 +485,24 @@
     },
     "packages/tuil": {
       "name": "@mwillbanks/tuil",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "bin": {
         "tuil": "./dist/cli.js",
       },
       "dependencies": {
         "@mwillbanks/tuil-core": "workspace:*",
+        "@mwillbanks/tuil-editor": "workspace:*",
         "@mwillbanks/tuil-events": "workspace:*",
         "@mwillbanks/tuil-focus": "workspace:*",
         "@mwillbanks/tuil-hotkeys": "workspace:*",
+        "@mwillbanks/tuil-logging": "workspace:*",
         "@mwillbanks/tuil-operations": "workspace:*",
         "@mwillbanks/tuil-plugin": "workspace:*",
+        "@mwillbanks/tuil-pointer": "workspace:*",
+        "@mwillbanks/tuil-renderer": "workspace:*",
         "@mwillbanks/tuil-router": "workspace:*",
+        "@mwillbanks/tuil-scroll": "workspace:*",
+        "@mwillbanks/tuil-streaming": "workspace:*",
         "@mwillbanks/tuil-theme": "workspace:*",
         "@mwillbanks/tuil-workflow": "workspace:*",
       },
@@ -336,7 +512,7 @@
     },
     "packages/virtual": {
       "name": "@mwillbanks/tuil-virtual",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@tanstack/react-virtual": "catalog:",
         "slice-ansi": "catalog:",
@@ -349,7 +525,7 @@
     },
     "packages/workflow": {
       "name": "@mwillbanks/tuil-workflow",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "dependencies": {
         "@mwillbanks/tuil-operations": "workspace:*",
         "nusm": "catalog:",
@@ -637,7 +813,13 @@
 
     "@mwillbanks/tuil": ["@mwillbanks/tuil@workspace:packages/tuil"],
 
+    "@mwillbanks/tuil-cell": ["@mwillbanks/tuil-cell@workspace:packages/cell"],
+
     "@mwillbanks/tuil-cli": ["@mwillbanks/tuil-cli@workspace:packages/cli"],
+
+    "@mwillbanks/tuil-code": ["@mwillbanks/tuil-code@workspace:packages/code"],
+
+    "@mwillbanks/tuil-content": ["@mwillbanks/tuil-content@workspace:packages/content"],
 
     "@mwillbanks/tuil-core": ["@mwillbanks/tuil-core@workspace:packages/core"],
 
@@ -645,23 +827,41 @@
 
     "@mwillbanks/tuil-docs": ["@mwillbanks/tuil-docs@workspace:apps/docs"],
 
+    "@mwillbanks/tuil-editor": ["@mwillbanks/tuil-editor@workspace:packages/editor"],
+
     "@mwillbanks/tuil-events": ["@mwillbanks/tuil-events@workspace:packages/events"],
 
     "@mwillbanks/tuil-example-ai-assistant": ["@mwillbanks/tuil-example-ai-assistant@workspace:examples/ai-assistant"],
+
+    "@mwillbanks/tuil-example-ai-coding-assistant": ["@mwillbanks/tuil-example-ai-coding-assistant@workspace:examples/ai-coding-assistant"],
 
     "@mwillbanks/tuil-example-command-center": ["@mwillbanks/tuil-example-command-center@workspace:examples/command-center"],
 
     "@mwillbanks/tuil-example-dashboard": ["@mwillbanks/tuil-example-dashboard@workspace:examples/dashboard"],
 
+    "@mwillbanks/tuil-example-deployment-dashboard": ["@mwillbanks/tuil-example-deployment-dashboard@workspace:examples/deployment-dashboard"],
+
+    "@mwillbanks/tuil-example-docs-browser": ["@mwillbanks/tuil-example-docs-browser@workspace:examples/docs-browser"],
+
     "@mwillbanks/tuil-example-file-browser": ["@mwillbanks/tuil-example-file-browser@workspace:examples/file-browser"],
+
+    "@mwillbanks/tuil-example-file-manager": ["@mwillbanks/tuil-example-file-manager@workspace:examples/file-manager"],
 
     "@mwillbanks/tuil-example-forms": ["@mwillbanks/tuil-example-forms@workspace:examples/forms"],
 
     "@mwillbanks/tuil-example-full-screen": ["@mwillbanks/tuil-example-full-screen@workspace:examples/full-screen"],
 
+    "@mwillbanks/tuil-example-git-client": ["@mwillbanks/tuil-example-git-client@workspace:examples/git-client"],
+
+    "@mwillbanks/tuil-example-log-explorer": ["@mwillbanks/tuil-example-log-explorer@workspace:examples/log-explorer"],
+
     "@mwillbanks/tuil-example-minimal": ["@mwillbanks/tuil-example-minimal@workspace:examples/minimal"],
 
+    "@mwillbanks/tuil-example-otel-console": ["@mwillbanks/tuil-example-otel-console@workspace:examples/otel-console"],
+
     "@mwillbanks/tuil-example-project-wizard": ["@mwillbanks/tuil-example-project-wizard@workspace:examples/project-wizard"],
+
+    "@mwillbanks/tuil-example-workflow-runner": ["@mwillbanks/tuil-example-workflow-runner@workspace:examples/workflow-runner"],
 
     "@mwillbanks/tuil-focus": ["@mwillbanks/tuil-focus@workspace:packages/focus"],
 
@@ -671,19 +871,33 @@
 
     "@mwillbanks/tuil-ink": ["@mwillbanks/tuil-ink@workspace:packages/ink"],
 
+    "@mwillbanks/tuil-log-viewer": ["@mwillbanks/tuil-log-viewer@workspace:packages/log-viewer"],
+
+    "@mwillbanks/tuil-logging": ["@mwillbanks/tuil-logging@workspace:packages/logging"],
+
     "@mwillbanks/tuil-operations": ["@mwillbanks/tuil-operations@workspace:packages/operations"],
 
     "@mwillbanks/tuil-playground": ["@mwillbanks/tuil-playground@workspace:apps/playground"],
 
     "@mwillbanks/tuil-plugin": ["@mwillbanks/tuil-plugin@workspace:packages/plugin"],
 
+    "@mwillbanks/tuil-pointer": ["@mwillbanks/tuil-pointer@workspace:packages/pointer"],
+
+    "@mwillbanks/tuil-protocol": ["@mwillbanks/tuil-protocol@workspace:packages/protocol"],
+
     "@mwillbanks/tuil-registry": ["@mwillbanks/tuil-registry@workspace:packages/registry"],
 
+    "@mwillbanks/tuil-renderer": ["@mwillbanks/tuil-renderer@workspace:packages/renderer"],
+
     "@mwillbanks/tuil-router": ["@mwillbanks/tuil-router@workspace:packages/router"],
+
+    "@mwillbanks/tuil-scroll": ["@mwillbanks/tuil-scroll@workspace:packages/scroll"],
 
     "@mwillbanks/tuil-showcase": ["@mwillbanks/tuil-showcase@workspace:apps/showcase"],
 
     "@mwillbanks/tuil-story": ["@mwillbanks/tuil-story@workspace:packages/story"],
+
+    "@mwillbanks/tuil-streaming": ["@mwillbanks/tuil-streaming@workspace:packages/streaming"],
 
     "@mwillbanks/tuil-testing": ["@mwillbanks/tuil-testing@workspace:packages/testing"],
 
@@ -714,6 +928,26 @@
     "@next/swc-win32-arm64-msvc": ["@next/swc-win32-arm64-msvc@16.2.12", "", { "os": "win32", "cpu": "arm64" }, "sha512-X6hzsOUJac/e7AWSbn9gQ9nzHld1xWP5iyjHpYWvud8pufB679O1xg4JDyKr8Xd69Jvd+kM2Der6uftiZCmjYA=="],
 
     "@next/swc-win32-x64-msvc": ["@next/swc-win32-x64-msvc@16.2.12", "", { "os": "win32", "cpu": "x64" }, "sha512-F6fakeHuFTLOPt0bslQJdf+xtT+WIP9DVn/m4y1w1mRnVPyh3D/cNvzlRkxM444xfm+IvvYNSOrKiA2CDJ0Uxw=="],
+
+    "@nodable/entities": ["@nodable/entities@3.0.0", "", {}, "sha512-8L9xFeTYKhm49xfIypoe2W5wV1m/3Z58kT+7kR9A8OyFxcPduI4VmxaUMQyKYrRjUoLLSXv6EKKID5Tvj9cUVw=="],
+
+    "@opentui/core": ["@opentui/core@0.4.5", "", { "dependencies": { "bun-ffi-structs": "0.2.4", "diff": "9.0.0", "marked": "17.0.1", "string-width": "7.2.0", "strip-ansi": "7.1.2" }, "optionalDependencies": { "@opentui/core-darwin-arm64": "0.4.5", "@opentui/core-darwin-x64": "0.4.5", "@opentui/core-linux-arm64": "0.4.5", "@opentui/core-linux-arm64-musl": "0.4.5", "@opentui/core-linux-x64": "0.4.5", "@opentui/core-linux-x64-musl": "0.4.5", "@opentui/core-win32-arm64": "0.4.5", "@opentui/core-win32-x64": "0.4.5" }, "peerDependencies": { "web-tree-sitter": "0.25.10" } }, "sha512-JsgRTPkA6e+Vxmumxai6SElOSlRQkbzNKHlCfemlArRiLhfC1IZ9RXJo2QH4xSu+uBOWAM90uss73/pPlkdEig=="],
+
+    "@opentui/core-darwin-arm64": ["@opentui/core-darwin-arm64@0.4.5", "", { "os": "darwin", "cpu": "arm64" }, "sha512-8KUG0oRidnR+oW1RSZJ72/PhZLl+qRRMk5U/mieF4c0SJ5V3tYACpBZAKzQfHNd1f7QzD8FHZct1lPpQgtmkWg=="],
+
+    "@opentui/core-darwin-x64": ["@opentui/core-darwin-x64@0.4.5", "", { "os": "darwin", "cpu": "x64" }, "sha512-R2bocsg55gwjOqCp/MWFgFYzRmsduKegB6nzgFAPCvAD/L5Jf30xpWJWFlSg3x8vxe1L9WJ84dfqa4M7mZZ3wA=="],
+
+    "@opentui/core-linux-arm64": ["@opentui/core-linux-arm64@0.4.5", "", { "os": "linux", "cpu": "arm64" }, "sha512-R4MZ25a4CzOAGVjW9aj1hUfzQGVfCJwrwBDbNs2SXaIvzcZqkxCVtU4FoQ5LsaD0j/BdNQVg2CIfFkFsm1fDuQ=="],
+
+    "@opentui/core-linux-arm64-musl": ["@opentui/core-linux-arm64-musl@0.4.5", "", { "os": "linux", "cpu": "arm64" }, "sha512-ieqdyKI6EIYPalYAETB2wsdP83hr5Ifi+dFnBFUmdEEFHsoKwBmn2S7bsTOYlX7Bg03F4/YPIg+IvRpeC+cUJw=="],
+
+    "@opentui/core-linux-x64": ["@opentui/core-linux-x64@0.4.5", "", { "os": "linux", "cpu": "x64" }, "sha512-SNyuQoxMKI1vuJhgxSSW96adWM6LqFl2SoS3GM4tGeneGOanVVG2Y06PvlytXvF4cKik97t0rqkVMRetmOs93w=="],
+
+    "@opentui/core-linux-x64-musl": ["@opentui/core-linux-x64-musl@0.4.5", "", { "os": "linux", "cpu": "x64" }, "sha512-mKVKcIcPiSVVZZsdPSBoWwoa2/TCeQAaMDeHF7PFw2kt5bTXZPP7xxWfRQLCNIcA1eaGl59UuwUWHDR2Ve548Q=="],
+
+    "@opentui/core-win32-arm64": ["@opentui/core-win32-arm64@0.4.5", "", { "os": "win32", "cpu": "arm64" }, "sha512-GHTTsqeR45q2Iek9Rb7ty+x/hAKn2jZ1ujlCgPR8LBKyF7h0E1dNFryoZ7ehMc3kJndP1sKn836IemKFqxuDdQ=="],
+
+    "@opentui/core-win32-x64": ["@opentui/core-win32-x64@0.4.5", "", { "os": "win32", "cpu": "x64" }, "sha512-Y8T/yXCDGagRGiQrtmuB6AhRcPucKFs/Dre3v8kJwNYqDccI4FzUPKclZ7djfmRZNjl7JUqPhZZP/PwDpQocMg=="],
 
     "@orama/orama": ["@orama/orama@3.1.18", "", {}, "sha512-a61ljmRVVyG5MC/698C8/FfFDw5a8LOIvyOLW5fztgUXqUpc1jOfQzOitSCbge657OgXXThmY3Tk8fpiDb4UcA=="],
 
@@ -1063,6 +1297,8 @@
 
     "@types/resolve": ["@types/resolve@1.20.6", "", {}, "sha512-A4STmOXPhMUtHH+S6ymgE2GiBSMqf4oTvcQZMcHzokuTLVYzXTB8ttjcgxOVaAp2lGwEdzZ0J+cRbbeevQj1UQ=="],
 
+    "@types/semver": ["@types/semver@7.7.1", "", {}, "sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA=="],
+
     "@types/unist": ["@types/unist@3.0.3", "", {}, "sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q=="],
 
     "@typescript/typescript-aix-ppc64": ["@typescript/typescript-aix-ppc64@7.0.2", "", { "os": "aix", "cpu": "ppc64" }, "sha512-MTKKkWB7p/0E9xi1d1tHtZ5PiLkGEMIq88pK2CubZjOsLtYTLqhgIgi6zepFa+9GHZ6h05NMCkQxGKiPXMxXtQ=="],
@@ -1115,6 +1351,8 @@
 
     "@vitest/utils": ["@vitest/utils@3.2.4", "", { "dependencies": { "@vitest/pretty-format": "3.2.4", "loupe": "^3.1.4", "tinyrainbow": "^2.0.0" } }, "sha512-fB2V0JFrQSMsCo9HiSq3Ezpdv4iYaXRG1Sx8edX3MwxfyNn83mKiGzOcH+Fkxt4MHxr3y42fQi1oeAInqgX2QA=="],
 
+    "@vscode/tree-sitter-wasm": ["@vscode/tree-sitter-wasm@0.3.1", "", {}, "sha512-RJFoomET6FajjG511fmQxeBQfU6M24a0aFZPqpid+ttIxanWf1VGytBG0UmsGjt07qmIPJS8U31D+aecuCucsQ=="],
+
     "@webcontainer/env": ["@webcontainer/env@1.1.1", "", {}, "sha512-6aN99yL695Hi9SuIk1oC88l9o0gmxL1nGWWQ/kNy81HigJ0FoaoTXpytCj6ItzgyCEwA9kF1wixsTuv5cjsgng=="],
 
     "@yuku-analyzer/binding-darwin-arm64": ["@yuku-analyzer/binding-darwin-arm64@0.6.12", "", { "os": "darwin", "cpu": "arm64" }, "sha512-9rpIP7IeybjyvWUf6WnU24h1qo+JdxIHr1o3yb06HoE8tM3S/Jh5RrUw9aw5P9BKSIvSPbLyVlItX7PcD3o5bQ=="],
@@ -1155,6 +1393,8 @@
 
     "ansi-to-html": ["ansi-to-html@0.7.2", "", { "dependencies": { "entities": "^2.2.0" }, "bin": { "ansi-to-html": "bin/ansi-to-html" } }, "sha512-v6MqmEpNlxF+POuyhKkidusCHWWkaLcGRURzivcU3I9tv7k4JVhFcnukrM5Rlk2rUywdZuzYAZ+kbZqWCnfN3g=="],
 
+    "anynum": ["anynum@1.0.1", "", {}, "sha512-N6//FLET/tXYNM/F6ABca1oH6fWB+KlTt909Le28WMDBk8oaT4vY17DCrwg2MvmuqUKt3Ni4N5dGJ/EoBgcO6A=="],
+
     "argparse": ["argparse@2.0.1", "", {}, "sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q=="],
 
     "argue-cli": ["argue-cli@3.1.0", "", {}, "sha512-DhBpBfXL4SS2uC0N922MMajKR3CdrTG0u2or1PNYgXMsrSzViJrbtvT0nCLlLGUI0plam/ZZCs7aAauHtW9thw=="],
@@ -1182,6 +1422,8 @@
     "brace-expansion": ["brace-expansion@5.0.8", "", { "dependencies": { "balanced-match": "^4.0.2" } }, "sha512-JZyDyq3D4AUifKTPOB7DELf6XsB3WdPuNxCtob1vFXPsSXhdAiHBWJ/tJ8HAc9aH84BK+5JFZLNkJKx3G9kzQg=="],
 
     "browserslist": ["browserslist@4.28.7", "", { "dependencies": { "baseline-browser-mapping": "^2.10.44", "caniuse-lite": "^1.0.30001806", "electron-to-chromium": "^1.5.393", "node-releases": "^2.0.51", "update-browserslist-db": "^1.2.3" }, "bin": { "browserslist": "cli.js" } }, "sha512-JxV13hNrFxqjOc8alRbq9dK1MM79NEXYpma2B2J4wAtpWS5zIEIKqWPGCl7N4o7Uc7B7itylh7SuDujATRyyTw=="],
+
+    "bun-ffi-structs": ["bun-ffi-structs@0.2.4", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-AJzsqoVFs1KBbJbWHIYrVZLDC3NhTqqh25awRXqzoLzmBAKr5oqk6+CwuYHAekKx+VBCYVohBoKuRq40dV+TYg=="],
 
     "bun-types": ["bun-types@1.3.14", "", { "dependencies": { "@types/node": "*" } }, "sha512-4N0ig0fEomHt5R0KCFWjovxow98rIoRwKolrYdCcknNwMekCXRnWEUvgu5soYV8QXtVsrUD8B95MBOZGPvr6KQ=="],
 
@@ -1343,6 +1585,10 @@
 
     "fast-uri": ["fast-uri@3.1.4", "", {}, "sha512-8JnbkQ4juDyvYs4mgFGQqg4yCYtFDtUtmp2QIQq11ZZe5CFQ5wcqm1rqDgAh/QdMySuBnPzMUiJUNZG5N/AiQw=="],
 
+    "fast-xml-builder": ["fast-xml-builder@1.3.0", "", { "dependencies": { "path-expression-matcher": "^1.6.2", "xml-naming": "^0.3.0" } }, "sha512-F74cZEdCvuw9P41GAC3rod4X04jjWGM1JPEv/GWSqFTWLsdyMSBMBMlm9Hk3GLBgLBbdBNY8yee0pQh2RBVESQ=="],
+
+    "fast-xml-parser": ["fast-xml-parser@5.10.1", "", { "dependencies": { "@nodable/entities": "^3.0.0", "fast-xml-builder": "^1.2.0", "is-unsafe": "^2.0.0", "path-expression-matcher": "^1.6.2", "strnum": "^2.4.1", "xml-naming": "^0.3.0" }, "bin": { "fxparser": "src/cli/cli.js" } }, "sha512-IEMIf7298kXuZSRFoGfMYrl7is8LpavODgbNz1cwIudv7KwVFnuU+UsMporfq6PD6aXSlawZlARiA3UywCTfMw=="],
+
     "fdir": ["fdir@6.5.0", "", { "peerDependencies": { "picomatch": "^3 || ^4" }, "optionalPeers": ["picomatch"] }, "sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg=="],
 
     "framer-motion": ["framer-motion@12.42.2", "", { "dependencies": { "motion-dom": "^12.42.2", "motion-utils": "^12.39.0", "tslib": "^2.4.0" }, "peerDependencies": { "@emotion/is-prop-valid": "*", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" }, "optionalPeers": ["@emotion/is-prop-valid", "react", "react-dom"] }, "sha512-5XY9luDiu0oHfHBjpDthFMh0ES+122w6p/papSJBweMkO8Sn+PW2QaEgRblQBpWFnuvZS5qvarpt/hO2pjGmnw=="],
@@ -1433,6 +1679,8 @@
 
     "is-plain-obj": ["is-plain-obj@4.1.0", "", {}, "sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg=="],
 
+    "is-unsafe": ["is-unsafe@2.0.0", "", {}, "sha512-2LdV822R+wmI86unXA93WCFpL6g+av8ynWk0nrHyJqGop5VoocYsSLFgN8jrfalT6iGeLNM4KXuVSsULP53kEA=="],
+
     "is-what": ["is-what@5.5.0", "", {}, "sha512-oG7cgbmg5kLYae2N5IVd3jm2s+vldjxJzK1pcu9LfpGuQ93MQSzo0okvRna+7y5ifrD+20FE8FvjusyGaz14fw=="],
 
     "is-wsl": ["is-wsl@3.1.1", "", { "dependencies": { "is-inside-container": "^1.0.0" } }, "sha512-e6rvdUCiQCAuumZslxRJWR/Doq4VpPR82kqclvcS0efgt430SlGIk05vdCN58+VrzgtIcfNODjozVielycD4Sw=="],
@@ -1496,6 +1744,8 @@
     "markdown-extensions": ["markdown-extensions@2.0.0", "", {}, "sha512-o5vL7aDWatOTX8LzaS1WMoaoxIiLRQJuIKKe2wAw6IeULDHaqbiqiggmx+pKvZDb1Sj+pE46Sn1T7lCqfFtg1Q=="],
 
     "markdown-table": ["markdown-table@3.0.4", "", {}, "sha512-wiYz4+JrLyb/DqW2hkFJxP7Vd7JuTDm77fvbM8VfEQdmSMqcImWeeRbHwZjBjIFki/VaMK2BhFi7oUUZeM5bqw=="],
+
+    "marked": ["marked@17.0.1", "", { "bin": { "marked": "bin/marked.js" } }, "sha512-boeBdiS0ghpWcSwoNm/jJBwdpFaMnZWRzjA6SkUMYb40SVaN1x7mmfGKp0jvexGcx+7y2La5zRZsYFZI6Qpypg=="],
 
     "mdast-util-find-and-replace": ["mdast-util-find-and-replace@3.0.2", "", { "dependencies": { "@types/mdast": "^4.0.0", "escape-string-regexp": "^5.0.0", "unist-util-is": "^6.0.0", "unist-util-visit-parents": "^6.0.0" } }, "sha512-Tmd1Vg/m3Xz43afeNxDIhWRtFZgM2VLyaf4vSTYwudTyeuTneoL3qtWMA5jeLyz/O1vDJmmV4QuScFCA2tBPwg=="],
 
@@ -1653,6 +1903,8 @@
 
     "path-browserify": ["path-browserify@1.0.1", "", {}, "sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g=="],
 
+    "path-expression-matcher": ["path-expression-matcher@1.6.2", "", {}, "sha512-enSlaiat05iasnzmgNxRj8reFdj3puY2QpNgP1aPIaVfT6nn9ICuPoFlKHk8EN22HcwewshO+mN2DGbkCEOtqQ=="],
+
     "path-parse": ["path-parse@1.0.7", "", {}, "sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw=="],
 
     "path-scurry": ["path-scurry@2.0.2", "", { "dependencies": { "lru-cache": "^11.0.0", "minipass": "^7.1.2" } }, "sha512-3O/iVVsJAPsOnpwWIeD+d6z/7PmqApyQePUtCndjatj/9I5LylHvt5qluFaBT3I5h3r1ejfR056c+FCv+NnNXg=="],
@@ -1757,6 +2009,8 @@
 
     "slice-ansi": ["slice-ansi@9.0.0", "", { "dependencies": { "ansi-styles": "^6.2.3", "is-fullwidth-code-point": "^5.1.0" } }, "sha512-SO/3iYL5S3W57LLEniscOGPZgOqZUPCx6d3dB+52B80yJ0XstzsC/eV8gnA4tM3MHDrKz+OCFSLNjswdSC+/bA=="],
 
+    "smol-toml": ["smol-toml@1.7.1", "", {}, "sha512-PPlsspAZ4jbMBu5DMFhfUGDQLu/vrL4SyBROVS37x8ynnVmFIs1VPBz1Co8Xks3TvpIaZXmU85y4DrQ+UyVFoQ=="],
+
     "source-map": ["source-map@0.7.6", "", {}, "sha512-i5uvt8C3ikiWeNZSVZNWcfZPItFQOsYTUAOkcUPGd8DqDy1uOUikjt5dG+uRlwyvR108Fb9DOd4GvXfT0N2/uQ=="],
 
     "source-map-js": ["source-map-js@1.2.1", "", {}, "sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA=="],
@@ -1778,6 +2032,8 @@
     "strip-bom": ["strip-bom@3.0.0", "", {}, "sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA=="],
 
     "strip-indent": ["strip-indent@4.1.1", "", {}, "sha512-SlyRoSkdh1dYP0PzclLE7r0M9sgbFKKMFXpFRUMNuKhQSbC6VQIGzq3E0qsfvGJaUFJPGv6Ws1NZ/haTAjfbMA=="],
+
+    "strnum": ["strnum@2.4.1", "", { "dependencies": { "anynum": "^1.0.1" } }, "sha512-M9eUSMT2dCB2cTNPG7UYj6KuK7RJR2SN2+yCV/fTW3xzTCS6EaGZ5pSMgDIjB7r8zSfTGk+dvvn9rTjpVS9Mwg=="],
 
     "style-to-js": ["style-to-js@1.1.21", "", { "dependencies": { "style-to-object": "1.0.14" } }, "sha512-RjQetxJrrUJLQPHbLku6U/ocGtzyjbJMP9lCNK7Ag0CNh690nSH8woqWH9u16nMjYBAok+i7JO1NP2pOy8IsPQ=="],
 
@@ -1863,6 +2119,8 @@
 
     "web-namespaces": ["web-namespaces@2.0.1", "", {}, "sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ=="],
 
+    "web-tree-sitter": ["web-tree-sitter@0.25.10", "", { "peerDependencies": { "@types/emscripten": "^1.40.0" }, "optionalPeers": ["@types/emscripten"] }, "sha512-Y09sF44/13XvgVKgO2cNDw5rGk6s26MgoZPXLESvMXeefBf7i6/73eFurre0IsTW6E14Y0ArIzhUMmjoc7xyzA=="],
+
     "webpack-virtual-modules": ["webpack-virtual-modules@0.6.2", "", {}, "sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ=="],
 
     "widest-line": ["widest-line@6.0.0", "", { "dependencies": { "string-width": "^8.1.0" } }, "sha512-U89AsyEeAsyoF0zVJBkG9zBgekjgjK7yk9sje3F4IQpXBJ10TF6ByLlIfjMhcmHMJgHZI4KHt4rdNfktzxIAMA=="],
@@ -1872,6 +2130,8 @@
     "ws": ["ws@8.21.1", "", { "peerDependencies": { "bufferutil": "^4.0.1", "utf-8-validate": ">=5.0.2" }, "optionalPeers": ["bufferutil", "utf-8-validate"] }, "sha512-+0NTnW77fFN/DjQi6k/Sq/Yvk4Sgajw7urW8V+asjXnRgDs9gyGkdb7EzgfhA4goXsRIZKE28fzIXBHEzhuiWw=="],
 
     "wsl-utils": ["wsl-utils@0.1.0", "", { "dependencies": { "is-wsl": "^3.1.0" } }, "sha512-h3Fbisa2nKGPxCpm89Hk33lBLsnaGBvctQopaBSOW/uIs6FTe1ATyAnKFJrzVs9vpGdsTe73WF3V4lIsk4Gacw=="],
+
+    "xml-naming": ["xml-naming@0.3.0", "", {}, "sha512-ghig2TBE/H11aOVgmahA3MhimvkBr6JIYknH/Dhdk10nXwdbIqBJsbfMxpvFPG8bAw77gN29aQWvKpmVoPlvPQ=="],
 
     "y18n": ["y18n@5.0.8", "", {}, "sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA=="],
 
@@ -1898,6 +2158,10 @@
     "@babel/helper-compilation-targets/semver": ["semver@6.3.1", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA=="],
 
     "@img/sharp-wasm32/@emnapi/runtime": ["@emnapi/runtime@1.11.3", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-Xz4Tpyki7XyrpbUK1jR1AhdAdaXyhhY4lZ3neLodmhpuWfy2PAQN5B46sAiU4liOXGLkHypn/qU+jvfWSCYYLA=="],
+
+    "@opentui/core/string-width": ["string-width@7.2.0", "", { "dependencies": { "emoji-regex": "^10.3.0", "get-east-asian-width": "^1.0.0", "strip-ansi": "^7.1.0" } }, "sha512-tsaTIkKW9b4N+AEj+SVA+WhJzV7/zMhcSu78mLKWSk7cXMOSHsBKFWUs0fWwq8QyK3MgJBQRX6Gbi4kYbdvGkQ=="],
+
+    "@opentui/core/strip-ansi": ["strip-ansi@7.1.2", "", { "dependencies": { "ansi-regex": "^6.0.1" } }, "sha512-gmBGslpoQJtgnMAvOVqGZpEz9dyoKTCzy2nfz/n8aIFhN/jCE/rCmcxabB6jOOHV+0WNnylOxaxBQPSvcWklhA=="],
 
     "@oxc-parser/binding-wasm32-wasi/@emnapi/core": ["@emnapi/core@1.9.2", "", { "dependencies": { "@emnapi/wasi-threads": "1.2.1", "tslib": "^2.4.0" } }, "sha512-UC+ZhH3XtczQYfOlu3lNEkdW/p4dsJ1r/bP7H8+rhao3TTTMO1ATq/4DdIi23XuGoFY+Cz0JmCbdVl0hz9jZcA=="],
 
@@ -1960,6 +2224,8 @@
     "redent/strip-indent": ["strip-indent@3.0.0", "", { "dependencies": { "min-indent": "^1.0.0" } }, "sha512-laJTa3Jb+VQpaC6DseHhF7dXVqHTfJPCRDaEbid/drOhgitgYku/letMUqOXFoWV0zIIUbjpdH2t+tYj4bQMRQ=="],
 
     "yuku-ast/@yuku-toolchain/types": ["@yuku-toolchain/types@0.6.8", "", {}, "sha512-AbUd1775RVkOxJkh8hkldIWoU6kRMTCsZFSZq8Ny53q7GkbaVe5UCfleNZ3RWCoz/ZKE8qwfeB7Cj0xqhLWsKA=="],
+
+    "@opentui/core/string-width/strip-ansi": ["strip-ansi@7.2.0", "", { "dependencies": { "ansi-regex": "^6.2.2" } }, "sha512-yDPMNjp4WyfYBkHnjIRLfca1i6KMyGCtsVgoKe/z1+6vukgaENdgGBZt+ZmKPc4gavvEZ5OgHfHdrazhgNyG7w=="],
 
     "@oxc-parser/binding-wasm32-wasi/@emnapi/core/@emnapi/wasi-threads": ["@emnapi/wasi-threads@1.2.1", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-uTII7OYF+/Mes/MrcIOYp5yOtSMLBWSIoLPpcgwipoiKbli6k322tcoFsxoIIxPDqW01SQGAgko4EzZi2BNv2w=="],
 

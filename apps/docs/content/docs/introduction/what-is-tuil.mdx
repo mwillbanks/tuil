@@ -4,9 +4,12 @@ description: The system model, design principles, and intended application scope
 icon: Compass
 ---
 
-tuil is an application framework for React terminal interfaces. Ink remains the
-renderer; tuil supplies the application services and component conventions that
-large terminal products otherwise rebuild independently.
+tuil is an application framework for terminal interfaces with a
+renderer-neutral application runtime. Ink is the React compatibility renderer;
+renderer applications can instead project the shared scene, semantics, input,
+resize, and lifecycle contracts directly to the deterministic cell backend.
+tuil supplies the services and component conventions that large terminal
+products otherwise rebuild independently.
 
 ## What it owns
 
@@ -20,10 +23,12 @@ large terminal products otherwise rebuild independently.
 
 ## What it does not own
 
-tuil does not replace React, Ink, your domain model, data access layer, or
-deployment architecture. Runtime services are opt-in boundaries, and every
-focused package can be installed without the umbrella package when that better
-fits the application.
+tuil does not replace React, require an existing Ink application to migrate, or
+own your domain model, data access layer, or deployment architecture. React
+components built from Ink primitives remain Ink-renderer surfaces; cell-backed
+applications use the explicit renderer-application boundary. Runtime services
+are opt-in, and every focused package can be installed without the umbrella
+package when that better fits the application.
 
 ## Design principles
 

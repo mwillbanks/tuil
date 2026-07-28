@@ -16,9 +16,19 @@
   },
   "files": [
     {
-      "path": "../../../registry/data-display/divider.tsx",
+      "path": "src/components/tuil/data-display/divider.tsx",
       "target": "src/components/tuil/data-display/divider.tsx",
-      "content": "import {\n  resolveSlotProps,\n  type SlottedComponentProps,\n  useTheme,\n} from \"@mwillbanks/tuil-theme\";\nimport type { ReactNode } from \"react\";\nimport { Text, type TextProps } from \"./text\";\n\nexport interface DividerProps\n  extends SlottedComponentProps<{ root: TextProps }> {\n  readonly id?: string;\n  readonly testId?: string;\n  readonly label?: string;\n  readonly width?: number;\n  readonly orientation?: \"horizontal\" | \"vertical\";\n  readonly title?: string;\n}\n\nexport function Divider({\n  width = 40,\n  orientation = \"horizontal\",\n  title,\n  slots,\n  slotProps,\n  ...props\n}: DividerProps): ReactNode {\n  const theme = useTheme();\n  const Root = slots?.root ?? Text;\n  const line = theme.borders.single[0];\n  const content =\n    orientation === \"vertical\"\n      ? theme.borders.single[1]\n      : title\n        ? `${line.repeat(2)} ${title} ${line.repeat(Math.max(0, width - title.length - 4))}`\n        : line.repeat(width);\n  return (\n    <Root\n      {...props}\n      {...resolveSlotProps(slotProps?.root, {}, theme)}\n      label={props.label ?? title ?? \"separator\"}\n    >\n      {content}\n    </Root>\n  );\n}\n"
+      "content": "import {\n  resolveSlotProps,\n  type SlottedComponentProps,\n  useTheme,\n} from \"@mwillbanks/tuil-theme\";\nimport type { ReactNode } from \"react\";\nimport { Text, type TextProps } from \"./text\";\n\nexport interface DividerProps\n  extends SlottedComponentProps<{ root: TextProps }> {\n  readonly id?: string;\n  readonly testId?: string;\n  readonly label?: string;\n  readonly width?: number;\n  readonly orientation?: \"horizontal\" | \"vertical\";\n  readonly title?: string;\n}\n\nexport function Divider({\n  width = 40,\n  orientation = \"horizontal\",\n  title,\n  slots,\n  slotProps,\n  ...props\n}: DividerProps): ReactNode {\n  const theme = useTheme();\n  const Root = slots?.root ?? Text;\n  const line = theme.borders.single[0];\n  const content =\n    orientation === \"vertical\"\n      ? theme.borders.single[1]\n      : title\n        ? `${line.repeat(2)} ${title} ${line.repeat(Math.max(0, width - title.length - 4))}`\n        : line.repeat(width);\n  return (\n    <Root\n      {...props}\n      {...resolveSlotProps(slotProps?.root, {}, theme)}\n      label={props.label ?? title ?? \"separator\"}\n    >\n      {content}\n    </Root>\n  );\n}\n",
+      "source": "registry/data-display/divider.tsx"
     }
-  ]
+  ],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "integrity": "sha256-17c2d1957bdd5640e4bc0249814e713c9ee85863b5c9dd04e0f4f88310097bd7"
 }

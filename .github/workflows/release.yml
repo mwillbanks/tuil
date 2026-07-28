@@ -47,19 +47,30 @@ jobs:
         env:
           RELEASED_PATHS: ${{ steps.release.outputs.paths_released }}
           RELEASE_SHAS: |-
+            ${{ steps.release.outputs['packages/cell--sha'] }}
             ${{ steps.release.outputs['packages/cli--sha'] }}
+            ${{ steps.release.outputs['packages/code--sha'] }}
+            ${{ steps.release.outputs['packages/content--sha'] }}
             ${{ steps.release.outputs['packages/core--sha'] }}
             ${{ steps.release.outputs['packages/devtools--sha'] }}
+            ${{ steps.release.outputs['packages/editor--sha'] }}
             ${{ steps.release.outputs['packages/events--sha'] }}
             ${{ steps.release.outputs['packages/focus--sha'] }}
             ${{ steps.release.outputs['packages/form--sha'] }}
             ${{ steps.release.outputs['packages/hotkeys--sha'] }}
             ${{ steps.release.outputs['packages/ink--sha'] }}
+            ${{ steps.release.outputs['packages/log-viewer--sha'] }}
+            ${{ steps.release.outputs['packages/logging--sha'] }}
             ${{ steps.release.outputs['packages/operations--sha'] }}
             ${{ steps.release.outputs['packages/plugin--sha'] }}
+            ${{ steps.release.outputs['packages/pointer--sha'] }}
+            ${{ steps.release.outputs['packages/protocol--sha'] }}
             ${{ steps.release.outputs['packages/registry--sha'] }}
+            ${{ steps.release.outputs['packages/renderer--sha'] }}
             ${{ steps.release.outputs['packages/router--sha'] }}
+            ${{ steps.release.outputs['packages/scroll--sha'] }}
             ${{ steps.release.outputs['packages/story--sha'] }}
+            ${{ steps.release.outputs['packages/streaming--sha'] }}
             ${{ steps.release.outputs['packages/testing-ink--sha'] }}
             ${{ steps.release.outputs['packages/testing--sha'] }}
             ${{ steps.release.outputs['packages/theme--sha'] }}

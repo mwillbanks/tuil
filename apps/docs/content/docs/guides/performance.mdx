@@ -1,0 +1,39 @@
+---
+title: Performance tuning
+description: Tune large lists, streams, logs, diffs, and animated frames.
+icon: Gauge
+---
+
+Bound retained streaming and log records, virtualize off-screen rows, reuse
+measured layouts, and schedule at most one pending frame. Prefer model-level
+incremental updates over reparsing full documents. The cell renderer emits only
+changed spans.
+
+Run `bun run benchmark:terminal` against the checked-in baseline. Every case
+performs isolated warmup iterations and reports mean, median, p95, p99,
+minimum, and maximum wall-clock time. The artifact records Bun, operating
+system, architecture, CPU, and execution profile metadata for diagnostics.
+Each sample batches enough operations to target at least 10 milliseconds of
+work, capped at 1,000 operations, and reports per-operation latency. This
+amortizes shared-runner scheduling noise without hiding sustained regressions.
+
+The cell-diff group measures both the production TypeScript diff and the
+explicit Zig changed-cell-count prototype over the same 120-by-40 frame. The
+prototype still performs the TypeScript diff and JavaScript fingerprinting, so
+it remains opt-in profiling evidence rather than the production default.
+
+The comparison group sends the same 80-by-24 text frame through each renderer's
+public application or buffer API and includes output encoding. It is a
+whole-pipeline latency comparison, not a claim that the implementations perform
+identical internal phases. Regression policy divides every p95 by a same-run
+integer calibration and gates that normalized value at 1.75 times the
+checked-in normalized result. CI uses a Linux x64 baseline while development
+uses the recorded local baseline, so materially different allocation and
+rendering costs are not compared across CPU architectures. Same-run batching
+and calibration keep shared-runner CPU differences from turning absolute
+timings into false failures or false confidence. Benchmark names and labels
+identify the actual operation rather than an implementation nickname.
+
+Set `TUIL_BENCHMARK_BASELINE=linux-x64` to reproduce the CI comparison from a
+different host. Baseline selectors accept lowercase letters, digits, and
+hyphens only.

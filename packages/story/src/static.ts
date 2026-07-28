@@ -6,8 +6,10 @@ import type {
 } from "@mwillbanks/tuil-testing";
 import type { ThemeRegistry } from "@mwillbanks/tuil-theme";
 import {
+  handleStoryHttpRequest,
   renderStoryRequest,
   type StoryFrame,
+  type StoryHttpHandlerOptions,
   TuilStoryCatalog,
 } from "./index.tsx";
 
@@ -66,34 +68,16 @@ export async function renderStaticStoryRequest(
 
 export function createStaticStoryHttpHandler(
   catalog: StaticStoryCatalog,
-  options: { readonly themeRegistry?: ThemeRegistry } = {},
+  options: StoryHttpHandlerOptions = {},
 ): (request: Request) => Promise<Response> {
-  return async (request) => {
-    if (request.method !== "POST") {
-      return Response.json(
-        { error: "Only POST is supported" },
-        { status: 405, headers: { Allow: "POST" } },
-      );
-    }
-    try {
-      request.signal.throwIfAborted();
-      const body = (await request.json()) as StaticStoryRequest;
-      return Response.json(
-        await renderStaticStoryRequest(catalog, body, {
-          ...options,
-          signal: request.signal,
+  return (request) =>
+    handleStoryHttpRequest(
+      request,
+      (body, signal) =>
+        renderStaticStoryRequest(catalog, body, {
+          themeRegistry: options.themeRegistry,
+          signal,
         }),
-      );
-    } catch (error) {
-      return Response.json(
-        { error: error instanceof Error ? error.message : String(error) },
-        {
-          status:
-            error instanceof DOMException && error.name === "AbortError"
-              ? 499
-              : 400,
-        },
-      );
-    }
-  };
+      options,
+    );
 }

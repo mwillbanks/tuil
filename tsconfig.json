@@ -44,7 +44,22 @@
         "./packages/story/src/storybook.tsx"
       ],
       "@mwillbanks/tuil-story/static": ["./packages/story/src/static.ts"],
-      "@mwillbanks/tuil-devtools": ["./packages/devtools/src/index.tsx"]
+      "@mwillbanks/tuil-devtools": ["./packages/devtools/src/index.tsx"],
+      "@mwillbanks/tuil-renderer": ["./packages/renderer/src/index.ts"],
+      "@mwillbanks/tuil-cell": ["./packages/cell/src/index.ts"],
+      "@mwillbanks/tuil-pointer": ["./packages/pointer/src/index.ts"],
+      "@mwillbanks/tuil-scroll": ["./packages/scroll/src/index.ts"],
+      "@mwillbanks/tuil-editor": ["./packages/editor/src/index.ts"],
+      "@mwillbanks/tuil-editor/buffer": ["./packages/editor/src/buffer.ts"],
+      "@mwillbanks/tuil-editor/vim": ["./packages/editor/src/vim.ts"],
+      "@mwillbanks/tuil-editor/rich": ["./packages/editor/src/rich.ts"],
+      "@mwillbanks/tuil-editor/testing": ["./packages/editor/src/testing.ts"],
+      "@mwillbanks/tuil-streaming": ["./packages/streaming/src/index.ts"],
+      "@mwillbanks/tuil-code": ["./packages/code/src/index.ts"],
+      "@mwillbanks/tuil-content": ["./packages/content/src/index.ts"],
+      "@mwillbanks/tuil-logging": ["./packages/logging/src/index.ts"],
+      "@mwillbanks/tuil-log-viewer": ["./packages/log-viewer/src/index.tsx"],
+      "@mwillbanks/tuil-protocol": ["./packages/protocol/src/index.ts"]
     }
   },
   "include": [

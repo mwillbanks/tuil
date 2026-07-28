@@ -1,4 +1,8 @@
 import { deleteOnDispose, type SemanticMetadata } from "@mwillbanks/tuil-core";
+import type {
+  LayoutNodeInput,
+  LayoutProjection,
+} from "@mwillbanks/tuil-renderer";
 import {
   createContext,
   createElement,
@@ -13,6 +17,7 @@ import {
 export interface SemanticNode extends SemanticMetadata {
   readonly key: string;
   readonly text?: string;
+  readonly layout?: Omit<LayoutNodeInput, "id" | "semantics" | "children">;
 }
 
 export function resolveSemanticNode(
@@ -53,20 +58,28 @@ export function useOptionalExternalStore<TSnapshot>(
 export class SemanticRegistry {
   readonly #nodes: Map<string, SemanticNode>;
   readonly #observers: Set<() => void>;
+  readonly #layout?: LayoutProjection;
 
-  constructor() {
+  constructor(layout?: LayoutProjection) {
     this.#nodes = new Map();
     this.#observers = new Set();
+    this.#layout = layout;
   }
 
   register(node: SemanticNode): () => void {
     this.#nodes.set(node.key, Object.freeze({ ...node }));
+    this.#project(node);
     this.#notify();
-    return deleteOnDispose(this.#nodes, node.key, this.#notify.bind(this));
+    return () => {
+      this.#nodes.delete(node.key);
+      this.#layout?.remove(node.id ?? node.key);
+      this.#notify();
+    };
   }
 
   update(node: SemanticNode): void {
     this.#nodes.set(node.key, Object.freeze({ ...node }));
+    this.#project(node);
     this.#notify();
   }
 
@@ -81,6 +94,15 @@ export class SemanticRegistry {
 
   #notify(): void {
     for (const observer of this.#observers) observer();
+  }
+
+  #project(node: SemanticNode): void {
+    if (!this.#layout || !node.layout) return;
+    this.#layout.upsert({
+      id: node.id ?? node.key,
+      ...node.layout,
+      semantics: node,
+    });
   }
 }
 

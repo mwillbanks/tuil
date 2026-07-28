@@ -1,0 +1,28 @@
+{
+  "name": "terminal-platform-plugin",
+  "type": "plugin",
+  "tier": 4,
+  "title": "Terminal Platform Plugin",
+  "description": "Package-owned plugin entry point for terminal platform contributions.",
+  "capabilities": ["interactive", "static"],
+  "semantics": ["application"],
+  "dependencies": ["@mwillbanks/tuil", "@mwillbanks/tuil-plugin"],
+  "registryDependencies": [],
+  "slots": [],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "use"
+  },
+  "files": [],
+  "version": "0.2.0",
+  "ownership": "plugin",
+  "packageName": "@mwillbanks/tuil-plugin",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink", "cell"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "integrity": "sha256-7cee9e61dbaafe6701cd35e04cc560b09e3569c723c666a6bfb52b1326b54042"
+}

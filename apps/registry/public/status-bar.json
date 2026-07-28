@@ -16,10 +16,20 @@
   },
   "files": [
     {
-      "path": "../../../registry/components/status-bar.tsx",
+      "path": "src/components/tuil/components/status-bar.tsx",
       "target": "src/components/tuil/components/status-bar.tsx",
-      "content": "import type { ReactNode } from \"react\";\nimport { Box, type BoxProps } from \"../primitives/box\";\n\nexport function StatusBar(props: BoxProps): ReactNode {\n  return <Box flexDirection=\"row\" role=\"status\" {...props} />;\n}\n"
+      "content": "import type { ReactNode } from \"react\";\nimport { Box, type BoxProps } from \"../primitives/box\";\n\nexport function StatusBar(props: BoxProps): ReactNode {\n  return <Box flexDirection=\"row\" role=\"status\" {...props} />;\n}\n",
+      "source": "registry/components/status-bar.tsx"
     }
   ],
-  "registryDependencies": ["box"]
+  "registryDependencies": ["box"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "integrity": "sha256-dae29a89f8185c60c12012bc1a08153d8b1db25911018e29d0b900762f83efe4"
 }

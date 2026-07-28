@@ -2,8 +2,10 @@ import { useApp } from "@mwillbanks/tuil";
 import { useFocusable } from "@mwillbanks/tuil-focus";
 import {
   type CommonComponentProps,
-  TerminalSemanticNode as SemanticNode,
+  Box as SemanticBox,
+  usePointerEvents,
   useTerminalInput,
+  useTerminalScrollArea,
 } from "@mwillbanks/tuil-ink";
 import {
   resolveSlotProps,
@@ -277,6 +279,198 @@ function fitColumns(
   return result;
 }
 
+interface TerminalTableRenderState {
+  readonly focused: boolean;
+  readonly activeRow: number;
+  readonly activeColumn: number;
+}
+
+function TerminalTableHeader(props: {
+  readonly columns: readonly TerminalColumn[];
+  readonly visibleColumns: readonly TerminalColumn[];
+  readonly state: TerminalTableRenderState;
+  readonly theme: ReturnType<typeof useTheme>;
+  readonly slots: TerminalTableViewProps["slots"];
+  readonly slotProps: TerminalTableViewProps["slotProps"];
+}): ReactNode {
+  const Header = props.slots?.header ?? Box;
+  const HeaderCell = props.slots?.headerCell ?? Text;
+  return (
+    <Header
+      flexDirection="row"
+      {...resolveSlotProps(props.slotProps?.header, props.state, props.theme)}
+    >
+      {props.visibleColumns.map((column) => {
+        const active =
+          props.state.focused &&
+          props.columns[props.state.activeColumn]?.id === column.id;
+        const renderHeader = (value: unknown, fit: boolean) => (
+          <HeaderCell
+            bold
+            underline={active}
+            wrap="truncate-end"
+            {...resolveSlotProps(
+              props.slotProps?.headerCell,
+              props.state,
+              props.theme,
+            )}
+          >
+            {fit
+              ? fitTerminalText(
+                  semanticValue(value),
+                  column.width,
+                  column.align,
+                )
+              : semanticValue(value)}
+          </HeaderCell>
+        );
+        return (
+          <Box
+            key={column.id}
+            width={column.width}
+            height={1}
+            overflow="hidden"
+          >
+            {column.headerTemplate ? (
+              <TerminalTemplateResult
+                template={column.headerTemplate}
+                renderPrimitive={(value) => renderHeader(value, true)}
+                renderInlinePrimitive={(value) => renderHeader(value, false)}
+              />
+            ) : (
+              renderTerminalResult(
+                column.header,
+                (value) => renderHeader(value, true),
+                (value) => renderHeader(value, false),
+              )
+            )}
+          </Box>
+        );
+      })}
+    </Header>
+  );
+}
+
+function TerminalTableBody(props: {
+  readonly id: string;
+  readonly columns: readonly TerminalColumn[];
+  readonly visibleColumns: readonly TerminalColumn[];
+  readonly rows: ReadonlyMap<number, TerminalRow>;
+  readonly rowIndexes: readonly number[];
+  readonly focusMode: "row" | "cell";
+  readonly interactive: boolean;
+  readonly height: number;
+  readonly state: TerminalTableRenderState;
+  readonly theme: ReturnType<typeof useTheme>;
+  readonly slots: TerminalTableViewProps["slots"];
+  readonly slotProps: TerminalTableViewProps["slotProps"];
+}): ReactNode {
+  const Body = props.slots?.body ?? Box;
+  const Row = props.slots?.row ?? Box;
+  const Cell = props.slots?.cell ?? Text;
+  return (
+    <Body
+      flexDirection="column"
+      height={props.interactive ? Math.max(1, props.height) : undefined}
+      overflow="hidden"
+      {...resolveSlotProps(props.slotProps?.body, props.state, props.theme)}
+    >
+      {props.rowIndexes.map((rowIndex) => {
+        const row = props.rows.get(rowIndex);
+        if (!row) return null;
+        const active =
+          props.state.focused && rowIndex === props.state.activeRow;
+        const rowId = `${props.id}:row:${row.id}`;
+        return (
+          <SemanticBox
+            key={row.id}
+            id={rowId}
+            role="row"
+            label={`Row ${rowIndex + 1}`}
+            selected={row.selected}
+            flexDirection="row"
+            layout={{ parentId: props.id }}
+          >
+            <Row
+              flexDirection="row"
+              {...resolveSlotProps(
+                props.slotProps?.row,
+                props.state,
+                props.theme,
+              )}
+            >
+              {props.visibleColumns.map((column) => {
+                const cell = row.cells.get(column.id);
+                const cellActive =
+                  active &&
+                  (props.focusMode === "row" ||
+                    props.columns[props.state.activeColumn]?.id === column.id);
+                const renderCell = (
+                  value: unknown,
+                  fit: boolean,
+                  useCellText: boolean,
+                ) => (
+                  <Cell
+                    inverse={cellActive}
+                    bold={cellActive}
+                    wrap="truncate-end"
+                    {...resolveSlotProps(
+                      props.slotProps?.cell,
+                      props.state,
+                      props.theme,
+                    )}
+                  >
+                    {fit
+                      ? fitTerminalText(
+                          semanticValue(value) ||
+                            (useCellText ? cell?.text : "") ||
+                            "",
+                          column.width,
+                          column.align,
+                        )
+                      : semanticValue(value)}
+                  </Cell>
+                );
+                return (
+                  <SemanticBox
+                    key={`${row.id}:${column.id}`}
+                    id={`${props.id}:cell:${row.id}:${column.id}`}
+                    role="cell"
+                    label={`${column.headerText}: ${cell?.text ?? ""}`}
+                    selected={cellActive}
+                    width={column.width}
+                    height={1}
+                    overflow="hidden"
+                    layout={{ parentId: rowId, zIndex: 1 }}
+                  >
+                    {cell?.template ? (
+                      <TerminalTemplateResult
+                        template={cell.template}
+                        renderPrimitive={(value) =>
+                          renderCell(value, true, false)
+                        }
+                        renderInlinePrimitive={(value) =>
+                          renderCell(value, false, false)
+                        }
+                      />
+                    ) : (
+                      renderTerminalResult(
+                        cell?.content ?? cell?.text ?? "",
+                        (value) => renderCell(value, true, true),
+                        (value) => renderCell(value, false, true),
+                      )
+                    )}
+                  </SemanticBox>
+                );
+              })}
+            </Row>
+          </SemanticBox>
+        );
+      })}
+    </Body>
+  );
+}
+
 function TerminalTableView({
   columns,
   rowCount,
@@ -303,9 +497,16 @@ function TerminalTableView({
   const interactive = app.mode === "interactive";
   const [activeRow, setActiveRow] = useState(0);
   const [activeColumn, setActiveColumn] = useState(0);
-  const [rowOffset, setRowOffset] = useState(0);
   const [columnOffset, setColumnOffset] = useState(0);
-  const { focused } = useFocusable(
+  const { state: scroll, snapshot: scrollSnapshot } = useTerminalScrollArea({
+    id,
+    viewport: { width, height: Math.max(1, height) },
+    extent: { width, height: rowCount },
+    followFocus: true,
+    enabled: interactive && !disabled,
+  });
+  const rowOffset = scrollSnapshot.position.y;
+  const { focused, focus } = useFocusable(
     useMemo(
       () => ({
         id,
@@ -321,10 +522,11 @@ function TerminalTableView({
     (next: number) => {
       const value = Math.min(rowCount - 1, Math.max(0, next));
       setActiveRow(Math.max(0, value));
-      if (value < rowOffset) setRowOffset(value);
-      if (value >= rowOffset + height) setRowOffset(value - height + 1);
+      if (value < rowOffset) scroll.scrollTo({ y: value });
+      if (value >= rowOffset + height)
+        scroll.scrollTo({ y: value - height + 1 });
     },
-    [height, rowCount, rowOffset],
+    [height, rowCount, rowOffset, scroll],
   );
   const moveColumn = useCallback(
     (next: number) => {
@@ -408,246 +610,159 @@ function TerminalTableView({
     scrollOffset: rowOffset,
     overscan: 1,
   });
-  const rowIndexes = interactive
-    ? getVisibleTerminalIndexes(range)
-    : Array.from(
-        { length: Math.min(rowCount, Math.max(0, staticLimit)) },
-        (_value, index) => index,
-      );
-  const projectionIndexes = interactive ? range.indexes : rowIndexes;
-  const visibleColumns = interactive
-    ? fitColumns(
+  const rowIndexes = useMemo(
+    () =>
+      interactive
+        ? getVisibleTerminalIndexes(range)
+        : Array.from(
+            { length: Math.min(rowCount, Math.max(0, staticLimit)) },
+            (_value, index) => index,
+          ),
+    [interactive, range, rowCount, staticLimit],
+  );
+  const visibleColumns = useMemo(
+    () =>
+      interactive
+        ? fitColumns(
+            columns,
+            width,
+            columnOffset,
+            frozenColumns,
+            rightFrozenColumns,
+          )
+        : columns,
+    [
+      columnOffset,
+      columns,
+      frozenColumns,
+      interactive,
+      rightFrozenColumns,
+      width,
+    ],
+  );
+  const projectedRows = useMemo(
+    () =>
+      new Map(
+        (interactive ? range.indexes : rowIndexes).flatMap((index) => {
+          const row = getRow(index, visibleColumns);
+          return row ? ([[index, row]] as const) : [];
+        }),
+      ),
+    [getRow, interactive, range.indexes, rowIndexes, visibleColumns],
+  );
+  usePointerEvents(
+    useMemo(
+      () => [
+        ...[...projectedRows].flatMap(([rowIndex, row]) => [
+          {
+            id: `${id}:row:${row.id}`,
+            type: "click" as const,
+            listener: async () => {
+              focus();
+              moveRow(rowIndex);
+              if (!readOnly) await onToggleSelection?.(rowIndex);
+            },
+          },
+          ...visibleColumns.map((column) => ({
+            id: `${id}:cell:${row.id}:${column.id}`,
+            type: "click" as const,
+            listener: async (event: { stopPropagation(): void }) => {
+              event.stopPropagation();
+              focus();
+              moveRow(rowIndex);
+              moveColumn(
+                columns.findIndex((candidate) => candidate.id === column.id),
+              );
+              if (!readOnly) {
+                await onActivate?.(
+                  rowIndex,
+                  columns.findIndex((candidate) => candidate.id === column.id),
+                );
+              }
+            },
+          })),
+        ]),
+      ],
+      [
         columns,
-        width,
-        columnOffset,
-        frozenColumns,
-        rightFrozenColumns,
-      )
-    : columns;
-  const projectedRows = new Map(
-    projectionIndexes.flatMap((index) => {
-      const row = getRow(index, visibleColumns);
-      return row ? ([[index, row]] as const) : [];
-    }),
+        focus,
+        id,
+        moveColumn,
+        moveRow,
+        onActivate,
+        onToggleSelection,
+        projectedRows,
+        readOnly,
+        visibleColumns,
+      ],
+    ),
   );
   const state = { focused, activeRow, activeColumn };
   const Root = slots?.root ?? Box;
-  const Header = slots?.header ?? Box;
-  const HeaderCell = slots?.headerCell ?? Text;
-  const Body = slots?.body ?? Box;
-  const Row = slots?.row ?? Box;
-  const Cell = slots?.cell ?? Text;
   const Overflow = slots?.overflow ?? Text;
   const Empty = slots?.empty ?? Text;
   return (
-    <Root
+    <SemanticBox
+      {...props}
+      id={id}
+      role="table"
+      label={props.label ?? "Table"}
+      valueText={`${rowCount} rows by ${columns.length} columns`}
       flexDirection="column"
-      {...resolveSlotProps(slotProps?.root, state, theme)}
+      disabled={disabled}
+      readOnly={readOnly}
+      layout={{ ...props.layout, focusable: interactive && !disabled }}
     >
-      <SemanticNode
-        id={id}
-        role="table"
-        label={props.label ?? "Table"}
-        valueText={`${rowCount} rows by ${columns.length} columns`}
-        metadata={{ ...props, disabled, readOnly }}
-      />
-      <Header
-        flexDirection="row"
-        {...resolveSlotProps(slotProps?.header, state, theme)}
+      <Root
+        flexDirection="column"
+        {...resolveSlotProps(slotProps?.root, state, theme)}
       >
-        {visibleColumns.map((column) => {
-          const renderPrimitive = (value: unknown) => (
-            <HeaderCell
-              bold
-              underline={focused && columns[activeColumn]?.id === column.id}
-              wrap="truncate-end"
-              {...resolveSlotProps(slotProps?.headerCell, state, theme)}
-            >
-              {fitTerminalText(
-                semanticValue(value),
-                column.width,
-                column.align,
-              )}
-            </HeaderCell>
-          );
-          const renderInlinePrimitive = (value: unknown) => (
-            <HeaderCell
-              bold
-              underline={focused && columns[activeColumn]?.id === column.id}
-              wrap="truncate-end"
-              {...resolveSlotProps(slotProps?.headerCell, state, theme)}
-            >
-              {semanticValue(value)}
-            </HeaderCell>
-          );
-          return (
-            <Box
-              key={column.id}
-              width={column.width}
-              height={1}
-              overflow="hidden"
-            >
-              {column.headerTemplate ? (
-                <TerminalTemplateResult
-                  template={column.headerTemplate}
-                  renderPrimitive={renderPrimitive}
-                  renderInlinePrimitive={renderInlinePrimitive}
-                />
-              ) : (
-                renderTerminalResult(
-                  column.header,
-                  renderPrimitive,
-                  renderInlinePrimitive,
-                )
-              )}
-            </Box>
-          );
-        })}
-      </Header>
-      {rowCount === 0 ? (
-        <Empty dimColor {...resolveSlotProps(slotProps?.empty, state, theme)}>
-          No rows
-        </Empty>
-      ) : (
-        <Body
-          flexDirection="column"
-          height={interactive ? Math.max(1, height) : undefined}
-          overflow="hidden"
-          {...resolveSlotProps(slotProps?.body, state, theme)}
-        >
-          {rowIndexes.map((rowIndex) => {
-            const row = projectedRows.get(rowIndex);
-            if (!row) return null;
-            const active = focused && rowIndex === activeRow;
-            return (
-              <Row
-                key={row.id}
-                flexDirection="row"
-                {...resolveSlotProps(slotProps?.row, state, theme)}
-              >
-                <SemanticNode
-                  id={`${id}:row:${row.id}`}
-                  role="row"
-                  label={`Row ${rowIndex + 1}`}
-                  selected={row.selected}
-                />
-                {visibleColumns.map((column) => {
-                  const cell = row.cells.get(column.id);
-                  const cellActive =
-                    active &&
-                    (focusMode === "row" ||
-                      columns[activeColumn]?.id === column.id);
-                  return (
-                    <Box
-                      key={`${row.id}:${column.id}`}
-                      width={column.width}
-                      height={1}
-                      overflow="hidden"
-                    >
-                      <SemanticNode
-                        id={`${id}:cell:${row.id}:${column.id}`}
-                        role="cell"
-                        label={`${column.headerText}: ${cell?.text ?? ""}`}
-                        selected={cellActive}
-                      />
-                      {cell?.template ? (
-                        <TerminalTemplateResult
-                          template={cell.template}
-                          renderPrimitive={(value) => (
-                            <Cell
-                              inverse={cellActive}
-                              bold={cellActive}
-                              wrap="truncate-end"
-                              {...resolveSlotProps(
-                                slotProps?.cell,
-                                state,
-                                theme,
-                              )}
-                            >
-                              {fitTerminalText(
-                                semanticValue(value),
-                                column.width,
-                                column.align,
-                              )}
-                            </Cell>
-                          )}
-                          renderInlinePrimitive={(value) => (
-                            <Cell
-                              inverse={cellActive}
-                              bold={cellActive}
-                              wrap="truncate-end"
-                              {...resolveSlotProps(
-                                slotProps?.cell,
-                                state,
-                                theme,
-                              )}
-                            >
-                              {semanticValue(value)}
-                            </Cell>
-                          )}
-                        />
-                      ) : (
-                        renderTerminalResult(
-                          cell?.content ?? cell?.text ?? "",
-                          (value) => (
-                            <Cell
-                              inverse={cellActive}
-                              bold={cellActive}
-                              wrap="truncate-end"
-                              {...resolveSlotProps(
-                                slotProps?.cell,
-                                state,
-                                theme,
-                              )}
-                            >
-                              {fitTerminalText(
-                                semanticValue(value) || cell?.text || "",
-                                column.width,
-                                column.align,
-                              )}
-                            </Cell>
-                          ),
-                          (value) => (
-                            <Cell
-                              inverse={cellActive}
-                              bold={cellActive}
-                              wrap="truncate-end"
-                              {...resolveSlotProps(
-                                slotProps?.cell,
-                                state,
-                                theme,
-                              )}
-                            >
-                              {semanticValue(value)}
-                            </Cell>
-                          ),
-                        )
-                      )}
-                    </Box>
-                  );
-                })}
-              </Row>
-            );
-          })}
-        </Body>
-      )}
-      {interactive && range.after > 0 ? (
-        <Overflow
-          dimColor
-          {...resolveSlotProps(slotProps?.overflow, state, theme)}
-        >
-          ↓ {rowCount - range.endIndex - 1} more rows
-        </Overflow>
-      ) : null}
-      {!interactive && rowCount > rowIndexes.length ? (
-        <Overflow
-          dimColor
-          {...resolveSlotProps(slotProps?.overflow, state, theme)}
-        >
-          … {rowCount - rowIndexes.length} additional rows omitted
-        </Overflow>
-      ) : null}
-    </Root>
+        <TerminalTableHeader
+          columns={columns}
+          visibleColumns={visibleColumns}
+          state={state}
+          theme={theme}
+          slots={slots}
+          slotProps={slotProps}
+        />
+        {rowCount === 0 ? (
+          <Empty dimColor {...resolveSlotProps(slotProps?.empty, state, theme)}>
+            No rows
+          </Empty>
+        ) : (
+          <TerminalTableBody
+            id={id}
+            columns={columns}
+            visibleColumns={visibleColumns}
+            rows={projectedRows}
+            rowIndexes={rowIndexes}
+            focusMode={focusMode}
+            interactive={interactive}
+            height={height}
+            state={state}
+            theme={theme}
+            slots={slots}
+            slotProps={slotProps}
+          />
+        )}
+        {interactive && range.after > 0 ? (
+          <Overflow
+            dimColor
+            {...resolveSlotProps(slotProps?.overflow, state, theme)}
+          >
+            ↓ {rowCount - range.endIndex - 1} more rows
+          </Overflow>
+        ) : null}
+        {!interactive && rowCount > rowIndexes.length ? (
+          <Overflow
+            dimColor
+            {...resolveSlotProps(slotProps?.overflow, state, theme)}
+          >
+            … {rowCount - rowIndexes.length} additional rows omitted
+          </Overflow>
+        ) : null}
+      </Root>
+    </SemanticBox>
   );
 }
 

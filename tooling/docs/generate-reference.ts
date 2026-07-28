@@ -9,6 +9,16 @@ interface PackageGuidance {
 }
 
 const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
+  cell: {
+    operation:
+      "The cell backend composes grapheme-aware buffers, preserves wide-character continuation cells, diffs frames, and emits minimal ANSI output. The TypeScript path is the default. Zig prebuilds expose an explicit conformance and profiling prototype, and applications must opt in because the prototype does not replace the complete diff and encoding workload.",
+    lifecycle:
+      "compose buffer → snapshot frame → diff → emit → restore session",
+    events:
+      "The backend consumes renderer lifecycle and input contracts; it does not introduce an application event bus.",
+    example:
+      'const buffer = new CellBuffer(80, 24);\nbuffer.write(0, 0, "Ready");',
+  },
   cli: {
     operation:
       "The CLI validates configuration, resolves registry dependency graphs, plans every write, and only then applies source-owned files. Initializers and installers share the same conflict-safe transaction boundary.",
@@ -28,6 +38,24 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     example:
       'const lifecycle = new Lifecycle();\nawait lifecycle.transition("initializing");',
   },
+  code: {
+    operation:
+      "Code documents detect languages, parse through pluggable parsers, apply incremental edits, and project tokens, diagnostics, folds, search results, and terminal lines.",
+    lifecycle: "create source → detect/parse → edit → search/fold → render",
+    events:
+      "Parsing and projection are explicit async operations with cancellation rather than global events.",
+    example:
+      'const document = new CodeDocument("const ready = true");\nawait document.parse(signal);',
+  },
+  content: {
+    operation:
+      "Content models retain structured paths and diff source positions while exposing raw, tree, table, unified, and split projections.",
+    lifecycle: "parse model → navigate/search → select/copy → project",
+    events:
+      "Models are deterministic values and expose results directly without global events.",
+    example:
+      "const model = new StructuredContentModel({ service: { ready: true } });",
+  },
   devtools: {
     operation:
       "Devtools subscribes to runtime snapshots without changing application state. The overlay exposes lifecycle, focus, services, commands, plugins, events, capabilities, and theme information.",
@@ -35,6 +63,16 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Reads the runtime event history and observer stream. It does not emit application events.",
     example: "render(<TuilDevtools />);",
+  },
+  editor: {
+    operation:
+      "Editor providers own documents, selections, history, composition, clipboard, commands, static output, and buffer, Vim, or rich editing behavior behind one contract.",
+    lifecycle:
+      "register provider → create editor → edit/command → undo → dispose",
+    events:
+      "Editors publish typed snapshots and command outcomes through provider-owned subscriptions.",
+    example:
+      'import { TextBufferSession } from "@mwillbanks/tuil-editor/buffer";\n\nconst editor = new TextBufferSession({ value: "hello" });',
   },
   events: {
     operation:
@@ -84,6 +122,25 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     example:
       "const instance = render(<App />, { app });\nawait instance.waitUntilExit();",
   },
+  logging: {
+    operation:
+      "Logging adapters normalize OpenTelemetry, JSON, syslog, journald, container, and text records, redact before retention, enrich, query, and export bounded data.",
+    lifecycle:
+      "detect/parse → normalize → redact → enrich → retain/query → export",
+    events:
+      "Pipelines return normalized records and observable snapshots; original payloads are never exposed before redaction.",
+    example:
+      "const pipeline = new LogPipeline({ capacity: 100_000 });\npipeline.ingest(line);",
+  },
+  "log-viewer": {
+    operation:
+      "The log viewer combines normalized records, typed queries, editor input, scrolling, selection, details, timelines, tables, themes, saved searches, copy, and export.",
+    lifecycle: "attach pipeline → ingest → filter/follow → inspect → export",
+    events:
+      "Viewer state changes are subscriptions over logging, editor, and scroll models.",
+    example:
+      'const viewer = new LogViewerModel(pipeline, { queryEditor: app.createEditorSession({ id: "log-query" }), queryEditorOwnership: "owned" });',
+  },
   operations: {
     operation:
       "Operation executors track progress, retries, cancellation, timeouts, dependencies, rollback, logs, and immutable observable snapshots.",
@@ -104,6 +161,32 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     example:
       'const plugin = createPlugin({ id: "analytics", activate(context) { return context.events.observe(track); } });',
   },
+  pointer: {
+    operation:
+      "Pointer input parses SGR sequences, hit-tests shared layout bounds, and routes capture and bubble phases for click, hover, drag, wheel, and focus behavior.",
+    lifecycle: "enable tracking → decode → hit test → route → disable tracking",
+    events:
+      "Normalized pointer events carry coordinates, buttons, modifiers, phase, and propagation state.",
+    example: "const event = parseSgrPointer(sequence);",
+  },
+  protocol: {
+    operation:
+      "The devtools protocol defines versioned messages, in-process transport, and safe-by-default session recording, import, export, and deterministic replay. Every recorded payload is recursively cloned and redacted before it can appear in a recorder snapshot or export.",
+    lifecycle: "connect → negotiate version → exchange → record/replay → close",
+    events:
+      "Versioned envelopes distinguish requests, responses, notifications, and protocol errors. Validation fails closed on envelope fields, ids, timestamps, payload JSON shape, nesting, message count, and byte limits. Sensitive keys, credentials, JWTs, and URL userinfo are removed recursively; use `redactProtocolValue` for non-envelope devtools data and `sanitizeProtocolMessage` for complete messages.",
+    example:
+      'import { InProcessProtocolTransport, redactProtocolValue } from "@mwillbanks/tuil-protocol";\n\nconst transport = new InProcessProtocolTransport();\nconst safeSnapshot = redactProtocolValue(runtimeSnapshot);',
+  },
+  renderer: {
+    operation:
+      "Renderer contracts separate application behavior from backend mount, frame, layout projection, hit testing, terminal session, scheduling, and static-output concerns.",
+    lifecycle: "register backend → mount → schedule/project → output → unmount",
+    events:
+      "Backends consume normalized input and expose deterministic frame and lifecycle results.",
+    example:
+      'const registry = new RendererRegistry();\nregistry.register("cell", backend);',
+  },
   registry: {
     operation:
       "Registry sources describe source-owned components, blocks, themes, dependencies, files, and integrity metadata. HTTP sources enforce secure URL and package metadata boundaries.",
@@ -112,7 +195,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Registry resolution returns explicit results and diagnostics. It does not emit runtime application events.",
     example:
-      'const source = new HttpRegistrySource({ id: "official", url: "https://example.com/registry.json" });',
+      'const source = new HttpRegistrySource("official", "https://example.com/registry");',
   },
   router: {
     operation:
@@ -124,15 +207,34 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     example:
       'const router = createRouter(defineRoutes({ home: route({ path: "/" }) }));\nawait router.navigate("home");',
   },
+  scroll: {
+    operation:
+      "Shared scrolling manages bounded offsets, sticky edges, anchoring, nested wheel routing, variable measurements, culling, restoration, and scrollbar projection.",
+    lifecycle:
+      "register area → measure → move/anchor → project → restore/dispose",
+    events: "Each area exposes immutable snapshots through a subscription.",
+    example:
+      'const area = new ScrollAreaState({ id: "logs", viewport, extent });',
+  },
   story: {
     operation:
-      "Portable stories combine component args with terminal capabilities, themes, semantic nodes, focus state, events, ANSI output, and an action history. Adapters expose the same story to tests, browsers, static docs, and Storybook.",
+      "Portable stories combine component args with terminal capabilities, themes, semantic nodes, focus state, events, ANSI output, and an action history. Adapters expose the same story to tests, browsers, static docs, and Storybook. Dynamic and static HTTP adapters stream untrusted bodies through a byte limit, validate their complete schema, bound recursive args, controls, dimensions, and simulated input, and apply a server-side timeout before render-lock acquisition.",
     lifecycle:
       "register story → open session → render → interact/update → close",
     events:
-      "Every rendered frame captures the runtime's observed event history and story action timeline.",
+      "Every rendered frame captures the runtime's observed event history and story action timeline. HTTP request failures return 400, client disconnects return 499, and render timeouts return 504.",
     example:
       'export const stories = defineTuilStories({ component: Button, stories: { Default: { args: { children: "Run" } } } });',
+  },
+  streaming: {
+    operation:
+      "Streaming pipelines incrementally decode and parse common text formats with cancellation, backpressure, transforms, projections, diagnostics, bounded source, and replay.",
+    lifecycle:
+      "decode chunks → parse partials → transform/project → end/cancel",
+    events:
+      "Typed start, document, diagnostic, and end events carry monotonically increasing sequence numbers.",
+    example:
+      'const pipeline = new StreamingPipeline({ format: "jsonl" });\nawait pipeline.write(chunk);',
   },
   testing: {
     operation:
@@ -236,6 +338,11 @@ const componentGroups: readonly ComponentGroup[] = [
       "container",
       "stack",
       "split-pane",
+      "header",
+      "footer",
+      "sidebar",
+      "pane-tabs",
+      "scroll-area",
       "resizable-pane",
     ],
     files: [
@@ -253,6 +360,11 @@ const componentGroups: readonly ComponentGroup[] = [
       "VStack",
       "Pane",
       "SplitPane",
+      "Header",
+      "Footer",
+      "Sidebar",
+      "PaneTabs",
+      "ScrollArea",
       "ResizablePane",
     ],
     summary:
@@ -323,6 +435,10 @@ const componentGroups: readonly ComponentGroup[] = [
       "tooltip",
       "toast",
       "command-palette",
+      "drawer",
+      "popover",
+      "skeleton",
+      "error-boundary",
     ],
     files: ["registry/feedback/overlays.tsx"],
     components: [
@@ -340,6 +456,10 @@ const componentGroups: readonly ComponentGroup[] = [
       "Toast",
       "ToastViewport",
       "CommandPalette",
+      "Drawer",
+      "Popover",
+      "Skeleton",
+      "ErrorBoundary",
     ],
     summary:
       "Layer focus-trapped dialogs, contextual help, transient notices, and searchable command execution over an application.",
@@ -364,6 +484,15 @@ const componentGroups: readonly ComponentGroup[] = [
       "select",
       "multi-select",
       "autocomplete",
+      "password-input",
+      "search-input",
+      "command-line",
+      "code-editor",
+      "inline-editor",
+      "editable-table-cell",
+      "editable-tree-node",
+      "form-field-editor",
+      "date-time-input",
     ],
     files: ["registry/forms/controls.tsx"],
     components: [
@@ -385,6 +514,15 @@ const componentGroups: readonly ComponentGroup[] = [
       "Select",
       "MultiSelect",
       "Autocomplete",
+      "PasswordInput",
+      "SearchInput",
+      "CommandLine",
+      "CodeEditor",
+      "InlineEditor",
+      "EditableTableCell",
+      "EditableTreeNode",
+      "FormFieldEditor",
+      "DateTimeInput",
     ],
     summary:
       "Connect semantic terminal controls to typed form state, validation, descriptions, errors, hints, and submission.",
@@ -412,9 +550,27 @@ const componentGroups: readonly ComponentGroup[] = [
     title: "Navigation",
     icon: "Compass",
     story: "navigationStory",
-    registryItems: ["tabs", "menu", "menubar", "breadcrumbs", "stepper"],
+    registryItems: [
+      "tabs",
+      "menu",
+      "menubar",
+      "breadcrumbs",
+      "stepper",
+      "tab-select",
+      "pagination",
+      "outline",
+    ],
     files: ["registry/navigation/navigation.tsx"],
-    components: ["Tabs", "Menu", "Menubar", "Breadcrumbs", "Stepper"],
+    components: [
+      "Tabs",
+      "Menu",
+      "Menubar",
+      "Breadcrumbs",
+      "Stepper",
+      "TabSelect",
+      "Pagination",
+      "Outline",
+    ],
     summary:
       "Provide terminal-native local navigation, command menus, hierarchical trails, and workflow progress.",
     interaction:
@@ -456,11 +612,22 @@ const componentGroups: readonly ComponentGroup[] = [
     title: "Logs, JSON, and diffs",
     icon: "Database",
     story: "logsStory",
-    registryItems: ["log-viewer", "json-viewer", "diff-viewer"],
+    registryItems: [
+      "log-viewer",
+      "json-viewer",
+      "diff-viewer",
+      "markdown-viewer",
+      "code-viewer",
+      "timeline",
+      "bar-chart",
+      "structured-content",
+      "rich-diff-viewer",
+    ],
     files: [
       "registry/data-display/log-viewer.tsx",
       "registry/data-display/json-viewer.tsx",
       "registry/data-display/diff-viewer.tsx",
+      "registry/data-display/rich-content.tsx",
     ],
     components: [
       "LogViewer",
@@ -468,6 +635,12 @@ const componentGroups: readonly ComponentGroup[] = [
       "flattenJson",
       "DiffViewer",
       "createLineDiff",
+      "MarkdownViewer",
+      "CodeViewer",
+      "Timeline",
+      "BarChart",
+      "StructuredContentSummary",
+      "RichDiffViewer",
     ],
     summary:
       "Inspect streaming logs, expandable structured values, and line-oriented changes in terminal-bounded viewports.",

@@ -8,10 +8,11 @@ import {
 } from "@mwillbanks/tuil";
 import { FocusProvider, FocusScope, FocusTrap } from "@mwillbanks/tuil-focus";
 import { Hotkey, HotkeyProvider, useHotkeys } from "@mwillbanks/tuil-hotkeys";
+import { defineRendererApplication } from "@mwillbanks/tuil-renderer";
 import { cleanup, renderTuil } from "@mwillbanks/tuil-testing-ink";
 import { createTheme, useTheme } from "@mwillbanks/tuil-theme";
 import { Text as InkText, type Key, renderToString } from "ink";
-import { useEffect, useState } from "react";
+import { Component, type ReactNode, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   AppShell,
@@ -23,6 +24,7 @@ import {
   escapeTerminalControlCharacters,
   Heading,
   HStack,
+  InkRendererBackend,
   Progress,
   ResponsiveStack,
   render,
@@ -36,6 +38,7 @@ import {
   Text,
   useOptionalExternalStore,
   useOverlayStatus,
+  usePointerCapture,
   useTerminalInput,
   useTerminalSize,
   VStack,
@@ -43,6 +46,25 @@ import {
 import { TerminalInputRouter } from "./input.ts";
 
 afterEach(cleanup);
+
+class TestErrorBoundary extends Component<
+  { readonly children: ReactNode },
+  { readonly error?: Error }
+> {
+  override state: { readonly error?: Error } = {};
+
+  static getDerivedStateFromError(error: Error): { readonly error: Error } {
+    return { error };
+  }
+
+  override render(): ReactNode {
+    return this.state.error ? (
+      <InkText>{this.state.error.message}</InkText>
+    ) : (
+      this.props.children
+    );
+  }
+}
 
 describe("foundational Ink components", () => {
   test("renders static and silent applications through their complete lifecycle", async () => {
@@ -90,6 +112,9 @@ describe("foundational Ink components", () => {
           alternateScreen: true,
           interactive: true,
           tty: true,
+          bracketedPaste: true,
+          focusReporting: true,
+          kittyKeyboard: true,
         },
       },
     });
@@ -99,8 +124,14 @@ describe("foundational Ink components", () => {
       stdout: stdout as unknown as NodeJS.WriteStream,
     });
     expect(output).toContain("\u001b[?1049h");
+    expect(output).toContain("\u001b[?2004h");
+    expect(output).toContain("\u001b[?1004h");
+    expect(output).toContain("\u001b[>1u");
     await instance.unmount();
     expect(output).toContain("\u001b[?1049l");
+    expect(output).toContain("\u001b[?2004l");
+    expect(output).toContain("\u001b[?1004l");
+    expect(output).toContain("\u001b[<u");
   });
 
   test("rolls back renderer and static-render failures", async () => {
@@ -428,7 +459,7 @@ describe("foundational Ink components", () => {
     await view.ready;
     expect(view.app.focus.focusedId).toBe("inner-action");
     closeInner?.();
-    await Bun.sleep(10);
+    await Bun.sleep(75);
     expect(view.app.focus.focusedId).toBe("outer-action");
     expect(view.app.focus.focus("unrelated")).toBeFalse();
     await view.cleanup();
@@ -463,6 +494,34 @@ describe("foundational Ink components", () => {
     await Bun.sleep(10);
     expect(errors).toHaveLength(1);
     expect(errors[0]).toBeInstanceOf(Error);
+    await view.cleanup();
+  });
+
+  test("surfaces combined terminal input and error reporter failures", async () => {
+    function FailingInput() {
+      useTerminalInput(async () => {
+        throw new Error("input failed");
+      });
+      return <InkText>Input</InkText>;
+    }
+    const view = renderTuil(
+      <TestErrorBoundary>
+        <FailingInput />
+      </TestErrorBoundary>,
+      {
+        errorHandler() {
+          throw new Error("report failed");
+        },
+      },
+    );
+    await view.ready;
+    await view.user.press("x");
+    await Bun.sleep(50);
+    expect(
+      view.frames.some((frame) =>
+        frame.includes("Terminal input and error reporting failed"),
+      ),
+    ).toBeTrue();
     await view.cleanup();
   });
 
@@ -582,11 +641,16 @@ describe("foundational Ink components", () => {
   test("registers declarative and grouped hotkeys through the shared manager", async () => {
     const calls: string[] = [];
     function Hotkeys() {
-      useHotkeys({
-        x: () => {
-          calls.push("grouped");
-        },
-      });
+      const bindings = useMemo(
+        () => ({
+          x: () => {
+            calls.push("grouped");
+          },
+        }),
+        [],
+      );
+      const options = useMemo(() => ({}), []);
+      useHotkeys(bindings, options);
       return (
         <Hotkey
           keys="y"
@@ -601,6 +665,39 @@ describe("foundational Ink components", () => {
     await view.user.press("x");
     await view.user.press("y");
     expect(calls).toEqual(["grouped", "declarative"]);
+    await view.cleanup();
+  });
+
+  test("registers hotkeys before a newly rendered surface is interactive", async () => {
+    let showHotkey: (() => void) | undefined;
+    let called = false;
+    function LateHotkey() {
+      const bindings = useMemo(
+        () => ({
+          x: () => {
+            called = true;
+          },
+        }),
+        [],
+      );
+      const options = useMemo(() => ({}), []);
+      useHotkeys(bindings, options);
+      return <Text>Interactive</Text>;
+    }
+    function DelayedHotkey() {
+      const [visible, setVisible] = useState(false);
+      useEffect(() => {
+        showHotkey = () => setVisible(true);
+      }, []);
+      return visible ? <LateHotkey /> : <Text>Waiting</Text>;
+    }
+    const view = renderTuil(<DelayedHotkey />);
+    await view.ready;
+    showHotkey?.();
+    await Bun.sleep(10);
+    expect(view.screen.frame()).toContain("Interactive");
+    expect(await view.app.hotkeys.dispatch("x")).toBeDefined();
+    expect(called).toBeTrue();
     await view.cleanup();
   });
 
@@ -661,6 +758,78 @@ describe("foundational Ink components", () => {
     route.dispose();
     await Bun.sleep(0);
     expect(view.screen.frame()).toContain("live-theme:0");
+    await view.cleanup();
+  });
+
+  test("routes SGR pointer clicks through shared measured layout", async () => {
+    let presses = 0;
+    const view = renderTuil(
+      <Button
+        id="pointer-button"
+        onPress={() => {
+          presses += 1;
+        }}
+      >
+        Pointer
+      </Button>,
+    );
+    await view.ready;
+    await view.user.press("\u001b[<0;2;1M");
+    await view.user.press("\u001b[<0;2;1m");
+    expect(presses).toBe(1);
+    expect(view.app.focus.focusedId).toBe("pointer-button");
+    await view.cleanup();
+  });
+
+  test("selected renderer backend owns frame output and invalidation", async () => {
+    const stdout = new PassThrough();
+    let output = "";
+    stdout.on("data", (chunk) => {
+      output += String(chunk);
+    });
+    const app = createApp({
+      component: defineRendererApplication({
+        project: () => ({ lines: ["backend frame"] }),
+      }),
+      renderer: "ink",
+      renderers: [new InkRendererBackend()],
+      terminal: { mode: "static" },
+    });
+    const instance = await render(app, {
+      stdout: stdout as unknown as NodeJS.WriteStream,
+    });
+    expect(output).toContain("backend frame");
+    app.invalidate();
+    await Bun.sleep(20);
+    await instance.unmount();
+    expect(app.lifecycle.state).toBe("disposed");
+  });
+
+  test("pointer capture hooks delegate to the shared pointer router", async () => {
+    function CaptureProbe() {
+      const capture = usePointerCapture("capture-button");
+      useEffect(() => {
+        capture.capture();
+        capture.release();
+      }, [capture]);
+      return (
+        <Button
+          id="capture-button"
+          layout={{
+            bounds: { x: 0, y: 0, width: 10, height: 1 },
+            clip: { x: 0, y: 0, width: 80, height: 24 },
+            zIndex: 1,
+            focusable: true,
+            pointerEvents: "auto",
+          }}
+        >
+          Capture
+        </Button>
+      );
+    }
+    const view = renderTuil(<CaptureProbe />);
+    await view.ready;
+    expect(view.screen.frame()).toContain("Capture");
     await view.cleanup();
   });
 });

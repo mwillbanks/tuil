@@ -1,0 +1,59 @@
+---
+title: "@mwillbanks/tuil-renderer"
+description: "Renderer-neutral layout, frame scheduling, terminal integration, and backend contracts for tuil."
+icon: Package
+---
+
+## Overview
+
+Renderer-neutral layout, frame scheduling, terminal integration, and backend contracts for tuil.
+
+`@mwillbanks/tuil-renderer` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-renderer
+```
+
+## How it operates
+
+Renderer contracts separate application behavior from backend mount, frame, layout projection, hit testing, terminal session, scheduling, and static-output concerns.
+
+```mermaid
+flowchart LR
+  S0["register backend"]
+  S1["mount"]
+  S2["schedule/project"]
+  S3["output"]
+  S4["unmount"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+```
+
+## API
+
+No public declarations were discovered.
+
+## Events and lifecycle
+
+Backends consume normalized input and expose deterministic frame and lifecycle results.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+const registry = new RendererRegistry();
+registry.register("cell", backend);
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

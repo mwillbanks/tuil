@@ -74,6 +74,22 @@ for (const directory of packageDirectories) {
     await Bun.file(join(directory, "dist/README.md")).exists(),
     `${manifest.name} does not publish usage documentation`,
   );
+  if (manifest.name === "@mwillbanks/tuil-cell") {
+    for (const artifact of [
+      "prebuilds/darwin-arm64/libtuil_cell.dylib",
+      "prebuilds/darwin-x64/libtuil_cell.dylib",
+      "prebuilds/linux-arm64/libtuil_cell.so",
+      "prebuilds/linux-x64/libtuil_cell.so",
+      "prebuilds/win32-x64/tuil_cell.dll",
+      "prebuilds/manifest.json",
+      "native/cell_diff.zig",
+    ]) {
+      assertPublication(
+        await Bun.file(join(directory, "dist", artifact)).exists(),
+        `${manifest.name} does not publish native artifact "${artifact}"`,
+      );
+    }
+  }
   for await (const path of new Bun.Glob("**/*").scan({
     cwd: join(directory, "dist"),
   })) {
@@ -260,17 +276,25 @@ try {
           "@tanstack/react-virtual": "^3.14.8",
           "@tanstack/pacer": "^0.21.1",
           diff: "^9.0.0",
+          "fast-xml-parser": "^5.10.1",
           ink: "^7.1.1",
           "ink-testing-library": "^4.0.0",
+          "mdast-util-from-markdown": "^2.0.3",
+          "mdast-util-gfm": "^3.1.0",
+          "micromark-extension-gfm": "^3.0.0",
           react: "^19.2.8",
           "react-devtools-core": "^7.0.1",
           "react-dom": "^19.2.8",
           "slice-ansi": "^9.0.0",
+          "smol-toml": "^1.7.1",
+          semver: "^7.7.2",
           "string-width": "^8.2.2",
           nusm: "^1.1.0",
           "@types/bun": "latest",
           "@types/react": "^19.2.17",
+          "@vscode/tree-sitter-wasm": "^0.3.1",
           typescript: "^7.0.2",
+          yaml: "^2.9.0",
         },
       },
       null,
@@ -305,6 +329,21 @@ try {
     `import {Lifecycle} from "@mwillbanks/tuil-core";
 import {createApp, createOperation, createRouter, createWorkflow, defineOperation, defineRoutes, defineStep, defineWorkflow, route} from "@mwillbanks/tuil";
 import {Text, renderStatic} from "@mwillbanks/tuil-ink";
+import {CellBuffer, loadNativeCellAccelerator} from "@mwillbanks/tuil-cell";
+import {LayoutProjection} from "@mwillbanks/tuil-renderer";
+import {PointerRouter} from "@mwillbanks/tuil-pointer";
+import {ScrollAreaState} from "@mwillbanks/tuil-scroll";
+import {textBufferProvider} from "@mwillbanks/tuil-editor/buffer";
+import {vimEditorProvider} from "@mwillbanks/tuil-editor/vim";
+import {richEditorProvider} from "@mwillbanks/tuil-editor/rich";
+import {runEditorProviderConformance} from "@mwillbanks/tuil-editor/testing";
+import {CodeDocument} from "@mwillbanks/tuil-code";
+import {DiffModel} from "@mwillbanks/tuil-content";
+import {StreamingPipeline} from "@mwillbanks/tuil-streaming";
+import {LogPipeline} from "@mwillbanks/tuil-logging";
+import {LogViewerModel} from "@mwillbanks/tuil-log-viewer";
+import {createProtocolMessage, validateProtocolMessage} from "@mwillbanks/tuil-protocol";
+import {DevtoolsExtensionRegistry} from "@mwillbanks/tuil-devtools";
 import {createElement} from "react";
 
 const app = createApp({
@@ -318,6 +357,34 @@ const frame = await renderStatic(app);
 if (!frame.includes("published runtime")) {
   throw new Error("consumer could not render through the packed packages");
 }
+const layout = new LayoutProjection();
+new PointerRouter(layout);
+new ScrollAreaState({id: "smoke", viewport: {width: 10, height: 2}, extent: {width: 10, height: 4}});
+const cells = new CellBuffer(4, 1);
+cells.write(0, 0, "cell");
+if (cells.get(0, 0)?.grapheme !== "c") throw new Error("packed cell renderer failed");
+if ((await loadNativeCellAccelerator())?.id !== "zig-ffi") {
+  throw new Error("packed native cell accelerator failed to load");
+}
+await runEditorProviderConformance(textBufferProvider);
+await runEditorProviderConformance(vimEditorProvider);
+await runEditorProviderConformance(richEditorProvider);
+const code = new CodeDocument("const value = 1", {language: "javascript"});
+if ((await code.parse()).spans.length === 0) throw new Error("packed Tree-sitter code parser failed");
+if (!new DiffModel("--- a\\n+++ b\\n-a\\n+b").render().length) throw new Error("packed content model failed");
+const stream = new StreamingPipeline({format: "json"});
+await stream.write('{"ok":true}');
+if (!(await stream.end()).complete) throw new Error("packed streaming pipeline failed");
+const logs = new LogPipeline();
+logs.ingest('{"body":"ready"}', "json");
+const logViewer = new LogViewerModel(logs, {
+  queryEditor: textBufferProvider.create({id: "smoke-query"}),
+  queryEditorOwnership: "owned",
+});
+if (logViewer.snapshot().total !== 1) throw new Error("packed log viewer failed");
+logViewer.dispose();
+if (!validateProtocolMessage(createProtocolMessage("snapshot", {}))) throw new Error("packed protocol failed");
+new DevtoolsExtensionRegistry().dispose();
 const operation = createOperation(defineOperation({id: "smoke", title: "Smoke", run: () => "ok"}));
 if (await operation.execute() !== "ok") {
   throw new Error("consumer could not execute packed operations");

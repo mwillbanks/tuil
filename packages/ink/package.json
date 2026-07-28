@@ -37,8 +37,12 @@
     "@mwillbanks/tuil": "workspace:*",
     "@mwillbanks/tuil-core": "workspace:*",
     "@mwillbanks/tuil-focus": "workspace:*",
+    "@mwillbanks/tuil-pointer": "workspace:*",
     "@mwillbanks/tuil-hotkeys": "workspace:*",
-    "@mwillbanks/tuil-theme": "workspace:*"
+    "@mwillbanks/tuil-renderer": "workspace:*",
+    "@mwillbanks/tuil-scroll": "workspace:*",
+    "@mwillbanks/tuil-theme": "workspace:*",
+    "chalk": "^5.6.2"
   },
   "peerDependencies": {
     "ink": "catalog:",
