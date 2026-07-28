@@ -42,6 +42,7 @@
   "dependencies": {
     "@mwillbanks/tuil": "workspace:*",
     "@mwillbanks/tuil-core": "workspace:*",
+    "@mwillbanks/tuil-editor": "workspace:*",
     "@mwillbanks/tuil-focus": "workspace:*",
     "@mwillbanks/tuil-form": "workspace:*",
     "@mwillbanks/tuil-hotkeys": "workspace:*",

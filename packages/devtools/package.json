@@ -36,7 +36,8 @@
   },
   "dependencies": {
     "@mwillbanks/tuil": "workspace:*",
-    "@mwillbanks/tuil-ink": "workspace:*"
+    "@mwillbanks/tuil-ink": "workspace:*",
+    "@mwillbanks/tuil-protocol": "workspace:*"
   },
   "peerDependencies": {
     "ink": "catalog:",

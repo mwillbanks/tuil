@@ -1,0 +1,30 @@
+{
+  "name": "@mwillbanks/tuil-example-workflow-runner",
+  "version": "0.1.0",
+  "description": "Production-style workflow runner example for tuil.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "react",
+    "ink",
+    "workflow",
+    "example"
+  ],
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun src/index.tsx",
+    "build": "bun build src/index.tsx --outdir dist --target bun --packages external",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test ../examples.test.tsx"
+  },
+  "dependencies": {
+    "@mwillbanks/tuil-ink": "workspace:*",
+    "react": "catalog:"
+  }
+}

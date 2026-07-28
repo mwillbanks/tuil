@@ -1,7 +1,7 @@
 {
   "name": "@mwillbanks/tuil",
   "version": "0.2.0",
-  "description": "A production-ready React and Ink framework for composable terminal applications.",
+  "description": "A renderer-neutral terminal application runtime with React Ink compatibility.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",
   "repository": {
@@ -17,6 +17,8 @@
     "terminal-ui",
     "react",
     "ink",
+    "renderer-neutral",
+    "cell-buffer",
     "typescript",
     "bun"
   ],
@@ -41,12 +43,18 @@
   },
   "dependencies": {
     "@mwillbanks/tuil-core": "workspace:*",
+    "@mwillbanks/tuil-editor": "workspace:*",
     "@mwillbanks/tuil-events": "workspace:*",
     "@mwillbanks/tuil-focus": "workspace:*",
     "@mwillbanks/tuil-hotkeys": "workspace:*",
+    "@mwillbanks/tuil-logging": "workspace:*",
     "@mwillbanks/tuil-operations": "workspace:*",
+    "@mwillbanks/tuil-pointer": "workspace:*",
     "@mwillbanks/tuil-plugin": "workspace:*",
+    "@mwillbanks/tuil-renderer": "workspace:*",
     "@mwillbanks/tuil-router": "workspace:*",
+    "@mwillbanks/tuil-scroll": "workspace:*",
+    "@mwillbanks/tuil-streaming": "workspace:*",
     "@mwillbanks/tuil-theme": "workspace:*",
     "@mwillbanks/tuil-workflow": "workspace:*"
   },

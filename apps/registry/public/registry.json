@@ -4,308 +4,2442 @@
     {
       "name": "alert",
       "type": "feedback",
+      "tier": 3,
       "title": "Alert",
-      "description": "Semantic terminal alert."
+      "description": "Semantic terminal alert.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["alert"],
+      "dependencies": ["@mwillbanks/tuil-theme", "react"],
+      "slots": ["root", "title", "content", "icon"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "registryDependencies": ["box", "text"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-38ea042a61bf22d368464e97c6ea83bf33b87876048d2bf948748f3effaa76a0",
+      "files": [
+        {
+          "path": "src/components/tuil/feedback/alert.tsx",
+          "target": "src/components/tuil/feedback/alert.tsx",
+          "source": "registry/feedback/alert.tsx"
+        }
+      ]
     },
     {
       "name": "app-bar",
       "type": "component",
+      "tier": 3,
       "title": "App Bar",
-      "description": "Application header region."
+      "description": "Application header region.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "dependencies": ["react"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "registryDependencies": ["box"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-41ebd8a632609380e46f746e02771def184e6398de75ca942a805d63328a69fc",
+      "files": [
+        {
+          "path": "src/components/tuil/components/app-bar.tsx",
+          "target": "src/components/tuil/components/app-bar.tsx",
+          "source": "registry/components/app-bar.tsx"
+        }
+      ]
     },
     {
       "name": "app-shell",
       "type": "component",
+      "tier": 3,
       "title": "App Shell",
-      "description": "Compound application shell."
+      "description": "Compound application shell.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["application"],
+      "dependencies": ["react"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "registryDependencies": ["box", "app-bar", "status-bar"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-f6e37b755bc9997dbed01b8acb5006cd9e1d86904dbd9300f2b73ebce93c1bf9",
+      "files": [
+        {
+          "path": "src/components/tuil/components/app-shell.tsx",
+          "target": "src/components/tuil/components/app-shell.tsx",
+          "source": "registry/components/app-shell.tsx"
+        }
+      ]
     },
     {
       "name": "autocomplete",
       "type": "form",
+      "tier": 3,
       "title": "Autocomplete",
-      "description": "Text input with filtered typed suggestions and keyboard selection."
+      "description": "Text input with filtered typed suggestions and keyboard selection.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["textbox", "option"],
+      "slots": ["root", "list", "option", "empty"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-ba82942942bd778f0761ea1817ef4201a95e109a9335ef67f2b4c98b1c19cc15",
+      "files": []
     },
     {
       "name": "badge",
       "type": "data-display",
+      "tier": 3,
       "title": "Badge",
-      "description": "Semantic status badge."
+      "description": "Semantic status badge.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "dependencies": ["@mwillbanks/tuil-theme", "react"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "registryDependencies": ["text"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-04c04c316244abd38734ab09067189a41ae162e56accf41d9719677e48aff054",
+      "files": [
+        {
+          "path": "src/components/tuil/data-display/badge.tsx",
+          "target": "src/components/tuil/data-display/badge.tsx",
+          "source": "registry/data-display/badge.tsx"
+        }
+      ]
+    },
+    {
+      "name": "bar-chart",
+      "type": "data-display",
+      "title": "Bar Chart",
+      "description": "Textually labelled terminal bar chart.",
+      "dependencies": [],
+      "registryDependencies": ["markdown-viewer"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-37b3229f49d723402167915851e790ad65d9136ad3bf75e0223f2c4a6ff9dc1a",
+      "files": []
     },
     {
       "name": "box",
       "type": "primitive",
+      "tier": 1,
       "title": "Box",
-      "description": "Theme-aware Ink layout primitive."
+      "description": "Theme-aware Ink layout primitive.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["application"],
+      "dependencies": [
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-theme",
+        "ink",
+        "react"
+      ],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "adapt"
+      },
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-b56aad113074983e5f02e480387fe81e1c4b1b95f900a222e283e41c25f576d9",
+      "files": [
+        {
+          "path": "src/components/tuil/primitives/box.tsx",
+          "target": "src/components/tuil/primitives/box.tsx",
+          "source": "registry/primitives/box.tsx"
+        }
+      ]
     },
     {
       "name": "breadcrumbs",
       "type": "navigation",
+      "tier": 3,
       "title": "Breadcrumbs",
-      "description": "Semantic route breadcrumbs with keyboard and command activation."
+      "description": "Semantic route breadcrumbs with keyboard and command activation.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["navigation", "button"],
+      "slots": ["root", "list", "item"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["tabs"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-b3fdc62d444457efdc19761615cd3148182dc0522a8ca232af14fdc260b4a0c4",
+      "files": []
     },
     {
       "name": "button",
       "type": "component",
+      "tier": 3,
       "title": "Button",
-      "description": "Focusable command-aware button."
+      "description": "Focusable command-aware button.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["button"],
+      "dependencies": [
+        "@mwillbanks/tuil",
+        "@mwillbanks/tuil-focus",
+        "@mwillbanks/tuil-hotkeys",
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-theme",
+        "ink",
+        "react"
+      ],
+      "slots": ["root", "label", "prefix", "suffix"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-01ad5a5c3342aa6c36f308869ae4cd0208ece38ca6edb46465bcb00bc31c1b30",
+      "files": [
+        {
+          "path": "src/components/tuil/components/button.tsx",
+          "target": "src/components/tuil/components/button.tsx",
+          "source": "registry/components/button.tsx"
+        }
+      ]
     },
     {
       "name": "checkbox",
       "type": "form",
+      "tier": 3,
       "title": "Checkbox",
-      "description": "Focusable controlled or uncontrolled checkbox."
+      "description": "Focusable controlled or uncontrolled checkbox.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["checkbox"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-2b95202f9541aac987cf0439c435716cddf60d21904cc0bb9335393269beefe1",
+      "files": []
+    },
+    {
+      "name": "code-editor",
+      "type": "form",
+      "title": "Code Editor",
+      "description": "Multiline code editing control.",
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-70dd39dea88d206c34354154baf68ef9fb9edae139953dad58427f09a7f055a7",
+      "files": []
+    },
+    {
+      "name": "code-viewer",
+      "type": "data-display",
+      "title": "Code Viewer",
+      "description": "Highlighted code projection.",
+      "dependencies": [],
+      "registryDependencies": ["markdown-viewer"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-24e19d6ae8fc1e1462af26195b70f7a527c2375f3ec23848393a491ca826d8e0",
+      "files": []
+    },
+    {
+      "name": "command-line",
+      "type": "form",
+      "title": "Command Line",
+      "description": "Command editor with submission and history.",
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-63f67e204e11f4c4d9408ec8d9288a3c34267569deacc135771b0076d80e5d49",
+      "files": []
     },
     {
       "name": "command-palette",
       "type": "navigation",
+      "tier": 3,
       "title": "Command Palette",
-      "description": "Searchable command registry overlay with keyboard execution."
+      "description": "Searchable command registry overlay with keyboard execution.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["dialog", "textbox", "option"],
+      "slots": ["root", "input", "list", "option", "empty"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["dialog"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-7b1a8cb6a3d37d0f6fe61c9e0e9146d582556de56a8a0da6c9a22655b0ac92d3",
+      "files": []
     },
     {
       "name": "confirm-dialog",
       "type": "feedback",
+      "tier": 3,
       "title": "Confirm Dialog",
-      "description": "Confirmation dialog with cancel, danger, and asynchronous confirm behavior."
+      "description": "Confirmation dialog with cancel, danger, and asynchronous confirm behavior.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["dialog"],
+      "slots": ["root", "title", "description", "actions"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["dialog"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-a7876651bb8a136eaf8f32eae83e381dd573091a383b1dba99697147d55710d0",
+      "files": []
     },
     {
       "name": "container",
       "type": "primitive",
+      "tier": 1,
       "title": "Container",
-      "description": "Width-constrained terminal container."
+      "description": "Width-constrained terminal container.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "dependencies": ["react"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "adapt"
+      },
+      "registryDependencies": ["box"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-fea905f9f8fd7413cc1e0798aeb0775eef8e88061578d2155eca35c8409a9e21",
+      "files": [
+        {
+          "path": "src/components/tuil/primitives/container.tsx",
+          "target": "src/components/tuil/primitives/container.tsx",
+          "source": "registry/primitives/container.tsx"
+        }
+      ]
     },
     {
       "name": "data-table",
       "type": "data-display",
+      "tier": 3,
       "title": "Data Table",
-      "description": "TanStack Table adapter for sortable and selectable terminal data grids."
+      "description": "TanStack Table adapter for sortable and selectable terminal data grids.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["table", "row", "cell"],
+      "slots": [
+        "root",
+        "header",
+        "headerCell",
+        "body",
+        "row",
+        "cell",
+        "overflow",
+        "empty"
+      ],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["table"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-0a8c1d1a9ac2b6d8d3a769dbc748df003cc2a1595073c4dcd02063707a25b885",
+      "files": []
+    },
+    {
+      "name": "date-time-input",
+      "type": "form",
+      "title": "Date Time Input",
+      "description": "Date and time text editor.",
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-bf4feb08aa99ba1a25447a4648be063df8d1dffe552b2e0d485037bc089e20f5",
+      "files": []
     },
     {
       "name": "default",
       "type": "theme",
+      "tier": 3,
       "title": "Default Theme",
-      "description": "Default tuil theme."
+      "description": "Default tuil theme.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "dependencies": ["@mwillbanks/tuil"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-2b37fe318e1e068fa00a1ef5be4b26b8b0e8044a78f1f32610eb5631de53cfe5",
+      "files": [
+        {
+          "path": "src/lib/theme.ts",
+          "target": "src/lib/theme.ts",
+          "source": "registry/themes/default.ts"
+        }
+      ]
     },
     {
       "name": "dialog",
       "type": "feedback",
+      "tier": 3,
       "title": "Dialog",
-      "description": "Compound modal with focus trapping, input suppression, dismissal, and restoration."
+      "description": "Compound modal with focus trapping, input suppression, dismissal, and restoration.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["dialog"],
+      "slots": ["root", "title", "description", "actions"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [
+        "@mwillbanks/tuil",
+        "@mwillbanks/tuil-core",
+        "@mwillbanks/tuil-hotkeys",
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-theme",
+        "ink",
+        "react"
+      ],
+      "registryDependencies": ["button", "text-input"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-31bbe0bc3b999f581eb38d02603c250d1cd931906cffff8bfba27408a35a4951",
+      "files": [
+        {
+          "path": "src/components/tuil/feedback/overlays.tsx",
+          "target": "src/components/tuil/feedback/overlays.tsx",
+          "source": "registry/feedback/overlays.tsx"
+        }
+      ]
     },
     {
       "name": "diff-viewer",
       "type": "data-display",
+      "tier": 3,
       "title": "Diff Viewer",
-      "description": "Virtualized line diff with context filtering and old/new line coordinates."
+      "description": "Virtualized line diff with context filtering and old/new line coordinates.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["status"],
+      "slots": ["root", "viewport", "line", "status"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [
+        "@mwillbanks/tuil",
+        "@mwillbanks/tuil-focus",
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-theme",
+        "@mwillbanks/tuil-virtual",
+        "diff",
+        "ink",
+        "react"
+      ],
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-332a2ffb525dc4093455c50ae98f3b44c1d7b605e07c7b1bc45ecba94ac7a32e",
+      "files": [
+        {
+          "path": "src/components/tuil/data-display/diff-viewer.tsx",
+          "target": "src/components/tuil/data-display/diff-viewer.tsx",
+          "source": "registry/data-display/diff-viewer.tsx"
+        }
+      ]
     },
     {
       "name": "divider",
       "type": "data-display",
+      "tier": 3,
       "title": "Divider",
-      "description": "Terminal-safe divider."
+      "description": "Terminal-safe divider.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "dependencies": ["@mwillbanks/tuil-theme", "react"],
+      "registryDependencies": ["text"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "adapt"
+      },
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-17c2d1957bdd5640e4bc0249814e713c9ee85863b5c9dd04e0f4f88310097bd7",
+      "files": [
+        {
+          "path": "src/components/tuil/data-display/divider.tsx",
+          "target": "src/components/tuil/data-display/divider.tsx",
+          "source": "registry/data-display/divider.tsx"
+        }
+      ]
+    },
+    {
+      "name": "drawer",
+      "type": "feedback",
+      "title": "Drawer",
+      "description": "Edge-aligned overlay panel.",
+      "dependencies": [],
+      "registryDependencies": ["dialog"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-35ec7724433a38bed05cb19a2e4eb2225b792e4e7f8212da7c4f6ce4a72ec1f1",
+      "files": []
+    },
+    {
+      "name": "editable-table-cell",
+      "type": "form",
+      "title": "Editable Table Cell",
+      "description": "Inline table-cell editor.",
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-17278458fb8bbb9efb28beb284325e5dddd503e334e80925face18ff845f8d60",
+      "files": []
+    },
+    {
+      "name": "editable-tree-node",
+      "type": "form",
+      "title": "Editable Tree Node",
+      "description": "Inline tree-node editor.",
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-d9574cbac2ee83ece4138d3bb860e9193c0d3e042f85389398b6fe077d377075",
+      "files": []
+    },
+    {
+      "name": "error-boundary",
+      "type": "feedback",
+      "title": "Error Boundary",
+      "description": "Recoverable component error boundary.",
+      "dependencies": [],
+      "registryDependencies": ["dialog"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-39673af0f9f22d7ee62ee16d8ff344c0491d744ef14bebb04738edaa978532fc",
+      "files": []
     },
     {
       "name": "field",
       "type": "form",
+      "tier": 3,
       "title": "Field",
-      "description": "Semantic form field structure with label, description, errors, and hints."
+      "description": "Semantic form field structure with label, description, errors, and hints.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["form"],
+      "slots": ["root", "label", "description", "control", "error", "hint"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [
+        "@mwillbanks/tuil",
+        "@mwillbanks/tuil-form",
+        "@mwillbanks/tuil-focus",
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-theme",
+        "ink",
+        "react"
+      ],
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-531f37dbd7be04eed4c824e5e4f37035de603767816bfc3278a478828fcd909f",
+      "files": [
+        {
+          "path": "src/components/tuil/forms/controls.tsx",
+          "target": "src/components/tuil/forms/controls.tsx",
+          "source": "registry/forms/controls.tsx"
+        }
+      ]
+    },
+    {
+      "name": "footer",
+      "type": "layout",
+      "title": "Footer",
+      "description": "Application footer region.",
+      "dependencies": [],
+      "registryDependencies": ["split-pane"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-9daa2ad3ca295d890296ef8ff85f7570b152c32907afc82a7cf4f1811427620f",
+      "files": []
+    },
+    {
+      "name": "form-field-editor",
+      "type": "form",
+      "title": "Form Field Editor",
+      "description": "Editor-backed semantic form field.",
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-62548e29057c1c622a3515eff6d6503995a0e4fc8d19efb9fd179bb5068a0c9f",
+      "files": []
+    },
+    {
+      "name": "header",
+      "type": "layout",
+      "title": "Header",
+      "description": "Application header region.",
+      "dependencies": [],
+      "registryDependencies": ["split-pane"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-f73420e6e597d678418ed7e6bd6951f0e6fe325e898fae67dcf8ddda8b5850e0",
+      "files": []
     },
     {
       "name": "heading",
       "type": "data-display",
+      "tier": 3,
       "title": "Heading",
-      "description": "Semantic terminal heading."
+      "description": "Semantic terminal heading.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["heading"],
+      "dependencies": ["@mwillbanks/tuil-theme", "react"],
+      "registryDependencies": ["text"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "adapt"
+      },
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-b69123c217af9b6e267708b927a417af6540f0031b8687313c712120df477222",
+      "files": [
+        {
+          "path": "src/components/tuil/data-display/heading.tsx",
+          "target": "src/components/tuil/data-display/heading.tsx",
+          "source": "registry/data-display/heading.tsx"
+        }
+      ]
     },
     {
       "name": "help-overlay",
       "type": "workflow",
+      "tier": 3,
       "title": "Help Overlay",
-      "description": "Hotkey-opened searchable help generated from the live command registry."
+      "description": "Hotkey-opened searchable help generated from the live command registry.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["dialog", "textbox"],
+      "slots": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["workflow"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-eea5f5401413136fdbb74ccf51f7cf022d2dd14c80fd059a65e836a1425f4f57",
+      "files": []
     },
     {
       "name": "init-wizard",
       "type": "block",
+      "tier": 3,
       "title": "Project Initializer",
-      "description": "Complete self-hosted tuil init application block."
+      "description": "Complete self-hosted tuil init application block.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": [
+        "application",
+        "form",
+        "textbox",
+        "listbox",
+        "status",
+        "dialog",
+        "alert"
+      ],
+      "slots": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-operations",
+        "@mwillbanks/tuil-router",
+        "@mwillbanks/tuil-workflow",
+        "react"
+      ],
+      "registryDependencies": ["field", "workflow"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-417793018e78390286b208d122ca5444107346ad3e7b5d9f46b7f97320385265",
+      "files": [
+        {
+          "path": "src/components/tuil/blocks/init-wizard.tsx",
+          "target": "src/components/tuil/blocks/init-wizard.tsx",
+          "source": "registry/blocks/init-wizard.tsx"
+        }
+      ]
+    },
+    {
+      "name": "inline-editor",
+      "type": "form",
+      "title": "Inline Editor",
+      "description": "Commit or cancel inline edits.",
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-bc0cc8bdcc9c62b28561743ff2f3a6442e513a65f1ae17aa2e4ee01edee13cf4",
+      "files": []
     },
     {
       "name": "json-viewer",
       "type": "data-display",
+      "tier": 3,
       "title": "JSON Viewer",
-      "description": "Expandable virtual JSON tree with circular-reference safety and key redaction."
+      "description": "Expandable virtual JSON tree with circular-reference safety and key redaction.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["tree", "treeitem"],
+      "slots": ["root", "viewport", "item", "empty", "overflow"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [
+        "@mwillbanks/tuil",
+        "@mwillbanks/tuil-focus",
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-theme",
+        "@mwillbanks/tuil-virtual",
+        "ink",
+        "react"
+      ],
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-e9d8da8464e2fea15605a57d469666bde2f7ec2769fe290e212a6b71956c440d",
+      "files": [
+        {
+          "path": "src/components/tuil/data-display/json-viewer.tsx",
+          "target": "src/components/tuil/data-display/json-viewer.tsx",
+          "source": "registry/data-display/json-viewer.tsx"
+        }
+      ]
     },
     {
       "name": "log-viewer",
       "type": "data-display",
+      "tier": 3,
       "title": "Log Viewer",
-      "description": "Bounded virtual log stream with filtering, severity styling, and follow mode."
+      "description": "Bounded virtual log stream with filtering, severity styling, and follow mode.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["status"],
+      "slots": ["root", "viewport", "line", "status", "empty"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "adapt"
+      },
+      "dependencies": [
+        "@mwillbanks/tuil",
+        "@mwillbanks/tuil-focus",
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-log-viewer",
+        "@mwillbanks/tuil-logging",
+        "@mwillbanks/tuil-theme",
+        "@mwillbanks/tuil-virtual",
+        "ink",
+        "react"
+      ],
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "package",
+      "packageName": "@mwillbanks/tuil-log-viewer",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-c58dea0502731292de790bdaad46c666256eb44de1921f0ed6c3c508236e8313",
+      "files": [
+        {
+          "path": "src/components/tuil/data-display/log-viewer.tsx",
+          "target": "src/components/tuil/data-display/log-viewer.tsx",
+          "source": "registry/data-display/log-viewer.tsx"
+        }
+      ]
+    },
+    {
+      "name": "markdown-viewer",
+      "type": "data-display",
+      "title": "Markdown Viewer",
+      "description": "Rendered Markdown projection.",
+      "dependencies": [
+        "@mwillbanks/tuil-code",
+        "@mwillbanks/tuil-content",
+        "@mwillbanks/tuil-streaming",
+        "ink",
+        "react"
+      ],
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-c21d16d16cb22d1190d52096adaf1b38c733623d0769bfab8fe0ed3379940394",
+      "files": [
+        {
+          "path": "src/components/tuil/data-display/rich-content.tsx",
+          "target": "src/components/tuil/data-display/rich-content.tsx",
+          "source": "registry/data-display/rich-content.tsx"
+        }
+      ]
     },
     {
       "name": "menu",
       "type": "navigation",
+      "tier": 3,
       "title": "Menu",
-      "description": "Keyboard-driven command menu with nested submenu support."
+      "description": "Keyboard-driven command menu with nested submenu support.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["menu", "menuitem"],
+      "slots": ["root", "list", "item"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["tabs"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-38a42f93d224fd6542031040060d93eb9c098637b7ceabebfbe9411219658985",
+      "files": []
     },
     {
       "name": "menubar",
       "type": "navigation",
+      "tier": 3,
       "title": "Menubar",
-      "description": "Terminal menubar with horizontal menu switching and command execution."
+      "description": "Terminal menubar with horizontal menu switching and command execution.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["menu", "menuitem"],
+      "slots": ["root", "list", "item"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["tabs"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-f001eaf5227562c22e156370b667c3305a6760e83265f1432a978d3328da86b7",
+      "files": []
     },
     {
       "name": "multi-select",
       "type": "form",
+      "tier": 3,
       "title": "Multi Select",
-      "description": "Typed multiple-selection listbox with selection limits."
+      "description": "Typed multiple-selection listbox with selection limits.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["listbox", "option"],
+      "slots": ["root", "list", "option", "empty"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-4cead4c0792d92b1e1d40e32a01f2f96c4add452fdb1b7665ef638495246b321",
+      "files": []
     },
     {
       "name": "number-input",
       "type": "form",
+      "tier": 3,
       "title": "Number Input",
-      "description": "Bounded numeric editor with keyboard stepping."
+      "description": "Bounded numeric editor with keyboard stepping.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["textbox"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-8c305fe28cc1e87d80c8ae762d4f4b4c5e72b719d512bc09acbcfd3d94a856c4",
+      "files": []
     },
     {
       "name": "operation-list",
       "type": "workflow",
+      "tier": 3,
       "title": "Operation List",
-      "description": "Observable operation status, progress, attempts, duration, errors, and children."
+      "description": "Observable operation status, progress, attempts, duration, errors, and children.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["status"],
+      "slots": ["root", "item", "title", "metadata"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["workflow"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-9aaca5e7b4751b01282b72d8c2aa8d3fdd68b00ac16aba060c5e44c39b9874d1",
+      "files": []
     },
     {
       "name": "operation-tree",
       "type": "workflow",
+      "tier": 3,
       "title": "Operation Tree",
-      "description": "Expandable hierarchical operation display."
+      "description": "Expandable hierarchical operation display.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["tree", "treeitem", "status"],
+      "slots": ["root", "item", "title", "metadata"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["workflow"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-1916d40976439e788d41c143b3b84355b805e3d2af3bfd3b1d97eaf8376b7a8e",
+      "files": []
+    },
+    {
+      "name": "outline",
+      "type": "navigation",
+      "title": "Outline",
+      "description": "Hierarchical document navigation.",
+      "dependencies": [],
+      "registryDependencies": ["tabs"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-23c9a1f8d99eb61ce786047a4971d0680af515d80d49a924824e9002371b319a",
+      "files": []
+    },
+    {
+      "name": "pagination",
+      "type": "navigation",
+      "title": "Pagination",
+      "description": "Paged navigation control.",
+      "dependencies": [],
+      "registryDependencies": ["tabs"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-56bb7132ec5996d1ac8f4d672d8cd6ad0b1c451618729ee8348a073bf8dc507e",
+      "files": []
+    },
+    {
+      "name": "pane-tabs",
+      "type": "layout",
+      "title": "Pane Tabs",
+      "description": "Tabbed pane region.",
+      "dependencies": [],
+      "registryDependencies": ["split-pane"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-b1a1abe7d23512be2d3c204c110e5f6ee22b0bc0402f74311931c876419dafe8",
+      "files": []
+    },
+    {
+      "name": "password-input",
+      "type": "form",
+      "title": "Password Input",
+      "description": "Masked terminal text input.",
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-2215daa24fc68d3355cdcbf90a0e867826256a65b3b9f05141d889442c89860a",
+      "files": []
+    },
+    {
+      "name": "popover",
+      "type": "feedback",
+      "title": "Popover",
+      "description": "Contextual overlay content.",
+      "dependencies": [],
+      "registryDependencies": ["dialog"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-ef82ae7d8c05f0cc8b3a0ae234f39fdaba176d99d08350537c77916c856176a5",
+      "files": []
     },
     {
       "name": "progress",
       "type": "feedback",
+      "tier": 3,
       "title": "Progress",
-      "description": "Bounded terminal progress bar."
+      "description": "Bounded terminal progress bar.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["progressbar"],
+      "dependencies": ["@mwillbanks/tuil", "@mwillbanks/tuil-theme", "react"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "registryDependencies": ["text"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-01387db9f170e6f225118608008b8014282844ee6814514369ec7636779cce51",
+      "files": [
+        {
+          "path": "src/components/tuil/feedback/progress.tsx",
+          "target": "src/components/tuil/feedback/progress.tsx",
+          "source": "registry/feedback/progress.tsx"
+        }
+      ]
     },
     {
       "name": "radio-group",
       "type": "form",
+      "tier": 3,
       "title": "Radio Group",
-      "description": "Roving single-selection control with disabled-option handling."
+      "description": "Roving single-selection control with disabled-option handling.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["radio"],
+      "slots": ["root", "option"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-e63404d0965a2185a4237c5dda45a18207dca8f30f2a5161d21cb30cf9037771",
+      "files": []
     },
     {
       "name": "resizable-pane",
       "type": "layout",
+      "tier": 3,
       "title": "Resizable Pane",
-      "description": "Single constrained pane with controlled or uncontrolled keyboard resizing."
+      "description": "Single constrained pane with controlled or uncontrolled keyboard resizing.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["application", "button"],
+      "slots": ["root", "content", "handle"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [
+        "@mwillbanks/tuil",
+        "@mwillbanks/tuil-focus",
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-theme",
+        "ink",
+        "react"
+      ],
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-206b6f155de7ac5bf0fd22ec394672a5cbb872e8984d4f7a46156b629b8b884e",
+      "files": [
+        {
+          "path": "src/components/tuil/layout/resizable-pane.tsx",
+          "target": "src/components/tuil/layout/resizable-pane.tsx",
+          "source": "registry/layout/resizable-pane.tsx"
+        }
+      ]
+    },
+    {
+      "name": "rich-diff-viewer",
+      "type": "data-display",
+      "title": "Rich Diff Viewer",
+      "description": "Unified or split diff projection.",
+      "dependencies": [],
+      "registryDependencies": ["markdown-viewer"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-5b858334b7d1731dc7700ccee727949e2e281e910079653e0931cdf9a0562b44",
+      "files": []
+    },
+    {
+      "name": "scroll-area",
+      "type": "layout",
+      "title": "Scroll Area",
+      "description": "Viewport and scrollbar region.",
+      "dependencies": [],
+      "registryDependencies": ["split-pane"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-762f344d16f2cb18afe269cf29fb6207ff3df57a81d7f5cb659ca528f0814e56",
+      "files": []
+    },
+    {
+      "name": "search-input",
+      "type": "form",
+      "title": "Search Input",
+      "description": "Search editor with submit and history behavior.",
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-1ee1b3e067f0f88b50c6f7ac0715fed7127b06d3c639d7872fe4dfc292fb65d3",
+      "files": []
     },
     {
       "name": "select",
       "type": "form",
+      "tier": 3,
       "title": "Select",
-      "description": "Searchable single-selection listbox with typed values."
+      "description": "Searchable single-selection listbox with typed values.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["listbox", "option"],
+      "slots": ["root", "indicator", "list", "option", "empty"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-0d6c309ebbc1ccaafd4c3a6a2d5cd852dab21ad3832676bbb12a9ce9f36d34b6",
+      "files": []
+    },
+    {
+      "name": "sidebar",
+      "type": "layout",
+      "title": "Sidebar",
+      "description": "Application side region.",
+      "dependencies": [],
+      "registryDependencies": ["split-pane"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-f65340f4a2944cf95bb54fa2bebe82e797c00548bf8ab1d5547e246ef766ff86",
+      "files": []
+    },
+    {
+      "name": "skeleton",
+      "type": "feedback",
+      "title": "Skeleton",
+      "description": "Non-color loading placeholder.",
+      "dependencies": [],
+      "registryDependencies": ["dialog"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-4f01cb5842253cccfefe1259ca88c7f2a10f81c1afe9c29a94b7e4b8a62ab666",
+      "files": []
+    },
+    {
+      "name": "slider",
+      "type": "form",
+      "tier": 3,
+      "title": "Slider",
+      "description": "Keyboard, click, and drag operated numeric range input.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "pointer", "static"],
+      "semantics": ["slider"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-0ce90de12350912894c899261499ac612ae66115924e0313c193065238ade63c",
+      "files": []
     },
     {
       "name": "spinner",
       "type": "feedback",
+      "tier": 3,
       "title": "Spinner",
-      "description": "Capability-aware activity spinner."
+      "description": "Capability-aware activity spinner.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["status"],
+      "dependencies": ["@mwillbanks/tuil", "@mwillbanks/tuil-theme", "react"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "registryDependencies": ["text"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-59912ccb444673435f6c7b4c3d0304afd42b35d3ff00fbe991603d376c1378f3",
+      "files": [
+        {
+          "path": "src/components/tuil/feedback/spinner.tsx",
+          "target": "src/components/tuil/feedback/spinner.tsx",
+          "source": "registry/feedback/spinner.tsx"
+        }
+      ]
     },
     {
       "name": "splash-screen",
       "type": "workflow",
+      "tier": 3,
       "title": "Splash Screen",
-      "description": "Unicode-aware startup status and determinate progress screen."
+      "description": "Unicode-aware startup status and determinate progress screen.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["status", "progressbar"],
+      "slots": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["workflow"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-ad04a7072e2c3823259c1545aa5d493e7655a3b469d324dcfea2e1e2a99d9747",
+      "files": []
     },
     {
       "name": "split-pane",
       "type": "layout",
+      "tier": 3,
       "title": "Split Pane",
-      "description": "Constrained multi-pane terminal layout with keyboard-resizable separators."
+      "description": "Constrained multi-pane terminal layout with keyboard-resizable separators.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["application", "button"],
+      "slots": ["root", "track", "pane", "divider", "help"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [
+        "@mwillbanks/tuil",
+        "@mwillbanks/tuil-focus",
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-theme",
+        "ink",
+        "react"
+      ],
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-da7a27db3dbcf313f5ab8bbd412c28ba204b13a13b62756f3cc441f434c92956",
+      "files": [
+        {
+          "path": "src/components/tuil/layout/panes.tsx",
+          "target": "src/components/tuil/layout/panes.tsx",
+          "source": "registry/layout/panes.tsx"
+        }
+      ]
     },
     {
       "name": "stack",
       "type": "primitive",
+      "tier": 1,
       "title": "Stack",
-      "description": "Vertical, horizontal, and configurable stack layouts."
+      "description": "Vertical, horizontal, and configurable stack layouts.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "dependencies": ["@mwillbanks/tuil-theme", "react"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "adapt"
+      },
+      "registryDependencies": ["box"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-682ab738c209f399edce19c53559c399e0fddd314dcbdc6547097c0828f8ee81",
+      "files": [
+        {
+          "path": "src/components/tuil/primitives/stack.tsx",
+          "target": "src/components/tuil/primitives/stack.tsx",
+          "source": "registry/primitives/stack.tsx"
+        }
+      ]
     },
     {
       "name": "status-bar",
       "type": "component",
+      "tier": 3,
       "title": "Status Bar",
-      "description": "Persistent status region."
+      "description": "Persistent status region.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["status"],
+      "dependencies": ["react"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "registryDependencies": ["box"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-dae29a89f8185c60c12012bc1a08153d8b1db25911018e29d0b900762f83efe4",
+      "files": [
+        {
+          "path": "src/components/tuil/components/status-bar.tsx",
+          "target": "src/components/tuil/components/status-bar.tsx",
+          "source": "registry/components/status-bar.tsx"
+        }
+      ]
     },
     {
       "name": "stepper",
       "type": "navigation",
+      "tier": 3,
       "title": "Stepper",
-      "description": "Accessible workflow step progress for horizontal and vertical layouts."
+      "description": "Accessible workflow step progress for horizontal and vertical layouts.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["status", "button"],
+      "slots": ["root", "list", "item"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["tabs"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-7bc42db824e5b8aed31f9409e5ba4b41f5ac98770f169ae0bc714f2a769d3204",
+      "files": []
+    },
+    {
+      "name": "structured-content",
+      "type": "data-display",
+      "title": "Structured Content",
+      "description": "Structured data summary projection.",
+      "dependencies": [],
+      "registryDependencies": ["markdown-viewer"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-8855ed301418a92a06a531dc5d274f2a79643aed1627fc0a90526fd4001adaf9",
+      "files": []
     },
     {
       "name": "switch",
       "type": "form",
+      "tier": 3,
       "title": "Switch",
-      "description": "Focusable controlled or uncontrolled boolean switch."
+      "description": "Focusable controlled or uncontrolled boolean switch.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["switch"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-97eed765253b7bda2bcc5b58fa4d0d6bafbcdcb2e47f8a1cfc908c69f8d05a03",
+      "files": []
+    },
+    {
+      "name": "tab-select",
+      "type": "navigation",
+      "title": "Tab Select",
+      "description": "Compact tab selection control.",
+      "dependencies": [],
+      "registryDependencies": ["tabs"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-b8c24f2d04e7ab7a65bad94715a69fe31010ad0d045c09a57f88aa7d449c9206",
+      "files": []
     },
     {
       "name": "table",
       "type": "data-display",
+      "tier": 3,
       "title": "Table",
-      "description": "Virtualized terminal table with cell focus, frozen columns, horizontal navigation, and static output."
+      "description": "Virtualized terminal table with cell focus, frozen columns, horizontal navigation, and static output.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["table", "row", "cell"],
+      "slots": [
+        "root",
+        "header",
+        "headerCell",
+        "body",
+        "row",
+        "cell",
+        "overflow",
+        "empty"
+      ],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [
+        "@mwillbanks/tuil",
+        "@mwillbanks/tuil-focus",
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-theme",
+        "@mwillbanks/tuil-virtual",
+        "@tanstack/react-table",
+        "ink",
+        "react"
+      ],
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-c4c3a89b56c1405ccd4d094e32324ac6158f807b3c81d2d73779e82a11bad09b",
+      "files": [
+        {
+          "path": "src/components/tuil/data-display/complex-data.tsx",
+          "target": "src/components/tuil/data-display/complex-data.tsx",
+          "source": "registry/data-display/complex-data.tsx"
+        }
+      ]
     },
     {
       "name": "tabs",
       "type": "navigation",
+      "tier": 3,
       "title": "Tabs",
-      "description": "Controlled or uncontrolled terminal tabs with roving keyboard navigation."
+      "description": "Controlled or uncontrolled terminal tabs with roving keyboard navigation.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["navigation", "tab", "tabpanel"],
+      "slots": ["root", "list", "item", "panel"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [
+        "@mwillbanks/tuil",
+        "@mwillbanks/tuil-focus",
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-theme",
+        "ink",
+        "react"
+      ],
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-7b062141909fec7bd32368b2cb318a64ef24461fa091d476d419412cabb4d541",
+      "files": [
+        {
+          "path": "src/components/tuil/navigation/navigation.tsx",
+          "target": "src/components/tuil/navigation/navigation.tsx",
+          "source": "registry/navigation/navigation.tsx"
+        }
+      ]
+    },
+    {
+      "name": "terminal-platform-plugin",
+      "type": "plugin",
+      "tier": 4,
+      "title": "Terminal Platform Plugin",
+      "description": "Package-owned plugin entry point for terminal platform contributions.",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["application"],
+      "dependencies": ["@mwillbanks/tuil", "@mwillbanks/tuil-plugin"],
+      "registryDependencies": [],
+      "slots": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "use"
+      },
+      "version": "0.2.0",
+      "ownership": "plugin",
+      "packageName": "@mwillbanks/tuil-plugin",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-7cee9e61dbaafe6701cd35e04cc560b09e3569c723c666a6bfb52b1326b54042",
+      "files": []
     },
     {
       "name": "text-area",
       "type": "form",
+      "tier": 3,
       "title": "Text Area",
-      "description": "Multiline terminal text editor with cursor and validation behavior."
+      "description": "Multiline terminal text editor with cursor and validation behavior.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["textbox"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-a42950ae005aa62f1a46d452e0a084063aaa298fa39b00f0e4b4937050e2d201",
+      "files": []
     },
     {
       "name": "text-input",
       "type": "form",
+      "tier": 3,
       "title": "Text Input",
-      "description": "Controlled or uncontrolled terminal text editor with validation."
+      "description": "Controlled or uncontrolled terminal text editor with validation.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["textbox"],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["field"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-efff4e31ceb3cd5e9a34c2034dbad6988ec19acc4f169efca300554448b6caec",
+      "files": []
     },
     {
       "name": "text",
       "type": "data-display",
+      "tier": 1,
       "title": "Text",
-      "description": "Semantic terminal text."
+      "description": "Semantic terminal text.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["text"],
+      "dependencies": [
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-theme",
+        "ink",
+        "react"
+      ],
+      "slots": ["root"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "adapt"
+      },
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-07f7b79fec3fad1af4227a59fd86a9385f9c31d33f2ad32e455557016bdc055b",
+      "files": [
+        {
+          "path": "src/components/tuil/data-display/text.tsx",
+          "target": "src/components/tuil/data-display/text.tsx",
+          "source": "registry/data-display/text.tsx"
+        }
+      ]
+    },
+    {
+      "name": "timeline",
+      "type": "data-display",
+      "title": "Timeline",
+      "description": "Ordered event timeline.",
+      "dependencies": [],
+      "registryDependencies": ["markdown-viewer"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink", "cell"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "integrity": "sha256-eda7824cb8818c626274432f724f5d4c22f3c9cbb2e2eb82b8f9f623d98c53b8",
+      "files": []
     },
     {
       "name": "toast",
       "type": "feedback",
+      "tier": 3,
       "title": "Toast",
-      "description": "Disposable notification queue with actions, promises, updates, and live semantics."
+      "description": "Disposable notification queue with actions, promises, updates, and live semantics.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["status", "alert"],
+      "slots": ["root", "title", "description", "action", "viewport"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["dialog"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-fb8ffe6532672175d00f615225d80cc4b6879d091ee9cbd8a28d8fc3fe15ba6f",
+      "files": []
     },
     {
       "name": "tooltip",
       "type": "feedback",
+      "tier": 3,
       "title": "Tooltip",
-      "description": "Delayed focus and explicit-help tooltip with accessible metadata."
+      "description": "Delayed focus and explicit-help tooltip with accessible metadata.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["text"],
+      "slots": ["root", "content"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [],
+      "registryDependencies": ["dialog"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-64313bd872be86b5ad6a1ddec96faf68d74e5279526907bb6d9cd3341905b869",
+      "files": []
     },
     {
       "name": "transfer-list",
       "type": "form",
+      "tier": 3,
       "title": "Transfer List",
-      "description": "Dual-pane controlled or uncontrolled item transfer with keyboard navigation."
+      "description": "Dual-pane controlled or uncontrolled item transfer with keyboard navigation.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["form", "listbox", "option"],
+      "slots": [
+        "root",
+        "panel",
+        "title",
+        "item",
+        "controls",
+        "empty",
+        "overflow"
+      ],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [
+        "@mwillbanks/tuil",
+        "@mwillbanks/tuil-focus",
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-theme",
+        "ink",
+        "react"
+      ],
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-6f5045e724a34554dc36a66c0a18e92982823dcd6d6efb885b402c9e9a17a3c9",
+      "files": [
+        {
+          "path": "src/components/tuil/forms/transfer-list.tsx",
+          "target": "src/components/tuil/forms/transfer-list.tsx",
+          "source": "registry/forms/transfer-list.tsx"
+        }
+      ]
     },
     {
       "name": "tree",
       "type": "data-display",
+      "tier": 3,
       "title": "Tree",
-      "description": "Virtualized hierarchical tree with expansion, selection, and keyboard traversal."
+      "description": "Virtualized hierarchical tree with expansion, selection, and keyboard traversal.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["tree", "treeitem"],
+      "slots": ["root", "viewport", "item", "empty", "overflow"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": ["@mwillbanks/tuil", "@mwillbanks/tuil-ink", "react"],
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-8195103d18b4c85085fbe44904180210d63f2f8f4b16fbcb9d2324f2c197d6d7",
+      "files": [
+        {
+          "path": "src/components/tuil/data-display/tree.tsx",
+          "target": "src/components/tuil/data-display/tree.tsx",
+          "source": "registry/data-display/tree.tsx"
+        }
+      ]
     },
     {
       "name": "virtual-list",
       "type": "data-display",
+      "tier": 3,
       "title": "Virtual List",
-      "description": "Fixed-cell terminal virtual list with focus-driven scrolling and bounded static output."
+      "description": "Fixed-cell terminal virtual list with focus-driven scrolling and bounded static output.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["listbox", "option"],
+      "slots": ["root", "viewport", "item", "overflow", "empty"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [
+        "@mwillbanks/tuil",
+        "@mwillbanks/tuil-focus",
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-theme",
+        "@mwillbanks/tuil-virtual",
+        "ink",
+        "react"
+      ],
+      "registryDependencies": [],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-b513a049cbb0f043572f8fbc126412350e9207df9a1808a931c49599b0553a70",
+      "files": [
+        {
+          "path": "src/components/tuil/data-display/virtual-list.tsx",
+          "target": "src/components/tuil/data-display/virtual-list.tsx",
+          "source": "registry/data-display/virtual-list.tsx"
+        }
+      ]
     },
     {
       "name": "workflow",
       "type": "workflow",
+      "tier": 3,
       "title": "Workflow",
-      "description": "Replaceable compound UI for real persistable workflow runners."
+      "description": "Replaceable compound UI for real persistable workflow runners.",
+      "renderer": "ink",
+      "capabilities": ["interactive", "static"],
+      "semantics": ["application", "status", "alert"],
+      "slots": ["root", "content"],
+      "provenance": {
+        "source": "tuil",
+        "license": "MIT",
+        "mode": "replace"
+      },
+      "dependencies": [
+        "@mwillbanks/tuil",
+        "@mwillbanks/tuil-hotkeys",
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-operations",
+        "@mwillbanks/tuil-theme",
+        "@mwillbanks/tuil-workflow",
+        "ink",
+        "react"
+      ],
+      "registryDependencies": ["button", "dialog", "text-input", "tabs"],
+      "version": "0.2.0",
+      "ownership": "source",
+      "compatibility": {
+        "tuil": "^0.2.0",
+        "renderers": ["ink"],
+        "capabilities": []
+      },
+      "codemods": [],
+      "integrity": "sha256-a40d5ddcb2ff3fc52bd39752587cd21b0b345754d051d879432a2e596fb68633",
+      "files": [
+        {
+          "path": "src/components/tuil/workflows/workflow.tsx",
+          "target": "src/components/tuil/workflows/workflow.tsx",
+          "source": "registry/workflows/workflow.tsx"
+        }
+      ]
     }
   ]
 }

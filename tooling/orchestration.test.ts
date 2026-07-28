@@ -41,22 +41,32 @@ async function run(command: readonly string[], cwd: string): Promise<string> {
 
 test("build, registry, documentation, and publication orchestration completes", async () => {
   await generateReferenceDocs();
-  await import("./registry/build.ts");
+  const registryBuild = await import("./registry/build.ts");
+  expect(registryBuild.deriveRegistryReleaseMetadata("1.4.7", "2.3.9")).toEqual(
+    {
+      version: "1.4.7",
+      tuilCompatibility: "^2.3.0",
+    },
+  );
+  expect(() =>
+    registryBuild.deriveRegistryReleaseMetadata("next", "2.3.9"),
+  ).toThrow("Invalid registry package version");
   const registryCheck = await import("./registry/check.ts");
   await registryCheck.checkRegistryArtifacts();
-  const generatedRegistry = join(
-    workspace,
+  for (const generatedPath of [
     "packages/cli/src/generated-registry.ts",
-  );
-  const generatedRegistrySource = await readFile(generatedRegistry, "utf8");
-  await writeFile(generatedRegistry, `${generatedRegistrySource}\n`);
-  await expect(registryCheck.checkRegistryArtifacts()).rejects.toThrow(
-    "Registry artifacts are stale",
-  );
-  expect(await readFile(generatedRegistry, "utf8")).toBe(
-    `${generatedRegistrySource}\n`,
-  );
-  await writeFile(generatedRegistry, generatedRegistrySource);
+    "apps/showcase/src/component-acceptance.stories.tsx",
+    "apps/docs/content/docs/reference/components/acceptance-catalog.mdx",
+  ]) {
+    const generatedFile = join(workspace, generatedPath);
+    const generatedSource = await readFile(generatedFile, "utf8");
+    await writeFile(generatedFile, `${generatedSource}\n`);
+    await expect(registryCheck.checkRegistryArtifacts()).rejects.toThrow(
+      "Registry artifacts are stale",
+    );
+    expect(await readFile(generatedFile, "utf8")).toBe(`${generatedSource}\n`);
+    await writeFile(generatedFile, generatedSource);
+  }
   await import("./build/build-all.ts");
   await import("./build/build-ecosystem.ts");
   await validateStaticDocs({

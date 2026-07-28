@@ -1,0 +1,65 @@
+---
+title: "@mwillbanks/tuil-pointer"
+description: "Renderer-neutral terminal pointer parsing, hit testing, capture, and dispatch for tuil."
+icon: Package
+---
+
+## Overview
+
+Renderer-neutral terminal pointer parsing, hit testing, capture, and dispatch for tuil.
+
+`@mwillbanks/tuil-pointer` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-pointer
+```
+
+## How it operates
+
+Pointer input parses SGR sequences, hit-tests shared layout bounds, and routes capture and bubble phases for click, hover, drag, wheel, and focus behavior.
+
+```mermaid
+flowchart LR
+  S0["enable tracking"]
+  S1["decode"]
+  S2["hit test"]
+  S3["route"]
+  S4["disable tracking"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `DecodedPointerInput` | interface | `packages/pointer/src/index.ts` |
+| `ParsedPointerInput` | interface | `packages/pointer/src/index.ts` |
+| `parseSgrPointer` | function | `packages/pointer/src/index.ts` |
+| `PointerButton` | type | `packages/pointer/src/index.ts` |
+| `PointerEventType` | type | `packages/pointer/src/index.ts` |
+| `PointerModifiers` | interface | `packages/pointer/src/index.ts` |
+
+## Events and lifecycle
+
+Normalized pointer events carry coordinates, buttons, modifiers, phase, and propagation state.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+const event = parseSgrPointer(sequence);
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

@@ -16,10 +16,20 @@
   },
   "files": [
     {
-      "path": "../../../registry/feedback/spinner.tsx",
+      "path": "src/components/tuil/feedback/spinner.tsx",
       "target": "src/components/tuil/feedback/spinner.tsx",
-      "content": "import { useApp } from \"@mwillbanks/tuil\";\nimport {\n  resolveSlotProps,\n  type SlottedComponentProps,\n  useTheme,\n} from \"@mwillbanks/tuil-theme\";\nimport { type ReactNode, useEffect, useState } from \"react\";\nimport { Text, type TextProps } from \"../data-display/text\";\n\nexport interface SpinnerProps\n  extends SlottedComponentProps<{ root: TextProps }> {\n  readonly id?: string;\n  readonly testId?: string;\n  readonly label?: string;\n  readonly disabled?: boolean;\n  readonly readOnly?: boolean;\n}\n\nexport function Spinner({\n  label = \"Loading\",\n  slots,\n  slotProps,\n  ...props\n}: SpinnerProps): ReactNode {\n  const app = useApp();\n  const theme = useTheme();\n  const [frame, setFrame] = useState(0);\n  useEffect(() => {\n    if (app.mode !== \"interactive\" || !theme.motion.enabled) return;\n    const timer = setInterval(\n      () =>\n        setFrame((value) => (value + 1) % theme.motion.spinnerFrames.length),\n      theme.motion.interval,\n    );\n    return () => clearInterval(timer);\n  }, [app.mode, theme]);\n  const Root = slots?.root ?? Text;\n  const symbol =\n    app.mode === \"interactive\"\n      ? theme.motion.spinnerFrames[frame]\n      : theme.icons.pending;\n  return (\n    <Root\n      {...props}\n      {...resolveSlotProps(slotProps?.root, {}, theme)}\n      role=\"status\"\n      label={label}\n    >\n      {symbol} {label}\n    </Root>\n  );\n}\n"
+      "content": "import { useApp } from \"@mwillbanks/tuil\";\nimport {\n  resolveSlotProps,\n  type SlottedComponentProps,\n  useTheme,\n} from \"@mwillbanks/tuil-theme\";\nimport { type ReactNode, useEffect, useState } from \"react\";\nimport { Text, type TextProps } from \"../data-display/text\";\n\nexport interface SpinnerProps\n  extends SlottedComponentProps<{ root: TextProps }> {\n  readonly id?: string;\n  readonly testId?: string;\n  readonly label?: string;\n  readonly disabled?: boolean;\n  readonly readOnly?: boolean;\n}\n\nexport function Spinner({\n  label = \"Loading\",\n  slots,\n  slotProps,\n  ...props\n}: SpinnerProps): ReactNode {\n  const app = useApp();\n  const theme = useTheme();\n  const [frame, setFrame] = useState(0);\n  useEffect(() => {\n    if (app.mode !== \"interactive\" || !theme.motion.enabled) return;\n    const timer = setInterval(\n      () =>\n        setFrame((value) => (value + 1) % theme.motion.spinnerFrames.length),\n      theme.motion.interval,\n    );\n    return () => clearInterval(timer);\n  }, [app.mode, theme]);\n  const Root = slots?.root ?? Text;\n  const symbol =\n    app.mode === \"interactive\"\n      ? theme.motion.spinnerFrames[frame]\n      : theme.icons.pending;\n  return (\n    <Root\n      {...props}\n      {...resolveSlotProps(slotProps?.root, {}, theme)}\n      role=\"status\"\n      label={label}\n    >\n      {symbol} {label}\n    </Root>\n  );\n}\n",
+      "source": "registry/feedback/spinner.tsx"
     }
   ],
-  "registryDependencies": ["text"]
+  "registryDependencies": ["text"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "integrity": "sha256-59912ccb444673435f6c7b4c3d0304afd42b35d3ff00fbe991603d376c1378f3"
 }

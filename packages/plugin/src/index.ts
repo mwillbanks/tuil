@@ -34,6 +34,15 @@ export interface DefaultExtensionPoints {
   persistenceAdapters: unknown;
   operationExecutors: unknown;
   devtools: unknown;
+  components: unknown;
+  editorProviders: unknown;
+  editorCommands: unknown;
+  logParsers: unknown;
+  themes: unknown;
+  formatAdapters: unknown;
+  renderProjections: unknown;
+  devtoolsPanels: unknown;
+  renderers: unknown;
   readonly [key: string]: unknown;
 }
 
@@ -62,6 +71,17 @@ export interface PluginContext<
     TExtensions["operationExecutors"]
   >;
   readonly devtools: ExtensionRegistry<TExtensions["devtools"]>;
+  readonly components: ExtensionRegistry<TExtensions["components"]>;
+  readonly editorProviders: ExtensionRegistry<TExtensions["editorProviders"]>;
+  readonly editorCommands: ExtensionRegistry<TExtensions["editorCommands"]>;
+  readonly logParsers: ExtensionRegistry<TExtensions["logParsers"]>;
+  readonly themes: ExtensionRegistry<TExtensions["themes"]>;
+  readonly formatAdapters: ExtensionRegistry<TExtensions["formatAdapters"]>;
+  readonly renderProjections: ExtensionRegistry<
+    TExtensions["renderProjections"]
+  >;
+  readonly devtoolsPanels: ExtensionRegistry<TExtensions["devtoolsPanels"]>;
+  readonly renderers: ExtensionRegistry<TExtensions["renderers"]>;
   readonly capabilities: ReadonlySet<PluginCapability>;
   readonly signal: AbortSignal;
 }

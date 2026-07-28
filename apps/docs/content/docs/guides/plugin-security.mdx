@@ -1,0 +1,20 @@
+---
+title: Plugin security
+description: Keep extension points explicit and least-privileged.
+icon: ShieldCheck
+---
+
+Plugins receive declared registries for components, editors, log parsers,
+themes, formats, render projections, and devtools panels. TUIL does not hand
+filesystem, process, or network handles to a plugin through its context.
+Capabilities are host admission policy: they describe authority the host is
+willing to grant before activation.
+
+Plugins are trusted, in-process JavaScript. Capabilities are not a sandbox and
+cannot prevent a plugin from importing APIs exposed by its Bun process. Run
+untrusted extensions in a separately sandboxed process and expose only a
+validated protocol boundary.
+
+Validate plugin compatibility before activation, dispose registrations in
+reverse order, redact diagnostic payloads, and require explicit application
+configuration for externally consequential capabilities.

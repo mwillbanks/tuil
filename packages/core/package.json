@@ -34,6 +34,9 @@
     "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
+  "dependencies": {
+    "string-width": "catalog:"
+  },
   "files": [
     "dist"
   ]

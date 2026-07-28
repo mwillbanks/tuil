@@ -1,0 +1,41 @@
+{
+  "name": "@mwillbanks/tuil-content",
+  "version": "0.2.0",
+  "description": "Shared Markdown code diff JSON structured-content projections and selection models for tuil.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/content"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "markdown",
+    "diff",
+    "json"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "bun ../../tooling/build/package.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@mwillbanks/tuil-streaming": "workspace:*"
+  },
+  "files": [
+    "dist"
+  ]
+}

@@ -1,0 +1,21 @@
+---
+title: Editor backend selection
+description: Select buffer, Vim, or rich-document editing.
+icon: PencilSimple
+---
+
+Use the built-in buffer for ordinary text and code fields, the Vim provider for
+modal commands, and the rich provider for structured blocks. Providers register
+through `editorProviders`; commands register independently through
+`editorCommands`, so plugins can extend behavior without replacing the editor.
+
+Every provider owns selection, undo/redo, composition, clipboard, and static
+output. Test provider-independent behavior with the editor conformance harness.
+
+Masked sessions redact snapshots, text/Markdown/JSON serialization, copy, cut,
+and clipboard-adapter writes. An owning password control receives the private
+value only through the explicit `onDocumentChange` provider option; providers
+that advertise the `masked` capability must honor that boundary.
+`PasswordInput` therefore accepts `editorProvider` but rejects a pre-created
+`session`, because a control cannot retrofit that private change sink without
+recovering secrets through a redacted serialization API.

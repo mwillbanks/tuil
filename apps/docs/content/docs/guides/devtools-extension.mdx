@@ -1,0 +1,30 @@
+---
+title: Devtools extensions
+description: Add panels, actions, and query contributions.
+icon: Wrench
+---
+
+Register panels through `devtoolsPanels`; register actions and queries with the
+contribution registry. Contributions have stable IDs and return disposers.
+Panels consume snapshots and protocol messages rather than private runtime
+state.
+
+Sensitive actions require development mode, record an audit entry, and explain
+why they are available. Remote transports use versioned protocol messages;
+recorded sessions can be exported, imported, and replayed deterministically.
+
+Editor sessions created with `app.createEditorSession()`, log pipelines created
+with `app.createLogPipeline()`, and streaming pipelines created with
+`app.createStreamingPipeline()` are lifecycle-owned resources. They are
+registered in `app.editorSessions`, `app.logPipelines`, and
+`app.streamingPipelines`, update devtools observers when created or removed,
+and are cleared when the runtime stops. Component-owned pipelines should call
+the corresponding `releaseLogPipeline()` or `releaseStreamingPipeline()` when
+they unmount. The built-in editor and log panels inspect these registries
+directly; applications do not need to mirror them into the service container.
+
+All action records pass through the same audit redactor, including records
+submitted by extension callbacks and thrown error messages. Secret-bearing
+keys, inline credentials, bearer values, JWT-shaped values, and URL userinfo
+are redacted before history, diagnostics, protocol transport, or UI status can
+observe them.

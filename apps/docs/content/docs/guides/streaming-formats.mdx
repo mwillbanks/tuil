@@ -1,0 +1,23 @@
+---
+title: Streaming formats and transformations
+description: Decode bounded streams into typed incremental events.
+icon: FlowArrow
+---
+
+`@mwillbanks/tuil-streaming` incrementally decodes text, JSON, JSONL, Markdown,
+XML, TOML, YAML, diffs, syslog, and plain text. Pipelines expose cancellation,
+backpressure, bounded replay, transforms, and projections.
+
+Choose explicit limits for retained events and partial input. Surface malformed
+records as parse events instead of terminating an otherwise healthy stream.
+Never assume a transport chunk aligns with a line, token, or Unicode grapheme.
+
+JSONL and syslog nodes retain absolute source spans across transport chunks and
+retained-source trimming. `replay()` returns the bounded sequence of document
+revisions and diagnostics in sequence order, so consumers can reconstruct
+historical states instead of receiving only the latest document.
+
+React components use `useStreamingPipeline()` so registration and release
+happen in effects rather than during render. The parsing effect separately
+aborts outstanding work during cleanup. This keeps runtime inspection truthful
+and prevents a remounted document view from retaining a stale pipeline.

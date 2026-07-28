@@ -1,0 +1,17 @@
+---
+title: Vim mode
+description: Configure modal editing and command routing.
+icon: Keyboard
+---
+
+Vim mode supports normal, insert, visual, and command modes. Motions and
+operators are resolved by the Vim provider before application hotkeys. Escape
+returns to normal mode; command mode emits typed editor commands.
+
+Visual and visual-line selections accept `d`, `c`, and `y` directly, including
+named-register targets. Insert repeat records Unicode grapheme clusters, so
+backspace followed by `.` cannot replay a split emoji or combining sequence.
+
+Keep global shortcuts out of active editor scope unless they are explicitly
+declared as application-level overrides. Expose the current mode in status text
+so the interface remains understandable without relying on color.

@@ -4,7 +4,9 @@ const repositoryRoot = resolve(import.meta.dir, "../..");
 const coverageFile = resolve(repositoryRoot, "coverage/lcov.info");
 
 // Generated mirrors are byte-validated by the registry gate. Tests and
-// declarative story definitions are not implementation coverage targets.
+// declarative story definitions are not implementation coverage targets. The
+// Tree-sitter worker runs in a separate isolate and is exercised through public
+// CodeDocument integration tests, outside Bun's parent-process LCOV.
 const sourcePatterns = [
   "apps/playground/src/**/*.{ts,tsx}",
   "apps/showcase/src/**/*.{ts,tsx}",
@@ -18,6 +20,7 @@ const excludedPatterns = [
   "**/*.stories.tsx",
   "packages/cli/src/generated-registry.ts",
   "packages/cli/src/generated-ui/**",
+  "packages/code/src/worker.ts",
 ] as const;
 
 export async function coverageSources(

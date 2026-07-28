@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "source": "native/cell_diff.zig",
+  "zigVersion": "0.15.2",
+  "artifacts": {
+    "darwin-arm64/libtuil_cell.dylib": "d42f9b6900dde84beedda5cf7d412394c760a161d6d5680104afa35f29e69003",
+    "darwin-x64/libtuil_cell.dylib": "41cb6e53b17ced8deedd146e40edc2475af020744336462e8392d4cc2e702260",
+    "linux-arm64/libtuil_cell.so": "0b15c387caca15f6416039e0d9e7fdc814aa258f91505fad187f5d8153b8d3d1",
+    "linux-x64/libtuil_cell.so": "016102de589286f3a72454da7904f1c8c23307366e07ccbe12248893c64ed33c",
+    "win32-x64/tuil_cell.dll": "c84ed2ee8f1a52502e263d0b898199ac2356132b8393aed8350f10cef2fa1e06"
+  }
+}

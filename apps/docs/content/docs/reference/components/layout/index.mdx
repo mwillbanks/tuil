@@ -13,7 +13,7 @@ Build capability-aware rows, columns, bounded containers, split panes, and keybo
 ## Installation
 
 ```npm
-npx @mwillbanks/tuil add box container stack split-pane resizable-pane
+npx @mwillbanks/tuil add box container stack split-pane header footer sidebar pane-tabs scroll-area resizable-pane
 ```
 
 The CLI writes source-owned components beneath the destination configured in
@@ -32,6 +32,11 @@ The CLI writes source-owned components beneath the destination configured in
 | `VStack` | function | `registry/primitives/stack.tsx` |
 | `Pane` | component | `registry/primitives/box.tsx` |
 | `SplitPane` | function | `registry/layout/panes.tsx` |
+| `Header` | constant | `registry/layout/panes.tsx` |
+| `Footer` | constant | `registry/layout/panes.tsx` |
+| `Sidebar` | constant | `registry/layout/panes.tsx` |
+| `PaneTabs` | function | `registry/layout/panes.tsx` |
+| `ScrollArea` | function | `registry/layout/panes.tsx` |
 | `ResizablePane` | function | `registry/layout/resizable-pane.tsx` |
 
 ## Interaction

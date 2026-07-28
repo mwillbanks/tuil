@@ -1,0 +1,24 @@
+---
+title: Registry upgrades
+description: Verify provenance, compatibility, locks, and codemods.
+icon: Package
+---
+
+Registry items declare package version, integrity, compatibility, deprecation,
+ordered codemods, and an ownership mode: `source`, `package`, or `plugin`.
+Published HTTP registries must provide version, SHA-256 integrity,
+`compatibility.tuil`, supported renderers, provenance, and ownership. Package-
+and plugin-owned items also identify their package. Missing or tampered metadata
+is rejected before dependency resolution or file writes.
+
+The registry index carries the same release, ownership, compatibility,
+deprecation, codemod, dependency, provenance, and file-descriptor metadata as
+the item manifest. This lets search and upgrade tooling diagnose an item before
+downloading its source. After resolving an item, verify its complete canonical
+manifest and compatibility, apply codemods, and add provenance comments.
+Persist a lock entry for the resolved identity, source, package, dependency
+graph, version, and checksum. Use frozen-lockfile verification in repeatable
+builds.
+
+Review generated changes like application code. A codemod must be deterministic
+and idempotent; an incompatible item is an error, not a best-effort install.

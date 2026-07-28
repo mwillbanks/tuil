@@ -1,0 +1,23 @@
+{
+  "name": "editable-tree-node",
+  "type": "form",
+  "title": "Editable Tree Node",
+  "description": "Inline tree-node editor.",
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["field"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink", "cell"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "integrity": "sha256-d9574cbac2ee83ece4138d3bb860e9193c0d3e042f85389398b6fe077d377075"
+}

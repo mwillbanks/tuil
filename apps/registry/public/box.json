@@ -21,10 +21,20 @@
   },
   "files": [
     {
-      "path": "../../../registry/primitives/box.tsx",
+      "path": "src/components/tuil/primitives/box.tsx",
       "target": "src/components/tuil/primitives/box.tsx",
-      "content": "import {\n  type BoxProps as TuilBoxProps,\n  useSemanticNode,\n} from \"@mwillbanks/tuil-ink\";\nimport {\n  resolveComponentProps,\n  resolveSlotProps,\n  type SpacingToken,\n  useTheme,\n} from \"@mwillbanks/tuil-theme\";\nimport { Box as InkBox } from \"ink\";\nimport { type ReactNode, useId, useMemo } from \"react\";\n\nexport type BoxProps = TuilBoxProps;\n\nexport function Box({\n  slots,\n  slotProps,\n  padding,\n  margin,\n  children,\n  id,\n  testId,\n  role,\n  label,\n  description,\n  disabled,\n  readOnly,\n  selected,\n  checked,\n  expanded,\n  valueText,\n  unstyled,\n  variant,\n  size,\n  className,\n  ...props\n}: BoxProps): ReactNode {\n  const theme = useTheme();\n  const generated = useId();\n  const key = id ?? generated;\n  const semantics = useMemo(\n    () => ({\n      key,\n      id: id ?? key,\n      testId,\n      role,\n      label,\n      description,\n      disabled,\n      readOnly,\n      selected,\n      checked,\n      expanded,\n      valueText,\n    }),\n    [\n      checked,\n      description,\n      disabled,\n      expanded,\n      id,\n      key,\n      label,\n      readOnly,\n      role,\n      selected,\n      testId,\n      valueText,\n    ],\n  );\n  useSemanticNode(semantics);\n  const Root = slots?.root ?? InkBox;\n  const customization = resolveComponentProps(\n    \"Box\",\n    { variant, size, unstyled, className },\n    {},\n    theme,\n  );\n  const resolveSpacing = (value: number | SpacingToken | undefined) =>\n    typeof value === \"string\" ? theme.spacing[value] : value;\n  return (\n    <Root\n      {...(customization as TuilBoxProps)}\n      {...props}\n      {...resolveSlotProps(slotProps?.root, {}, theme)}\n      padding={resolveSpacing(padding)}\n      margin={resolveSpacing(margin)}\n    >\n      {children}\n    </Root>\n  );\n}\n"
+      "content": "import {\n  type BoxProps as TuilBoxProps,\n  useSemanticNode,\n} from \"@mwillbanks/tuil-ink\";\nimport {\n  resolveComponentProps,\n  resolveSlotProps,\n  type SpacingToken,\n  useTheme,\n} from \"@mwillbanks/tuil-theme\";\nimport { Box as InkBox } from \"ink\";\nimport { type ReactNode, useId, useMemo } from \"react\";\n\nexport type BoxProps = TuilBoxProps;\n\nexport function Box({\n  slots,\n  slotProps,\n  padding,\n  margin,\n  children,\n  id,\n  testId,\n  role,\n  label,\n  description,\n  disabled,\n  readOnly,\n  selected,\n  checked,\n  expanded,\n  valueText,\n  unstyled,\n  variant,\n  size,\n  className,\n  ...props\n}: BoxProps): ReactNode {\n  const theme = useTheme();\n  const generated = useId();\n  const key = id ?? generated;\n  const semantics = useMemo(\n    () => ({\n      key,\n      id: id ?? key,\n      testId,\n      role,\n      label,\n      description,\n      disabled,\n      readOnly,\n      selected,\n      checked,\n      expanded,\n      valueText,\n    }),\n    [\n      checked,\n      description,\n      disabled,\n      expanded,\n      id,\n      key,\n      label,\n      readOnly,\n      role,\n      selected,\n      testId,\n      valueText,\n    ],\n  );\n  useSemanticNode(semantics);\n  const Root = slots?.root ?? InkBox;\n  const customization = resolveComponentProps(\n    \"Box\",\n    { variant, size, unstyled, className },\n    {},\n    theme,\n  );\n  const resolveSpacing = (value: number | SpacingToken | undefined) =>\n    typeof value === \"string\" ? theme.spacing[value] : value;\n  return (\n    <Root\n      {...(customization as TuilBoxProps)}\n      {...props}\n      {...resolveSlotProps(slotProps?.root, {}, theme)}\n      padding={resolveSpacing(padding)}\n      margin={resolveSpacing(margin)}\n    >\n      {children}\n    </Root>\n  );\n}\n",
+      "source": "registry/primitives/box.tsx"
     }
   ],
-  "registryDependencies": []
+  "registryDependencies": [],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "integrity": "sha256-b56aad113074983e5f02e480387fe81e1c4b1b95f900a222e283e41c25f576d9"
 }

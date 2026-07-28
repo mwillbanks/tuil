@@ -1,18 +1,69 @@
 import { mkdir, readdir, readFile } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
+import {
+  parseRegistryItem,
+  registryIntegrity,
+} from "../../packages/registry/src/index.ts";
+import { registryExportName } from "./names.ts";
 
 interface RegistryManifest {
   name: string;
   type: string;
   title: string;
   description: string;
+  tier?: 1 | 2 | 3 | 4;
+  version?: string;
+  packageName?: string;
+  ownership?: "source" | "package" | "plugin";
+  integrity?: string;
+  renderer?: string;
+  capabilities?: string[];
+  semantics?: string[];
+  slots?: string[];
+  compatibility?: {
+    tuil: string;
+    renderers: string[];
+    capabilities?: string[];
+  };
+  deprecated?: {
+    message: string;
+    replacement?: string;
+    since?: string;
+  };
+  codemods?: {
+    id: string;
+    description: string;
+    replacements: { from: string; to: string }[];
+  }[];
+  provenance?: {
+    source: string;
+    license?: string;
+    mode?: "use" | "wrap" | "adapt" | "replace" | "reference";
+  };
   dependencies?: string[];
   registryDependencies?: string[];
   files: {
     path: string;
     target: string;
+    source?: string;
     content?: string;
   }[];
+}
+
+export function deriveRegistryReleaseMetadata(
+  registryVersion: string,
+  tuilVersion: string,
+): { readonly version: string; readonly tuilCompatibility: string } {
+  const versionPattern = /^(\d+)\.(\d+)\.(\d+)(?:-[0-9A-Za-z.-]+)?$/;
+  if (!versionPattern.test(registryVersion)) {
+    throw new Error(`Invalid registry package version "${registryVersion}"`);
+  }
+  const tuil = versionPattern.exec(tuilVersion);
+  if (!tuil) throw new Error(`Invalid TUIL package version "${tuilVersion}"`);
+  return Object.freeze({
+    version: registryVersion,
+    tuilCompatibility: `^${tuil[1]}.${tuil[2]}.0`,
+  });
 }
 
 const metadata: Record<
@@ -208,6 +259,18 @@ const metadata: Record<
       "react",
     ],
   },
+  slider: {
+    target: "src/components/tuil/forms/controls.tsx",
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-form",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "ink",
+      "react",
+    ],
+  },
   "multi-select": {
     target: "src/components/tuil/forms/controls.tsx",
     dependencies: [
@@ -384,15 +447,7 @@ const metadata: Record<
   },
   tree: {
     target: "src/components/tuil/data-display/tree.tsx",
-    dependencies: [
-      "@mwillbanks/tuil",
-      "@mwillbanks/tuil-focus",
-      "@mwillbanks/tuil-ink",
-      "@mwillbanks/tuil-theme",
-      "@mwillbanks/tuil-virtual",
-      "ink",
-      "react",
-    ],
+    dependencies: ["@mwillbanks/tuil", "@mwillbanks/tuil-ink", "react"],
   },
   "log-viewer": {
     target: "src/components/tuil/data-display/log-viewer.tsx",
@@ -400,6 +455,8 @@ const metadata: Record<
       "@mwillbanks/tuil",
       "@mwillbanks/tuil-focus",
       "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-log-viewer",
+      "@mwillbanks/tuil-logging",
       "@mwillbanks/tuil-theme",
       "@mwillbanks/tuil-virtual",
       "ink",
@@ -476,9 +533,57 @@ const metadata: Record<
       "react",
     ],
   },
+  "markdown-viewer": {
+    target: "src/components/tuil/data-display/rich-content.tsx",
+    dependencies: [
+      "@mwillbanks/tuil-code",
+      "@mwillbanks/tuil-content",
+      "@mwillbanks/tuil-streaming",
+      "ink",
+      "react",
+    ],
+  },
+  "terminal-platform-plugin": {
+    target: "src/plugins/terminal-platform.ts",
+    dependencies: ["@mwillbanks/tuil", "@mwillbanks/tuil-plugin"],
+  },
 };
 
 const publicDirectory = resolve(import.meta.dir, "../../apps/registry/public");
+const projectDirectory = resolve(import.meta.dir, "../..");
+const registryPackage = JSON.parse(
+  await readFile(
+    join(projectDirectory, "packages/registry/package.json"),
+    "utf8",
+  ),
+) as { readonly version: string };
+const tuilPackage = JSON.parse(
+  await readFile(join(projectDirectory, "packages/tuil/package.json"), "utf8"),
+) as { readonly version: string };
+const releaseMetadata = deriveRegistryReleaseMetadata(
+  registryPackage.version,
+  tuilPackage.version,
+);
+const registryDirectory = join(projectDirectory, "registry");
+const registrySourcePaths = (
+  await readdir(registryDirectory, {
+    recursive: true,
+  })
+)
+  .filter((path) => path.endsWith(".ts") || path.endsWith(".tsx"))
+  .map((path) => `registry/${path}`);
+const registrySourceByContent = new Map<string, string>();
+const registrySourceByBasename = new Map<string, string>();
+for (const source of registrySourcePaths) {
+  const content = await readFile(join(projectDirectory, source), "utf8");
+  if (!registrySourceByContent.has(content)) {
+    registrySourceByContent.set(content, source);
+  }
+  const fileName = basename(source);
+  if (!registrySourceByBasename.has(fileName)) {
+    registrySourceByBasename.set(fileName, source);
+  }
+}
 const manifests = (await readdir(publicDirectory))
   .filter((name) => name.endsWith(".json") && name !== "registry.json")
   .sort();
@@ -494,7 +599,17 @@ const formAliases = new Set([
   "switch",
   "select",
   "multi-select",
+  "slider",
   "autocomplete",
+  "password-input",
+  "search-input",
+  "command-line",
+  "code-editor",
+  "inline-editor",
+  "editable-table-cell",
+  "editable-tree-node",
+  "form-field-editor",
+  "date-time-input",
 ]);
 const overlaySourceOwner = "dialog";
 const overlayAliases = new Set([
@@ -502,6 +617,10 @@ const overlayAliases = new Set([
   "tooltip",
   "toast",
   "command-palette",
+  "drawer",
+  "popover",
+  "skeleton",
+  "error-boundary",
 ]);
 const navigationSourceOwner = "tabs";
 const navigationAliases = new Set([
@@ -509,6 +628,9 @@ const navigationAliases = new Set([
   "menubar",
   "breadcrumbs",
   "stepper",
+  "tab-select",
+  "pagination",
+  "outline",
 ]);
 const workflowSourceOwner = "workflow";
 const workflowAliases = new Set([
@@ -519,16 +641,28 @@ const workflowAliases = new Set([
 ]);
 const tableSourceOwner = "table";
 const tableAliases = new Set(["data-table"]);
+const paneSourceOwner = "split-pane";
+const paneAliases = new Set([
+  "header",
+  "footer",
+  "sidebar",
+  "pane-tabs",
+  "scroll-area",
+]);
+const richContentSourceOwner = "markdown-viewer";
+const richContentAliases = new Set([
+  "code-viewer",
+  "timeline",
+  "bar-chart",
+  "structured-content",
+  "rich-diff-viewer",
+]);
 
 for (const manifestName of manifests) {
   const manifestPath = join(publicDirectory, manifestName);
   const manifest = JSON.parse(
     await readFile(manifestPath, "utf8"),
   ) as RegistryManifest;
-  const itemMetadata = metadata[manifest.name];
-  if (!itemMetadata) {
-    throw new Error(`Missing registry build metadata for "${manifest.name}"`);
-  }
   const sourceOwner = formAliases.has(manifest.name)
     ? formSourceOwner
     : overlayAliases.has(manifest.name)
@@ -539,7 +673,17 @@ for (const manifestName of manifests) {
           ? workflowSourceOwner
           : tableAliases.has(manifest.name)
             ? tableSourceOwner
-            : undefined;
+            : paneAliases.has(manifest.name)
+              ? paneSourceOwner
+              : richContentAliases.has(manifest.name)
+                ? richContentSourceOwner
+                : undefined;
+  const itemMetadata =
+    metadata[manifest.name] ??
+    (sourceOwner === undefined ? undefined : metadata[sourceOwner]);
+  if (!itemMetadata) {
+    throw new Error(`Missing registry build metadata for "${manifest.name}"`);
+  }
   manifest.dependencies = sourceOwner ? [] : [...itemMetadata.dependencies];
   manifest.registryDependencies = sourceOwner
     ? [sourceOwner]
@@ -547,12 +691,59 @@ for (const manifestName of manifests) {
   manifest.files = sourceOwner
     ? []
     : await Promise.all(
-        manifest.files.map(async (file) => ({
-          ...file,
-          target: itemMetadata.target,
-          content: await readFile(resolve(publicDirectory, file.path), "utf8"),
-        })),
+        manifest.files.map(async (file) => {
+          const source =
+            file.source ??
+            (file.content
+              ? registrySourceByContent.get(file.content)
+              : undefined) ??
+            registrySourceByBasename.get(basename(itemMetadata.target)) ??
+            file.path;
+          const sourcePath = resolve(projectDirectory, source);
+          if (!sourcePath.startsWith(`${projectDirectory}/`)) {
+            throw new Error(
+              `Registry source for "${manifest.name}" escapes the project`,
+            );
+          }
+          return {
+            ...file,
+            path: itemMetadata.target,
+            target: itemMetadata.target,
+            source,
+            content: await readFile(sourcePath, "utf8"),
+          };
+        }),
       );
+  manifest.version = releaseMetadata.version;
+  manifest.ownership =
+    manifest.type === "plugin"
+      ? "plugin"
+      : manifest.name === "log-viewer"
+        ? "package"
+        : "source";
+  manifest.packageName =
+    manifest.ownership === "plugin"
+      ? "@mwillbanks/tuil-plugin"
+      : manifest.ownership === "package"
+        ? "@mwillbanks/tuil-log-viewer"
+        : undefined;
+  manifest.compatibility = {
+    tuil: releaseMetadata.tuilCompatibility,
+    renderers: manifest.renderer ? [manifest.renderer] : ["ink", "cell"],
+    capabilities: [],
+  };
+  manifest.codemods ??= [];
+  manifest.provenance = {
+    source: manifest.provenance?.source ?? "tuil",
+    license: manifest.provenance?.license ?? "MIT",
+    mode:
+      manifest.ownership === "package"
+        ? "adapt"
+        : manifest.ownership === "plugin"
+          ? "use"
+          : (manifest.provenance?.mode ?? "replace"),
+  };
+  manifest.integrity = registryIntegrity(parseRegistryItem(manifest));
   await Bun.write(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   generatedPaths.push(manifestPath);
   generatedItems.push(manifest);
@@ -564,11 +755,13 @@ await Bun.write(
   `${JSON.stringify(
     {
       name: "tuil",
-      items: generatedItems.map(({ name, type, title, description }) => ({
-        name,
-        type,
-        title,
-        description,
+      items: generatedItems.map(({ files, ...item }) => ({
+        ...item,
+        files: files.map(({ path, target, source }) => ({
+          path,
+          target,
+          source,
+        })),
       })),
     },
     null,
@@ -576,6 +769,102 @@ await Bun.write(
   )}\n`,
 );
 generatedPaths.push(registryIndexPath);
+
+const {
+  componentAcceptanceDocumentationLines,
+  componentAcceptanceInventory,
+  validateComponentAcceptanceInventory,
+} = await import("../../registry/stories/component-acceptance.ts");
+validateComponentAcceptanceInventory();
+if (componentAcceptanceInventory.length !== generatedItems.length) {
+  throw new Error(
+    `Component acceptance inventory has ${componentAcceptanceInventory.length} entries for ${generatedItems.length} registry items`,
+  );
+}
+const acceptanceEntries = new Map(
+  componentAcceptanceInventory.map((entry) => [entry.name, entry]),
+);
+
+const acceptanceStoryPath = resolve(
+  import.meta.dir,
+  "../../apps/showcase/src/component-acceptance.stories.tsx",
+);
+const acceptanceStories = `import type { Meta, StoryObj } from "@storybook/react";
+import {
+  createShowcaseStorybookAdapter,
+  showcaseStory,
+} from "./storybook-adapter.ts";
+
+const browserStorySet = {
+  id: "component-acceptance",
+  title: "Components/Acceptance",
+  stories: {
+${generatedItems
+  .map(
+    (item) =>
+      `    ${JSON.stringify(registryExportName(item.name))}: { args: { name: ${JSON.stringify(item.name)} } },`,
+  )
+  .join("\n")}
+  },
+} as const;
+
+const adapter = createShowcaseStorybookAdapter(browserStorySet);
+
+const meta = {
+  title: "Components/Acceptance",
+  argTypes: adapter.meta.argTypes,
+} satisfies Meta<Record<string, unknown>>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+${generatedItems
+  .map(
+    (item) =>
+      `export const ${registryExportName(item.name)}: Story = showcaseStory(
+  adapter,
+  ${JSON.stringify(registryExportName(item.name))},
+  "component acceptance",
+);`,
+  )
+  .join("\n\n")}
+`;
+await Bun.write(acceptanceStoryPath, acceptanceStories);
+generatedPaths.push(acceptanceStoryPath);
+
+const acceptanceDocsPath = resolve(
+  import.meta.dir,
+  "../../apps/docs/content/docs/reference/components/acceptance-catalog.mdx",
+);
+const acceptanceDocs = `---
+title: Component acceptance catalog
+description: Executable story, semantics, keyboard, pointer, theme, static, and test contracts for every public registry item.
+icon: BookOpenText
+---
+
+# Component acceptance catalog
+
+Every public registry item below is backed by its own Storybook export and executable terminal fixture. The acceptance suite validates real component semantics, live theme updates, and committed deterministic output for every entry, plus callback state, keyboard input, focus, and measured pointer routing for each component that exposes those capabilities.
+
+${generatedItems
+  .map((item) => {
+    const entry = acceptanceEntries.get(item.name);
+    if (!entry) {
+      throw new Error(
+        `Missing component acceptance contract for "${item.name}"`,
+      );
+    }
+    return `## ${item.title}
+
+${componentAcceptanceDocumentationLines(entry).join("\n")}
+`;
+  })
+  .join("\n")}
+`
+  .trimEnd()
+  .concat("\n");
+await Bun.write(acceptanceDocsPath, acceptanceDocs);
+generatedPaths.push(acceptanceDocsPath);
 
 const generatedModule = `import type { RegistryItem } from "@mwillbanks/tuil-registry";
 

@@ -47,6 +47,7 @@ flowchart LR
 | `CommandExecution` | interface | `packages/core/src/commands.ts` |
 | `CommandRegistry` | class | `packages/core/src/commands.ts` |
 | `CommandRegistryChange` | type | `packages/core/src/commands.ts` |
+| `createGlobalSearchExpression` | function | `packages/core/src/text.ts` |
 | `defineCommand` | function | `packages/core/src/commands.ts` |
 | `defineService` | function | `packages/core/src/services.ts` |
 | `deleteOnDispose` | function | `packages/core/src/disposable.ts` |
@@ -54,6 +55,9 @@ flowchart LR
 | `Disposable` | interface | `packages/core/src/disposable.ts` |
 | `DisposableStack` | class | `packages/core/src/disposable.ts` |
 | `Disposer` | type | `packages/core/src/disposable.ts` |
+| `escapeTerminalControlCharacters` | function | `packages/core/src/text.ts` |
+| `hasTerminalControlCharacters` | function | `packages/core/src/text.ts` |
+| `isSafeRegularExpressionSource` | function | `packages/core/src/text.ts` |
 | `Lifecycle` | class | `packages/core/src/lifecycle.ts` |
 | `RenderMode` | type | `packages/core/src/terminal.ts` |
 | `resolveRenderMode` | function | `packages/core/src/terminal.ts` |
@@ -64,12 +68,19 @@ flowchart LR
 | `ServiceDefinition` | interface | `packages/core/src/services.ts` |
 | `ServiceFactoryContext` | interface | `packages/core/src/services.ts` |
 | `ServiceMap` | type | `packages/core/src/services.ts` |
+| `sliceTerminalText` | function | `packages/core/src/text.ts` |
 | `TerminalBounds` | interface | `packages/core/src/semantics.ts` |
 | `TerminalCapabilities` | interface | `packages/core/src/terminal.ts` |
 | `TerminalCapabilityInput` | interface | `packages/core/src/terminal.ts` |
+| `TerminalInputProbe` | interface | `packages/core/src/terminal.ts` |
+| `TerminalOutputProbe` | interface | `packages/core/src/terminal.ts` |
+| `TerminalPlatform` | type | `packages/core/src/terminal.ts` |
+| `terminalTextWidth` | function | `packages/core/src/text.ts` |
 | `TerminalViewport` | type | `packages/core/src/terminal.ts` |
 | `terminalViewportBreakpoints` | constant | `packages/core/src/terminal.ts` |
 | `toDisposable` | function | `packages/core/src/disposable.ts` |
+| `truncateTerminalText` | function | `packages/core/src/text.ts` |
+| `wrapTerminalText` | function | `packages/core/src/text.ts` |
 
 ## Events and lifecycle
 

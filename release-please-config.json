@@ -14,6 +14,10 @@
     }
   ],
   "packages": {
+    "packages/cell": {
+      "component": "tuil-cell",
+      "release-type": "node"
+    },
     "packages/cli": {
       "component": "tuil-cli",
       "release-type": "node"
@@ -22,8 +26,20 @@
       "component": "tuil-core",
       "release-type": "node"
     },
+    "packages/code": {
+      "component": "tuil-code",
+      "release-type": "node"
+    },
+    "packages/content": {
+      "component": "tuil-content",
+      "release-type": "node"
+    },
     "packages/devtools": {
       "component": "tuil-devtools",
+      "release-type": "node"
+    },
+    "packages/editor": {
+      "component": "tuil-editor",
       "release-type": "node"
     },
     "packages/events": {
@@ -46,6 +62,14 @@
       "component": "tuil-ink",
       "release-type": "node"
     },
+    "packages/log-viewer": {
+      "component": "tuil-log-viewer",
+      "release-type": "node"
+    },
+    "packages/logging": {
+      "component": "tuil-logging",
+      "release-type": "node"
+    },
     "packages/operations": {
       "component": "tuil-operations",
       "release-type": "node"
@@ -54,16 +78,36 @@
       "component": "tuil-plugin",
       "release-type": "node"
     },
+    "packages/pointer": {
+      "component": "tuil-pointer",
+      "release-type": "node"
+    },
+    "packages/protocol": {
+      "component": "tuil-protocol",
+      "release-type": "node"
+    },
     "packages/registry": {
       "component": "tuil-registry",
+      "release-type": "node"
+    },
+    "packages/renderer": {
+      "component": "tuil-renderer",
       "release-type": "node"
     },
     "packages/router": {
       "component": "tuil-router",
       "release-type": "node"
     },
+    "packages/scroll": {
+      "component": "tuil-scroll",
+      "release-type": "node"
+    },
     "packages/story": {
       "component": "tuil-story",
+      "release-type": "node"
+    },
+    "packages/streaming": {
+      "component": "tuil-streaming",
       "release-type": "node"
     },
     "packages/testing-ink": {

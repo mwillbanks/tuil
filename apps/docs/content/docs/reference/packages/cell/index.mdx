@@ -1,0 +1,81 @@
+---
+title: "@mwillbanks/tuil-cell"
+description: "Pure Bun cell renderer with an explicit native diff profiling boundary."
+icon: Package
+---
+
+## Overview
+
+Pure Bun cell renderer with an explicit native diff profiling boundary.
+
+`@mwillbanks/tuil-cell` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-cell
+```
+
+## How it operates
+
+The cell backend composes grapheme-aware buffers, preserves wide-character continuation cells, diffs frames, and emits minimal ANSI output. The TypeScript path is the default. Zig prebuilds expose an explicit conformance and profiling prototype, and applications must opt in because the prototype does not replace the complete diff and encoding workload.
+
+```mermaid
+flowchart LR
+  S0["compose buffer"]
+  S1["snapshot frame"]
+  S2["diff"]
+  S3["emit"]
+  S4["restore session"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `Cell` | interface | `packages/cell/src/index.ts` |
+| `CellAccelerator` | interface | `packages/cell/src/index.ts` |
+| `CellAttributes` | interface | `packages/cell/src/index.ts` |
+| `CellBuffer` | class | `packages/cell/src/index.ts` |
+| `CellFrame` | interface | `packages/cell/src/index.ts` |
+| `CellOutputMode` | type | `packages/cell/src/index.ts` |
+| `CellRendererBackend` | class | `packages/cell/src/index.ts` |
+| `CellRendererBackendOptions` | interface | `packages/cell/src/index.ts` |
+| `CellSceneNode` | interface | `packages/cell/src/index.ts` |
+| `CellTree` | type | `packages/cell/src/index.ts` |
+| `Color` | type | `packages/cell/src/index.ts` |
+| `composeCellScene` | function | `packages/cell/src/index.ts` |
+| `CursorState` | interface | `packages/cell/src/index.ts` |
+| `defaultColor` | constant | `packages/cell/src/index.ts` |
+| `diffCellFrames` | function | `packages/cell/src/index.ts` |
+| `emptyCell` | constant | `packages/cell/src/index.ts` |
+| `encodeCellOutput` | function | `packages/cell/src/index.ts` |
+| `loadNativeCellAccelerator` | function | `packages/cell/src/index.ts` |
+| `loadOptionalCellAccelerator` | function | `packages/cell/src/index.ts` |
+| `NativeCellAcceleratorOptions` | interface | `packages/cell/src/index.ts` |
+| `typescriptCellAccelerator` | constant | `packages/cell/src/index.ts` |
+
+## Events and lifecycle
+
+The backend consumes renderer lifecycle and input contracts; it does not introduce an application event bus.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+const buffer = new CellBuffer(80, 24);
+buffer.write(0, 0, "Ready");
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

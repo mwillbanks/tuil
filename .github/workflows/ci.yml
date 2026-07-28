@@ -49,6 +49,8 @@ jobs:
         run: bun run fallow:audit -- --base "${{ github.event.pull_request.base.sha }}"
       - name: Verify publication contents
         run: bun run test:publication
+      - name: Verify terminal performance baselines
+        run: bun run benchmark:terminal
 
   documentation:
     name: Documentation validation

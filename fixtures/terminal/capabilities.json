@@ -1,0 +1,12 @@
+{
+  "ansi": ["sgr", "cursor-position", "erase-line"],
+  "colorDepths": [1, 4, 8, 24],
+  "mouse": ["sgr-press", "sgr-release", "sgr-wheel", "drag"],
+  "modes": ["bracketed-paste", "focus-reporting", "alternate-screen"],
+  "clipboard": ["osc52"],
+  "resize": [
+    { "columns": 80, "rows": 24 },
+    { "columns": 120, "rows": 40 },
+    { "columns": 40, "rows": 12 }
+  ]
+}

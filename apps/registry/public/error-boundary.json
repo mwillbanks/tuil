@@ -1,0 +1,23 @@
+{
+  "name": "error-boundary",
+  "type": "feedback",
+  "title": "Error Boundary",
+  "description": "Recoverable component error boundary.",
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["dialog"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink", "cell"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "integrity": "sha256-39673af0f9f22d7ee62ee16d8ff344c0491d744ef14bebb04738edaa978532fc"
+}

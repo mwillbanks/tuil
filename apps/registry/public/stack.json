@@ -15,10 +15,20 @@
   },
   "files": [
     {
-      "path": "../../../registry/primitives/stack.tsx",
+      "path": "src/components/tuil/primitives/stack.tsx",
       "target": "src/components/tuil/primitives/stack.tsx",
-      "content": "import { type SpacingToken, useTheme } from \"@mwillbanks/tuil-theme\";\nimport type { ReactNode } from \"react\";\nimport { Box, type BoxProps } from \"./box\";\n\nexport interface StackProps extends Omit<BoxProps, \"gap\"> {\n  readonly direction?: \"row\" | \"column\";\n  readonly gap?: number | SpacingToken;\n}\n\nexport function Stack({\n  direction = \"column\",\n  gap,\n  ...props\n}: StackProps): ReactNode {\n  const theme = useTheme();\n  return (\n    <Box\n      flexDirection={direction}\n      gap={typeof gap === \"string\" ? theme.spacing[gap] : gap}\n      {...props}\n    />\n  );\n}\n\nexport function HStack(props: Omit<StackProps, \"direction\">): ReactNode {\n  return <Stack direction=\"row\" {...props} />;\n}\n\nexport function VStack(props: Omit<StackProps, \"direction\">): ReactNode {\n  return <Stack direction=\"column\" {...props} />;\n}\n"
+      "content": "import { type SpacingToken, useTheme } from \"@mwillbanks/tuil-theme\";\nimport type { ReactNode } from \"react\";\nimport { Box, type BoxProps } from \"./box\";\n\nexport interface StackProps extends Omit<BoxProps, \"gap\"> {\n  readonly direction?: \"row\" | \"column\";\n  readonly gap?: number | SpacingToken;\n}\n\nexport function Stack({\n  direction = \"column\",\n  gap,\n  ...props\n}: StackProps): ReactNode {\n  const theme = useTheme();\n  return (\n    <Box\n      flexDirection={direction}\n      gap={typeof gap === \"string\" ? theme.spacing[gap] : gap}\n      {...props}\n    />\n  );\n}\n\nexport function HStack(props: Omit<StackProps, \"direction\">): ReactNode {\n  return <Stack direction=\"row\" {...props} />;\n}\n\nexport function VStack(props: Omit<StackProps, \"direction\">): ReactNode {\n  return <Stack direction=\"column\" {...props} />;\n}\n",
+      "source": "registry/primitives/stack.tsx"
     }
   ],
-  "registryDependencies": ["box"]
+  "registryDependencies": ["box"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "integrity": "sha256-682ab738c209f399edce19c53559c399e0fddd314dcbdc6547097c0828f8ee81"
 }

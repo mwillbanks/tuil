@@ -1,31 +1,13 @@
-import { useApp } from "@mwillbanks/tuil";
-import { useFocusable } from "@mwillbanks/tuil-focus";
+import { useApp, useEditorSession, useLogPipeline } from "@mwillbanks/tuil";
+import type { CommonComponentProps } from "@mwillbanks/tuil-ink";
 import {
-  type CommonComponentProps,
-  escapeTerminalControlCharacters,
-  TerminalSemanticNode as SemanticNode,
-  useTerminalInput,
-} from "@mwillbanks/tuil-ink";
-import {
-  resolveSlotProps,
-  type SlottedComponentProps,
-  useTheme,
-} from "@mwillbanks/tuil-theme";
-import {
-  fitTerminalText,
-  getVisibleTerminalIndexes,
-  useTerminalVirtualizer,
-} from "@mwillbanks/tuil-virtual";
-import { Box, type BoxProps, Text, type TextProps } from "ink";
-import {
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+  LogSearchBar,
+  LogViewerModel,
+  LogViewer as NormalizedLogViewer,
+} from "@mwillbanks/tuil-log-viewer";
+import type { LogPipeline } from "@mwillbanks/tuil-logging";
+import type { ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 
 export type LogLevel = "trace" | "debug" | "info" | "warning" | "error";
 
@@ -36,24 +18,7 @@ export interface LogEntry {
   readonly timestamp?: string | number | Date;
 }
 
-type LogViewerSlots = {
-  root: BoxProps;
-  viewport: BoxProps;
-  line: TextProps;
-  status: TextProps;
-  empty: TextProps;
-};
-
-export interface LogViewerProps
-  extends CommonComponentProps,
-    SlottedComponentProps<
-      LogViewerSlots,
-      {
-        readonly focused: boolean;
-        readonly following: boolean;
-        readonly offset: number;
-      }
-    > {
+export interface LogViewerProps extends CommonComponentProps {
   readonly lines: readonly (string | LogEntry)[];
   readonly height?: number;
   readonly width?: number;
@@ -67,245 +32,158 @@ export interface LogViewerProps
   readonly autoFocus?: boolean;
 }
 
-function normalizeLogEntries(
-  lines: readonly (string | LogEntry)[],
-  maxLines: number,
-): readonly LogEntry[] {
-  const limit = Math.max(0, Math.floor(maxLines));
-  if (limit === 0) return [];
-  const newestFirst: LogEntry[] = [];
-  for (
-    let sourceIndex = lines.length - 1;
-    sourceIndex >= 0 && newestFirst.length < limit;
-    sourceIndex -= 1
-  ) {
-    const line = lines[sourceIndex];
-    if (line === undefined) continue;
-    const entry: LogEntry =
-      typeof line === "string"
-        ? {
-            id: `line:${sourceIndex}`,
-            message: line,
-            level: "info",
-          }
-        : line;
-    let end = entry.message.length;
-    while (newestFirst.length < limit) {
-      let separator = -1;
-      for (let index = end - 1; index >= 0; index -= 1) {
-        const character = entry.message[index];
-        if (character === "\n" || character === "\r") {
-          separator = index;
-          break;
-        }
-      }
-      const start = separator + 1;
-      newestFirst.push({
-        ...entry,
-        id: `${entry.id}:${start}`,
-        message: escapeTerminalControlCharacters(
-          entry.message.slice(start, end),
-        ),
-      });
-      if (separator < 0) break;
-      end =
-        entry.message[separator] === "\n" &&
-        separator > 0 &&
-        entry.message[separator - 1] === "\r"
-          ? separator - 1
-          : separator;
-    }
-  }
-  return Object.freeze(newestFirst.reverse());
+interface RegistryLogSource {
+  readonly source: string;
+  readonly format: "text" | "json";
 }
 
-export function LogViewer({
-  lines,
-  height = 12,
-  width = 100,
-  maxLines = 10_000,
-  filter = "",
-  follow,
-  defaultFollow = true,
-  onFollowChange,
-  showTimestamp = true,
-  staticLimit = 1_000,
-  autoFocus,
-  slots,
-  slotProps,
-  disabled = false,
-  ...props
-}: LogViewerProps): ReactNode {
+function logEntrySources(
+  entry: string | LogEntry,
+): readonly RegistryLogSource[] {
+  if (typeof entry === "string") {
+    return entry
+      .split("\n")
+      .map((source) => Object.freeze({ source, format: "text" as const }));
+  }
+  return entry.message.split("\n").map((body) =>
+    Object.freeze({
+      source: JSON.stringify({
+        id: entry.id,
+        body,
+        severityText: entry.level ?? "info",
+        timestamp:
+          entry.timestamp instanceof Date
+            ? entry.timestamp.toISOString()
+            : entry.timestamp,
+      }),
+      format: "json" as const,
+    }),
+  );
+}
+
+function ingestRegistryLogs(
+  pipeline: LogPipeline,
+  lines: readonly (string | LogEntry)[],
+  capacity: number,
+): void {
+  const sources = lines.flatMap(logEntrySources).slice(-capacity);
+  for (const input of sources) pipeline.ingest(input.source, input.format);
+}
+
+function useRegistryLogModel(
+  props: LogViewerProps,
+  id: string,
+): { readonly model: LogViewerModel; readonly query: string } {
   const app = useApp();
-  const theme = useTheme();
+  const capacity = Math.max(1, Math.floor(props.maxLines ?? 10_000));
+  const retainedLimit =
+    app.mode === "interactive"
+      ? capacity
+      : Math.max(0, Math.floor(props.staticLimit ?? 100));
+  const linesKey = JSON.stringify(
+    retainedLimit === 0 ? [] : props.lines.slice(-retainedLimit),
+  );
+  const retainedLines = useMemo(
+    () => JSON.parse(linesKey) as readonly (string | LogEntry)[],
+    [linesKey],
+  );
+  const pipeline = useLogPipeline();
+  const queryEditorOptions = useMemo(
+    () => ({
+      id: `${id}-query`,
+      documentType: "application/query",
+    }),
+    [id],
+  );
+  const queryEditor = useEditorSession(queryEditorOptions);
+  const model = useMemo(
+    () =>
+      new LogViewerModel(pipeline, {
+        id: `${id}-scroll`,
+        width: props.width ?? 100,
+        height: props.height ?? 12,
+        queryEditor,
+        queryEditorOwnership: "borrowed",
+      }),
+    [id, pipeline, props.height, props.width, queryEditor],
+  );
+  useEffect(() => {
+    const unregisterScroll = app.scroll.register(model.scroll);
+    return () => {
+      unregisterScroll();
+      model.dispose();
+    };
+  }, [app, model]);
+  useEffect(() => {
+    pipeline.clear();
+    ingestRegistryLogs(pipeline, retainedLines, retainedLimit);
+  }, [pipeline, retainedLimit, retainedLines]);
+  useEffect(() => {
+    const registration = app.extensions.devtoolsPanels.register({
+      id: `log-viewer:${id}`,
+      title: `Log viewer ${id}`,
+      kind: "panel",
+      permissions: new Set(["read"]),
+      serialization: "json",
+      inspect: () => ({
+        ...model.snapshot(),
+        scroll: model.scroll.snapshot(),
+        query: model.queryEditor.serialize(),
+      }),
+    });
+    return () => {
+      registration.dispose();
+    };
+  }, [app.extensions.devtoolsPanels, id, model]);
+  const query = props.filter?.trim()
+    ? `body contains ${JSON.stringify(props.filter.trim())}`
+    : "";
+  useEffect(() => {
+    model.setQuery(query);
+  }, [model, query]);
+  return { model, query };
+}
+
+function useRegistryLogFollowing(
+  model: LogViewerModel,
+  props: LogViewerProps,
+): (next: boolean) => Promise<void> {
+  const [internalFollow, setInternalFollow] = useState(
+    props.defaultFollow ?? true,
+  );
+  const following = props.follow ?? internalFollow;
+  const setFollowing = useCallback(
+    async (next: boolean) => {
+      if (props.follow === undefined) setInternalFollow(next);
+      await props.onFollowChange?.(next);
+    },
+    [props.follow, props.onFollowChange],
+  );
+  useEffect(() => {
+    if (following) model.resume();
+    else model.pause();
+  }, [following, model]);
+  return setFollowing;
+}
+
+export function LogViewer(props: LogViewerProps): ReactNode {
   const generated = useId();
   const id = props.id ?? generated;
-  const interactive = app.mode === "interactive";
-  const [internalFollow, setInternalFollow] = useState(defaultFollow);
-  const [offset, setOffset] = useState(0);
-  const following = follow ?? internalFollow;
-  const normalized = useMemo(
-    () => normalizeLogEntries(lines, maxLines),
-    [lines, maxLines],
-  );
-  const filtered = useMemo(() => {
-    const query = filter.trim().toLowerCase();
-    return query
-      ? normalized.filter((entry) =>
-          entry.message.toLowerCase().includes(query),
-        )
-      : normalized;
-  }, [filter, normalized]);
-  const maximumOffset = Math.max(0, filtered.length - height);
-  const previousLength = useRef(filtered.length);
-  useEffect(() => {
-    if (following && filtered.length !== previousLength.current) {
-      setOffset(maximumOffset);
-    }
-    previousLength.current = filtered.length;
-  }, [filtered.length, following, maximumOffset]);
-  const { focused, focus } = useFocusable(
-    useMemo(
-      () => ({
-        id,
-        disabled: disabled || !interactive,
-        hidden: false,
-        role: "status" as const,
-        label: props.label ?? "Log viewer",
-      }),
-      [disabled, id, interactive, props.label],
-    ),
-  );
-  useEffect(() => {
-    if (autoFocus && interactive) focus();
-  }, [autoFocus, focus, interactive]);
-  const setFollowing = useCallback(
-    async (value: boolean) => {
-      if (follow === undefined) setInternalFollow(value);
-      await onFollowChange?.(value);
-      if (value) setOffset(maximumOffset);
-    },
-    [follow, maximumOffset, onFollowChange],
-  );
-  useTerminalInput(
-    async (input, key) => {
-      if (key.upArrow) {
-        await setFollowing(false);
-        setOffset((value) => Math.max(0, value - 1));
-        return true;
-      }
-      if (key.downArrow) {
-        const next = Math.min(maximumOffset, offset + 1);
-        setOffset(next);
-        if (next === maximumOffset) await setFollowing(true);
-        return true;
-      }
-      if (key.pageUp) {
-        await setFollowing(false);
-        setOffset((value) => Math.max(0, value - height));
-        return true;
-      }
-      if (key.pageDown) {
-        const next = Math.min(maximumOffset, offset + height);
-        setOffset(next);
-        if (next === maximumOffset) await setFollowing(true);
-        return true;
-      }
-      if (key.home) {
-        await setFollowing(false);
-        setOffset(0);
-        return true;
-      }
-      if (key.end) {
-        await setFollowing(true);
-        return true;
-      }
-      if (input === " ") {
-        await setFollowing(!following);
-        return true;
-      }
-      return false;
-    },
-    { enabled: focused && !disabled, priority: 1_510 },
-  );
-  const range = useTerminalVirtualizer({
-    count: filtered.length,
-    viewportSize: height,
-    scrollOffset: following ? maximumOffset : offset,
-    overscan: 0,
-  });
-  const staticCount = Math.max(0, Math.floor(staticLimit));
-  const indexes = interactive
-    ? getVisibleTerminalIndexes(range)
-    : staticCount === 0
-      ? []
-      : [...filtered.keys()].slice(-staticCount);
-  const state = { focused, following, offset: range.offset };
-  const Root = slots?.root ?? Box;
-  const Viewport = slots?.viewport ?? Box;
-  const Line = slots?.line ?? Text;
-  const Status = slots?.status ?? Text;
-  const Empty = slots?.empty ?? Text;
+  const { model, query } = useRegistryLogModel(props, id);
+  const setFollowing = useRegistryLogFollowing(model, props);
   return (
-    <Root
-      flexDirection="column"
-      {...resolveSlotProps(slotProps?.root, state, theme)}
-    >
-      <SemanticNode
+    <>
+      {query ? <LogSearchBar model={model} query={query} /> : null}
+      <NormalizedLogViewer
         id={id}
-        role="status"
         label={props.label ?? "Log viewer"}
-        valueText={`${filtered.length} lines, ${following ? "following" : "paused"}`}
-        metadata={{ ...props, disabled }}
+        model={model}
+        query={props.filter ?? ""}
+        emptyMessage="No log entries"
+        autoFocus={props.autoFocus ?? false}
+        showTimestamp={props.showTimestamp ?? false}
+        onLiveChange={setFollowing}
       />
-      {filtered.length === 0 ? (
-        <Empty dimColor {...resolveSlotProps(slotProps?.empty, state, theme)}>
-          No log entries
-        </Empty>
-      ) : (
-        <Viewport
-          flexDirection="column"
-          height={interactive ? height : undefined}
-          overflow="hidden"
-          {...resolveSlotProps(slotProps?.viewport, state, theme)}
-        >
-          {indexes.map((index) => {
-            const entry = filtered[index];
-            if (!entry) return null;
-            const time =
-              showTimestamp && entry.timestamp !== undefined
-                ? entry.timestamp instanceof Date
-                  ? entry.timestamp.toISOString()
-                  : String(entry.timestamp)
-                : "";
-            const safeTime = escapeTerminalControlCharacters(time);
-            const color =
-              entry.level === "error"
-                ? theme.colors.danger.foreground
-                : entry.level === "warning"
-                  ? theme.colors.warning.foreground
-                  : entry.level === "debug" || entry.level === "trace"
-                    ? theme.colors.muted
-                    : undefined;
-            return (
-              <Line
-                key={entry.id}
-                color={color}
-                {...resolveSlotProps(slotProps?.line, state, theme)}
-              >
-                {fitTerminalText(
-                  `${safeTime ? `${safeTime} ` : ""}${entry.level ? `${entry.level.toUpperCase()} ` : ""}${entry.message}`,
-                  width,
-                )}
-              </Line>
-            );
-          })}
-        </Viewport>
-      )}
-      <Status dimColor {...resolveSlotProps(slotProps?.status, state, theme)}>
-        {following ? "Following output" : "Paused"} · {filtered.length}/
-        {normalized.length} visible · {normalized.length} retained
-      </Status>
-    </Root>
+    </>
   );
 }

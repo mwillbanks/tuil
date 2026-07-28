@@ -13,7 +13,7 @@ Inspect streaming logs, expandable structured values, and line-oriented changes 
 ## Installation
 
 ```npm
-npx @mwillbanks/tuil add log-viewer json-viewer diff-viewer
+npx @mwillbanks/tuil add log-viewer json-viewer diff-viewer markdown-viewer code-viewer timeline bar-chart structured-content rich-diff-viewer
 ```
 
 The CLI writes source-owned components beneath the destination configured in
@@ -30,6 +30,12 @@ The CLI writes source-owned components beneath the destination configured in
 | `flattenJson` | function | `registry/data-display/json-viewer.tsx` |
 | `DiffViewer` | function | `registry/data-display/diff-viewer.tsx` |
 | `createLineDiff` | function | `registry/data-display/diff-viewer.tsx` |
+| `MarkdownViewer` | function | `registry/data-display/rich-content.tsx` |
+| `CodeViewer` | function | `registry/data-display/rich-content.tsx` |
+| `Timeline` | function | `registry/data-display/rich-content.tsx` |
+| `BarChart` | function | `registry/data-display/rich-content.tsx` |
+| `StructuredContentSummary` | function | `registry/data-display/rich-content.tsx` |
+| `RichDiffViewer` | function | `registry/data-display/rich-content.tsx` |
 
 ## Interaction
 

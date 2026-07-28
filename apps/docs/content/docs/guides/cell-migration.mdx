@@ -1,0 +1,18 @@
+---
+title: Ink-to-cell migration
+description: Move an existing Ink application to the cell backend safely.
+icon: ArrowsClockwise
+---
+
+First remove direct Ink instance access and move application projection behind
+`defineRendererApplication`. Express geometry through layout projections and
+pointer hit regions, then switch `renderer` to `cell` and run the renderer
+conformance tests. A React tree composed from Ink primitives is accepted only by
+the Ink compatibility path; the cell path never mounts Ink or transcodes an
+ANSI capture. Verify wide graphemes, resize, alternate-screen cleanup, focus
+reporting, paste, and clipboard behavior in a real terminal.
+
+The renderer-neutral application retains lifecycle, input, resize, semantics,
+style, and invalidation contracts across both backends. An optional prototype
+can profile a narrow changed-cell count boundary, but applications must opt in
+and retain the TypeScript implementation as the production default.

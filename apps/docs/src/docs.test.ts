@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { generateReferenceDocs } from "../../../tooling/docs/generate-reference.ts";
@@ -101,7 +101,7 @@ test("localized LLM text applies locale before the deployment base path", async 
 test("reference generation covers every package and component family", async () => {
   await generateReferenceDocs();
   const contentRoot = resolve(import.meta.dir, "../content/docs/reference");
-  expect(await countFiles("packages/*/index.mdx", contentRoot)).toBe(19);
+  expect(await countFiles("packages/*/index.mdx", contentRoot)).toBe(30);
   expect(await countFiles("components/*/index.mdx", contentRoot)).toBe(16);
   const cliReference = await readFile(
     join(contentRoot, "packages/cli/index.mdx"),
@@ -111,6 +111,46 @@ test("reference generation covers every package and component family", async () 
   expect(cliReference).toContain("| `main` | function |");
   expect(cliReference).not.toContain("| `App` |");
   expect(cliReference).not.toContain("| `operands` |");
+});
+
+test("generated package examples compile their documented imports", async () => {
+  await generateReferenceDocs();
+  const contentRoot = resolve(import.meta.dir, "../content/docs/reference");
+  const directory = await mkdtemp(
+    resolve(import.meta.dir, "../../../.tmp-doc-snippets-"),
+  );
+  const entrypoints: string[] = [];
+  try {
+    for await (const path of new Bun.Glob("packages/*/index.mdx").scan({
+      cwd: contentRoot,
+      absolute: true,
+    })) {
+      const content = await Bun.file(path).text();
+      const snippets = [...content.matchAll(/```tsx\n([\s\S]*?)```/g)]
+        .map((match) => match[1] ?? "")
+        .filter((snippet) => snippet.includes('from "@mwillbanks/'));
+      for (const [index, snippet] of snippets.entries()) {
+        const entrypoint = join(
+          directory,
+          `${path.split("/").at(-2) ?? "package"}-${index}.tsx`,
+        );
+        await writeFile(entrypoint, snippet);
+        entrypoints.push(entrypoint);
+      }
+    }
+    expect(entrypoints.length).toBeGreaterThan(0);
+    const result = await Bun.build({
+      entrypoints,
+      outdir: join(directory, "out"),
+      target: "bun",
+    });
+    expect(
+      result.success,
+      result.logs.map((log) => log.message).join("\n"),
+    ).toBeTrue();
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
 });
 
 test("documentation assets preserve the repository-owned logo", async () => {

@@ -1,0 +1,45 @@
+{
+  "name": "@mwillbanks/tuil-cell",
+  "version": "0.2.0",
+  "description": "Pure Bun cell renderer with an explicit native diff profiling boundary.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/cell"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "cell-buffer",
+    "bun",
+    "renderer"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "bun ../../tooling/build/package.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@mwillbanks/tuil-core": "workspace:*",
+    "@mwillbanks/tuil-renderer": "workspace:*",
+    "string-width": "catalog:"
+  },
+  "files": [
+    "dist",
+    "native",
+    "prebuilds"
+  ]
+}

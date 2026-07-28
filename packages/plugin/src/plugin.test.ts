@@ -34,6 +34,15 @@ function manager(
     persistenceAdapters: extension,
     operationExecutors: extension,
     devtools: extension,
+    components: extension,
+    editorProviders: extension,
+    editorCommands: extension,
+    logParsers: extension,
+    themes: extension,
+    formatAdapters: extension,
+    renderProjections: extension,
+    devtoolsPanels: extension,
+    renderers: extension,
     capabilities: new Set(capabilities),
   });
 }

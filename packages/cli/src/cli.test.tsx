@@ -5,6 +5,7 @@ import {
   mkdtemp,
   readFile,
   rm,
+  symlink,
   writeFile,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -110,15 +111,15 @@ describe("tuil CLI", () => {
     expect(packageJson.scripts).toHaveProperty("typecheck");
     expect(packageJson.dependencies).toHaveProperty(
       "@mwillbanks/tuil-form",
-      "^0.1.0",
+      "^0.2.0",
     );
     expect(packageJson.dependencies).toHaveProperty(
       "@mwillbanks/tuil-router",
-      "^0.1.0",
+      "^0.2.0",
     );
     expect(packageJson.dependencies).toHaveProperty(
       "@mwillbanks/tuil-workflow",
-      "^0.1.0",
+      "^0.2.0",
     );
     expect(await readFile(join(root, "demo/src/index.tsx"), "utf8")).toContain(
       "FeaturePanels",
@@ -159,6 +160,161 @@ describe("tuil CLI", () => {
     ).toContain("router.navigate");
   });
 
+  test("keeps explicit templates non-interactive on a TTY", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tuil-cli-"));
+    directories.push(root);
+    const stdinDescriptor = Object.getOwnPropertyDescriptor(
+      process.stdin,
+      "isTTY",
+    );
+    const stdoutDescriptor = Object.getOwnPropertyDescriptor(
+      process.stdout,
+      "isTTY",
+    );
+    Object.defineProperty(process.stdin, "isTTY", {
+      configurable: true,
+      value: true,
+    });
+    Object.defineProperty(process.stdout, "isTTY", {
+      configurable: true,
+      value: true,
+    });
+    try {
+      expect((await run(root, ["help"])).stdout).toContain("Commands:");
+      const result = await run(root, [
+        "init",
+        "tty-demo",
+        "--template",
+        "minimal",
+        "--output",
+        "silent",
+      ]);
+      expect(result.exitCode).toBe(0);
+    } finally {
+      if (stdinDescriptor) {
+        Object.defineProperty(process.stdin, "isTTY", stdinDescriptor);
+      } else {
+        Reflect.deleteProperty(process.stdin, "isTTY");
+      }
+      if (stdoutDescriptor) {
+        Object.defineProperty(process.stdout, "isTTY", stdoutDescriptor);
+      } else {
+        Reflect.deleteProperty(process.stdout, "isTTY");
+      }
+    }
+  });
+
+  test("rejects unsafe initialization and exercises git and formatter paths", async () => {
+    const root = await mkdtemp(join(tmpdir(), "tuil-cli-"));
+    directories.push(root);
+    const safeRoot = join(root, "safe-root");
+    await mkdir(safeRoot);
+    expect(
+      (await run(safeRoot, ["init", ".", "--template", "minimal"])).stderr,
+    ).toContain("workspace root");
+
+    await mkdir(join(root, "occupied"));
+    await writeFile(join(root, "occupied/existing.txt"), "existing\n");
+    expect(
+      (
+        await run(root, [
+          "init",
+          "occupied",
+          "--template",
+          "minimal",
+          "--output",
+          "silent",
+        ])
+      ).stderr,
+    ).toContain("not empty");
+    expect(
+      (
+        await run(root, [
+          "init",
+          "Invalid Name",
+          "--template",
+          "minimal",
+          "--output",
+          "silent",
+        ])
+      ).stderr,
+    ).toContain("Invalid project name");
+
+    expect(
+      (
+        await run(root, [
+          "init",
+          "git-demo",
+          "--template",
+          "minimal",
+          "--git",
+          "--output",
+          "silent",
+        ])
+      ).exitCode,
+    ).toBe(0);
+    expect(
+      await Bun.file(join(root, "git-demo/.git/HEAD")).exists(),
+    ).toBeTrue();
+
+    await mkdir(join(root, "node_modules/.bin"), { recursive: true });
+    const biome = join(root, "node_modules/.bin/biome");
+    await writeFile(biome, "#!/usr/bin/env bun\nprocess.exit(1);\n");
+    await chmod(biome, 0o755);
+    expect(
+      (await run(root, ["add", "text", "--no-install", "--output", "silent"]))
+        .stderr,
+    ).toContain("Formatter failed");
+
+    const dependencyRoot = await mkdtemp(join(tmpdir(), "tuil-cli-"));
+    directories.push(dependencyRoot);
+    await mkdir(join(dependencyRoot, "local-registry"));
+    await writeFile(
+      join(dependencyRoot, "local-registry/dependency.json"),
+      `${JSON.stringify({
+        name: "dependency",
+        type: "component",
+        dependencies: ["kleur@^4.1.5"],
+        files: [
+          {
+            path: "dependency.ts",
+            target: "src/dependency.ts",
+            content: "export const dependency = true;\n",
+          },
+        ],
+      })}\n`,
+    );
+    await writeFile(
+      join(dependencyRoot, "local-registry/registry.json"),
+      `${JSON.stringify({ items: [] })}\n`,
+    );
+    await writeFile(
+      join(dependencyRoot, "tuil.config.ts"),
+      `export default {
+  renderer: "ink",
+  paths: {components: "./src/components/tuil", utilities: "./src/lib", hooks: "./src/hooks"},
+  registry: {
+    sources: [
+      {id: "local", url: "./local-registry"},
+      {id: "remote", url: "https://example.invalid"}
+    ]
+  },
+  theme: {preset: "default"},
+  packageManager: "bun"
+};\n`,
+    );
+    expect(
+      (
+        await run(dependencyRoot, [
+          "add",
+          "@local/dependency",
+          "--output",
+          "silent",
+        ])
+      ).stderr,
+    ).toContain("require a package.json");
+  });
+
   test("installs registry source and protects local changes", async () => {
     const root = await mkdtemp(join(tmpdir(), "tuil-cli-"));
     directories.push(root);
@@ -172,7 +328,7 @@ describe("tuil CLI", () => {
     expect(added.exitCode).toBe(0);
     const buttonPath = join(root, "src/components/tuil/components/button.tsx");
     expect(await readFile(buttonPath, "utf8")).toContain(
-      "export function Button",
+      'export { Button, type ButtonProps } from "@mwillbanks/tuil-ink";',
     );
     await Bun.write(buttonPath, "local change\n");
     const update = await run(root, [
@@ -209,6 +365,20 @@ describe("tuil CLI", () => {
       expect(result).toMatchObject({ exitCode: 0, stderr: "" });
       expect(() => JSON.parse(result.stdout)).not.toThrow();
     }
+    expect((await run(root, ["help"])).stdout).toContain("Commands:");
+    expect((await run(root, ["help", "--output=invalid"])).stdout).toContain(
+      "tuil",
+    );
+    expect(
+      (
+        await run(root, [
+          "unknown",
+          "--=ignored",
+          "--force",
+          "--output=interactive",
+        ])
+      ).stdout,
+    ).toContain("Global options:");
 
     const skillTarget = join(root, "agent-skills");
     expect(
@@ -433,7 +603,7 @@ describe("tuil CLI", () => {
       await readFile(join(root, "component-library-demo/package.json"), "utf8"),
     ) as { dependencies: Record<string, string> };
     expect(libraryPackage.dependencies).toMatchObject({
-      "@mwillbanks/tuil-virtual": "^0.1.0",
+      "@mwillbanks/tuil-virtual": "^0.2.0",
       "@tanstack/react-table": "^8.21.3",
       diff: "^9.0.0",
       "react-dom": "^19.2.8",
@@ -733,6 +903,20 @@ describe("tuil CLI", () => {
     expect(await readFile(join(source, "alpha/SKILL.md"), "utf8")).toBe(
       "alpha\n",
     );
+
+    await expect(
+      installBundledSkills(source, "/", { force: true }),
+    ).rejects.toThrow("unsafe skills destination");
+    const linkedDestination = join(root, "linked-destination");
+    await symlink(destination, linkedDestination);
+    await expect(
+      installBundledSkills(source, linkedDestination, { force: true }),
+    ).rejects.toThrow("symbolic link");
+    const fileDestination = join(root, "file-destination");
+    await writeFile(fileDestination, "not a directory\n");
+    await expect(
+      installBundledSkills(source, fileDestination, { force: true }),
+    ).rejects.toThrow("must be a directory");
 
     expect(
       await installBundledSkills(source, destination, { force: true }),

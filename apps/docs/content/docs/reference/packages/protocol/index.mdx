@@ -1,0 +1,66 @@
+---
+title: "@mwillbanks/tuil-protocol"
+description: "Versioned in-process and remote-ready runtime inspection protocol for tuil."
+icon: Package
+---
+
+## Overview
+
+Versioned in-process and remote-ready runtime inspection protocol for tuil.
+
+`@mwillbanks/tuil-protocol` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-protocol
+```
+
+## How it operates
+
+The devtools protocol defines versioned messages, in-process transport, and safe-by-default session recording, import, export, and deterministic replay. Every recorded payload is recursively cloned and redacted before it can appear in a recorder snapshot or export.
+
+```mermaid
+flowchart LR
+  S0["connect"]
+  S1["negotiate version"]
+  S2["exchange"]
+  S3["record/replay"]
+  S4["close"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+  S3 --> S4
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `protocolLimits` | constant | `packages/protocol/src/index.ts` |
+| `ProtocolMessageType` | type | `packages/protocol/src/index.ts` |
+| `protocolRedactedValue` | constant | `packages/protocol/src/index.ts` |
+| `protocolVersion` | constant | `packages/protocol/src/index.ts` |
+
+## Events and lifecycle
+
+Versioned envelopes distinguish requests, responses, notifications, and protocol errors. Validation fails closed on envelope fields, ids, timestamps, payload JSON shape, nesting, message count, and byte limits. Sensitive keys, credentials, JWTs, and URL userinfo are removed recursively; use `redactProtocolValue` for non-envelope devtools data and `sanitizeProtocolMessage` for complete messages.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+import { InProcessProtocolTransport, redactProtocolValue } from "@mwillbanks/tuil-protocol";
+
+const transport = new InProcessProtocolTransport();
+const safeSnapshot = redactProtocolValue(runtimeSnapshot);
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

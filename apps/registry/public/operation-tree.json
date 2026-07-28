@@ -15,5 +15,14 @@
   },
   "files": [],
   "dependencies": [],
-  "registryDependencies": ["workflow"]
+  "registryDependencies": ["workflow"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "integrity": "sha256-1916d40976439e788d41c143b3b84355b805e3d2af3bfd3b1d97eaf8376b7a8e"
 }

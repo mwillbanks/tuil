@@ -1,0 +1,57 @@
+{
+  "name": "@mwillbanks/tuil-editor",
+  "version": "0.2.0",
+  "description": "Renderer-neutral editor contracts and tree-shakeable terminal editor implementations for tuil.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/editor"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "terminal-ui",
+    "editor",
+    "vim",
+    "grapheme"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "dependencies": {
+    "@mwillbanks/tuil-core": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./buffer": {
+      "types": "./dist/buffer.d.ts",
+      "import": "./dist/buffer.js"
+    },
+    "./vim": {
+      "types": "./dist/vim.d.ts",
+      "import": "./dist/vim.js"
+    },
+    "./rich": {
+      "types": "./dist/rich.d.ts",
+      "import": "./dist/rich.js"
+    },
+    "./testing": {
+      "types": "./dist/testing.d.ts",
+      "import": "./dist/testing.js"
+    }
+  },
+  "scripts": {
+    "build": "bun ../../tooling/build/package.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "files": [
+    "dist"
+  ]
+}

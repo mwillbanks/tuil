@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Terminal UI, without the runtime tax.</strong><br />
-  A production-ready React and Ink framework for composable terminal applications.
+  A renderer-neutral terminal application runtime with React Ink compatibility.
 </p>
 
 <p align="center">
@@ -16,11 +16,12 @@
   <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
 </p>
 
-tuil combines an application runtime, Ink rendering, typed forms and routes,
-focus and hotkey management, cancellable operations, persistent workflows,
-plugins, themes, source-owned components, portable stories, and semantic
-testing. Applications share one set of runtime contracts across interactive
-terminals, redirected output, tests, documentation, and Storybook.
+tuil combines a renderer-neutral application runtime, React Ink compatibility,
+deterministic cell rendering, typed forms and routes, focus and hotkey
+management, cancellable operations, persistent workflows, plugins, themes,
+source-owned components, portable stories, and semantic testing. Applications
+share one set of runtime contracts across interactive terminals, redirected
+output, tests, documentation, and Storybook.
 
 **[Read the documentation](https://mwillbanks.github.io/tuil/)**
 

@@ -30,6 +30,8 @@ flowchart TB
     Themes["ThemeController"]
   end
   subgraph Rendering["Rendering and verification"]
+    Renderer["Renderer-neutral application"]
+    Cell["Bun-native cell backend"]
     Ink["Ink adapter"]
     Components["components and blocks"]
     Semantics["SemanticRegistry"]
@@ -48,6 +50,8 @@ flowchart TB
   Plugins --> Forms
   Plugins --> Workflows
   App --> Themes
+  App --> Renderer
+  Renderer --> Cell
   App --> Ink
   Ink --> Components
   Components --> Semantics

@@ -3,14 +3,18 @@ import type { Command } from "@mwillbanks/tuil-core";
 import { useHotkey } from "@mwillbanks/tuil-hotkeys";
 import {
   Overlay,
+  Box as SemanticBox,
   useOptionalExternalStore,
+  usePointerEvents,
   useSemanticNode,
   useTerminalInput,
 } from "@mwillbanks/tuil-ink";
 import { useTheme } from "@mwillbanks/tuil-theme";
 import { Box, Text } from "ink";
 import {
+  Component,
   createContext,
+  type ErrorInfo,
   type ReactNode,
   useCallback,
   useContext,
@@ -19,6 +23,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
 } from "react";
 import { Button } from "../components/button.tsx";
 import { TextInput } from "../forms/controls.tsx";
@@ -300,7 +305,6 @@ export function Tooltip({
 }: TooltipProps): ReactNode {
   const app = useApp();
   const [internal, setInternal] = useState(defaultOpen);
-  const [focused, setFocused] = useState(app.focus.focusedId === targetId);
   const reportAsync = useRuntimeAsync();
   const visible = open ?? internal;
   const setOpen = useCallback(
@@ -310,12 +314,19 @@ export function Tooltip({
     },
     [onOpenChange, open],
   );
-  useEffect(() => {
-    setFocused(app.focus.focusedId === targetId);
-    return app.focus.observe((change) => {
-      setFocused(change.currentId === targetId);
-    });
-  }, [app.focus, targetId]);
+  const subscribeToFocus = useCallback(
+    (notify: () => void) => app.focus.observe(notify),
+    [app.focus],
+  );
+  const getFocused = useCallback(
+    () => app.focus.focusedId === targetId,
+    [app.focus, targetId],
+  );
+  const focused = useSyncExternalStore(
+    subscribeToFocus,
+    getFocused,
+    getFocused,
+  );
   useEffect(() => {
     if (!focused) {
       reportAsync(setOpen(false), "tooltip-close");
@@ -327,11 +338,16 @@ export function Tooltip({
     );
     return () => clearTimeout(timer);
   }, [delay, focused, reportAsync, setOpen]);
-  useHotkey("f1", () => setOpen(!visible), {
-    scope: "application",
-    enabled: () => app.focus.focusedId === targetId,
-    title: "Toggle contextual help",
-  });
+  const toggleHelp = useCallback(() => setOpen(!visible), [setOpen, visible]);
+  const helpHotkeyOptions = useMemo(
+    () => ({
+      scope: "application" as const,
+      enabled: () => app.focus.focusedId === targetId,
+      title: "Toggle contextual help",
+    }),
+    [app.focus, targetId],
+  );
+  useHotkey("f1", toggleHelp, helpHotkeyOptions);
   return (
     <Box flexDirection="column">
       {children}
@@ -612,48 +628,127 @@ export interface CommandPaletteProps {
   readonly hotkey?: string;
 }
 
-export function CommandPalette({
-  open,
-  defaultOpen = false,
-  onOpenChange,
-  commands,
-  placeholder = "Type a command…",
-  hotkey = "mod+k",
-}: CommandPaletteProps): ReactNode {
+function filteredCommands(
+  commands: readonly Command[],
+  query: string,
+): readonly Command[] {
+  const normalized = query.toLocaleLowerCase();
+  return commands.filter(
+    (command) =>
+      command.title.toLocaleLowerCase().includes(normalized) ||
+      command.id.toLocaleLowerCase().includes(normalized) ||
+      Boolean(command.category?.toLocaleLowerCase().includes(normalized)),
+  );
+}
+
+function useCommandPaletteVisibility(
+  props: CommandPaletteProps,
+  onClose: () => void,
+): {
+  readonly visible: boolean;
+  readonly setOpen: (next: boolean) => Promise<void>;
+} {
+  const [internal, setInternal] = useState(props.defaultOpen ?? false);
+  const visible = props.open ?? internal;
+  const setOpen = useCallback(
+    async (next: boolean) => {
+      if (props.open === undefined) setInternal(next);
+      if (!next) onClose();
+      await props.onOpenChange?.(next);
+    },
+    [onClose, props.onOpenChange, props.open],
+  );
+  return { visible, setOpen };
+}
+
+function useCommandPaletteState(props: CommandPaletteProps) {
   const app = useApp();
   const generated = useId();
   const id = `command-palette:${generated}`;
   const inputId = `${id}:input`;
-  const [internal, setInternal] = useState(defaultOpen);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
-  const setActiveIndex = (index: number) => {
+  const setActiveIndex = useCallback((index: number) => {
     activeRef.current = index;
     setActive(index);
+  }, []);
+  const resetPalette = useCallback(() => {
+    setQuery("");
+    setActiveIndex(0);
+  }, [setActiveIndex]);
+  const visibility = useCommandPaletteVisibility(props, resetPalette);
+  const visible = visibility.visible;
+  const setOpen = visibility.setOpen;
+  const togglePalette = useCallback(
+    () => setOpen(!visible),
+    [setOpen, visible],
+  );
+  const paletteHotkeyOptions = useMemo(
+    () => ({
+      scope: "application" as const,
+      priority: 500,
+      title: "Open command palette",
+    }),
+    [],
+  );
+  useHotkey(props.hotkey ?? "mod+k", togglePalette, paletteHotkeyOptions);
+  const available = useMemo(
+    () => filteredCommands(props.commands ?? app.commands.list(), query),
+    [app.commands, props.commands, query],
+  );
+  const executeCommand = useCallback(
+    async (command: Command | undefined) => {
+      if (!command) return;
+      await app.commands.execute(command.id, { source: id });
+      await setOpen(false);
+    },
+    [app.commands, id, setOpen],
+  );
+  return {
+    app,
+    id,
+    inputId,
+    visible,
+    query,
+    setQuery,
+    active,
+    activeRef,
+    setActiveIndex,
+    setOpen,
+    available,
+    executeCommand,
   };
-  const visible = open ?? internal;
-  const setOpen = async (next: boolean) => {
-    if (open === undefined) setInternal(next);
-    if (!next) {
-      setQuery("");
-      setActiveIndex(0);
-    }
-    await onOpenChange?.(next);
-  };
-  useHotkey(hotkey, () => setOpen(!visible), {
-    scope: "application",
-    priority: 500,
-    title: "Open command palette",
-  });
-  const available = (commands ?? app.commands.list()).filter((command) => {
-    const normalized = query.toLocaleLowerCase();
-    return (
-      command.title.toLocaleLowerCase().includes(normalized) ||
-      command.id.toLocaleLowerCase().includes(normalized) ||
-      command.category?.toLocaleLowerCase().includes(normalized)
-    );
-  });
+}
+
+function useCommandPaletteInteraction(
+  state: ReturnType<typeof useCommandPaletteState>,
+): void {
+  const {
+    app,
+    id,
+    inputId,
+    visible,
+    activeRef,
+    setActiveIndex,
+    available,
+    executeCommand,
+  } = state;
+  usePointerEvents(
+    useMemo(
+      () =>
+        available.map((command, index) => ({
+          id: `${id}:command:${command.id}`,
+          type: "click" as const,
+          listener: async () => {
+            app.focus.focus(inputId);
+            setActiveIndex(index);
+            await executeCommand(command);
+          },
+        })),
+      [app.focus, available, executeCommand, id, inputId, setActiveIndex],
+    ),
+  );
   useTerminalInput(
     async (_input, key) => {
       if (!visible || app.focus.focusedId !== inputId) return false;
@@ -668,50 +763,136 @@ export function CommandPalette({
       if (key.return) {
         const command = available[activeRef.current];
         if (!command) return true;
-        await app.commands.execute(command.id, { source: id });
-        await setOpen(false);
+        await executeCommand(command);
         return true;
       }
       return false;
     },
     { enabled: visible, priority: 2_100, layerId: id },
   );
+}
+
+function CommandPaletteOptions(props: {
+  readonly id: string;
+  readonly commands: readonly Command[];
+  readonly active: number;
+  readonly activeColor: string;
+}): ReactNode {
+  if (props.commands.length === 0)
+    return <Text dimColor>No matching commands</Text>;
+  return props.commands.map((command, index) => (
+    <SemanticBox
+      key={command.id}
+      id={`${props.id}:command:${command.id}`}
+      role="option"
+      label={command.title}
+      selected={index === props.active}
+    >
+      <Text
+        bold={index === props.active}
+        color={index === props.active ? props.activeColor : undefined}
+      >
+        {index === props.active ? ">" : " "} {command.title}
+        {command.category ? ` — ${command.category}` : ""}
+      </Text>
+    </SemanticBox>
+  ));
+}
+
+export function CommandPalette(props: CommandPaletteProps): ReactNode {
+  const state = useCommandPaletteState(props);
+  useCommandPaletteInteraction(state);
   return (
-    <Dialog id={id} open={visible} onOpenChange={setOpen}>
+    <Dialog id={state.id} open={state.visible} onOpenChange={state.setOpen}>
       <Dialog.Content label="Command palette" width={70}>
         <Dialog.Title>Commands</Dialog.Title>
         <TextInput
-          id={inputId}
+          id={state.inputId}
           label="Command search"
-          value={query}
+          value={state.query}
           onValueChange={(next) => {
-            setQuery(next);
-            setActiveIndex(0);
+            state.setQuery(next);
+            state.setActiveIndex(0);
           }}
-          placeholder={placeholder}
+          placeholder={props.placeholder ?? "Type a command…"}
           autoFocus
         />
         <Box flexDirection="column">
-          {available.length === 0 ? (
-            <Text dimColor>No matching commands</Text>
-          ) : (
-            available.map((command, index) => (
-              <Text
-                key={command.id}
-                bold={index === active}
-                color={
-                  index === active
-                    ? app.theme.colors.primary.foreground
-                    : undefined
-                }
-              >
-                {index === active ? ">" : " "} {command.title}
-                {command.category ? ` — ${command.category}` : ""}
-              </Text>
-            ))
-          )}
+          <CommandPaletteOptions
+            id={state.id}
+            commands={state.available}
+            active={state.active}
+            activeColor={state.app.theme.colors.primary.foreground}
+          />
         </Box>
       </Dialog.Content>
     </Dialog>
   );
+}
+
+export const Drawer = Dialog;
+export const Popover = Dialog;
+
+export function Skeleton(props: {
+  readonly width?: number;
+  readonly lines?: number;
+  readonly label?: string;
+}): ReactNode {
+  const width = Math.max(1, Math.floor(props.width ?? 20));
+  const lines = Math.max(1, Math.floor(props.lines ?? 1));
+  return (
+    <Box flexDirection="column" aria-label={props.label ?? "Loading"}>
+      {Array.from({ length: lines }, (_value, index) => `line-${index}`).map(
+        (line) => (
+          <Text key={line} dimColor>
+            {"░".repeat(width)}
+          </Text>
+        ),
+      )}
+    </Box>
+  );
+}
+
+export interface ErrorBoundaryProps {
+  readonly children?: ReactNode;
+  readonly fallback?: (error: Error, reset: () => void) => ReactNode;
+  readonly onError?: (error: Error, info: ErrorInfo) => void;
+}
+
+interface ErrorBoundaryState {
+  readonly error?: Error;
+}
+
+export class ErrorBoundary extends Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
+  override state: ErrorBoundaryState = {};
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { error };
+  }
+
+  override componentDidCatch(error: Error, info: ErrorInfo): void {
+    this.props.onError?.(error, info);
+  }
+
+  reset = (): void => {
+    this.setState({ error: undefined });
+  };
+
+  override render(): ReactNode {
+    const { error } = this.state;
+    if (!error) return this.props.children;
+    return this.props.fallback ? (
+      this.props.fallback(error, this.reset)
+    ) : (
+      <Box borderStyle="round" flexDirection="column">
+        <Text color="red" bold>
+          Something went wrong
+        </Text>
+        <Text>{error.message}</Text>
+      </Box>
+    );
+  }
 }

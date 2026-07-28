@@ -3,8 +3,10 @@ import { useFocusable } from "@mwillbanks/tuil-focus";
 import {
   type CommonComponentProps,
   escapeTerminalControlCharacters,
-  TerminalSemanticNode as SemanticNode,
+  Box as SemanticBox,
+  usePointerEvents,
   useTerminalInput,
+  useTerminalScrollArea,
 } from "@mwillbanks/tuil-ink";
 import {
   resolveSlotProps,
@@ -15,8 +17,9 @@ import {
   getVisibleTerminalIndexes,
   useTerminalVirtualizer,
 } from "@mwillbanks/tuil-virtual";
-import { Box, type BoxProps, Text, type TextProps } from "ink";
+import { Box, type BoxProps, type Key, Text, type TextProps } from "ink";
 import {
+  type ElementType,
   type ReactNode,
   useCallback,
   useEffect,
@@ -88,6 +91,229 @@ export interface TreeProps<TData = unknown>
   readonly autoFocus?: boolean;
 }
 
+interface TreeInputContext<TData> {
+  readonly flat: readonly FlatTreeItem<TData>[];
+  readonly activeIndex: number;
+  readonly height: number;
+  readonly expanded: ReadonlySet<string>;
+  readonly readOnly: boolean;
+  readonly move: (index: number) => void;
+  readonly setExpanded: (id: string, value: boolean) => Promise<void>;
+  readonly select: (entry: FlatTreeItem<TData> | undefined) => Promise<void>;
+}
+
+function treeNavigationTarget(
+  key: Key,
+  activeIndex: number,
+  height: number,
+  count: number,
+): number | undefined {
+  if (key.upArrow) return activeIndex - 1;
+  if (key.downArrow) return activeIndex + 1;
+  if (key.pageUp) return activeIndex - height;
+  if (key.pageDown) return activeIndex + height;
+  if (key.home) return 0;
+  if (key.end) return count - 1;
+  return undefined;
+}
+
+async function handleTreeHorizontal<TData>(
+  key: Key,
+  context: TreeInputContext<TData>,
+): Promise<boolean> {
+  const entry = context.flat[context.activeIndex];
+  if (key.rightArrow) return handleTreeRight(entry, context);
+  if (key.leftArrow) return handleTreeLeft(entry, context);
+  return false;
+}
+
+async function handleTreeRight<TData>(
+  entry: FlatTreeItem<TData> | undefined,
+  context: TreeInputContext<TData>,
+): Promise<true> {
+  if (entry?.item.children?.length && !context.expanded.has(entry.item.id)) {
+    await context.setExpanded(entry.item.id, true);
+  } else if (entry?.item.children?.length) {
+    context.move(context.activeIndex + 1);
+  }
+  return true;
+}
+
+async function handleTreeLeft<TData>(
+  entry: FlatTreeItem<TData> | undefined,
+  context: TreeInputContext<TData>,
+): Promise<true> {
+  if (entry && context.expanded.has(entry.item.id)) {
+    await context.setExpanded(entry.item.id, false);
+  } else if (entry?.parentId) {
+    context.move(
+      context.flat.findIndex(
+        (candidate) => candidate.item.id === entry.parentId,
+      ),
+    );
+  }
+  return true;
+}
+
+async function handleTreeInput<TData>(
+  input: string,
+  key: Key,
+  context: TreeInputContext<TData>,
+): Promise<boolean> {
+  const target = treeNavigationTarget(
+    key,
+    context.activeIndex,
+    context.height,
+    context.flat.length,
+  );
+  if (target !== undefined) {
+    context.move(target);
+    return true;
+  }
+  if (await handleTreeHorizontal(key, context)) return true;
+  if (!key.return && input !== " ") return false;
+  const entry = context.flat[context.activeIndex];
+  if (entry?.item.children?.length && !context.readOnly) {
+    await context.setExpanded(
+      entry.item.id,
+      !context.expanded.has(entry.item.id),
+    );
+  }
+  await context.select(entry);
+  return true;
+}
+
+function treeMarker(
+  expandable: boolean,
+  expanded: boolean,
+  unicode: boolean,
+): string {
+  if (!expandable) return " ";
+  if (expanded) return unicode ? "▾" : "-";
+  return unicode ? "▸" : "+";
+}
+
+function TreeRows<TData>(props: {
+  readonly flat: readonly FlatTreeItem<TData>[];
+  readonly indexes: readonly number[];
+  readonly id: string;
+  readonly focused: boolean;
+  readonly activeIndex: number;
+  readonly currentSelected: string | undefined;
+  readonly expanded: ReadonlySet<string>;
+  readonly unicode: boolean;
+  readonly Item: ElementType<TextProps>;
+  readonly itemProps: TextProps;
+}): ReactNode {
+  return props.indexes.map((index) => {
+    const entry = props.flat[index];
+    if (!entry) return null;
+    const expandable = Boolean(entry.item.children?.length);
+    const isExpanded = props.expanded.has(entry.item.id);
+    const active = props.focused && index === props.activeIndex;
+    return (
+      <SemanticBox
+        key={entry.item.id}
+        id={`${props.id}:item:${entry.item.id}`}
+        role="treeitem"
+        label={entry.item.label}
+        description={entry.item.description}
+        selected={entry.item.id === props.currentSelected}
+        expanded={expandable ? isExpanded : undefined}
+        disabled={entry.item.disabled}
+        height={1}
+        overflow="hidden"
+        layout={{ parentId: props.id, zIndex: 1 }}
+      >
+        <props.Item
+          inverse={active}
+          bold={active || entry.item.id === props.currentSelected}
+          dimColor={entry.item.disabled}
+          {...props.itemProps}
+        >
+          {"  ".repeat(entry.depth)}
+          {treeMarker(expandable, isExpanded, props.unicode)}{" "}
+          {escapeTerminalControlCharacters(entry.item.label)}
+        </props.Item>
+      </SemanticBox>
+    );
+  });
+}
+
+function TreePresentation<TData>(props: {
+  readonly Root: ElementType<BoxProps>;
+  readonly Viewport: ElementType<BoxProps>;
+  readonly Item: ElementType<TextProps>;
+  readonly Empty: ElementType<TextProps>;
+  readonly Overflow: ElementType<TextProps>;
+  readonly rootProps: BoxProps;
+  readonly viewportProps: BoxProps;
+  readonly itemProps: TextProps;
+  readonly emptyProps: TextProps;
+  readonly overflowProps: TextProps;
+  readonly id: string;
+  readonly label: string;
+  readonly metadata: CommonComponentProps;
+  readonly flat: readonly FlatTreeItem<TData>[];
+  readonly indexes: readonly number[];
+  readonly focused: boolean;
+  readonly activeIndex: number;
+  readonly currentSelected: string | undefined;
+  readonly expanded: ReadonlySet<string>;
+  readonly unicode: boolean;
+  readonly interactive: boolean;
+  readonly height: number;
+  readonly remaining: number;
+}): ReactNode {
+  const rows =
+    props.flat.length === 0 ? (
+      <props.Empty dimColor {...props.emptyProps}>
+        No items
+      </props.Empty>
+    ) : (
+      <props.Viewport
+        flexDirection="column"
+        height={props.interactive ? props.height : undefined}
+        overflow="hidden"
+        {...props.viewportProps}
+      >
+        <TreeRows
+          flat={props.flat}
+          indexes={props.indexes}
+          id={props.id}
+          focused={props.focused}
+          activeIndex={props.activeIndex}
+          currentSelected={props.currentSelected}
+          expanded={props.expanded}
+          unicode={props.unicode}
+          Item={props.Item}
+          itemProps={props.itemProps}
+        />
+      </props.Viewport>
+    );
+  return (
+    <SemanticBox
+      {...props.metadata}
+      id={props.id}
+      role="tree"
+      label={props.label}
+      valueText={`${props.flat.length} visible items`}
+      flexDirection="column"
+      layout={{ ...props.metadata.layout, focusable: props.interactive }}
+    >
+      <props.Root flexDirection="column" {...props.rootProps}>
+        {rows}
+        {props.remaining > 0 ? (
+          <props.Overflow dimColor {...props.overflowProps}>
+            {props.interactive ? "↓" : "…"} {props.remaining}{" "}
+            {props.interactive ? "more" : "additional items omitted"}
+          </props.Overflow>
+        ) : null}
+      </props.Root>
+    </SemanticBox>
+  );
+}
+
 export function Tree<TData>({
   items,
   expandedIds,
@@ -125,7 +351,14 @@ export function Tree<TData>({
     flat.findIndex((entry) => entry.item.id === currentSelected),
   );
   const [activeIndex, setActiveIndex] = useState(selectedIndex);
-  const [offset, setOffset] = useState(0);
+  const { state: scroll, snapshot: scrollSnapshot } = useTerminalScrollArea({
+    id,
+    viewport: { width: 1, height },
+    extent: { width: 1, height: flat.length },
+    followFocus: true,
+    enabled: interactive && !disabled,
+  });
+  const offset = scrollSnapshot.position.y;
   const { focused, focus } = useFocusable(
     useMemo(
       () => ({
@@ -145,10 +378,10 @@ export function Tree<TData>({
     (next: number) => {
       const value = Math.min(flat.length - 1, Math.max(0, next));
       setActiveIndex(Math.max(0, value));
-      if (value < offset) setOffset(value);
-      if (value >= offset + height) setOffset(value - height + 1);
+      if (value < offset) scroll.scrollTo({ y: value });
+      if (value >= offset + height) scroll.scrollTo({ y: value - height + 1 });
     },
-    [flat.length, height, offset],
+    [flat.length, height, offset, scroll],
   );
   const setExpanded = useCallback(
     async (itemId: string, value: boolean) => {
@@ -168,60 +401,48 @@ export function Tree<TData>({
     },
     [onSelect, readOnly, selectedId],
   );
+  usePointerEvents(
+    useMemo(
+      () => [
+        ...flat.map((entry, index) => ({
+          id: `${id}:item:${entry.item.id}`,
+          type: "click" as const,
+          enabled: !disabled && !entry.item.disabled,
+          listener: async () => {
+            focus();
+            move(index);
+            if (entry.item.children?.length && !readOnly) {
+              await setExpanded(entry.item.id, !expanded.has(entry.item.id));
+            }
+            await select(entry);
+          },
+        })),
+      ],
+      [
+        disabled,
+        expanded,
+        flat,
+        focus,
+        id,
+        move,
+        readOnly,
+        select,
+        setExpanded,
+      ],
+    ),
+  );
   useTerminalInput(
-    async (_input, key) => {
-      const entry = flat[activeIndex];
-      if (key.upArrow) {
-        move(activeIndex - 1);
-        return true;
-      }
-      if (key.downArrow) {
-        move(activeIndex + 1);
-        return true;
-      }
-      if (key.pageUp) {
-        move(activeIndex - height);
-        return true;
-      }
-      if (key.pageDown) {
-        move(activeIndex + height);
-        return true;
-      }
-      if (key.rightArrow) {
-        if (entry?.item.children?.length && !expanded.has(entry.item.id)) {
-          await setExpanded(entry.item.id, true);
-        } else if (entry?.item.children?.length) {
-          move(activeIndex + 1);
-        }
-        return true;
-      }
-      if (key.leftArrow) {
-        if (entry && expanded.has(entry.item.id)) {
-          await setExpanded(entry.item.id, false);
-        } else if (entry?.parentId) {
-          move(
-            flat.findIndex((candidate) => candidate.item.id === entry.parentId),
-          );
-        }
-        return true;
-      }
-      if (key.return || _input === " ") {
-        if (entry?.item.children?.length && !readOnly) {
-          await setExpanded(entry.item.id, !expanded.has(entry.item.id));
-        }
-        await select(entry);
-        return true;
-      }
-      if (key.home) {
-        move(0);
-        return true;
-      }
-      if (key.end) {
-        move(flat.length - 1);
-        return true;
-      }
-      return false;
-    },
+    (input, key) =>
+      handleTreeInput(input, key, {
+        flat,
+        activeIndex,
+        height,
+        expanded,
+        readOnly,
+        move,
+        setExpanded,
+        select,
+      }),
     { enabled: focused && !disabled, priority: 1_520 },
   );
   const range = useTerminalVirtualizer({
@@ -243,84 +464,36 @@ export function Tree<TData>({
   const Item = slots?.item ?? Text;
   const Empty = slots?.empty ?? Text;
   const Overflow = slots?.overflow ?? Text;
+  const remaining = interactive
+    ? range.after > 0
+      ? flat.length - range.endIndex - 1
+      : 0
+    : Math.max(0, flat.length - indexes.length);
   return (
-    <Root
-      flexDirection="column"
-      {...resolveSlotProps(slotProps?.root, state, theme)}
-    >
-      <SemanticNode
-        id={id}
-        role="tree"
-        label={props.label ?? "Tree"}
-        valueText={`${flat.length} visible items`}
-        metadata={{ ...props, disabled, readOnly }}
-      />
-      {flat.length === 0 ? (
-        <Empty dimColor {...resolveSlotProps(slotProps?.empty, state, theme)}>
-          No items
-        </Empty>
-      ) : (
-        <Viewport
-          flexDirection="column"
-          height={interactive ? height : undefined}
-          overflow="hidden"
-          {...resolveSlotProps(slotProps?.viewport, state, theme)}
-        >
-          {indexes.map((index) => {
-            const entry = flat[index];
-            if (!entry) return null;
-            const expandable = Boolean(entry.item.children?.length);
-            const isExpanded = expanded.has(entry.item.id);
-            const active = focused && index === activeIndex;
-            const marker = expandable
-              ? isExpanded
-                ? app.capabilities.unicode
-                  ? "▾"
-                  : "-"
-                : app.capabilities.unicode
-                  ? "▸"
-                  : "+"
-              : " ";
-            return (
-              <Item
-                key={entry.item.id}
-                inverse={active}
-                bold={active || entry.item.id === currentSelected}
-                dimColor={entry.item.disabled}
-                {...resolveSlotProps(slotProps?.item, state, theme)}
-              >
-                <SemanticNode
-                  id={`${id}:item:${entry.item.id}`}
-                  role="treeitem"
-                  label={entry.item.label}
-                  description={entry.item.description}
-                  selected={entry.item.id === currentSelected}
-                  expanded={expandable ? isExpanded : undefined}
-                  disabled={entry.item.disabled}
-                />
-                {"  ".repeat(entry.depth)}
-                {marker} {escapeTerminalControlCharacters(entry.item.label)}
-              </Item>
-            );
-          })}
-        </Viewport>
-      )}
-      {interactive && range.after > 0 ? (
-        <Overflow
-          dimColor
-          {...resolveSlotProps(slotProps?.overflow, state, theme)}
-        >
-          ↓ {flat.length - range.endIndex - 1} more
-        </Overflow>
-      ) : null}
-      {!interactive && flat.length > indexes.length ? (
-        <Overflow
-          dimColor
-          {...resolveSlotProps(slotProps?.overflow, state, theme)}
-        >
-          … {flat.length - indexes.length} additional items omitted
-        </Overflow>
-      ) : null}
-    </Root>
+    <TreePresentation
+      Root={Root}
+      Viewport={Viewport}
+      Item={Item}
+      Empty={Empty}
+      Overflow={Overflow}
+      rootProps={resolveSlotProps(slotProps?.root, state, theme)}
+      viewportProps={resolveSlotProps(slotProps?.viewport, state, theme)}
+      itemProps={resolveSlotProps(slotProps?.item, state, theme)}
+      emptyProps={resolveSlotProps(slotProps?.empty, state, theme)}
+      overflowProps={resolveSlotProps(slotProps?.overflow, state, theme)}
+      id={id}
+      label={props.label ?? "Tree"}
+      metadata={{ ...props, disabled, readOnly }}
+      flat={flat}
+      indexes={indexes}
+      focused={focused}
+      activeIndex={activeIndex}
+      currentSelected={currentSelected}
+      expanded={expanded}
+      unicode={app.capabilities.unicode}
+      interactive={interactive}
+      height={height}
+      remaining={remaining}
+    />
   );
 }

@@ -14,10 +14,20 @@
   },
   "files": [
     {
-      "path": "../../../registry/themes/default.ts",
+      "path": "src/lib/theme.ts",
       "target": "src/lib/theme.ts",
-      "content": "import { createTheme } from \"@mwillbanks/tuil\";\n\nexport const theme = createTheme({\n  id: \"tuil-default\",\n  colorScheme: \"dark\",\n});\n"
+      "content": "import { createTheme } from \"@mwillbanks/tuil\";\n\nexport const theme = createTheme({\n  id: \"tuil-default\",\n  colorScheme: \"dark\",\n});\n",
+      "source": "registry/themes/default.ts"
     }
   ],
-  "registryDependencies": []
+  "registryDependencies": [],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "integrity": "sha256-2b37fe318e1e068fa00a1ef5be4b26b8b0e8044a78f1f32610eb5631de53cfe5"
 }

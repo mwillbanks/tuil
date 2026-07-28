@@ -8,7 +8,7 @@ import {
 import { useHotkey } from "@mwillbanks/tuil-hotkeys";
 import { useTerminalInput } from "@mwillbanks/tuil-ink";
 import { cleanup, renderTuil } from "@mwillbanks/tuil-testing-ink";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "./components/button.tsx";
 import {
   CommandPalette,
@@ -27,6 +27,7 @@ import {
   NumberInput,
   RadioGroup,
   Select,
+  Slider,
   Switch,
   TextArea,
   TextInput,
@@ -40,6 +41,7 @@ const options = [
   { value: "javascript", label: "JavaScript" },
   { value: "rust", label: "Rust", disabled: true },
 ] as const;
+const backgroundHotkeyOptions = Object.freeze({});
 
 test("text controls edit, validate, submit, and step numeric values", async () => {
   const changes: string[] = [];
@@ -91,21 +93,28 @@ test("text controls edit, validate, submit, and step numeric values", async () =
 
   const numbers: number[] = [];
   const number = renderTuil(
-    <NumberInput
-      id="count"
-      label="Count"
-      autoFocus
-      defaultValue={2}
-      min={0}
-      max={3}
-      onValueChange={(value) => {
-        numbers.push(value);
-      }}
-    />,
+    <>
+      <NumberInput
+        id="count"
+        label="Count"
+        autoFocus
+        defaultValue={2}
+        min={0}
+        max={3}
+        onValueChange={(value) => {
+          numbers.push(value);
+        }}
+      />
+      <Button id="after-count">After count</Button>
+    </>,
   );
   await number.user.press("arrowUp");
   await number.user.press("arrowUp");
   expect(numbers).toEqual([3, 3]);
+  await number.user.press("backspace");
+  await number.user.type("x");
+  await number.user.press("tab");
+  expect(number.app.focus.focusedId).toBe("after-count");
 });
 
 test("selection controls expose semantic state and keyboard behavior", async () => {
@@ -140,6 +149,8 @@ test("selection controls expose semantic state and keyboard behavior", async () 
       }}
     />,
   );
+  await radio.user.press("arrowUp");
+  await radio.user.press("arrowDown");
   await radio.user.press("arrowDown");
   await radio.user.press("enter");
   expect(radios).toEqual(["javascript"]);
@@ -200,6 +211,128 @@ test("selection controls expose semantic state and keyboard behavior", async () 
   await autocomplete.user.type("java");
   await autocomplete.user.press("enter");
   expect(completions).toEqual(["javascript"]);
+});
+
+test("buttons execute registered commands and render suffix content", async () => {
+  const executions: string[] = [];
+  function CommandButton() {
+    const app = useApp();
+    useEffect(() => {
+      const registration = app.commands.register(
+        defineCommand({
+          id: "button.execute",
+          title: "Execute button",
+          execute: ({ source }) => {
+            executions.push(source ?? "");
+          },
+        }),
+      );
+      return () => {
+        void registration.dispose();
+      };
+    }, [app]);
+    return (
+      <Button
+        id="command-button"
+        command="button.execute"
+        suffix="!"
+        autoFocus
+        hotkeys={["ctrl+x"]}
+      >
+        Execute
+      </Button>
+    );
+  }
+  const view = renderTuil(<CommandButton />);
+  await view.ready;
+  expect(view.screen.frame()).toContain("!");
+  await view.user.press("enter");
+  await view.user.press("ctrl+x");
+  expect(executions).toEqual(["command-button", "command-button"]);
+  await view.cleanup();
+});
+
+test("buttons activate through shared pointer hit testing", async () => {
+  let presses = 0;
+  const view = renderTuil(
+    <Button
+      id="registry-pointer-button"
+      layout={{
+        bounds: { x: 0, y: 0, width: 12, height: 1 },
+        clip: { x: 0, y: 0, width: 80, height: 24 },
+        zIndex: 1,
+        focusable: true,
+        pointerEvents: "auto",
+      }}
+      onPress={() => {
+        presses += 1;
+      }}
+    >
+      Pointer
+    </Button>,
+  );
+  await view.ready;
+  await view.user.press("\u001b[<0;2;1M");
+  await view.user.press("\u001b[<0;2;1m");
+  expect(presses).toBe(1);
+  expect(view.app.focus.focusedId).toBe("registry-pointer-button");
+  await view.cleanup();
+});
+
+test("selection controls expose pointer options with keyboard parity", async () => {
+  const selections: string[] = [];
+  const view = renderTuil(
+    <RadioGroup
+      id="pointer-runtime"
+      label="Runtime"
+      options={options}
+      onValueChange={(value) => {
+        selections.push(value);
+      }}
+    />,
+  );
+  await view.ready;
+  expect(
+    view.app.layout.get("pointer-runtime:javascript")?.bounds.width,
+  ).toBeGreaterThan(0);
+  await view.user.press("\u001b[<0;2;2M");
+  await view.user.press("\u001b[<0;2;2m");
+  expect(selections).toEqual(["javascript"]);
+  expect(view.app.focus.focusedId).toBe("pointer-runtime");
+  await view.user.press("arrowUp");
+  await view.user.press("enter");
+  expect(selections).toEqual(["javascript", "typescript"]);
+  await view.cleanup();
+});
+
+test("slider supports keyboard, click, drag, and semantic value updates", async () => {
+  const values: number[] = [];
+  const view = renderTuil(
+    <Slider
+      id="volume"
+      label="Volume"
+      defaultValue={20}
+      step={10}
+      autoFocus
+      onValueChange={(value) => {
+        values.push(value);
+      }}
+    />,
+  );
+  await view.ready;
+  await view.user.press("arrowRight");
+  expect(values.at(-1)).toBe(30);
+  const bounds = view.app.layout.get("volume")?.bounds;
+  expect(bounds?.width).toBeGreaterThan(0);
+  const column = (bounds?.x ?? 0) + Math.floor((bounds?.width ?? 1) / 2) + 1;
+  const row = (bounds?.y ?? 0) + 1;
+  await view.user.press(`\u001b[<0;${column};${row}M`);
+  await view.user.press(`\u001b[<0;${column};${row}m`);
+  expect(values.at(-1)).toBe(50);
+  expect(view.screen.getByRole("slider", { name: "Volume" }).valueText).toBe(
+    "50",
+  );
+  await view.cleanup();
 });
 
 test("controls cover cursor, bounds, search, and selection limit policies", async () => {
@@ -313,9 +446,10 @@ test("dialogs trap and restore focus while escape dismisses the top overlay", as
       },
       { priority: 3_000 },
     );
-    useHotkey("arrowdown", () => {
+    const incrementBackgroundInputs = useCallback(() => {
       backgroundInputs += 1;
-    });
+    }, []);
+    useHotkey("arrowdown", incrementBackgroundInputs, backgroundHotkeyOptions);
     return (
       <>
         <Button id="outside" autoFocus onPress={() => setOpen(true)}>
@@ -369,7 +503,7 @@ test("nested dialogs dismiss in visual depth order", async () => {
   }
   const view = renderTuil(<Harness />);
   await view.ready;
-  await Bun.sleep(20);
+  await Bun.sleep(75);
   await view.user.press("escape");
   await Bun.sleep(50);
   expect(() => view.screen.getByRole("dialog", { name: "Inner" })).toThrow();
@@ -422,6 +556,8 @@ test("forms validate through commands, summarize errors, blur adapters, and focu
   expect(blurred).toBeTrue();
   await view.app.commands.execute("form.submit");
   expect(causes).toContain("submit");
+  await view.app.commands.execute("form.validate");
+  expect(causes).toHaveLength(2);
   expect(view.app.focus.focusedId).toBe("name");
   expect(
     view.screen.getByRole("alert", { name: "Name is required" }),
@@ -458,7 +594,7 @@ test("form controllers own registered field reset, restore, values, and subscrip
     "restored",
   );
   controller.reset();
-  await Bun.sleep(10);
+  await Bun.sleep(75);
   expect(controller.dirty).toBeFalse();
   await controller.validate("command");
   await view.cleanup();
@@ -659,23 +795,23 @@ test("confirm, tooltip, toast, and command palette complete overlay contracts", 
     </Tooltip>,
   );
   await tooltip.ready;
-  await Bun.sleep(20);
+  await Bun.sleep(75);
   expect(tooltip.screen.frame()).toContain("Contextual help");
   expect(
     tooltip.screen.getByRole("status", { name: "Help for help" }),
   ).toBeDefined();
   await tooltip.user.press("f1");
-  await Bun.sleep(10);
+  await Bun.sleep(75);
   expect(() =>
     tooltip.screen.getByRole("status", { name: "Help for help" }),
   ).toThrow();
   await tooltip.user.press("f1");
-  await Bun.sleep(10);
+  await Bun.sleep(75);
   expect(
     tooltip.screen.getByRole("status", { name: "Help for help" }),
   ).toBeDefined();
   expect(tooltip.app.focus.focus("other-help")).toBeTrue();
-  await Bun.sleep(20);
+  await Bun.sleep(75);
   expect(() =>
     tooltip.screen.getByRole("status", { name: "Help for help" }),
   ).toThrow();

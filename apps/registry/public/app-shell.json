@@ -16,10 +16,20 @@
   },
   "files": [
     {
-      "path": "../../../registry/components/app-shell.tsx",
+      "path": "src/components/tuil/components/app-shell.tsx",
       "target": "src/components/tuil/components/app-shell.tsx",
-      "content": "import type { ReactNode } from \"react\";\nimport { Box, type BoxProps } from \"../primitives/box\";\nimport { AppBar } from \"./app-bar\";\nimport { StatusBar } from \"./status-bar\";\n\nfunction Main(props: BoxProps): ReactNode {\n  return <Box flexGrow={1} {...props} />;\n}\n\nexport function AppShell(props: BoxProps): ReactNode {\n  return <Box flexDirection=\"column\" role=\"application\" {...props} />;\n}\n\nAppShell.AppBar = AppBar;\nAppShell.Main = Main;\nAppShell.StatusBar = StatusBar;\n"
+      "content": "import type { ReactNode } from \"react\";\nimport { Box, type BoxProps } from \"../primitives/box\";\nimport { AppBar } from \"./app-bar\";\nimport { StatusBar } from \"./status-bar\";\n\nfunction Main(props: BoxProps): ReactNode {\n  return <Box flexGrow={1} {...props} />;\n}\n\nexport function AppShell(props: BoxProps): ReactNode {\n  return <Box flexDirection=\"column\" role=\"application\" {...props} />;\n}\n\nAppShell.AppBar = AppBar;\nAppShell.Main = Main;\nAppShell.StatusBar = StatusBar;\n",
+      "source": "registry/components/app-shell.tsx"
     }
   ],
-  "registryDependencies": ["box", "app-bar", "status-bar"]
+  "registryDependencies": ["box", "app-bar", "status-bar"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "integrity": "sha256-f6e37b755bc9997dbed01b8acb5006cd9e1d86904dbd9300f2b73ebce93c1bf9"
 }

@@ -1,13 +1,15 @@
 ---
 title: Introduction
-description: Build production terminal applications with one typed React runtime.
+description: Build production terminal applications with one typed renderer-neutral runtime.
 icon: TerminalWindow
 ---
 
-tuil is a React and Ink framework for terminal applications that need more than
-rendered text. It coordinates lifecycle, typed events, services, commands,
-focus, hotkeys, routes, forms, workflows, operations, themes, plugins,
-source-owned components, semantic tests, and portable stories.
+tuil is a renderer-neutral framework for terminal applications that need more
+than rendered text. It supports existing React Ink components and direct
+renderer applications on the deterministic cell backend while coordinating
+lifecycle, typed events, services, commands, focus, hotkeys, routes, forms,
+workflows, operations, themes, plugins, source-owned components, semantic
+tests, and portable stories.
 
 ## Choose a path
 
@@ -37,8 +39,11 @@ flowchart LR
   CLI["CLI and registry"] --> App["TuilApp"]
   App --> Services["services and commands"]
   App --> Runtime["events, focus, hotkeys, routes"]
-  Runtime --> Ink["Ink adapter"]
+  Runtime --> Renderer["renderer application"]
+  Renderer --> Ink["React Ink compatibility"]
+  Renderer --> Cell["cell backend"]
   Ink --> UI["components and application blocks"]
+  Cell --> UI
   UI --> Semantics["semantic tests and stories"]
   App --> Extensions["plugins and typed extension points"]
 ```

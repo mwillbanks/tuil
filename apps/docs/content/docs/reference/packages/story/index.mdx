@@ -19,7 +19,7 @@ npm install @mwillbanks/tuil-story
 
 ## How it operates
 
-Portable stories combine component args with terminal capabilities, themes, semantic nodes, focus state, events, ANSI output, and an action history. Adapters expose the same story to tests, browsers, static docs, and Storybook.
+Portable stories combine component args with terminal capabilities, themes, semantic nodes, focus state, events, ANSI output, and an action history. Adapters expose the same story to tests, browsers, static docs, and Storybook. Dynamic and static HTTP adapters stream untrusted bodies through a byte limit, validate their complete schema, bound recursive args, controls, dimensions, and simulated input, and apply a server-side timeout before render-lock acquisition.
 
 ```mermaid
 flowchart LR
@@ -53,6 +53,7 @@ flowchart LR
 | `FumadocsStoryProps` | type | `packages/story/src/browser.tsx` |
 | `generateStoryCatalogDocumentation` | function | `packages/story/src/index.tsx` |
 | `generateStoryCatalogSnapshots` | function | `packages/story/src/index.tsx` |
+| `handleStoryHttpRequest` | function | `packages/story/src/index.tsx` |
 | `OpenStoryOptions` | interface | `packages/story/src/index.tsx` |
 | `renderStaticStoryRequest` | function | `packages/story/src/static.ts` |
 | `renderStoryRequest` | function | `packages/story/src/index.tsx` |
@@ -65,6 +66,8 @@ flowchart LR
 | `StoryCatalogSnapshots` | type | `packages/story/src/index.tsx` |
 | `StoryFrame` | interface | `packages/story/src/index.tsx` |
 | `storyFrameToMarkdown` | function | `packages/story/src/index.tsx` |
+| `StoryHttpHandlerOptions` | interface | `packages/story/src/index.tsx` |
+| `storyHttpLimits` | constant | `packages/story/src/index.tsx` |
 | `StorySnapshot` | interface | `packages/story/src/index.tsx` |
 | `terminalControlArgNames` | constant | `packages/story/src/browser.tsx` |
 | `terminalControlsFromArgs` | function | `packages/story/src/browser.tsx` |
@@ -80,10 +83,11 @@ flowchart LR
 | `TuilStoryDefinition` | export | `packages/story/src/index.tsx` |
 | `TuilStorySession` | class | `packages/story/src/index.tsx` |
 | `TuilStorySet` | interface | `packages/story/src/index.tsx` |
+| `validateStoryBridgeRequest` | function | `packages/story/src/index.tsx` |
 
 ## Events and lifecycle
 
-Every rendered frame captures the runtime's observed event history and story action timeline.
+Every rendered frame captures the runtime's observed event history and story action timeline. HTTP request failures return 400, client disconnects return 499, and render timeouts return 504.
 
 All subscriptions and registrations return a disposer or belong to an owning
 runtime that disposes them in reverse order.

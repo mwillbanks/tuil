@@ -495,6 +495,436 @@ export interface StoryBridgeRequest {
   readonly inputs?: readonly string[];
 }
 
+export const storyHttpLimits = Object.freeze({
+  maxBodyBytes: 65_536,
+  maxArgsBytes: 32_768,
+  maxArgsEntries: 100,
+  maxArgsDepth: 8,
+  maxArrayLength: 100,
+  maxStringLength: 8_192,
+  maxIdentifierLength: 128,
+  maxInputs: 100,
+  maxInputLength: 1_024,
+  minWidth: 20,
+  maxWidth: 500,
+  minHeight: 1,
+  maxHeight: 200,
+  defaultTimeoutMs: 5_000,
+  maxTimeoutMs: 60_000,
+});
+
+export interface StoryHttpHandlerOptions {
+  readonly themeRegistry?: ThemeRegistry;
+  readonly timeoutMs?: number;
+  readonly maxBodyBytes?: number;
+}
+
+const storyRequestKeys = new Set([
+  "storyId",
+  "variant",
+  "args",
+  "controls",
+  "inputs",
+]);
+const storyControlKeys = new Set<keyof TerminalStoryControls>([
+  "width",
+  "height",
+  "colorDepth",
+  "unicode",
+  "theme",
+  "platform",
+  "interactive",
+  "reducedMotion",
+  "mouse",
+  "hyperlinks",
+]);
+const storyPlatforms = new Set<NodeJS.Platform>([
+  "aix",
+  "android",
+  "darwin",
+  "freebsd",
+  "haiku",
+  "linux",
+  "openbsd",
+  "sunos",
+  "win32",
+  "cygwin",
+  "netbsd",
+]);
+const storyTextEncoder = new TextEncoder();
+
+function isPlainStoryObject(value: unknown): value is Record<string, unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function assertBoundedStoryValue(
+  value: unknown,
+  depth: number,
+  state: { entries: number },
+): void {
+  if (depth > storyHttpLimits.maxArgsDepth) {
+    throw new Error("Story args exceed the maximum nesting depth");
+  }
+  if (assertStoryScalar(value)) return;
+  if (Array.isArray(value)) {
+    assertStoryArray(value, depth, state);
+    return;
+  }
+  assertStoryObject(value, depth, state);
+}
+
+function assertStoryScalar(value: unknown): boolean {
+  if (
+    value === null ||
+    typeof value === "boolean" ||
+    (typeof value === "number" && Number.isFinite(value))
+  ) {
+    return true;
+  }
+  if (typeof value === "string") {
+    if (value.length > storyHttpLimits.maxStringLength) {
+      throw new Error("A story arg string exceeds the maximum length");
+    }
+    return true;
+  }
+  if (typeof value !== "object") {
+    throw new Error("Story args must contain only JSON data");
+  }
+  return false;
+}
+
+function addStoryEntries(state: { entries: number }, count: number): void {
+  state.entries += count;
+  if (state.entries > storyHttpLimits.maxArgsEntries) {
+    throw new Error("Story args exceed the maximum entry count");
+  }
+}
+
+function assertStoryArray(
+  value: readonly unknown[],
+  depth: number,
+  state: { entries: number },
+): void {
+  if (value.length > storyHttpLimits.maxArrayLength) {
+    throw new Error("A story arg array exceeds the maximum length");
+  }
+  addStoryEntries(state, value.length);
+  for (const item of value) {
+    assertBoundedStoryValue(item, depth + 1, state);
+  }
+}
+
+function assertStoryObject(
+  value: unknown,
+  depth: number,
+  state: { entries: number },
+): void {
+  if (!isPlainStoryObject(value)) {
+    throw new Error("Story args must contain only JSON data");
+  }
+  const entries = Object.entries(value);
+  addStoryEntries(state, entries.length);
+  for (const [key, item] of entries) {
+    if (key.length > storyHttpLimits.maxIdentifierLength) {
+      throw new Error("A story arg key exceeds the maximum length");
+    }
+    assertBoundedStoryValue(item, depth + 1, state);
+  }
+}
+
+function assertStoryDimension(
+  value: unknown,
+  name: "width" | "height",
+  minimum: number,
+  maximum: number,
+): void {
+  if (
+    value !== undefined &&
+    (!Number.isSafeInteger(value) ||
+      (value as number) < minimum ||
+      (value as number) > maximum)
+  ) {
+    throw new Error(
+      `Story ${name} must be an integer between ${minimum} and ${maximum}`,
+    );
+  }
+}
+
+function assertStoryBooleanControls(
+  value: Readonly<Record<string, unknown>>,
+): void {
+  for (const key of [
+    "unicode",
+    "interactive",
+    "reducedMotion",
+    "mouse",
+    "hyperlinks",
+  ] as const) {
+    if (value[key] !== undefined && typeof value[key] !== "boolean") {
+      throw new Error(`Story ${key} control must be a boolean`);
+    }
+  }
+}
+
+function assertStoryNamedControls(
+  value: Readonly<Record<string, unknown>>,
+): void {
+  const theme = value["theme"];
+  if (
+    theme !== undefined &&
+    (typeof theme !== "string" ||
+      theme.length === 0 ||
+      theme.length > storyHttpLimits.maxIdentifierLength)
+  ) {
+    throw new Error("Story theme control is invalid");
+  }
+  const platform = value["platform"];
+  if (
+    platform !== undefined &&
+    !storyPlatforms.has(platform as NodeJS.Platform)
+  ) {
+    throw new Error("Story platform control is invalid");
+  }
+}
+
+function assertStoryControls(
+  value: unknown,
+): asserts value is Partial<TerminalStoryControls> {
+  if (!isPlainStoryObject(value)) {
+    throw new Error("Story controls must be an object");
+  }
+  for (const key of Object.keys(value)) {
+    if (!storyControlKeys.has(key as keyof TerminalStoryControls)) {
+      throw new Error(`Unknown story control "${key}"`);
+    }
+  }
+  assertStoryDimension(
+    value["width"],
+    "width",
+    storyHttpLimits.minWidth,
+    storyHttpLimits.maxWidth,
+  );
+  assertStoryDimension(
+    value["height"],
+    "height",
+    storyHttpLimits.minHeight,
+    storyHttpLimits.maxHeight,
+  );
+  if (
+    value["colorDepth"] !== undefined &&
+    ![1, 4, 8, 24].includes(value["colorDepth"] as number)
+  ) {
+    throw new Error("Story colorDepth must be 1, 4, 8, or 24");
+  }
+  assertStoryBooleanControls(value);
+  assertStoryNamedControls(value);
+}
+
+function assertStoryRequestIdentities(
+  value: Readonly<Record<string, unknown>>,
+): void {
+  for (const key of ["storyId", "variant"] as const) {
+    const item = value[key];
+    if (
+      typeof item !== "string" ||
+      item.trim().length === 0 ||
+      item.length > storyHttpLimits.maxIdentifierLength
+    ) {
+      throw new Error(`Story ${key} is invalid`);
+    }
+  }
+}
+
+function assertStoryArgs(
+  value: unknown,
+): asserts value is Readonly<Record<string, unknown>> | undefined {
+  if (value === undefined) return;
+  if (!isPlainStoryObject(value)) {
+    throw new Error("Story args must be an object");
+  }
+  assertBoundedStoryValue(value, 0, { entries: 0 });
+  if (
+    storyTextEncoder.encode(JSON.stringify(value)).byteLength >
+    storyHttpLimits.maxArgsBytes
+  ) {
+    throw new Error("Story args exceed the maximum byte size");
+  }
+}
+
+function assertStoryInputs(
+  value: unknown,
+): asserts value is readonly string[] | undefined {
+  if (value === undefined) return;
+  if (
+    !Array.isArray(value) ||
+    value.length > storyHttpLimits.maxInputs ||
+    value.some(
+      (input) =>
+        typeof input !== "string" ||
+        input.length > storyHttpLimits.maxInputLength,
+    )
+  ) {
+    throw new Error(
+      `Story inputs must contain at most ${storyHttpLimits.maxInputs} strings of at most ${storyHttpLimits.maxInputLength} characters`,
+    );
+  }
+}
+
+export function validateStoryBridgeRequest(value: unknown): StoryBridgeRequest {
+  if (!isPlainStoryObject(value)) {
+    throw new Error("Story request body must be an object");
+  }
+  for (const key of Object.keys(value)) {
+    if (!storyRequestKeys.has(key)) {
+      throw new Error(`Unknown story request field "${key}"`);
+    }
+  }
+  assertStoryRequestIdentities(value);
+  assertStoryArgs(value["args"]);
+  if (value["controls"] !== undefined) {
+    assertStoryControls(value["controls"]);
+  }
+  assertStoryInputs(value["inputs"]);
+  return Object.freeze({
+    storyId: value["storyId"] as string,
+    variant: value["variant"] as string,
+    ...(value["args"] === undefined ? {} : { args: value["args"] }),
+    ...(value["controls"] === undefined ? {} : { controls: value["controls"] }),
+    ...(value["inputs"] === undefined ? {} : { inputs: value["inputs"] }),
+  });
+}
+
+async function readBoundedJson(
+  request: Request,
+  maxBodyBytes: number,
+  signal: AbortSignal,
+): Promise<unknown> {
+  const declaredLength = request.headers.get("content-length");
+  if (declaredLength !== null && Number(declaredLength) > maxBodyBytes) {
+    throw new Error("Story request body exceeds the maximum byte size");
+  }
+  if (!request.body) throw new Error("Story request body is required");
+  const reader = request.body.getReader();
+  const decoder = new TextDecoder("utf-8", { fatal: true });
+  let bytes = 0;
+  let source = "";
+  const abortRead = () => {
+    void reader.cancel(signal.reason);
+  };
+  signal.addEventListener("abort", abortRead, { once: true });
+  try {
+    signal.throwIfAborted();
+    while (true) {
+      const { done, value } = await reader.read();
+      signal.throwIfAborted();
+      if (done) break;
+      bytes += value.byteLength;
+      if (bytes > maxBodyBytes) {
+        await reader.cancel();
+        throw new Error("Story request body exceeds the maximum byte size");
+      }
+      source += decoder.decode(value, { stream: true });
+    }
+    source += decoder.decode();
+  } finally {
+    signal.removeEventListener("abort", abortRead);
+    reader.releaseLock();
+  }
+  try {
+    return JSON.parse(source);
+  } catch {
+    throw new Error("Story request body must be valid JSON");
+  }
+}
+
+function normalizeStoryHttpOptions(options: StoryHttpHandlerOptions): {
+  readonly timeoutMs: number;
+  readonly maxBodyBytes: number;
+} {
+  const timeoutMs = options.timeoutMs ?? storyHttpLimits.defaultTimeoutMs;
+  const maxBodyBytes = options.maxBodyBytes ?? storyHttpLimits.maxBodyBytes;
+  if (
+    !Number.isSafeInteger(timeoutMs) ||
+    timeoutMs < 1 ||
+    timeoutMs > storyHttpLimits.maxTimeoutMs
+  ) {
+    throw new TypeError(
+      `Story timeout must be an integer between 1 and ${storyHttpLimits.maxTimeoutMs}`,
+    );
+  }
+  if (
+    !Number.isSafeInteger(maxBodyBytes) ||
+    maxBodyBytes < 1 ||
+    maxBodyBytes > storyHttpLimits.maxBodyBytes
+  ) {
+    throw new TypeError(
+      `Story body limit must be an integer between 1 and ${storyHttpLimits.maxBodyBytes}`,
+    );
+  }
+  return { timeoutMs, maxBodyBytes };
+}
+
+export async function handleStoryHttpRequest(
+  request: Request,
+  render: (
+    request: StoryBridgeRequest,
+    signal: AbortSignal,
+  ) => Promise<StoryFrame>,
+  options: Pick<StoryHttpHandlerOptions, "timeoutMs" | "maxBodyBytes"> = {},
+): Promise<Response> {
+  if (request.method !== "POST") {
+    return Response.json(
+      { error: "Only POST is supported" },
+      { status: 405, headers: { Allow: "POST" } },
+    );
+  }
+  const normalized = normalizeStoryHttpOptions(options);
+  const controller = new AbortController();
+  const abortFromRequest = () => controller.abort(request.signal.reason);
+  request.signal.addEventListener("abort", abortFromRequest, { once: true });
+  const timeout = setTimeout(
+    () =>
+      controller.abort(
+        new DOMException("Story rendering timed out", "TimeoutError"),
+      ),
+    normalized.timeoutMs,
+  );
+  try {
+    request.signal.throwIfAborted();
+    const body = validateStoryBridgeRequest(
+      await readBoundedJson(
+        request,
+        normalized.maxBodyBytes,
+        controller.signal,
+      ),
+    );
+    return Response.json(
+      await waitWithSignal(render(body, controller.signal), controller.signal),
+    );
+  } catch (error) {
+    const reason = controller.signal.reason;
+    const timedOut =
+      reason instanceof DOMException && reason.name === "TimeoutError";
+    return Response.json(
+      {
+        error: timedOut
+          ? "Story rendering timed out"
+          : error instanceof Error
+            ? error.message
+            : String(error),
+      },
+      {
+        status: timedOut ? 504 : request.signal.aborted ? 499 : 400,
+      },
+    );
+  } finally {
+    clearTimeout(timeout);
+    request.signal.removeEventListener("abort", abortFromRequest);
+  }
+}
+
 export async function renderStoryRequest(
   catalog: TuilStoryCatalog,
   request: StoryBridgeRequest,
@@ -504,11 +934,19 @@ export async function renderStoryRequest(
   } = {},
 ): Promise<StoryFrame> {
   options.signal?.throwIfAborted();
-  if ((request.inputs?.length ?? 0) > 100) {
-    throw new Error("Story requests support at most 100 simulated inputs");
+  if ((request.inputs?.length ?? 0) > storyHttpLimits.maxInputs) {
+    throw new Error(
+      `Story requests support at most ${storyHttpLimits.maxInputs} simulated inputs`,
+    );
   }
-  if (request.inputs?.some((input) => input.length > 1_024)) {
-    throw new Error("A simulated story input cannot exceed 1024 characters");
+  if (
+    request.inputs?.some(
+      (input) => input.length > storyHttpLimits.maxInputLength,
+    )
+  ) {
+    throw new Error(
+      `A simulated story input cannot exceed ${storyHttpLimits.maxInputLength} characters`,
+    );
   }
   const session = await TuilStorySession.open(catalog, {
     ...request,
@@ -516,9 +954,9 @@ export async function renderStoryRequest(
     signal: options.signal,
   });
   try {
-    for (const input of request.inputs ?? []) {
-      await session.press(input, options.signal);
-    }
+    await runSequentially(request.inputs ?? [], (input) =>
+      session.press(input, options.signal),
+    );
     return session.snapshot();
   } finally {
     await session.close();
@@ -527,36 +965,19 @@ export async function renderStoryRequest(
 
 export function createStoryHttpHandler(
   catalog: TuilStoryCatalog,
-  options: { readonly themeRegistry?: ThemeRegistry } = {},
+  options: StoryHttpHandlerOptions = {},
 ): (request: Request) => Promise<Response> {
-  return async (request) => {
-    if (request.method !== "POST") {
-      return Response.json(
-        { error: "Only POST is supported" },
-        { status: 405, headers: { Allow: "POST" } },
-      );
-    }
-    try {
-      request.signal.throwIfAborted();
-      const body = (await request.json()) as StoryBridgeRequest;
-      return Response.json(
-        await renderStoryRequest(catalog, body, {
-          ...options,
-          signal: request.signal,
+  normalizeStoryHttpOptions(options);
+  return (request) =>
+    handleStoryHttpRequest(
+      request,
+      (body, signal) =>
+        renderStoryRequest(catalog, body, {
+          themeRegistry: options.themeRegistry,
+          signal,
         }),
-      );
-    } catch (error) {
-      return Response.json(
-        { error: error instanceof Error ? error.message : String(error) },
-        {
-          status:
-            error instanceof DOMException && error.name === "AbortError"
-              ? 499
-              : 400,
-        },
-      );
-    }
-  };
+      options,
+    );
 }
 
 export interface StorySnapshot {
@@ -591,6 +1012,19 @@ ${semantics || "- No semantic nodes"}
 export type StoryCatalogSnapshots = Readonly<
   Record<string, Readonly<Record<string, StorySnapshot>>>
 >;
+
+async function runSequentially<T>(
+  values: readonly T[],
+  operation: (value: T) => void | Promise<void>,
+): Promise<void> {
+  await values.reduce<Promise<void>>(
+    (previous, value) =>
+      previous.then(async () => {
+        await operation(value);
+      }),
+    Promise.resolve(),
+  );
+}
 
 function stableStorySnapshot(frame: StoryFrame): StorySnapshot {
   const generatedIds = new Map<string, string>();
@@ -640,30 +1074,38 @@ export async function generateStoryCatalogSnapshots(
     throw new Error("maxStories must be a positive integer");
   }
   const snapshots: Record<string, Record<string, StorySnapshot>> = {};
-  let rendered = 0;
+  const stories: Array<{
+    readonly set: TuilStorySet;
+    readonly variant: string;
+  }> = [];
   for (const set of catalog.list()) {
-    options.signal?.throwIfAborted();
-    const variants: Record<string, StorySnapshot> = {};
+    snapshots[set.id] = {};
     for (const variant of Object.keys(set.definition.stories).sort()) {
-      if (rendered >= maxStories) {
-        throw new Error(
-          `Story catalog exceeds the configured ${maxStories} story limit`,
-        );
-      }
-      variants[variant] = stableStorySnapshot(
-        await renderStoryRequest(
-          catalog,
-          { storyId: set.id, variant },
-          {
-            themeRegistry: options.themeRegistry,
-            signal: options.signal,
-          },
-        ),
-      );
-      rendered += 1;
+      stories.push({ set, variant });
     }
-    snapshots[set.id] = Object.freeze(variants);
   }
+  if (stories.length > maxStories) {
+    throw new Error(
+      `Story catalog exceeds the configured ${maxStories} story limit`,
+    );
+  }
+  await runSequentially(stories, async ({ set, variant }) => {
+    options.signal?.throwIfAborted();
+    const variants = snapshots[set.id];
+    if (!variants) throw new Error(`Missing snapshot set ${set.id}`);
+    variants[variant] = stableStorySnapshot(
+      await renderStoryRequest(
+        catalog,
+        { storyId: set.id, variant },
+        {
+          themeRegistry: options.themeRegistry,
+          signal: options.signal,
+        },
+      ),
+    );
+    snapshots[set.id] = variants;
+  });
+  for (const variants of Object.values(snapshots)) Object.freeze(variants);
   return Object.freeze(snapshots);
 }
 

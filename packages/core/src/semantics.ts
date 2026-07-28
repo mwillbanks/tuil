@@ -19,6 +19,7 @@ export type SemanticRole =
   | "alert"
   | "status"
   | "progressbar"
+  | "slider"
   | "tree"
   | "treeitem"
   | "button"

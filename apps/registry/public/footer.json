@@ -1,0 +1,23 @@
+{
+  "name": "footer",
+  "type": "layout",
+  "title": "Footer",
+  "description": "Application footer region.",
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["split-pane"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink", "cell"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "integrity": "sha256-9daa2ad3ca295d890296ef8ff85f7570b152c32907afc82a7cf4f1811427620f"
+}

@@ -1,0 +1,60 @@
+---
+title: OpenTelemetry logs
+description: Map OpenTelemetry log fields into the TUIL log model.
+icon: Pulse
+---
+
+OpenTelemetry timestamps, severity numbers and text, body, attributes, resource,
+scope, trace ID, and span ID map into normalized records. Preserve unknown
+attributes under metadata and retain nanosecond timestamp precision in the
+source representation.
+
+Redact resource and attribute values before storage. Use trace and span fields
+for navigation, not as proof that a corresponding span is locally available.
+
+The flagship console accepts the typed log query language. Plain search terms
+are expanded across body, service, trace ID, and span ID fields, while explicit
+queries such as `severity >= error and service = worker` are preserved. When no
+file is configured, the example uses a deterministic two-record fixture so its
+Storybook, documentation, and integration surfaces are never empty.
+
+## Flagship console architecture
+
+`examples/otel-console` creates its component-owned log and streaming resources
+with `useLogPipeline()`, `useStreamingPipeline()`, and `useEditorSession()`.
+These hooks keep render pure, register resources after commit, expose them
+through `app.logPipelines`, `app.streamingPipelines`, and
+`app.editorSessions`, and release them during cleanup. A document transformer
+normalizes each record before the plugin-provided OpenTelemetry log parser
+ingests it.
+
+The production surface contains a resizable stream/correlation split pane. The
+correlation pane shows trace context and ingestion operation progress. Press
+`d` to open the selected record in a semantic dialog, `e` to produce a
+deterministic JSONL snapshot, and `p` or `r` to pause or resume the live log
+model. The `otel-console.export` command exposes the same static export path to
+command palettes and automation.
+
+Ingestion is represented by the `otel-console.load` operation executor. It
+reports bounded progress, supports cancellation during teardown, and is
+registered in the public operation extension registry. Mounting the bundled
+devtools therefore exposes both `log-pipeline-*` state and the current
+ingestion operation without a duplicate service-container registration.
+Refreshes abort and settle the previous load before the next operation starts;
+the ingestion boundary checks cancellation before clearing or mutating either
+pipeline, so a slow superseded source cannot publish stale records. File-backed
+sources enforce a one-megacharacter record ceiling, and the operation returns
+only processed/retained counts; retained log data stays in the bounded pipeline
+instead of being rematerialized into an adapter snapshot.
+
+Run the example against its fixture:
+
+```npm
+bun --cwd examples/otel-console start
+```
+
+Or point it at newline-delimited OpenTelemetry JSON:
+
+```npm
+TUIL_OTEL_FILE=./records.jsonl bun --cwd examples/otel-console start
+```

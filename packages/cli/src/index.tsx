@@ -22,36 +22,23 @@ import {
 } from "node:path";
 import {
   createApp,
-  createPlugin,
   defineConfig,
   type RenderMode,
   type TuilConfig,
 } from "@mwillbanks/tuil";
-import {
-  Alert,
-  AppBar,
-  AppShell,
-  Heading,
-  Progress,
-  renderStatic,
-  render as renderTuil,
-  Stack,
-  StatusBar,
-  Text,
-} from "@mwillbanks/tuil-ink";
+import { renderStatic } from "@mwillbanks/tuil-ink";
 import {
   FileRegistrySource,
   HttpRegistrySource,
   type InstallResult,
   RegistryClient,
-  type RegistryIndexEntry,
   RegistryInstaller,
   type RegistryItem,
   type RegistryItemType,
   type RegistrySource,
 } from "@mwillbanks/tuil-registry";
-import type { ReactNode } from "react";
-import { generatedRegistryItems } from "./generated-registry.ts";
+import packageMetadata from "../package.json" with { type: "json" };
+import { BundledRegistrySource } from "./bundled-source.ts";
 import {
   type Feature,
   features,
@@ -60,6 +47,10 @@ import {
   type Template,
   templates,
 } from "./generated-ui/blocks/init-wizard.tsx";
+import { InitSummary } from "./init-summary.tsx";
+import { runInitializerSetup } from "./initializer-process.ts";
+import { promptInit } from "./prompt-init.tsx";
+import { installRegistryDependencies } from "./registry-dependencies.ts";
 
 export type { InitAnswers };
 export { InitWizard };
@@ -80,24 +71,22 @@ const defaultConfig = defineConfig({
   packageManager: "bun",
 });
 
-class BundledRegistrySource implements RegistrySource {
-  readonly id = "tuil";
-  readonly #items = new Map<string, RegistryItem>(
-    generatedRegistryItems.map((item) => [item.name, item as RegistryItem]),
-  );
-
-  async get(name: string): Promise<RegistryItem | undefined> {
-    return this.#items.get(name);
-  }
-
-  async list(): Promise<readonly RegistryIndexEntry[]> {
-    return [...this.#items.values()].map((item) => ({
-      name: item.name,
-      type: item.type,
-      title: item.title,
-      description: item.description,
-    }));
-  }
+function registryInstallEnvironment(renderer: TuilConfig["renderer"]) {
+  return {
+    renderer,
+    capabilities: new Set([
+      "pointer",
+      "scroll",
+      "clipboard",
+      "alternate-screen",
+      "inline",
+      "static",
+      "json",
+      "silent",
+      "embedded",
+    ]),
+    tuilVersion: packageMetadata.version,
+  } as const;
 }
 
 const componentExports = {
@@ -152,6 +141,31 @@ const componentExports = {
   "split-pane": "SplitPane",
   "resizable-pane": "ResizablePane",
 } as const;
+
+const componentBarrelOwners: Readonly<Record<string, string>> = {
+  "text-input": "field",
+  "text-area": "field",
+  "number-input": "field",
+  checkbox: "field",
+  "radio-group": "field",
+  switch: "field",
+  select: "field",
+  "multi-select": "field",
+  autocomplete: "field",
+  "confirm-dialog": "dialog",
+  tooltip: "dialog",
+  toast: "dialog",
+  "command-palette": "dialog",
+  menu: "tabs",
+  menubar: "tabs",
+  breadcrumbs: "tabs",
+  stepper: "tabs",
+  "data-table": "table",
+  "operation-list": "workflow",
+  "operation-tree": "workflow",
+  "splash-screen": "workflow",
+  "help-overlay": "workflow",
+};
 
 const templateComponents: Readonly<Record<Template, readonly string[]>> = {
   minimal: ["text"],
@@ -247,50 +261,6 @@ function output(value: unknown, mode: RenderMode): void {
   }
   process.stdout.write(
     `${typeof value === "string" ? value : JSON.stringify(value, null, 2)}\n`,
-  );
-}
-
-function InitSummary(props: {
-  readonly name: string;
-  readonly template: Template;
-  readonly features: readonly string[];
-  readonly completed: number;
-  readonly total: number;
-  readonly error?: string;
-}): ReactNode {
-  return (
-    <AppShell>
-      <AppShell.AppBar>
-        <AppBar>
-          <Heading level={1}>tuil init</Heading>
-        </AppBar>
-      </AppShell.AppBar>
-      <AppShell.Main>
-        <Stack gap="sm">
-          <Text>Project: {props.name}</Text>
-          <Text>Template: {props.template}</Text>
-          <Text>
-            Features:{" "}
-            {props.features.length > 0 ? props.features.join(", ") : "none"}
-          </Text>
-          <Progress value={props.completed} max={props.total} />
-          {props.error ? (
-            <Alert tone="danger" title="Initialization failed">
-              {props.error}
-            </Alert>
-          ) : (
-            <Alert tone="success" title="Project ready">
-              Run bun start to launch the application.
-            </Alert>
-          )}
-        </Stack>
-      </AppShell.Main>
-      <AppShell.StatusBar>
-        <StatusBar>
-          <Text>tuil 0.1.0</Text>
-        </StatusBar>
-      </AppShell.StatusBar>
-    </AppShell>
   );
 }
 
@@ -517,29 +487,29 @@ function projectFiles(
   const workflowEnabled =
     enabledFeatures.includes("workflow") || template === "component-library";
   const dependencies: Record<string, string> = {
-    "@mwillbanks/tuil": "^0.1.0",
-    "@mwillbanks/tuil-core": "^0.1.0",
-    "@mwillbanks/tuil-focus": "^0.1.0",
-    "@mwillbanks/tuil-hotkeys": "^0.1.0",
-    "@mwillbanks/tuil-ink": "^0.1.0",
-    "@mwillbanks/tuil-theme": "^0.1.0",
+    "@mwillbanks/tuil": "^0.2.0",
+    "@mwillbanks/tuil-core": "^0.2.0",
+    "@mwillbanks/tuil-focus": "^0.2.0",
+    "@mwillbanks/tuil-hotkeys": "^0.2.0",
+    "@mwillbanks/tuil-ink": "^0.2.0",
+    "@mwillbanks/tuil-theme": "^0.2.0",
     ink: "^7.1.0",
     react: "^19.0.0",
   };
   if (formsEnabled) {
-    dependencies["@mwillbanks/tuil-form"] = "^0.1.0";
+    dependencies["@mwillbanks/tuil-form"] = "^0.2.0";
     dependencies["@tanstack/react-form"] = "^1.33.2";
   }
   if (routerEnabled) {
-    dependencies["@mwillbanks/tuil-router"] = "^0.1.0";
+    dependencies["@mwillbanks/tuil-router"] = "^0.2.0";
   }
   if (workflowEnabled) {
-    dependencies["@mwillbanks/tuil-operations"] = "^0.1.0";
-    dependencies["@mwillbanks/tuil-workflow"] = "^0.1.0";
+    dependencies["@mwillbanks/tuil-operations"] = "^0.2.0";
+    dependencies["@mwillbanks/tuil-workflow"] = "^0.2.0";
   }
   if (template === "component-library") {
     dependencies["@tanstack/react-table"] = "^8.21.3";
-    dependencies["@mwillbanks/tuil-virtual"] = "^0.1.0";
+    dependencies["@mwillbanks/tuil-virtual"] = "^0.2.0";
     dependencies["diff"] = "^9.0.0";
     dependencies["react-dom"] = "^19.2.8";
   }
@@ -595,7 +565,7 @@ function projectFiles(
       null,
       2,
     )});\n`,
-    "src/index.tsx": `import {createApp} from "@mwillbanks/tuil";\nimport {render} from "@mwillbanks/tuil-ink";\nimport {App} from "./app/app.tsx";\nimport {FeaturePanels} from "./features/index.tsx";\nimport {theme} from "./lib/theme.ts";\n${template === "plugin" ? 'import {examplePlugin} from "./plugins/example.ts";\n' : ""}\nfunction Root() {\n  return <><App /><FeaturePanels /></>;\n}\n\nconst instance = await render(createApp({\n  component: Root,\n  theme,\n  ${template === "plugin" ? "plugins: [examplePlugin]," : ""}\n}));\nawait instance.waitUntilExit();\n`,
+    "src/index.tsx": `import {createApp${template === "plugin" ? ", type TuilExtensionPoints" : ""}} from "@mwillbanks/tuil";\nimport {render} from "@mwillbanks/tuil-ink";\nimport {App} from "./app/app.tsx";\nimport {FeaturePanels} from "./features/index.tsx";\nimport {theme} from "./lib/theme.ts";\n${template === "plugin" ? 'import {examplePlugin} from "./plugins/example.ts";\n' : ""}\nfunction Root() {\n  return <><App /><FeaturePanels /></>;\n}\n\nconst instance = await render(createApp${template === "plugin" ? "<Record<string, never>, Record<string, never>, TuilExtensionPoints>" : ""}({\n  component: Root,\n  theme,\n  ${template === "plugin" ? "plugins: [examplePlugin]," : ""}\n}));\nawait instance.waitUntilExit();\n`,
     "src/app/app.tsx": templateAppSource(name, template, enabledFeatures),
     "src/app/commands.ts": `import {defineCommand} from "@mwillbanks/tuil";\n\nexport const quitCommand = defineCommand({\n  id: "app.quit",\n  title: "Quit",\n  hotkeys: ["ctrl+c"],\n  execute() {\n    process.exitCode = 0;\n  },\n});\n`,
     "src/app/events.ts": `import {defineEvents, event} from "@mwillbanks/tuil";\n\nexport const events = defineEvents({\n  "app:message": event<{message: string}>(),\n});\n`,
@@ -645,7 +615,7 @@ function projectFiles(
   }
   if (template === "plugin") {
     files["src/plugins/example.ts"] =
-      `import {createPlugin} from "@mwillbanks/tuil";\n\nexport const examplePlugin = createPlugin({\n  id: "example",\n  version: "0.1.0",\n  setup(context) {\n    return context.registry.register({\n      id: "example.status",\n      title: "Example plugin status",\n    });\n  },\n});\n`;
+      `import {createPlugin, type TuilExtensionPoints} from "@mwillbanks/tuil";\n\nexport const examplePlugin = createPlugin<Record<string, never>, TuilExtensionPoints>({\n  id: "example",\n  version: "0.1.0",\n  setup(context) {\n    return context.registry.register({\n      id: "example.status",\n      title: "Example plugin status",\n    });\n  },\n});\n`;
   }
   return files;
 }
@@ -657,50 +627,6 @@ function parseTemplate(value: unknown): Template {
     );
   }
   return value as Template;
-}
-
-const initializerPlugin = createPlugin({
-  id: "tuil.initializer",
-  version: "0.1.0",
-  setup(context) {
-    return context.registry.register({
-      id: "tuil.initializer",
-      title: "tuil project initializer",
-    });
-  },
-});
-
-async function promptInit(name: string | undefined): Promise<InitAnswers> {
-  let complete: ((answers: InitAnswers) => void) | undefined;
-  let cancel: ((reason: Error) => void) | undefined;
-  const answer = new Promise<InitAnswers>((resolveAnswer, rejectAnswer) => {
-    complete = resolveAnswer;
-    cancel = rejectAnswer;
-  });
-  const app = createApp({
-    component: () => (
-      <InitWizard
-        initialName={name ?? "my-tuil-app"}
-        onComplete={(answers) => complete?.(answers)}
-        onCancel={() => cancel?.(new Error("Initialization cancelled"))}
-      />
-    ),
-    plugins: [initializerPlugin],
-    errorHandler(error) {
-      cancel?.(
-        error instanceof Error
-          ? error
-          : new Error("Initialization failed", { cause: error }),
-      );
-    },
-    terminal: { mode: "interactive" },
-  });
-  const instance = await renderTuil(app, { exitOnCtrlC: false });
-  try {
-    return await answer;
-  } finally {
-    await instance.unmount();
-  }
 }
 
 function validateProjectName(name: string): void {
@@ -720,37 +646,12 @@ async function writeComponentBarrel(
     const exportName =
       componentExports[item.name as keyof typeof componentExports];
     if (!exportName) return [];
+    const owner = componentBarrelOwners[item.name];
     const file =
       item.files[0] ??
-      ([
-        "text-input",
-        "text-area",
-        "number-input",
-        "checkbox",
-        "radio-group",
-        "switch",
-        "select",
-        "multi-select",
-        "autocomplete",
-      ].includes(item.name)
-        ? plan.find((candidate) => candidate.name === "field")?.files[0]
-        : ["confirm-dialog", "tooltip", "toast", "command-palette"].includes(
-              item.name,
-            )
-          ? plan.find((candidate) => candidate.name === "dialog")?.files[0]
-          : ["menu", "menubar", "breadcrumbs", "stepper"].includes(item.name)
-            ? plan.find((candidate) => candidate.name === "tabs")?.files[0]
-            : ["data-table"].includes(item.name)
-              ? plan.find((candidate) => candidate.name === "table")?.files[0]
-              : [
-                    "operation-list",
-                    "operation-tree",
-                    "splash-screen",
-                    "help-overlay",
-                  ].includes(item.name)
-                ? plan.find((candidate) => candidate.name === "workflow")
-                    ?.files[0]
-                : undefined);
+      (owner
+        ? plan.find((candidate) => candidate.name === owner)?.files[0]
+        : undefined);
     if (!file) return [];
     const modulePath = relative(base, file.target).replaceAll("\\", "/");
     return [
@@ -786,8 +687,18 @@ async function validateGeneratedSources(target: string): Promise<void> {
   }
 }
 
-async function runInit(args: ParsedArguments): Promise<void> {
-  const mode = outputMode(args);
+interface InitContext {
+  readonly prompted: Awaited<ReturnType<typeof promptInit>>;
+  readonly target: string;
+  readonly projectName: string;
+  readonly themePreset: string;
+  readonly plan: Awaited<ReturnType<RegistryClient["resolvePlan"]>>;
+  readonly targetExisted: boolean;
+  readonly workingTarget: string;
+  readonly transaction: string;
+}
+
+async function initContext(args: ParsedArguments): Promise<InitContext> {
   const interactive = process.stdin.isTTY && !flag(args, "template");
   const prompted = interactive
     ? await promptInit(args.operands[0])
@@ -802,118 +713,134 @@ async function runInit(args: ParsedArguments): Promise<void> {
   const projectName = basename(target);
   validateProjectName(projectName);
   const themePreset = String(flag(args, "theme") ?? "default");
-  const registryClient = new RegistryClient([new BundledRegistrySource()]);
-  const requestedItems = [
-    ...templateComponents[prompted.template],
-    ...(prompted.features.includes("forms")
+  const requestedItems = initRegistryItems(
+    prompted.template,
+    prompted.features,
+    themePreset,
+  );
+  const plan = await new RegistryClient([
+    new BundledRegistrySource(),
+  ]).resolvePlan(requestedItems);
+  await validateTarget(target, Boolean(flag(args, "force")));
+  const transaction = crypto.randomUUID();
+  return {
+    prompted,
+    target,
+    projectName,
+    themePreset,
+    plan,
+    targetExisted: await pathExists(target),
+    workingTarget: join(
+      dirname(target),
+      `.${basename(target)}.tuil-init-${transaction}`,
+    ),
+    transaction,
+  };
+}
+
+function initRegistryItems(
+  template: keyof typeof templateComponents,
+  selectedFeatures: readonly string[],
+  themePreset: string,
+): readonly string[] {
+  return [
+    ...templateComponents[template],
+    ...(selectedFeatures.includes("forms")
       ? ["button", "field", "text-input"]
       : []),
-    ...(prompted.features.includes("router") ? ["tabs", "breadcrumbs"] : []),
-    ...(prompted.features.includes("workflow")
+    ...(selectedFeatures.includes("router") ? ["tabs", "breadcrumbs"] : []),
+    ...(selectedFeatures.includes("workflow")
       ? ["workflow", "operation-list", "stepper"]
       : []),
     themePreset,
   ];
-  const plan = await registryClient.resolvePlan(requestedItems);
-  await validateTarget(target, Boolean(flag(args, "force")));
-  const targetExisted = await pathExists(target);
-  const transaction = crypto.randomUUID();
-  const workingTarget = join(
-    dirname(target),
-    `.${basename(target)}.tuil-init-${transaction}`,
-  );
-  try {
-    if (targetExisted) {
-      await cp(target, workingTarget, {
-        recursive: true,
-        errorOnExist: true,
-      });
-    } else {
-      await mkdir(workingTarget, { recursive: true });
-    }
-    const files = projectFiles(
-      projectName,
-      prompted.template,
-      prompted.features,
-      themePreset,
-    );
-    for (const [path, content] of Object.entries(files)) {
-      const destination = join(workingTarget, path);
-      if ((await pathExists(destination)) && !flag(args, "force")) {
-        throw new Error(`Refusing to overwrite existing file "${destination}"`);
-      }
-      await mkdir(dirname(destination), { recursive: true });
-      await writeFile(destination, content, "utf8");
-    }
-    await mkdir(join(workingTarget, "src/components/tuil"), {
-      recursive: true,
-    });
-    await mkdir(join(workingTarget, "src/features"), { recursive: true });
-    await mkdir(join(workingTarget, "src/workflows"), { recursive: true });
-    await mkdir(join(workingTarget, "src/plugins"), { recursive: true });
-    await mkdir(join(workingTarget, "src/stores"), { recursive: true });
-    await new RegistryInstaller(workingTarget).installMany(plan, {
-      componentDirectory: "./src/components/tuil",
-      force: Boolean(flag(args, "force")),
-    });
-    await writeComponentBarrel(workingTarget, plan);
-    await validateGeneratedSources(workingTarget);
+}
 
-    if (flag(args, "install")) {
-      const quiet = mode === "silent" || mode === "json";
-      const install = Bun.spawn(["bun", "install"], {
-        cwd: workingTarget,
-        stdout: quiet ? "ignore" : "inherit",
-        stderr: quiet ? "ignore" : "inherit",
-      });
-      if ((await install.exited) !== 0) {
-        throw new Error("Dependency installation failed");
-      }
-      const validation = Bun.spawn(["bun", "run", "typecheck"], {
-        cwd: workingTarget,
-        stdout: quiet ? "ignore" : "inherit",
-        stderr: quiet ? "ignore" : "inherit",
-      });
-      if ((await validation.exited) !== 0) {
-        throw new Error("Generated project validation failed");
-      }
+async function prepareInitWorkspace(context: InitContext): Promise<void> {
+  if (context.targetExisted) {
+    await cp(context.target, context.workingTarget, {
+      recursive: true,
+      errorOnExist: true,
+    });
+  } else {
+    await mkdir(context.workingTarget, { recursive: true });
+  }
+}
+
+async function writeInitWorkspace(
+  context: InitContext,
+  force: boolean,
+): Promise<void> {
+  const files = projectFiles(
+    context.projectName,
+    context.prompted.template,
+    context.prompted.features,
+    context.themePreset,
+  );
+  for (const [path, content] of Object.entries(files)) {
+    const destination = join(context.workingTarget, path);
+    if ((await pathExists(destination)) && !force) {
+      throw new Error(`Refusing to overwrite existing file "${destination}"`);
     }
-    if (flag(args, "git")) {
-      const quiet = mode === "silent" || mode === "json";
-      const git = Bun.spawn(["git", "init"], {
-        cwd: workingTarget,
-        stdout: quiet ? "ignore" : "inherit",
-        stderr: quiet ? "ignore" : "inherit",
-      });
-      if ((await git.exited) !== 0) {
-        throw new Error("Git initialization failed");
-      }
-    }
-    if (targetExisted) {
-      const backup = join(
-        dirname(target),
-        `.${basename(target)}.tuil-backup-${transaction}`,
-      );
-      await rename(target, backup);
-      try {
-        await rename(workingTarget, target);
-      } catch (error) {
-        await rename(backup, target);
-        throw error;
-      }
-      await rm(backup, { recursive: true, force: true });
-    } else {
-      await rename(workingTarget, target);
-    }
+    await mkdir(dirname(destination), { recursive: true });
+    await writeFile(destination, content, "utf8");
+  }
+  await Promise.all(
+    ["components/tuil", "features", "workflows", "plugins", "stores"].map(
+      (path) =>
+        mkdir(join(context.workingTarget, "src", path), { recursive: true }),
+    ),
+  );
+  await new RegistryInstaller(context.workingTarget).installMany(context.plan, {
+    componentDirectory: "./src/components/tuil",
+    force,
+    environment: registryInstallEnvironment(defaultConfig.renderer),
+  });
+  await writeComponentBarrel(context.workingTarget, context.plan);
+  await validateGeneratedSources(context.workingTarget);
+}
+
+async function promoteInitWorkspace(context: InitContext): Promise<void> {
+  if (!context.targetExisted) {
+    await rename(context.workingTarget, context.target);
+    return;
+  }
+  const backup = join(
+    dirname(context.target),
+    `.${basename(context.target)}.tuil-backup-${context.transaction}`,
+  );
+  await rename(context.target, backup);
+  try {
+    await rename(context.workingTarget, context.target);
   } catch (error) {
-    await rm(workingTarget, { recursive: true, force: true });
+    await rename(backup, context.target);
+    throw error;
+  }
+  await rm(backup, { recursive: true, force: true });
+}
+
+async function runInit(args: ParsedArguments): Promise<void> {
+  const mode = outputMode(args);
+  const context = await initContext(args);
+  try {
+    await prepareInitWorkspace(context);
+    await writeInitWorkspace(context, Boolean(flag(args, "force")));
+    await runInitializerSetup({
+      cwd: context.workingTarget,
+      quiet: mode === "silent" || mode === "json",
+      install: Boolean(flag(args, "install")),
+      git: Boolean(flag(args, "git")),
+    });
+    await promoteInitWorkspace(context);
+  } catch (error) {
+    await rm(context.workingTarget, { recursive: true, force: true });
     throw error;
   }
   await renderSummary(
     {
-      name: basename(target),
-      template: prompted.template,
-      features: prompted.features,
+      name: basename(context.target),
+      template: context.prompted.template,
+      features: context.prompted.features,
       completed: 10,
       total: 10,
     },
@@ -951,78 +878,6 @@ async function resolveRegistryClient(
     }
   }
   return new RegistryClient(sources);
-}
-
-interface FileSnapshot {
-  readonly path: string;
-  readonly content?: Uint8Array;
-}
-
-async function captureFile(path: string): Promise<FileSnapshot> {
-  try {
-    return { path, content: await readFile(path) };
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") return { path };
-    throw error;
-  }
-}
-
-async function restoreFiles(snapshots: readonly FileSnapshot[]): Promise<void> {
-  for (const snapshot of snapshots) {
-    if (snapshot.content === undefined) {
-      await rm(snapshot.path, { force: true });
-    } else {
-      await writeFile(snapshot.path, snapshot.content);
-    }
-  }
-}
-
-async function installRegistryDependencies(
-  root: string,
-  dependencies: readonly string[],
-  mode: RenderMode,
-): Promise<() => Promise<void>> {
-  const snapshots = await Promise.all(
-    ["package.json", "bun.lock", "bun.lockb"].map((name) =>
-      captureFile(join(root, name)),
-    ),
-  );
-  const quiet = mode === "silent" || mode === "json";
-  const rollback = async () => {
-    await restoreFiles(snapshots);
-    const reconcile = Bun.spawn(
-      [
-        "bun",
-        "install",
-        ...(snapshots.some(
-          (snapshot) =>
-            basename(snapshot.path) === "bun.lock" &&
-            snapshot.content !== undefined,
-        )
-          ? ["--frozen-lockfile"]
-          : []),
-      ],
-      {
-        cwd: root,
-        stdout: quiet ? "ignore" : "inherit",
-        stderr: quiet ? "ignore" : "inherit",
-      },
-    );
-    if ((await reconcile.exited) !== 0) {
-      throw new Error("Dependency rollback reconciliation failed");
-    }
-    await restoreFiles(snapshots);
-  };
-  const install = Bun.spawn(["bun", "add", "--", ...dependencies], {
-    cwd: root,
-    stdout: quiet ? "ignore" : "inherit",
-    stderr: quiet ? "ignore" : "inherit",
-  });
-  if ((await install.exited) !== 0) {
-    await rollback();
-    throw new Error("Registry dependency installation failed");
-  }
-  return rollback;
 }
 
 async function registryCommand(args: ParsedArguments): Promise<void> {
@@ -1090,21 +945,37 @@ async function registryCommand(args: ParsedArguments): Promise<void> {
         );
         process.stdin.write(content);
         process.stdin.end();
-        const formatted = await new Response(process.stdout).text();
-        const error = await new Response(process.stderr).text();
-        if ((await process.exited) !== 0) {
+        const [formatted, error, exitCode] = await Promise.all([
+          new Response(process.stdout).text(),
+          new Response(process.stderr).text(),
+          process.exited,
+        ]);
+        if (exitCode !== 0) {
           throw new Error(`Formatter failed for "${target}": ${error.trim()}`);
         }
         return formatted;
       }
     : undefined;
+  const installOptions = {
+    componentDirectory: config.paths.components,
+    force: Boolean(flag(args, "force")),
+    format: formatter,
+    frozenLockfile: Boolean(flag(args, "frozen-lockfile")),
+    environment: registryInstallEnvironment(config.renderer),
+  } as const;
+  await installer.verify(plan, installOptions);
   let rollbackDependencies: (() => Promise<void>) | undefined;
   if (
     (args.command === "add" || args.command === "update") &&
     !flag(args, "no-install")
   ) {
     const dependencies = [
-      ...new Set(plan.flatMap((item) => item.dependencies ?? [])),
+      ...new Set(
+        plan.flatMap((item) => [
+          ...(item.dependencies ?? []),
+          ...(item.packageName ? [item.packageName] : []),
+        ]),
+      ),
     ];
     if (dependencies.length > 0) {
       if (!(await pathExists(join(root, "package.json")))) {
@@ -1121,11 +992,7 @@ async function registryCommand(args: ParsedArguments): Promise<void> {
   }
   let results: readonly InstallResult[];
   try {
-    results = await installer.installMany(plan, {
-      componentDirectory: config.paths.components,
-      force: Boolean(flag(args, "force")),
-      format: formatter,
-    });
+    results = await installer.installMany(plan, installOptions);
   } catch (error) {
     if (!rollbackDependencies) throw error;
     try {
@@ -1165,7 +1032,7 @@ async function showInfo(args: ParsedArguments): Promise<void> {
   output(
     {
       name: "@mwillbanks/tuil",
-      version: "0.1.0",
+      version: "0.2.0",
       runtime: `Bun ${Bun.version}`,
       platform: process.platform,
       renderer: config.renderer,
@@ -1177,10 +1044,10 @@ async function showInfo(args: ParsedArguments): Promise<void> {
 
 async function copyTheme(args: ParsedArguments): Promise<void> {
   const preset = args.operands[0] ?? "default";
-  const config = await loadConfig(process.cwd());
-  const item = await new RegistryClient([new BundledRegistrySource()]).get(
-    preset,
-  );
+  const [config, item] = await Promise.all([
+    loadConfig(process.cwd()),
+    new RegistryClient([new BundledRegistrySource()]).get(preset),
+  ]);
   if (item.type !== "theme") {
     throw new Error(`Theme preset "${preset}" was not found`);
   }
@@ -1194,7 +1061,10 @@ async function copyTheme(args: ParsedArguments): Promise<void> {
         })),
       },
     ],
-    { force: Boolean(flag(args, "force")) },
+    {
+      force: Boolean(flag(args, "force")),
+      environment: registryInstallEnvironment(config.renderer),
+    },
   );
   output({ preset, result }, outputMode(args));
 }
@@ -1246,6 +1116,13 @@ export async function installBundledSkills(
   checkAborted();
   const sourcePath = await realpath(source);
   checkAborted();
+  const requestedDestination = resolve(destination);
+  if (
+    (await pathExists(requestedDestination)) &&
+    (await lstat(requestedDestination)).isSymbolicLink()
+  ) {
+    throw new Error("Skills destination must not be a symbolic link");
+  }
   const destinationPath = await canonicalFuturePath(destination);
   checkAborted();
   if (
@@ -1269,9 +1146,8 @@ export async function installBundledSkills(
   }
   checkAborted();
   const skillNames = (await readdir(sourcePath, { withFileTypes: true }))
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort();
+    .flatMap((entry) => (entry.isDirectory() ? [entry.name] : []))
+    .toSorted();
   const collisions = (
     await Promise.all(
       skillNames.map(async (name) => ({
@@ -1349,9 +1225,8 @@ export async function installBundledSkills(
 async function skillCommand(args: ParsedArguments): Promise<void> {
   const source = await bundledSkillsDirectory();
   const skillNames = (await readdir(source, { withFileTypes: true }))
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort();
+    .flatMap((entry) => (entry.isDirectory() ? [entry.name] : []))
+    .toSorted();
   const action = args.operands[0] ?? "list";
   if (action === "list") {
     output(
@@ -1378,24 +1253,31 @@ async function skillCommand(args: ParsedArguments): Promise<void> {
   output({ installed, destination }, outputMode(args));
 }
 
+const commandHelp = Object.freeze([
+  ["init [project]", "Create a tuil application"],
+  ["add [components...]", "Install registry source"],
+  ["remove [...]", "Safely remove installed source"],
+  ["update [...]", "Update unchanged registry source"],
+  ["diff [...]", "Compare installed and registry source"],
+  ["list", "List registry items"],
+  ["search [query]", "Search registry items"],
+  ["doctor", "Validate the current project"],
+  ["info", "Show runtime and project information"],
+  ["theme [preset]", "Install a theme preset"],
+  ["plugin", "List registry plugins"],
+  ["registry", "Show registry configuration"],
+  ["skills list", "List bundled Agent Skills"],
+  ["skills install", "Install Agent Skills into .agents/skills"],
+] as const);
+
 function help(): string {
+  const commands = commandHelp
+    .map(([usage, description]) => `  ${usage.padEnd(21)}${description}`)
+    .join("\n");
   return `tuil
 
 Commands:
-  init [project]       Create a tuil application
-  add [components...]  Install registry source
-  remove [...]         Safely remove installed source
-  update [...]         Update unchanged registry source
-  diff [...]           Compare installed and registry source
-  list                 List registry items
-  search [query]       Search registry items
-  doctor               Validate the current project
-  info                 Show runtime and project information
-  theme [preset]       Install a theme preset
-  plugin               List registry plugins
-  registry             Show registry configuration
-  skills list          List bundled Agent Skills
-  skills install       Install Agent Skills into .agents/skills
+${commands}
 
 Global options:
   --output interactive|static|json|silent

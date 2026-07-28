@@ -17,9 +17,19 @@
   },
   "files": [
     {
-      "path": "../../../registry/data-display/heading.tsx",
+      "path": "src/components/tuil/data-display/heading.tsx",
       "target": "src/components/tuil/data-display/heading.tsx",
-      "content": "import { useTheme } from \"@mwillbanks/tuil-theme\";\nimport type { ReactNode } from \"react\";\nimport { Text, type TextProps } from \"./text\";\n\nexport interface HeadingProps extends TextProps {\n  readonly level?: 1 | 2 | 3 | 4;\n}\n\nexport function Heading({\n  level = 1,\n  children,\n  ...props\n}: HeadingProps): ReactNode {\n  const theme = useTheme();\n  return (\n    <Text\n      bold={theme.typography.headingBold}\n      role=\"heading\"\n      label={typeof children === \"string\" ? children : props.label}\n      {...props}\n    >\n      {\"#\".repeat(level)} {children}\n    </Text>\n  );\n}\n"
+      "content": "import { useTheme } from \"@mwillbanks/tuil-theme\";\nimport type { ReactNode } from \"react\";\nimport { Text, type TextProps } from \"./text\";\n\nexport interface HeadingProps extends TextProps {\n  readonly level?: 1 | 2 | 3 | 4;\n}\n\nexport function Heading({\n  level = 1,\n  children,\n  ...props\n}: HeadingProps): ReactNode {\n  const theme = useTheme();\n  return (\n    <Text\n      bold={theme.typography.headingBold}\n      role=\"heading\"\n      label={typeof children === \"string\" ? children : props.label}\n      {...props}\n    >\n      {\"#\".repeat(level)} {children}\n    </Text>\n  );\n}\n",
+      "source": "registry/data-display/heading.tsx"
     }
-  ]
+  ],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "integrity": "sha256-b69123c217af9b6e267708b927a417af6540f0031b8687313c712120df477222"
 }

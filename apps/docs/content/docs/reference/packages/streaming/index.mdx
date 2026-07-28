@@ -1,0 +1,75 @@
+---
+title: "@mwillbanks/tuil-streaming"
+description: "Extensible backpressure-aware streaming parsers, transformers, and projections for tuil."
+icon: Package
+---
+
+## Overview
+
+Extensible backpressure-aware streaming parsers, transformers, and projections for tuil.
+
+`@mwillbanks/tuil-streaming` is independently installable and also participates in the
+umbrella `@mwillbanks/tuil` runtime where applicable.
+
+## Installation
+
+```npm
+npm install @mwillbanks/tuil-streaming
+```
+
+## How it operates
+
+Streaming pipelines incrementally decode and parse common text formats with cancellation, backpressure, transforms, projections, diagnostics, bounded source, and replay.
+
+```mermaid
+flowchart LR
+  S0["decode chunks"]
+  S1["parse partials"]
+  S2["transform/project"]
+  S3["end/cancel"]
+  S0 --> S1
+  S1 --> S2
+  S2 --> S3
+```
+
+## API
+
+| Export | Kind | Source |
+| --- | --- | --- |
+| `BackpressureController` | interface | `packages/streaming/src/index.ts` |
+| `BoundedBackpressureController` | class | `packages/streaming/src/index.ts` |
+| `builtInDocumentTransformers` | constant | `packages/streaming/src/index.ts` |
+| `builtInFormatParsers` | constant | `packages/streaming/src/index.ts` |
+| `builtInRenderProjections` | constant | `packages/streaming/src/index.ts` |
+| `DocumentNode` | interface | `packages/streaming/src/index.ts` |
+| `DocumentTransformer` | interface | `packages/streaming/src/index.ts` |
+| `FormatParser` | interface | `packages/streaming/src/index.ts` |
+| `FormatParserSession` | interface | `packages/streaming/src/index.ts` |
+| `ParserDiagnostic` | interface | `packages/streaming/src/index.ts` |
+| `PartialDocument` | interface | `packages/streaming/src/index.ts` |
+| `RenderProjection` | interface | `packages/streaming/src/index.ts` |
+| `SourceSpan` | interface | `packages/streaming/src/index.ts` |
+| `StreamDecoder` | interface | `packages/streaming/src/index.ts` |
+| `StreamEvent` | type | `packages/streaming/src/index.ts` |
+| `StreamRenderer` | interface | `packages/streaming/src/index.ts` |
+| `Utf8StreamDecoder` | class | `packages/streaming/src/index.ts` |
+
+## Events and lifecycle
+
+Typed start, document, diagnostic, and end events carry monotonically increasing sequence numbers.
+
+All subscriptions and registrations return a disposer or belong to an owning
+runtime that disposes them in reverse order.
+
+## Example
+
+```tsx
+const pipeline = new StreamingPipeline({ format: "jsonl" });
+await pipeline.write(chunk);
+```
+
+## Related
+
+- [Package architecture](/docs/concepts/packages)
+- [Events](/docs/concepts/events)
+- [Testing](/docs/guides/testing)

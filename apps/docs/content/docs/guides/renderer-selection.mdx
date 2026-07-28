@@ -1,0 +1,67 @@
+---
+title: Renderer selection
+description: Choose Ink or cell at the correct application boundary.
+icon: Monitor
+---
+
+TUIL keeps layout projection, hit testing, frame scheduling, and output sessions
+behind `RendererBackend`. Use `ink` for React Ink compatibility and `cell` for
+deterministic cell composition, minimal ANSI output, and high-volume screens.
+Backend metadata distinguishes `renderer-application` support from
+`react-ink-components`; `cell` advertises only the former.
+
+```tsx
+import { CellRendererBackend } from "@mwillbanks/tuil-cell";
+import { createApp } from "@mwillbanks/tuil";
+import { render } from "@mwillbanks/tuil-ink";
+import { createRendererComponentRuntime } from "@mwillbanks/tuil-renderer";
+
+const cell = new CellRendererBackend();
+const component = createRendererComponentRuntime({
+  initialState: { count: 0, width: 0, height: 0 },
+  component: ({ state }) => ({
+    lines: [`Count ${state.count}`, `${state.width}x${state.height}`],
+    semantics: [
+      { id: "counter", role: "button", label: `Count ${state.count}` },
+    ],
+  }),
+  input: (state, input) =>
+    input === "\r" ? { ...state, count: state.count + 1 } : undefined,
+  resize: (state, width, height) => ({ ...state, width, height }),
+});
+const app = createApp({
+  component,
+  renderer: cell.id,
+  renderers: [cell],
+});
+
+const instance = await render(app);
+await instance.waitUntilExit();
+```
+
+Both backends consume this single renderer-neutral component runtime and share
+state, lifecycle, resize, keyboard, pointer, semantics, layout, invalidation,
+and cleanup behavior. React components built on Ink primitives require the Ink
+renderer; selecting the cell backend for that tree fails explicitly instead of
+mounting Ink and reparsing ANSI. Migrate state and projection to
+`RendererApplication` before selecting `cell`.
+
+The scheduler paces frames at `targetFps`; `maximumFps` remains a hard upper
+bound and cannot accidentally make the target run faster. Output ownership is
+behavioral: alternate, main, inline, split-footer, and embedded sessions use
+different cursor, scroll-region, capture, and cleanup protocols. Main and
+inline modes never clear the full display to commit scrollback. Inline and
+split-footer sessions expose only their configured owned rows as the renderer
+viewport. Embedded output is explicit: `capture` writes only to memory,
+`passthrough` writes only to the host target, and `tee` does both.
+`passthrough` is the safe default. Capture and tee retain at most the configured
+`embeddedCaptureLimitBytes`; `captureSnapshot()` reports the retained bytes,
+limit, dropped-byte count, and truncation state so long-lived hosts cannot
+silently accumulate unbounded frame history.
+
+Renderer scenes use a closed color union (the named ANSI palette, indexed
+0–255 colors, RGB channels, or the terminal default), reject control-bearing
+hyperlinks, and require styled runs to reproduce their corresponding plain
+line. Both backends validate and clip that same scene before projection. The
+shared core and renderer public contracts use Web/Bun primitives rather than
+Node stream or `Buffer` types.

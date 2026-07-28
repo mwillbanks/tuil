@@ -1,0 +1,23 @@
+{
+  "name": "header",
+  "type": "layout",
+  "title": "Header",
+  "description": "Application header region.",
+  "files": [],
+  "dependencies": [],
+  "registryDependencies": ["split-pane"],
+  "version": "0.2.0",
+  "ownership": "source",
+  "compatibility": {
+    "tuil": "^0.2.0",
+    "renderers": ["ink", "cell"],
+    "capabilities": []
+  },
+  "codemods": [],
+  "provenance": {
+    "source": "tuil",
+    "license": "MIT",
+    "mode": "replace"
+  },
+  "integrity": "sha256-f73420e6e597d678418ed7e6bd6951f0e6fe325e898fae67dcf8ddda8b5850e0"
+}

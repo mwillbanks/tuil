@@ -55,6 +55,8 @@ export const ecosystemBrowserStorySets = Object.freeze([
     stories: dataStoryVariants,
   },
   initWizardBrowserStorySet,
+  platformBrowserStorySet,
 ] as const);
 
 import { initWizardBrowserStorySet } from "../blocks/init-wizard-story-data.ts";
+import { platformBrowserStorySet } from "./platform-story-data.ts";
