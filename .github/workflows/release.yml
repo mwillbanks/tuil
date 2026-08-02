@@ -35,6 +35,51 @@ jobs:
         id: release
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+      - name: Resolve updated release branch
+        id: release-pr
+        if: ${{ steps.release.outputs.prs_created == 'true' }}
+        env:
+          RELEASE_PR: ${{ steps.release.outputs.pr }}
+        run: |
+          branch="$(jq -r '.headBranchName // empty' <<<"$RELEASE_PR")"
+          if [[ -z "$branch" ]]; then
+            echo "::error::Release Please did not return a release PR branch."
+            exit 1
+          fi
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+      - name: Checkout pending release branch
+        if: steps.release-pr.outputs.branch != ''
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.release-pr.outputs.branch }}
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+      - uses: oven-sh/setup-bun@v2.2.0
+        if: steps.release-pr.outputs.branch != ''
+        with:
+          bun-version: 1.3.14
+      - name: Install release branch dependencies
+        if: steps.release-pr.outputs.branch != ''
+        run: bun ci
+      - name: Regenerate release branch artifacts
+        if: steps.release-pr.outputs.branch != ''
+        run: |
+          bun run registry:build
+          bun run registry:check
+      - name: Commit release branch artifacts
+        if: steps.release-pr.outputs.branch != ''
+        env:
+          RELEASE_BRANCH: ${{ steps.release-pr.outputs.branch }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Release branch artifacts are already current."
+          else
+            git commit -m "chore: update release artifacts"
+            git push origin "HEAD:$RELEASE_BRANCH"
+          fi
       - uses: actions/checkout@v7.0.1
         if: ${{ steps.release.outputs.releases_created == 'true' }}
       - uses: oven-sh/setup-bun@v2.2.0

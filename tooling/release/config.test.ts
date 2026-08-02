@@ -118,6 +118,14 @@ test("normal and recovery publishing share one trusted workflow identity", async
   expect(release).toContain("id-token: write");
   expect(release).not.toContain("NPM_TOKEN");
   expect(release).not.toContain("NODE_AUTH_TOKEN");
+  expect(release).toContain("steps.release.outputs.prs_created == 'true'");
+  expect(release).toContain("jq -r '.headBranchName // empty'");
+  expect(release).toContain(
+    "Release Please did not return a release PR branch.",
+  );
+  expect(release).toContain("bun run registry:build");
+  expect(release).toContain("bun run registry:check");
+  expect(release).toContain('git push origin "HEAD:$RELEASE_BRANCH"');
   for (const path of Object.keys(config.packages)) {
     expect(release).toContain(`steps.release.outputs['${path}--sha']`);
   }
