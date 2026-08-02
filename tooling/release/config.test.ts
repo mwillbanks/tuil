@@ -125,7 +125,10 @@ test("normal and recovery publishing share one trusted workflow identity", async
   );
   expect(release).toContain("bun run registry:build");
   expect(release).toContain("bun run registry:check");
-  expect(release).toContain('git push origin "HEAD:$RELEASE_BRANCH"');
+  expect(release).toContain(
+    'HUSKY=0 git commit -m "chore: update release artifacts"',
+  );
+  expect(release).toContain('HUSKY=0 git push origin "HEAD:$RELEASE_BRANCH"');
   for (const path of Object.keys(config.packages)) {
     expect(release).toContain(`steps.release.outputs['${path}--sha']`);
   }
