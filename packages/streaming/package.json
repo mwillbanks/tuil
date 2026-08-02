@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-streaming",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Extensible backpressure-aware streaming parsers, transformers, and projections for tuil.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

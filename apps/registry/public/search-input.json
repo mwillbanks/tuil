@@ -6,10 +6,10 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["field"],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "ownership": "source",
   "compatibility": {
-    "tuil": "^0.2.0",
+    "tuil": "^1.0.0",
     "renderers": ["ink", "cell"],
     "capabilities": []
   },
@@ -19,5 +19,5 @@
     "license": "MIT",
     "mode": "replace"
   },
-  "integrity": "sha256-1ee1b3e067f0f88b50c6f7ac0715fed7127b06d3c639d7872fe4dfc292fb65d3"
+  "integrity": "sha256-0adb46c7e04a843280de5051f6da9cfa79629cb257896c6abb31cdd448735106"
 }

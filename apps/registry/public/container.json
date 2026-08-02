@@ -22,13 +22,13 @@
     }
   ],
   "registryDependencies": ["box"],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "ownership": "source",
   "compatibility": {
-    "tuil": "^0.2.0",
+    "tuil": "^1.0.0",
     "renderers": ["ink"],
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-fea905f9f8fd7413cc1e0798aeb0775eef8e88061578d2155eca35c8409a9e21"
+  "integrity": "sha256-99c2c168a0584504dd321b482d0e255a65a480068abce9f2b225a5375abf8fd6"
 }

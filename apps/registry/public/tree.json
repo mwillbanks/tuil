@@ -23,13 +23,13 @@
   ],
   "dependencies": ["@mwillbanks/tuil", "@mwillbanks/tuil-ink", "react"],
   "registryDependencies": [],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "ownership": "source",
   "compatibility": {
-    "tuil": "^0.2.0",
+    "tuil": "^1.0.0",
     "renderers": ["ink"],
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-8195103d18b4c85085fbe44904180210d63f2f8f4b16fbcb9d2324f2c197d6d7"
+  "integrity": "sha256-01ec43845371447f8964748bd3565c9be033bf29387fe793586048e5f9ce3b03"
 }

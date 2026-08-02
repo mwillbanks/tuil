@@ -33,14 +33,14 @@
     "react"
   ],
   "registryDependencies": [],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "ownership": "package",
   "packageName": "@mwillbanks/tuil-log-viewer",
   "compatibility": {
-    "tuil": "^0.2.0",
+    "tuil": "^1.0.0",
     "renderers": ["ink"],
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-c58dea0502731292de790bdaad46c666256eb44de1921f0ed6c3c508236e8313"
+  "integrity": "sha256-ea70cbe50dcd5b6ed2685c92da17912b90a13c24bfd450f280c2c89259299588"
 }

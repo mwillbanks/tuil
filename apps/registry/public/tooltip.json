@@ -16,13 +16,13 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["dialog"],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "ownership": "source",
   "compatibility": {
-    "tuil": "^0.2.0",
+    "tuil": "^1.0.0",
     "renderers": ["ink"],
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-64313bd872be86b5ad6a1ddec96faf68d74e5279526907bb6d9cd3341905b869"
+  "integrity": "sha256-274c3c100405f3b4552e856775afb070c5c2319039f32d647966a2d9523381a2"
 }

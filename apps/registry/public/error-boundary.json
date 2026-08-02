@@ -6,10 +6,10 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["dialog"],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "ownership": "source",
   "compatibility": {
-    "tuil": "^0.2.0",
+    "tuil": "^1.0.0",
     "renderers": ["ink", "cell"],
     "capabilities": []
   },
@@ -19,5 +19,5 @@
     "license": "MIT",
     "mode": "replace"
   },
-  "integrity": "sha256-39673af0f9f22d7ee62ee16d8ff344c0491d744ef14bebb04738edaa978532fc"
+  "integrity": "sha256-e6c41661adf8d44cdaeaaeed3f8b645a77ec6c1c8468bb22169ecc016b2ba594"
 }

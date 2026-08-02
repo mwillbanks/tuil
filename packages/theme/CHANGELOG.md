@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.1](https://github.com/mwillbanks/tuil/compare/tuil-theme-v0.2.0...tuil-theme-v0.2.1) (2026-08-02)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mwillbanks/tuil-core bumped to 1.0.0
+
 ## [0.2.0](https://github.com/mwillbanks/tuil/compare/tuil-theme-v0.1.0...tuil-theme-v0.2.0) (2026-07-27)
 
 

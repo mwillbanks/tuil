@@ -16,13 +16,13 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["field"],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "ownership": "source",
   "compatibility": {
-    "tuil": "^0.2.0",
+    "tuil": "^1.0.0",
     "renderers": ["ink"],
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-8c305fe28cc1e87d80c8ae762d4f4b4c5e72b719d512bc09acbcfd3d94a856c4"
+  "integrity": "sha256-9a670ed4289fb61e6f0958c1e1d360166f9a0daa25d70d54ab3303dff44a31d4"
 }
