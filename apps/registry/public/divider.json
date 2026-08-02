@@ -22,13 +22,13 @@
       "source": "registry/data-display/divider.tsx"
     }
   ],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "ownership": "source",
   "compatibility": {
-    "tuil": "^0.2.0",
+    "tuil": "^1.0.0",
     "renderers": ["ink"],
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-17c2d1957bdd5640e4bc0249814e713c9ee85863b5c9dd04e0f4f88310097bd7"
+  "integrity": "sha256-feec8810f2b2a4a8c3af0ad0dfefe8ab0b6c9e947a62735be19dee55595fb087"
 }

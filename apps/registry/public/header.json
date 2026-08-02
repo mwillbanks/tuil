@@ -6,10 +6,10 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["split-pane"],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "ownership": "source",
   "compatibility": {
-    "tuil": "^0.2.0",
+    "tuil": "^1.0.0",
     "renderers": ["ink", "cell"],
     "capabilities": []
   },
@@ -19,5 +19,5 @@
     "license": "MIT",
     "mode": "replace"
   },
-  "integrity": "sha256-f73420e6e597d678418ed7e6bd6951f0e6fe325e898fae67dcf8ddda8b5850e0"
+  "integrity": "sha256-f2aad002026698f464f4385a41011a5c7ae994eb8a7924e6629a9fcd209a6fdc"
 }

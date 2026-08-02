@@ -41,13 +41,13 @@
     "react"
   ],
   "registryDependencies": [],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "ownership": "source",
   "compatibility": {
-    "tuil": "^0.2.0",
+    "tuil": "^1.0.0",
     "renderers": ["ink"],
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-c4c3a89b56c1405ccd4d094e32324ac6158f807b3c81d2d73779e82a11bad09b"
+  "integrity": "sha256-753c69edfbda094487d198c598614dd5435a84a81ab13ac14dd104461b52579a"
 }

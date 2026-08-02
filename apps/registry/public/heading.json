@@ -23,13 +23,13 @@
       "source": "registry/data-display/heading.tsx"
     }
   ],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "ownership": "source",
   "compatibility": {
-    "tuil": "^0.2.0",
+    "tuil": "^1.0.0",
     "renderers": ["ink"],
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-b69123c217af9b6e267708b927a417af6540f0031b8687313c712120df477222"
+  "integrity": "sha256-6851748331f5386c238f7bdcf2ea672af0d80003a985470207d6faecf082b34f"
 }

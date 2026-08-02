@@ -15,14 +15,14 @@
     "mode": "use"
   },
   "files": [],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "ownership": "plugin",
   "packageName": "@mwillbanks/tuil-plugin",
   "compatibility": {
-    "tuil": "^0.2.0",
+    "tuil": "^1.0.0",
     "renderers": ["ink", "cell"],
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-7cee9e61dbaafe6701cd35e04cc560b09e3569c723c666a6bfb52b1326b54042"
+  "integrity": "sha256-c16ed59fe2bcfa8e4c3e6d4c10da94ea850d1db20f67ab14957d60d47a80d64f"
 }

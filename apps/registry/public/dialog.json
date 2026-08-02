@@ -31,13 +31,13 @@
     "react"
   ],
   "registryDependencies": ["button", "text-input"],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "ownership": "source",
   "compatibility": {
-    "tuil": "^0.2.0",
+    "tuil": "^1.0.0",
     "renderers": ["ink"],
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-31bbe0bc3b999f581eb38d02603c250d1cd931906cffff8bfba27408a35a4951"
+  "integrity": "sha256-f892982ca7b25244be8c55cd65918be6d201e0dda658a9affdc0a283e6bab6e1"
 }

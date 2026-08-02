@@ -16,13 +16,13 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["workflow"],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "ownership": "source",
   "compatibility": {
-    "tuil": "^0.2.0",
+    "tuil": "^1.0.0",
     "renderers": ["ink"],
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-ad04a7072e2c3823259c1545aa5d493e7655a3b469d324dcfea2e1e2a99d9747"
+  "integrity": "sha256-ad0d992bd6dfc712175ba6cbd7336a33238e61ddd17f97a1288b6737e5b037d0"
 }
