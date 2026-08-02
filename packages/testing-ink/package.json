@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-testing-ink",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Ink-backed renderer and interaction harness for testing tuil applications.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

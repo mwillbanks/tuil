@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-focus",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Deterministic focus scopes, traversal, and restoration for terminal interfaces.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-protocol",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Versioned in-process and remote-ready runtime inspection protocol for tuil.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-content",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Shared Markdown code diff JSON structured-content projections and selection models for tuil.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

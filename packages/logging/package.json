@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-logging",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "OpenTelemetry-compatible log normalization parsers redaction indexing and query pipelines for tuil.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

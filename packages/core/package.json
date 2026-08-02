@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-core",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Core runtime, lifecycle, capability, command, semantic, and terminal contracts for tuil.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",
