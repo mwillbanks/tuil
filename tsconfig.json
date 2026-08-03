@@ -59,7 +59,10 @@
       "@mwillbanks/tuil-content": ["./packages/content/src/index.ts"],
       "@mwillbanks/tuil-logging": ["./packages/logging/src/index.ts"],
       "@mwillbanks/tuil-log-viewer": ["./packages/log-viewer/src/index.tsx"],
-      "@mwillbanks/tuil-protocol": ["./packages/protocol/src/index.ts"]
+      "@mwillbanks/tuil-protocol": ["./packages/protocol/src/index.ts"],
+      "@mwillbanks/tuil-ghostty-web": [
+        "./packages/ghostty-web/dist/browser.d.ts"
+      ]
     }
   },
   "include": [
@@ -76,5 +79,5 @@
     "examples/**/*.tsx",
     "tuil.workspace.ts"
   ],
-  "exclude": ["**/dist/**", "**/node_modules/**"]
+  "exclude": ["**/dist/**", "**/node_modules/**", "packages/ghostty-web/**"]
 }

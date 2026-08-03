@@ -1,0 +1,23 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "backpressure-controller",
+    "bounded-backpressure-controller",
+    "built-in-document-transformers",
+    "built-in-format-parsers",
+    "built-in-render-projections",
+    "document-node",
+    "document-transformer",
+    "format-parser",
+    "format-parser-session",
+    "parser-diagnostic",
+    "partial-document",
+    "render-projection",
+    "source-span",
+    "stream-decoder",
+    "stream-event",
+    "stream-renderer",
+    "utf8-stream-decoder"
+  ]
+}

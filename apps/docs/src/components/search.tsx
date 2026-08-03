@@ -20,9 +20,9 @@ import { localeFromPath } from "@/lib/i18n";
 const basePath = process.env["NEXT_PUBLIC_BASE_PATH"] ?? "";
 const searchEndpoint = `${basePath}/api/search`;
 
-function initOrama(locale?: string) {
+function initOrama(_locale?: string) {
   return create({
-    language: locale === "es" ? "spanish" : "english",
+    language: "english",
     schema: { _: "string" },
   });
 }

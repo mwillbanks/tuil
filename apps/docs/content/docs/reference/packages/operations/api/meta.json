@@ -1,0 +1,22 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "create-operation",
+    "define-operation",
+    "operation-blocked-error",
+    "operation-context",
+    "operation-definition",
+    "operation-error",
+    "operation-event",
+    "operation-executor",
+    "operation-executor-options",
+    "operation-feedback",
+    "operation-feedback-delays",
+    "operation-progress",
+    "operation-snapshot",
+    "operation-status",
+    "operation-timeout-error",
+    "resolve-operation-feedback"
+  ]
+}

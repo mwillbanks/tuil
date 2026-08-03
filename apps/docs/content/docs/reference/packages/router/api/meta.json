@@ -1,0 +1,21 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "create-router",
+    "define-routes",
+    "focus-snapshot",
+    "navigation-entry",
+    "navigation-surface",
+    "navigation-target",
+    "route",
+    "route-context",
+    "route-definition",
+    "route-match",
+    "router-event",
+    "router-event-type",
+    "router-state",
+    "terminal-router",
+    "terminal-router-options"
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "name": "@mwillbanks/tuil-ghostty-web",
+  "version": "1.0.0",
+  "description": "Browser adapter that runs existing TUIL Ink applications inside Ghostty Web.",
+  "license": "MIT",
+  "homepage": "https://mwillbanks.github.io/tuil/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwillbanks/tuil.git",
+    "directory": "packages/ghostty-web"
+  },
+  "bugs": {
+    "url": "https://github.com/mwillbanks/tuil/issues"
+  },
+  "keywords": [
+    "tuil",
+    "ghostty",
+    "terminal",
+    "browser",
+    "webassembly",
+    "ink"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/browser.d.ts",
+      "import": "./dist/browser.js"
+    }
+  },
+  "scripts": {
+    "build": "bun ../../tooling/build/package.ts && bun ../../tooling/build/bundle-ghostty-web.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@mwillbanks/tuil": "workspace:*",
+    "@mwillbanks/tuil-ink": "workspace:*",
+    "@mwillbanks/tuil-theme": "workspace:*",
+    "buffer": "6.0.3",
+    "ghostty-web": "0.4.0"
+  },
+  "peerDependencies": {
+    "ink": "catalog:",
+    "react": "catalog:"
+  },
+  "files": [
+    "dist"
+  ]
+}

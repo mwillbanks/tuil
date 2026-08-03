@@ -1,0 +1,5 @@
+{
+  "title": "Transfer list",
+  "icon": "ArrowsClockwise",
+  "pages": ["index", "transfer-list", "transfer-list-props"]
+}

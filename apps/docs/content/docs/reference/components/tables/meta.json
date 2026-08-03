@@ -1,0 +1,5 @@
+{
+  "title": "Tables",
+  "icon": "ListBullets",
+  "pages": ["index", "table", "data-table", "table-props", "data-table-props"]
+}

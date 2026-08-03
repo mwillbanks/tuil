@@ -1,0 +1,10 @@
+{
+  "title": "Terminal image",
+  "icon": "Aperture",
+  "pages": [
+    "index",
+    "terminal-image",
+    "render-terminal-image",
+    "terminal-image-props"
+  ]
+}

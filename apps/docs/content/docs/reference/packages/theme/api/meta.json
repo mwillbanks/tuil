@@ -1,0 +1,32 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "color-scheme",
+    "compile-utilities",
+    "component-theme",
+    "create-default-theme-registry",
+    "create-theme",
+    "default-light-theme",
+    "default-theme",
+    "normalize-theme",
+    "resolve-component-props",
+    "resolve-slot-props",
+    "semantic-color",
+    "slot-components",
+    "slot-map",
+    "slot-prop-factory",
+    "slot-props",
+    "slotted-component-props",
+    "spacing-token",
+    "terminal-style-props",
+    "theme",
+    "theme-controller",
+    "theme-factory",
+    "theme-input",
+    "theme-provider",
+    "theme-registry",
+    "theme-registry-entry",
+    "use-theme"
+  ]
+}

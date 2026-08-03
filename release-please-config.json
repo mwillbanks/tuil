@@ -54,6 +54,10 @@
       "component": "tuil-form",
       "release-type": "node"
     },
+    "packages/ghostty-web": {
+      "component": "tuil-ghostty-web",
+      "release-type": "node"
+    },
     "packages/hotkeys": {
       "component": "tuil-hotkeys",
       "release-type": "node"

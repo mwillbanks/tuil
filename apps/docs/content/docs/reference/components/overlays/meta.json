@@ -1,0 +1,30 @@
+{
+  "title": "Dialogs, toasts, and overlays",
+  "icon": "Browser",
+  "pages": [
+    "index",
+    "dialog",
+    "dialog-trigger",
+    "dialog-content",
+    "dialog-title",
+    "dialog-description",
+    "dialog-confirm",
+    "dialog-cancel",
+    "confirm-dialog",
+    "tooltip",
+    "toast-provider",
+    "use-toast",
+    "toast",
+    "toast-viewport",
+    "command-palette",
+    "drawer",
+    "popover",
+    "skeleton",
+    "error-boundary",
+    "dialog-props",
+    "confirm-dialog-props",
+    "tooltip-props",
+    "command-palette-props",
+    "error-boundary-props"
+  ]
+}

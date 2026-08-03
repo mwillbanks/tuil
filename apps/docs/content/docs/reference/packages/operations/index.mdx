@@ -34,24 +34,24 @@ flowchart LR
 
 ## API
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `createOperation` | function | `packages/operations/src/index.ts` |
-| `defineOperation` | function | `packages/operations/src/index.ts` |
-| `OperationBlockedError` | class | `packages/operations/src/index.ts` |
-| `OperationContext` | interface | `packages/operations/src/index.ts` |
-| `OperationDefinition` | interface | `packages/operations/src/index.ts` |
-| `OperationError` | interface | `packages/operations/src/index.ts` |
-| `OperationEvent` | interface | `packages/operations/src/index.ts` |
-| `OperationExecutor` | class | `packages/operations/src/index.ts` |
-| `OperationExecutorOptions` | interface | `packages/operations/src/index.ts` |
-| `OperationFeedback` | type | `packages/operations/src/index.ts` |
-| `operationFeedbackDelays` | constant | `packages/operations/src/index.ts` |
-| `OperationProgress` | interface | `packages/operations/src/index.ts` |
-| `OperationSnapshot` | interface | `packages/operations/src/index.ts` |
-| `OperationStatus` | type | `packages/operations/src/index.ts` |
-| `OperationTimeoutError` | class | `packages/operations/src/index.ts` |
-| `resolveOperationFeedback` | function | `packages/operations/src/index.ts` |
+| [`createOperation`](/docs/reference/packages/operations/api/create-operation) | `function createOperation` | Public function createOperation. |
+| [`defineOperation`](/docs/reference/packages/operations/api/define-operation) | `function defineOperation` | Public function defineOperation. |
+| [`OperationBlockedError`](/docs/reference/packages/operations/api/operation-blocked-error) | `class OperationBlockedError` | Public class OperationBlockedError. |
+| [`OperationContext`](/docs/reference/packages/operations/api/operation-context) | `interface OperationContext` | Public interface OperationContext. |
+| [`OperationDefinition`](/docs/reference/packages/operations/api/operation-definition) | `interface OperationDefinition` | Public interface OperationDefinition. |
+| [`OperationError`](/docs/reference/packages/operations/api/operation-error) | `interface OperationError` | Public interface OperationError. |
+| [`OperationEvent`](/docs/reference/packages/operations/api/operation-event) | `interface OperationEvent` | Public interface OperationEvent. |
+| [`OperationExecutor`](/docs/reference/packages/operations/api/operation-executor) | `class OperationExecutor` | Public class OperationExecutor. |
+| [`OperationExecutorOptions`](/docs/reference/packages/operations/api/operation-executor-options) | `interface OperationExecutorOptions` | Public interface OperationExecutorOptions. |
+| [`OperationFeedback`](/docs/reference/packages/operations/api/operation-feedback) | `type OperationFeedback` | Public type OperationFeedback. |
+| [`operationFeedbackDelays`](/docs/reference/packages/operations/api/operation-feedback-delays) | `constant operationFeedbackDelays` | Public constant operationFeedbackDelays. |
+| [`OperationProgress`](/docs/reference/packages/operations/api/operation-progress) | `interface OperationProgress` | Public interface OperationProgress. |
+| [`OperationSnapshot`](/docs/reference/packages/operations/api/operation-snapshot) | `interface OperationSnapshot` | Public interface OperationSnapshot. |
+| [`OperationStatus`](/docs/reference/packages/operations/api/operation-status) | `type OperationStatus` | Public type OperationStatus. |
+| [`OperationTimeoutError`](/docs/reference/packages/operations/api/operation-timeout-error) | `class OperationTimeoutError` | Public class OperationTimeoutError. |
+| [`resolveOperationFeedback`](/docs/reference/packages/operations/api/resolve-operation-feedback) | `function resolveOperationFeedback` | Public function resolveOperationFeedback. |
 
 ## Events and lifecycle
 
@@ -63,6 +63,8 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { defineOperation } from "@mwillbanks/tuil-operations";
+
 const operation = defineOperation({ id: "build", run: async ({ progress }) => progress(1) });
 ```
 

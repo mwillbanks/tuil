@@ -32,26 +32,26 @@ flowchart LR
 
 ## API
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `createWorkflow` | function | `packages/workflow/src/index.ts` |
-| `defineOperationStep` | function | `packages/workflow/src/index.ts` |
-| `defineStep` | function | `packages/workflow/src/index.ts` |
-| `defineWorkflow` | function | `packages/workflow/src/index.ts` |
-| `PersistedWorkflow` | interface | `packages/workflow/src/index.ts` |
-| `transition` | function | `packages/workflow/src/index.ts` |
-| `WorkflowContext` | interface | `packages/workflow/src/index.ts` |
-| `WorkflowDefinition` | interface | `packages/workflow/src/index.ts` |
-| `WorkflowEvent` | interface | `packages/workflow/src/index.ts` |
-| `WorkflowEventType` | type | `packages/workflow/src/index.ts` |
-| `WorkflowParallelBranch` | interface | `packages/workflow/src/index.ts` |
-| `WorkflowParallelSnapshot` | interface | `packages/workflow/src/index.ts` |
-| `WorkflowPersistence` | interface | `packages/workflow/src/index.ts` |
-| `WorkflowRunner` | class | `packages/workflow/src/index.ts` |
-| `WorkflowSnapshot` | interface | `packages/workflow/src/index.ts` |
-| `WorkflowStatus` | type | `packages/workflow/src/index.ts` |
-| `WorkflowStep` | interface | `packages/workflow/src/index.ts` |
-| `WorkflowTransition` | interface | `packages/workflow/src/index.ts` |
+| [`createWorkflow`](/docs/reference/packages/workflow/api/create-workflow) | `function createWorkflow` | Public function createWorkflow. |
+| [`defineOperationStep`](/docs/reference/packages/workflow/api/define-operation-step) | `function defineOperationStep` | Public function defineOperationStep. |
+| [`defineStep`](/docs/reference/packages/workflow/api/define-step) | `function defineStep` | Public function defineStep. |
+| [`defineWorkflow`](/docs/reference/packages/workflow/api/define-workflow) | `function defineWorkflow` | Public function defineWorkflow. |
+| [`PersistedWorkflow`](/docs/reference/packages/workflow/api/persisted-workflow) | `interface PersistedWorkflow` | Public interface PersistedWorkflow. |
+| [`transition`](/docs/reference/packages/workflow/api/transition) | `function transition` | Public function transition. |
+| [`WorkflowContext`](/docs/reference/packages/workflow/api/workflow-context) | `interface WorkflowContext` | Public interface WorkflowContext. |
+| [`WorkflowDefinition`](/docs/reference/packages/workflow/api/workflow-definition) | `interface WorkflowDefinition` | Public interface WorkflowDefinition. |
+| [`WorkflowEvent`](/docs/reference/packages/workflow/api/workflow-event) | `interface WorkflowEvent` | Public interface WorkflowEvent. |
+| [`WorkflowEventType`](/docs/reference/packages/workflow/api/workflow-event-type) | `type WorkflowEventType` | Public type WorkflowEventType. |
+| [`WorkflowParallelBranch`](/docs/reference/packages/workflow/api/workflow-parallel-branch) | `interface WorkflowParallelBranch` | Public interface WorkflowParallelBranch. |
+| [`WorkflowParallelSnapshot`](/docs/reference/packages/workflow/api/workflow-parallel-snapshot) | `interface WorkflowParallelSnapshot` | Public interface WorkflowParallelSnapshot. |
+| [`WorkflowPersistence`](/docs/reference/packages/workflow/api/workflow-persistence) | `interface WorkflowPersistence` | Public interface WorkflowPersistence. |
+| [`WorkflowRunner`](/docs/reference/packages/workflow/api/workflow-runner) | `class WorkflowRunner` | Public class WorkflowRunner. |
+| [`WorkflowSnapshot`](/docs/reference/packages/workflow/api/workflow-snapshot) | `interface WorkflowSnapshot` | Public interface WorkflowSnapshot. |
+| [`WorkflowStatus`](/docs/reference/packages/workflow/api/workflow-status) | `type WorkflowStatus` | Public type WorkflowStatus. |
+| [`WorkflowStep`](/docs/reference/packages/workflow/api/workflow-step) | `interface WorkflowStep` | Public interface WorkflowStep. |
+| [`WorkflowTransition`](/docs/reference/packages/workflow/api/workflow-transition) | `interface WorkflowTransition` | Public interface WorkflowTransition. |
 
 ## Events and lifecycle
 
@@ -63,6 +63,8 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { createWorkflow, defineWorkflow } from "@mwillbanks/tuil-workflow";
+
 const runner = createWorkflow(defineWorkflow({ id: "setup", version: 1, initialState: {}, steps, transitions }));
 ```
 

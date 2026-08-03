@@ -1,0 +1,18 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "focus-change",
+    "focus-direction",
+    "focus-manager",
+    "focus-node",
+    "focus-node-input",
+    "focus-provider",
+    "focus-scope",
+    "focus-scope-definition",
+    "focus-trap",
+    "use-focusable",
+    "use-focus-manager",
+    "use-focus-scope-id"
+  ]
+}

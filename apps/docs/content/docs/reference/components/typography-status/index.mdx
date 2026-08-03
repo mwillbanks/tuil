@@ -4,7 +4,7 @@ description: "Render styled terminal copy, hierarchy, separators, labels, and co
 icon: BookOpenText
 ---
 
-import { typographyStory as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
@@ -19,16 +19,16 @@ npx @mwillbanks/tuil add text heading divider badge
 The CLI writes source-owned components beneath the destination configured in
 `tuil.config.ts`; the default import below assumes `src/components/tuil`.
 
-<ComponentStory.WithControl />
+<PublishedStory storyId="component-acceptance" variant="Text" />
 
 ## Components and subcomponents
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `Text` | function | `registry/data-display/text.tsx` |
-| `Heading` | function | `registry/data-display/heading.tsx` |
-| `Divider` | function | `registry/data-display/divider.tsx` |
-| `Badge` | function | `registry/data-display/badge.tsx` |
+| [`Text`](/docs/reference/components/typography-status/text) | `function Text` | Public function Text. |
+| [`Heading`](/docs/reference/components/typography-status/heading) | `function Heading` | Public function Heading. |
+| [`Divider`](/docs/reference/components/typography-status/divider) | `function Divider` | Public function Divider. |
+| [`Badge`](/docs/reference/components/typography-status/badge) | `function Badge` | Public function Badge. |
 
 ## Interaction
 

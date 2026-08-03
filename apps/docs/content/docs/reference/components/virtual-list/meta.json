@@ -1,0 +1,5 @@
+{
+  "title": "Virtual list",
+  "icon": "FlowArrow",
+  "pages": ["index", "virtual-list", "virtual-list-props"]
+}

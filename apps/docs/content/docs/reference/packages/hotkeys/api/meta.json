@@ -1,0 +1,22 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "hotkey",
+    "hotkey-binding",
+    "hotkey-conflict",
+    "hotkey-dispatch-context",
+    "hotkey-event",
+    "hotkey-layer",
+    "hotkey-manager",
+    "hotkey-metadata",
+    "hotkey-provider",
+    "hotkey-scope",
+    "normalize-hotkey-notation",
+    "normalize-terminal-key",
+    "terminal-key",
+    "use-hotkey",
+    "use-hotkey-manager",
+    "use-hotkeys"
+  ]
+}

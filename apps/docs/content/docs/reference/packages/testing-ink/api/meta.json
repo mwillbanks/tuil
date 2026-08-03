@@ -1,0 +1,16 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "cleanup",
+    "click-pointer-target",
+    "drag-pointer-target",
+    "normalize-terminal-frame",
+    "render-tuil",
+    "screen",
+    "semantic-screen",
+    "tuil-test-instance",
+    "tuil-user",
+    "user"
+  ]
+}

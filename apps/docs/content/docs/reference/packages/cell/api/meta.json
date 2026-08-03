@@ -1,0 +1,27 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "cell",
+    "cell-accelerator",
+    "cell-attributes",
+    "cell-buffer",
+    "cell-frame",
+    "cell-output-mode",
+    "cell-renderer-backend",
+    "cell-renderer-backend-options",
+    "cell-scene-node",
+    "cell-tree",
+    "color",
+    "compose-cell-scene",
+    "cursor-state",
+    "default-color",
+    "diff-cell-frames",
+    "empty-cell",
+    "encode-cell-output",
+    "load-native-cell-accelerator",
+    "load-optional-cell-accelerator",
+    "native-cell-accelerator-options",
+    "typescript-cell-accelerator"
+  ]
+}

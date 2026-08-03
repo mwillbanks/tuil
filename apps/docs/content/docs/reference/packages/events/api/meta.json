@@ -1,0 +1,20 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "define-events",
+    "event",
+    "event-bus",
+    "event-definition",
+    "event-definitions",
+    "event-emit-options",
+    "event-map",
+    "event-phase",
+    "event-priority",
+    "event-source",
+    "event-subscription-options",
+    "event-target",
+    "observed-event",
+    "tuil-event"
+  ]
+}

@@ -2,14 +2,17 @@ import { createApp, type TuilApp, useApp } from "@mwillbanks/tuil";
 import { TuilDevtools } from "@mwillbanks/tuil-devtools";
 import {
   Box,
+  Button,
   createRuntimeElement,
   Heading,
   render,
   SemanticRegistry,
   Text,
   type TuilRenderInstance,
+  usePointerEvents,
   useTerminalInput,
 } from "@mwillbanks/tuil-ink";
+import type { TuilStorySet } from "@mwillbanks/tuil-story";
 import {
   defaultTerminalStoryControls,
   type TerminalStoryControls,
@@ -18,16 +21,13 @@ import { createDefaultThemeRegistry } from "@mwillbanks/tuil-theme";
 import {
   type ComponentType,
   createElement,
+  Fragment,
   type ReactNode,
   useEffect,
   useMemo,
   useState,
   useSyncExternalStore,
 } from "react";
-import {
-  createEcosystemStoryCatalog,
-  ecosystemStorySetIds,
-} from "../../../registry/stories/ecosystem.tsx";
 
 const installTargets: Readonly<Record<string, string>> = Object.freeze({
   foundation: "button badge progress",
@@ -49,21 +49,15 @@ function StoryRuntimeSurface(
   props: Omit<PortableStoryPreviewProps, "storyId" | "variant">,
 ): ReactNode {
   const runtime = useApp();
-  const [events, setEvents] = useState<readonly string[]>(() =>
-    runtime.events
-      .history()
-      .slice(-8)
-      .map((event) => `${event.type} [${event.priority}]`),
-  );
-  useEffect(
+  const events = useSyncExternalStore(
+    (notify) => runtime.events.observe(notify),
     () =>
-      runtime.events.observe((event) => {
-        setEvents((current) => [
-          ...current.slice(-7),
-          `${event.type} [${event.priority}]`,
-        ]);
-      }),
-    [runtime],
+      runtime.events
+        .history()
+        .slice(-8)
+        .map((event) => `${event.type} [${event.priority}]`)
+        .join(", "),
+    () => "",
   );
   const focused = useSyncExternalStore(
     (notify) => runtime.focus.observe(notify),
@@ -87,7 +81,7 @@ function StoryRuntimeSurface(
     createElement(
       Text,
       { label: "Event inspector" },
-      `Event inspector: ${events.join(", ") || "waiting for runtime events"}`,
+      `Event inspector: ${events || "waiting for runtime events"}`,
     ),
   );
 }
@@ -142,7 +136,11 @@ function PortableStoryPreview(props: PortableStoryPreviewProps): ReactNode {
     },
     [previewApp],
   );
-  return createRuntimeElement(previewApp, registry);
+  return createElement(
+    Fragment,
+    { key: `${props.storyId}:${props.variant}` },
+    createRuntimeElement(previewApp, registry),
+  );
 }
 
 export interface PlaygroundProps {
@@ -158,14 +156,11 @@ export interface PlaygroundProps {
   ) => void;
 }
 
-export function Playground(props: PlaygroundProps): ReactNode {
+function LoadedPlayground(
+  props: PlaygroundProps & { readonly sets: readonly TuilStorySet[] },
+): ReactNode {
   const app = useApp();
-  const catalog = useMemo(() => createEcosystemStoryCatalog(), []);
-  const sets = ecosystemStorySetIds.map((id) => {
-    const set = catalog.get(id);
-    if (!set) throw new Error(`Missing playground story set "${id}"`);
-    return set;
-  });
+  const sets = props.sets;
   const initialSetIndex = Math.max(
     0,
     sets.findIndex((set) => set.id === props.initialStoryId),
@@ -173,9 +168,10 @@ export function Playground(props: PlaygroundProps): ReactNode {
   const initialSet = sets[initialSetIndex] as (typeof sets)[number];
   const initialVariants = Object.keys(initialSet.definition.stories);
   const [setIndex, setSetIndex] = useState(initialSetIndex);
-  const [variantIndex, setVariantIndex] = useState(
+  const [variantIndex, setVariantIndex] = useState(() =>
     Math.max(0, initialVariants.indexOf(props.initialVariant ?? "")),
   );
+  const [scrollOffset, setScrollOffset] = useState(0);
   const selectedSet = sets[setIndex] ?? sets[0];
   if (!selectedSet) throw new Error("Playground story catalog is empty");
   const variants = Object.entries(selectedSet.definition.stories);
@@ -209,6 +205,7 @@ export function Playground(props: PlaygroundProps): ReactNode {
     }
     setSetIndex(nextSetIndex);
     setVariantIndex(nextVariantIndex);
+    setScrollOffset(0);
     props.onStoryChange?.(nextSet.id, nextVariant, nextStory.terminal ?? {});
   };
   useTerminalInput(
@@ -262,9 +259,35 @@ export function Playground(props: PlaygroundProps): ReactNode {
     },
     { priority: 50_000 },
   );
+  const viewportHeight = Math.max(4, app.capabilities.height - 13);
+  const scroll = (delta: number) =>
+    setScrollOffset((current) => Math.max(0, Math.min(200, current + delta)));
+  useTerminalInput(
+    (_input, key) => {
+      if (key.pageUp) scroll(-viewportHeight);
+      else if (key.pageDown) scroll(viewportHeight);
+      else return false;
+      return true;
+    },
+    { priority: 49_000 },
+  );
+  usePointerEvents(
+    useMemo(
+      () => [
+        {
+          id: "playground-preview-viewport",
+          type: "wheel" as const,
+          listener: (event: { readonly wheelY: number }) =>
+            scroll(event.wheelY),
+        },
+      ],
+      [viewportHeight],
+    ),
+  );
   const StoryComponent = selectedSet.definition.component as ComponentType<
     Record<string, unknown>
   >;
+  const installTarget = installTargets[selectedSet.id];
   return createElement(
     Box,
     { flexDirection: "column", width: app.capabilities.width },
@@ -272,7 +295,72 @@ export function Playground(props: PlaygroundProps): ReactNode {
     createElement(
       Text,
       null,
-      "ctrl+p/n story · ctrl+b/f variant · ctrl+\\/ctrl+] resize · ctrl+t theme · ctrl+q quit",
+      "ctrl+p/n story · ctrl+b/f variant · page up/down scroll · ctrl+\\/ctrl+] resize · ctrl+t theme · ctrl+q quit",
+    ),
+    createElement(
+      Box,
+      { flexDirection: "row", gap: 1, label: "Playground controls" },
+      createElement(
+        Button,
+        {
+          id: "playground-previous-story",
+          label: "Previous story",
+          onPress: () =>
+            selectStory((setIndex - 1 + sets.length) % sets.length, 0),
+        },
+        "Previous story",
+      ),
+      createElement(
+        Button,
+        {
+          id: "playground-next-story",
+          label: "Next story",
+          onPress: () => selectStory((setIndex + 1) % sets.length, 0),
+        },
+        "Next story",
+      ),
+      createElement(
+        Button,
+        {
+          id: "playground-next-variant",
+          label: "Next variant",
+          onPress: () =>
+            selectStory(setIndex, (variantIndex + 1) % variants.length),
+        },
+        "Next variant",
+      ),
+      createElement(
+        Button,
+        {
+          id: "playground-theme",
+          label: "Toggle theme",
+          onPress: () =>
+            props.onThemeChange?.(
+              app.theme.id === "default-dark"
+                ? "default-light"
+                : "default-dark",
+            ),
+        },
+        "Toggle theme",
+      ),
+      createElement(
+        Button,
+        {
+          id: "playground-scroll-up",
+          label: "Scroll preview up",
+          onPress: () => scroll(-viewportHeight),
+        },
+        "Scroll up",
+      ),
+      createElement(
+        Button,
+        {
+          id: "playground-scroll-down",
+          label: "Scroll preview down",
+          onPress: () => scroll(viewportHeight),
+        },
+        "Scroll down",
+      ),
     ),
     createElement(
       Box,
@@ -282,26 +370,82 @@ export function Playground(props: PlaygroundProps): ReactNode {
         { bold: true },
         `Component browser: ${selectedSet.title} / ${variantName}`,
       ),
-      createElement(PortableStoryPreview, {
-        storyId: selectedSet.id,
-        variant: variantName,
-        component: StoryComponent,
-        args: selectedStory.args as Readonly<Record<string, unknown>>,
-        controls: previewControls,
-      }),
+      createElement(
+        Box,
+        {
+          id: "playground-preview-viewport",
+          label: "Scrollable story preview",
+          height: viewportHeight,
+          overflow: "hidden",
+        },
+        createElement(
+          Box,
+          { flexDirection: "column", marginTop: -scrollOffset },
+          createElement(PortableStoryPreview, {
+            storyId: selectedSet.id,
+            variant: variantName,
+            component: StoryComponent,
+            args: selectedStory.args as Readonly<Record<string, unknown>>,
+            controls: previewControls,
+          }),
+        ),
+      ),
+      createElement(
+        Text,
+        { label: "Preview scroll position" },
+        `Preview scroll offset: ${scrollOffset}`,
+      ),
     ),
     createElement(
       Text,
       null,
       `Code: ${selectedSet.id}.${variantName}(${JSON.stringify(selectedStory.args)})`,
     ),
-    createElement(
-      Text,
-      null,
-      `Install: tuil add ${installTargets[selectedSet.id] ?? selectedSet.id}`,
-    ),
+    installTarget
+      ? createElement(Text, null, `Install: tuil add ${installTarget}`)
+      : createElement(
+          Text,
+          { dimColor: true },
+          "Install: this catalog groups executable examples and is not a registry item",
+        ),
     createElement(TuilDevtools),
   );
+}
+
+export function Playground(props: PlaygroundProps): ReactNode {
+  const [sets, setSets] = useState<readonly TuilStorySet[]>();
+  const [error, setError] = useState<string>();
+  useEffect(() => {
+    let active = true;
+    const loadStories = async () => {
+      try {
+        const module = await import("../../../registry/stories/ecosystem.tsx");
+        const catalog = module.createEcosystemStoryCatalog();
+        const loaded = module.ecosystemStorySetIds.map((id) => {
+          const set = catalog.get(id);
+          if (!set) throw new Error(`Missing playground story set "${id}"`);
+          return set;
+        });
+        if (active) setSets(loaded);
+      } catch (cause) {
+        if (active)
+          setError(cause instanceof Error ? cause.message : String(cause));
+      }
+    };
+    void loadStories();
+    return () => {
+      active = false;
+    };
+  }, []);
+  if (error)
+    return createElement(
+      Text,
+      { role: "alert" },
+      `Story catalog failed: ${error}`,
+    );
+  if (!sets)
+    return createElement(Text, { role: "status" }, "Loading story groups…");
+  return createElement(LoadedPlayground, { ...props, sets });
 }
 
 export interface PlaygroundRuntimeConfig {
@@ -397,6 +541,7 @@ export async function runPlayground(
     rejectCompletion = reject;
   });
   let restartQueue = Promise.resolve();
+  let restartRevision = 0;
   const finish = () => {
     if (stopped) return;
     stopped = true;
@@ -411,13 +556,16 @@ export async function runPlayground(
   const restart = (next: PlaygroundRuntimeConfig) => {
     if (stopped) return;
     config = next;
+    restartRevision += 1;
+    const revision = restartRevision;
     restartQueue = restartQueue
       .then(async () => {
         await Bun.sleep(0);
+        if (stopped || revision !== restartRevision) return;
         const previous = active;
         active = undefined;
         await previous?.unmount();
-        if (stopped) return;
+        if (stopped || revision !== restartRevision) return;
         const app = createPlaygroundApp(config, {
           onExit: finish,
           onResize: (width, height) =>
@@ -441,9 +589,17 @@ export async function runPlayground(
           stdout: widthAwareOutput(config.width, output),
         });
         active = instance;
-        void instance.waitUntilExit().then(() => {
-          if (active === instance && !stopped) finish();
-        });
+        void instance.waitUntilExit().then(
+          () => {
+            if (active === instance && !stopped) finish();
+          },
+          (error: unknown) => {
+            if (active !== instance || stopped) return;
+            stopped = true;
+            if (handleOutputResize) output.off("resize", handleOutputResize);
+            rejectCompletion?.(error);
+          },
+        );
       })
       .catch((error: unknown) => {
         if (stopped) return;

@@ -1,0 +1,26 @@
+{
+  "title": "Workflow UI",
+  "icon": "FlowArrow",
+  "pages": [
+    "index",
+    "workflow",
+    "workflow-header",
+    "workflow-body",
+    "workflow-footer",
+    "workflow-progress",
+    "workflow-errors",
+    "workflow-next",
+    "workflow-back",
+    "workflow-skip",
+    "workflow-cancel",
+    "operation-list",
+    "operation-tree",
+    "splash-screen",
+    "help-overlay",
+    "workflow-props",
+    "operation-list-props",
+    "operation-tree-props",
+    "splash-screen-props",
+    "help-overlay-props"
+  ]
+}

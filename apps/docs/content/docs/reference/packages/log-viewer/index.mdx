@@ -36,31 +36,31 @@ flowchart LR
 
 ## API
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `createLogTheme` | function | `packages/log-viewer/src/index.tsx` |
-| `defaultLogThemes` | constant | `packages/log-viewer/src/index.tsx` |
-| `LiveIndicator` | function | `packages/log-viewer/src/index.tsx` |
-| `LogDensity` | type | `packages/log-viewer/src/index.tsx` |
-| `LogDetail` | function | `packages/log-viewer/src/index.tsx` |
-| `LogExportDialog` | function | `packages/log-viewer/src/index.tsx` |
-| `LogFacetPanel` | function | `packages/log-viewer/src/index.tsx` |
-| `LogFilterBar` | function | `packages/log-viewer/src/index.tsx` |
-| `LogRow` | function | `packages/log-viewer/src/index.tsx` |
-| `LogRowView` | interface | `packages/log-viewer/src/index.tsx` |
-| `LogSearchBar` | function | `packages/log-viewer/src/index.tsx` |
-| `LogSourceBadge` | function | `packages/log-viewer/src/index.tsx` |
-| `LogTheme` | interface | `packages/log-viewer/src/index.tsx` |
-| `logThemeTextStyle` | function | `packages/log-viewer/src/index.tsx` |
-| `LogThemeVariant` | type | `packages/log-viewer/src/index.tsx` |
-| `LogTimeline` | function | `packages/log-viewer/src/index.tsx` |
-| `LogViewer` | function | `packages/log-viewer/src/index.tsx` |
-| `LogViewerModel` | class | `packages/log-viewer/src/index.tsx` |
-| `LogViewerModelOptions` | type | `packages/log-viewer/src/index.tsx` |
-| `LogViewerProps` | interface | `packages/log-viewer/src/index.tsx` |
-| `ParseErrorRow` | function | `packages/log-viewer/src/index.tsx` |
-| `StructuredValue` | function | `packages/log-viewer/src/index.tsx` |
-| `TraceContext` | function | `packages/log-viewer/src/index.tsx` |
+| [`createLogTheme`](/docs/reference/packages/log-viewer/api/create-log-theme) | `function createLogTheme` | Public function createLogTheme. |
+| [`defaultLogThemes`](/docs/reference/packages/log-viewer/api/default-log-themes) | `constant defaultLogThemes` | Public constant defaultLogThemes. |
+| [`LiveIndicator`](/docs/reference/packages/log-viewer/api/live-indicator) | `function LiveIndicator` | Public function LiveIndicator. |
+| [`LogDensity`](/docs/reference/packages/log-viewer/api/log-density) | `type LogDensity` | Public type LogDensity. |
+| [`LogDetail`](/docs/reference/packages/log-viewer/api/log-detail) | `function LogDetail` | Public function LogDetail. |
+| [`LogExportDialog`](/docs/reference/packages/log-viewer/api/log-export-dialog) | `function LogExportDialog` | Public function LogExportDialog. |
+| [`LogFacetPanel`](/docs/reference/packages/log-viewer/api/log-facet-panel) | `function LogFacetPanel` | Public function LogFacetPanel. |
+| [`LogFilterBar`](/docs/reference/packages/log-viewer/api/log-filter-bar) | `function LogFilterBar` | Public function LogFilterBar. |
+| [`LogRow`](/docs/reference/packages/log-viewer/api/log-row) | `function LogRow` | Public function LogRow. |
+| [`LogRowView`](/docs/reference/packages/log-viewer/api/log-row-view) | `interface LogRowView` | Public interface LogRowView. |
+| [`LogSearchBar`](/docs/reference/packages/log-viewer/api/log-search-bar) | `function LogSearchBar` | Public function LogSearchBar. |
+| [`LogSourceBadge`](/docs/reference/packages/log-viewer/api/log-source-badge) | `function LogSourceBadge` | Public function LogSourceBadge. |
+| [`LogTheme`](/docs/reference/packages/log-viewer/api/log-theme) | `interface LogTheme` | Public interface LogTheme. |
+| [`logThemeTextStyle`](/docs/reference/packages/log-viewer/api/log-theme-text-style) | `function logThemeTextStyle` | Public function logThemeTextStyle. |
+| [`LogThemeVariant`](/docs/reference/packages/log-viewer/api/log-theme-variant) | `type LogThemeVariant` | Public type LogThemeVariant. |
+| [`LogTimeline`](/docs/reference/packages/log-viewer/api/log-timeline) | `function LogTimeline` | Public function LogTimeline. |
+| [`LogViewer`](/docs/reference/packages/log-viewer/api/log-viewer) | `function LogViewer` | Public function LogViewer. |
+| [`LogViewerModel`](/docs/reference/packages/log-viewer/api/log-viewer-model) | `class LogViewerModel` | Public class LogViewerModel. |
+| [`LogViewerModelOptions`](/docs/reference/packages/log-viewer/api/log-viewer-model-options) | `type LogViewerModelOptions` | Public type LogViewerModelOptions. |
+| [`LogViewerProps`](/docs/reference/packages/log-viewer/api/log-viewer-props) | `interface LogViewerProps` | Public interface LogViewerProps. |
+| [`ParseErrorRow`](/docs/reference/packages/log-viewer/api/parse-error-row) | `function ParseErrorRow` | Public function ParseErrorRow. |
+| [`StructuredValue`](/docs/reference/packages/log-viewer/api/structured-value) | `function StructuredValue` | Public function StructuredValue. |
+| [`TraceContext`](/docs/reference/packages/log-viewer/api/trace-context) | `function TraceContext` | Public function TraceContext. |
 
 ## Events and lifecycle
 
@@ -72,6 +72,8 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { LogViewerModel } from "@mwillbanks/tuil-log-viewer";
+
 const viewer = new LogViewerModel(pipeline, { queryEditor: app.createEditorSession({ id: "log-query" }), queryEditorOwnership: "owned" });
 ```
 

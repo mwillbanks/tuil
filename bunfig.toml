@@ -13,6 +13,7 @@ coveragePathIgnorePatterns = [
   "packages/cli/src/generated-registry.ts",
   "packages/code/src/worker.ts",
   "registry/**/*.stories.tsx",
+  "tooling/browser/**",
 ]
 onlyFailures = true
 pathIgnorePatterns = ["apps/docs/**"]

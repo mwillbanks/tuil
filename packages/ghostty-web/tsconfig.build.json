@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+    "outDir": "dist",
+    "rootDir": "src",
+    "paths": {}
+  },
+  "include": [
+    "src/browser.tsx",
+    "src/document.tsx",
+    "src/emitter.ts",
+    "src/feasibility.tsx",
+    "src/index.ts",
+    "src/streams.ts",
+    "src/shims/**/*.ts"
+  ],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
+}

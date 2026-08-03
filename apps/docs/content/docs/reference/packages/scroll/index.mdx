@@ -36,18 +36,18 @@ flowchart LR
 
 ## API
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `ScrollAlignment` | type | `packages/scroll/src/index.ts` |
-| `ScrollAreaOptions` | interface | `packages/scroll/src/index.ts` |
-| `ScrollAreaState` | class | `packages/scroll/src/index.ts` |
-| `ScrollAxis` | type | `packages/scroll/src/index.ts` |
-| `scrollbar` | function | `packages/scroll/src/index.ts` |
-| `ScrollExtent` | interface | `packages/scroll/src/index.ts` |
-| `ScrollManager` | class | `packages/scroll/src/index.ts` |
-| `ScrollPosition` | interface | `packages/scroll/src/index.ts` |
-| `ScrollSnapshot` | interface | `packages/scroll/src/index.ts` |
-| `ScrollViewport` | interface | `packages/scroll/src/index.ts` |
+| [`ScrollAlignment`](/docs/reference/packages/scroll/api/scroll-alignment) | `type ScrollAlignment` | Public type ScrollAlignment. |
+| [`ScrollAreaOptions`](/docs/reference/packages/scroll/api/scroll-area-options) | `interface ScrollAreaOptions` | Public interface ScrollAreaOptions. |
+| [`ScrollAreaState`](/docs/reference/packages/scroll/api/scroll-area-state) | `class ScrollAreaState` | Public class ScrollAreaState. |
+| [`ScrollAxis`](/docs/reference/packages/scroll/api/scroll-axis) | `type ScrollAxis` | Public type ScrollAxis. |
+| [`scrollbar`](/docs/reference/packages/scroll/api/scrollbar) | `function scrollbar` | Public function scrollbar. |
+| [`ScrollExtent`](/docs/reference/packages/scroll/api/scroll-extent) | `interface ScrollExtent` | Public interface ScrollExtent. |
+| [`ScrollManager`](/docs/reference/packages/scroll/api/scroll-manager) | `class ScrollManager` | Public class ScrollManager. |
+| [`ScrollPosition`](/docs/reference/packages/scroll/api/scroll-position) | `interface ScrollPosition` | Public interface ScrollPosition. |
+| [`ScrollSnapshot`](/docs/reference/packages/scroll/api/scroll-snapshot) | `interface ScrollSnapshot` | Public interface ScrollSnapshot. |
+| [`ScrollViewport`](/docs/reference/packages/scroll/api/scroll-viewport) | `interface ScrollViewport` | Public interface ScrollViewport. |
 
 ## Events and lifecycle
 
@@ -59,6 +59,8 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { ScrollAreaState } from "@mwillbanks/tuil-scroll";
+
 const area = new ScrollAreaState({ id: "logs", viewport, extent });
 ```
 

@@ -4,7 +4,7 @@ description: "Bind observable workflow and operation snapshots to guided termina
 icon: FlowArrow
 ---
 
-import { workflowStory as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
@@ -19,26 +19,26 @@ npx @mwillbanks/tuil add workflow operation-list operation-tree splash-screen he
 The CLI writes source-owned components beneath the destination configured in
 `tuil.config.ts`; the default import below assumes `src/components/tuil`.
 
-<ComponentStory.WithControl />
+<PublishedStory storyId="component-acceptance" variant="Workflow" />
 
 ## Components and subcomponents
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `Workflow` | constant | `registry/workflows/workflow.tsx` |
-| `Workflow.Header` | subcomponent | `registry/workflows/workflow.tsx` |
-| `Workflow.Body` | subcomponent | `registry/workflows/workflow.tsx` |
-| `Workflow.Footer` | subcomponent | `registry/workflows/workflow.tsx` |
-| `Workflow.Progress` | subcomponent | `registry/workflows/workflow.tsx` |
-| `Workflow.Errors` | subcomponent | `registry/workflows/workflow.tsx` |
-| `Workflow.Next` | subcomponent | `registry/workflows/workflow.tsx` |
-| `Workflow.Back` | subcomponent | `registry/workflows/workflow.tsx` |
-| `Workflow.Skip` | subcomponent | `registry/workflows/workflow.tsx` |
-| `Workflow.Cancel` | subcomponent | `registry/workflows/workflow.tsx` |
-| `OperationList` | function | `registry/workflows/workflow.tsx` |
-| `OperationTree` | function | `registry/workflows/workflow.tsx` |
-| `SplashScreen` | function | `registry/workflows/workflow.tsx` |
-| `HelpOverlay` | function | `registry/workflows/workflow.tsx` |
+| [`Workflow`](/docs/reference/components/workflow/workflow) | `constant Workflow` | Public constant Workflow. |
+| [`Workflow.Header`](/docs/reference/components/workflow/workflow-header) | `subcomponent Workflow.Header` | Public subcomponent Workflow.Header. |
+| [`Workflow.Body`](/docs/reference/components/workflow/workflow-body) | `subcomponent Workflow.Body` | Public subcomponent Workflow.Body. |
+| [`Workflow.Footer`](/docs/reference/components/workflow/workflow-footer) | `subcomponent Workflow.Footer` | Public subcomponent Workflow.Footer. |
+| [`Workflow.Progress`](/docs/reference/components/workflow/workflow-progress) | `subcomponent Workflow.Progress` | Public subcomponent Workflow.Progress. |
+| [`Workflow.Errors`](/docs/reference/components/workflow/workflow-errors) | `subcomponent Workflow.Errors` | Public subcomponent Workflow.Errors. |
+| [`Workflow.Next`](/docs/reference/components/workflow/workflow-next) | `subcomponent Workflow.Next` | Public subcomponent Workflow.Next. |
+| [`Workflow.Back`](/docs/reference/components/workflow/workflow-back) | `subcomponent Workflow.Back` | Public subcomponent Workflow.Back. |
+| [`Workflow.Skip`](/docs/reference/components/workflow/workflow-skip) | `subcomponent Workflow.Skip` | Public subcomponent Workflow.Skip. |
+| [`Workflow.Cancel`](/docs/reference/components/workflow/workflow-cancel) | `subcomponent Workflow.Cancel` | Public subcomponent Workflow.Cancel. |
+| [`OperationList`](/docs/reference/components/workflow/operation-list) | `function OperationList` | Public function OperationList. |
+| [`OperationTree`](/docs/reference/components/workflow/operation-tree) | `function OperationTree` | Public function OperationTree. |
+| [`SplashScreen`](/docs/reference/components/workflow/splash-screen) | `function SplashScreen` | Public function SplashScreen. |
+| [`HelpOverlay`](/docs/reference/components/workflow/help-overlay) | `function HelpOverlay` | Public function HelpOverlay. |
 
 ## Interaction
 

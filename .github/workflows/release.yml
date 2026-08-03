@@ -102,6 +102,7 @@ jobs:
             ${{ steps.release.outputs['packages/events--sha'] }}
             ${{ steps.release.outputs['packages/focus--sha'] }}
             ${{ steps.release.outputs['packages/form--sha'] }}
+            ${{ steps.release.outputs['packages/ghostty-web--sha'] }}
             ${{ steps.release.outputs['packages/hotkeys--sha'] }}
             ${{ steps.release.outputs['packages/ink--sha'] }}
             ${{ steps.release.outputs['packages/log-viewer--sha'] }}

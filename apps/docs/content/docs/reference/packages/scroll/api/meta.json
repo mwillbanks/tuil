@@ -1,0 +1,16 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "scroll-alignment",
+    "scroll-area-options",
+    "scroll-area-state",
+    "scroll-axis",
+    "scrollbar",
+    "scroll-extent",
+    "scroll-manager",
+    "scroll-position",
+    "scroll-snapshot",
+    "scroll-viewport"
+  ]
+}

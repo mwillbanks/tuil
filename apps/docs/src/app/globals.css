@@ -355,12 +355,489 @@ code {
   margin: 0 auto;
 }
 
+.ghostty-workspace {
+  display: grid;
+  gap: 0.75rem;
+  margin-block: 2rem;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-fd-border) 75%, #22d3ee);
+  border-radius: 1rem;
+  background: #07111f;
+  color: #dce8f5;
+}
+
+.ghostty-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ghostty-toolbar button {
+  border: 1px solid #22d3ee;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.75rem;
+}
+
+.ghostty-terminal {
+  min-height: 28rem;
+  overflow: hidden;
+}
+
+.ghostty-story-live > .ghostty-terminal {
+  min-height: 24rem;
+}
+
+.ghostty-story-live > pre {
+  overflow: auto;
+  min-height: 20rem;
+  margin: 0;
+  padding: 1.5rem;
+}
+
+.visual-composer {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  margin-block: 2rem;
+}
+
+.composer-header,
+.composer-workspace,
+.visual-source {
+  width: min(100%, 88rem);
+  margin-inline: auto;
+}
+
+.composer-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgb(132 154 200 / 14%);
+  padding-bottom: 1rem;
+}
+
+.composer-header h2,
+.composer-panel h2,
+.visual-preview h2,
+.visual-source h2 {
+  margin: 0;
+  color: #f3f7ff;
+  font-size: 1.15rem;
+  letter-spacing: -0.025em;
+}
+
+.composer-header p:not(.composer-eyebrow),
+.composer-preview-heading span,
+.composer-panel-heading > span,
+.composer-tree-hint,
+.composer-empty {
+  margin: 0.35rem 0 0;
+  color: var(--color-fd-muted-foreground);
+  font-size: 0.78rem;
+}
+
+.composer-eyebrow {
+  margin: 0 0 0.3rem;
+  color: var(--tuil-cyan);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.composer-tree-trigger {
+  display: none;
+}
+
+.composer-workspace {
+  display: grid;
+  grid-template-columns: minmax(18rem, 28%) minmax(0, 1fr);
+  align-items: start;
+  gap: 1rem;
+}
+
+.composer-sidebar {
+  display: grid;
+  align-content: start;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.composer-panel,
+.composer-tree-desktop,
+.visual-preview,
+.visual-source {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0.75rem;
+  background: linear-gradient(145deg, rgb(13 20 35 / 88%), rgb(7 10 18 / 92%));
+}
+
+.composer-panel-heading,
+.composer-tree-heading,
+.composer-preview-heading,
+.composer-tree-modal-close {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.composer-tree-modal-close {
+  justify-content: end;
+}
+
+.composer-panel-heading code {
+  max-width: 9rem;
+  overflow: hidden;
+  color: var(--tuil-cyan);
+  font-size: 0.66rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.composer-field {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, 0.75fr) minmax(0, 1.25fr);
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  color: #aebbd2;
+  font-size: 0.74rem;
+}
+
+.composer-field > span {
+  overflow-wrap: anywhere;
+}
+
+.composer-field :is(input, select),
+.composer-check input {
+  min-width: 0;
+  border: 1px solid rgb(132 154 200 / 22%);
+  border-radius: 0.42rem;
+  background: #0a1120;
+  color: #edf3ff;
+  accent-color: var(--tuil-cyan);
+}
+
+.composer-field :is(input, select) {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 2.2rem;
+  padding: 0.42rem 0.55rem;
+}
+
+.composer-field :is(input, select):focus-visible,
+.composer-check input:focus-visible,
+.composer-component-list button:focus-visible,
+.composer-actions button:focus-visible,
+.composer-tree-trigger:focus-visible,
+.composer-tree-modal button:focus-visible,
+.visual-source button:focus-visible {
+  outline: 2px solid var(--tuil-cyan);
+  outline-offset: 2px;
+}
+
+.composer-component-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem;
+  max-height: 18rem;
+  overflow: auto;
+  padding-right: 0.15rem;
+}
+
+.composer-component-list button,
+.composer-actions button,
+.composer-tree-trigger,
+.composer-tree-modal-close button,
+.visual-source button,
+.file-button {
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0.4rem;
+  background: rgb(17 26 45 / 72%);
+  color: #dce5f7;
+  padding: 0.4rem 0.6rem;
+}
+
+.composer-component-list button {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  font-size: 0.7rem;
+  text-align: left;
+}
+
+.composer-component-list button span {
+  color: var(--tuil-cyan);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.composer-tree-content {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.composer-tree-content ol {
+  display: grid;
+  gap: 0.35rem;
+  max-height: 20rem;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.composer-tree-content ol ol {
+  margin: 0.3rem 0 0 0.65rem;
+  border-left: 1px solid rgb(132 154 200 / 16%);
+  padding-left: 0.55rem;
+}
+
+.composer-tree-content li {
+  min-width: 0;
+}
+
+.composer-tree-content li > button {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 0.4rem;
+  background: transparent;
+  padding: 0.5rem 0.55rem;
+  color: #b9c6dc;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.7rem;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.composer-tree-content li > button[aria-pressed="true"] {
+  border-color: rgb(22 224 230 / 34%);
+  background: rgb(22 224 230 / 10%);
+  color: #effeff;
+}
+
+.composer-tree-content section {
+  margin: 0.35rem 0 0 0.55rem;
+  border-left: 1px dashed rgb(132 154 200 / 16%);
+  padding-left: 0.55rem;
+}
+
+.composer-tree-content section strong {
+  color: #7889a6;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+}
+
+.composer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.composer-actions button,
+.visual-source button,
+.file-button {
+  font-size: 0.7rem;
+}
+
+.composer-check {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #aebbd2;
+  font-size: 0.74rem;
+}
+
+.composer-check input {
+  width: 1rem;
+  height: 1rem;
+}
+
+.composer-subheading {
+  margin-top: 0.8rem;
+  border-top: 1px solid rgb(132 154 200 / 13%);
+  padding-top: 0.8rem;
+}
+
+.composer-subheading h3 {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.composer-terminal-fields {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.visual-preview {
+  min-width: 0;
+  min-height: 42rem;
+  padding: 1rem;
+}
+
+.visual-preview .ghostty-workspace {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.visual-preview .ghostty-terminal {
+  min-height: 34rem;
+  max-height: 65vh;
+  overflow: auto;
+  border: 1px solid rgb(132 154 200 / 20%);
+  border-radius: 0.7rem;
+  background: #07111f;
+}
+
+.visual-preview .ghostty-workspace > p {
+  margin: 0;
+}
+
+.visual-source {
+  margin-top: 0.25rem;
+}
+
+.file-button input {
+  display: none;
+}
+
+.visual-source pre {
+  max-width: 100%;
+  max-height: 28rem;
+  overflow: auto;
+}
+
+.composer-tree-backdrop {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  display: grid;
+  align-items: end;
+  background: rgb(2 5 12 / 72%);
+  padding: 1rem;
+}
+
+.composer-tree-modal {
+  display: grid;
+  gap: 1rem;
+  max-height: min(42rem, 88svh);
+  overflow: auto;
+  border: 1px solid rgb(22 224 230 / 30%);
+  border-radius: 1rem;
+  background: #0b111f;
+  padding: 1rem;
+  box-shadow: 0 24px 80px rgb(0 0 0 / 55%);
+}
+
+.composer-tree-modal .composer-tree-content {
+  min-height: 0;
+}
+
+@media (max-width: 800px) {
+  .composer-header {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .composer-tree-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: 100%;
+    justify-content: center;
+    background: linear-gradient(
+      90deg,
+      rgb(22 224 230 / 14%),
+      rgb(119 87 234 / 14%)
+    );
+    font-weight: 700;
+  }
+
+  .composer-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .composer-tree-desktop {
+    display: none;
+  }
+
+  .visual-preview {
+    order: -1;
+    min-height: 0;
+  }
+
+  .visual-preview .ghostty-terminal {
+    min-height: 22rem;
+    max-height: 60svh;
+  }
+
+  .composer-component-list {
+    max-height: 14rem;
+  }
+
+  .showcase-preview-heading {
+    flex-direction: column;
+  }
+
+  .showcase-preview-badge {
+    align-self: start;
+  }
+
+  .showcase-preview-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .showcase-preview .ghostty-story-live > .ghostty-terminal,
+  .showcase-preview .ghostty-story-live > pre {
+    min-height: 22rem;
+    max-height: 60svh;
+  }
+
+  .playground-explorer > nav {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .playground-explorer > nav > *,
+  .playground-explorer > nav select {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+  }
+}
+
 .playground-explorer > nav,
 .showcase-gallery > nav {
   display: flex;
+  flex-wrap: wrap;
   align-items: end;
   gap: 0.65rem;
   margin-bottom: 0.8rem;
+}
+
+.playground-explorer > nav > label,
+.showcase-gallery > nav > label {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.playground-explorer > nav select,
+.showcase-gallery > nav select {
+  max-width: 100%;
 }
 
 .playground-explorer button,
@@ -496,6 +973,145 @@ code {
   color: var(--color-fd-muted-foreground);
   font-size: 0.7rem;
   line-height: 1.55;
+}
+
+.showcase-preview {
+  grid-column: 1 / -1;
+  scroll-margin-top: 5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+  border: 1px solid color-mix(in srgb, var(--color-fd-border) 75%, #22d3ee);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, rgb(13 20 35 / 94%), rgb(7 10 18 / 96%));
+  padding: 1.25rem;
+}
+
+.showcase-preview-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgb(132 154 200 / 14%);
+  padding-bottom: 1rem;
+}
+
+.showcase-preview > .showcase-preview-heading {
+  border: 0;
+  background: transparent;
+  padding: 0 0 1rem;
+}
+
+.showcase-preview-heading h2 {
+  margin: 0;
+  color: #f3f7ff;
+  font-size: 1.35rem;
+  letter-spacing: -0.03em;
+}
+
+.showcase-preview-heading p:not(.composer-eyebrow) {
+  max-width: 48rem;
+  margin: 0.45rem 0 0;
+  color: var(--color-fd-muted-foreground);
+  font-size: 0.82rem;
+}
+
+.showcase-preview-badge {
+  flex: none;
+  border: 1px solid rgb(22 224 230 / 24%);
+  border-radius: 999px;
+  background: rgb(22 224 230 / 8%);
+  padding: 0.42rem 0.65rem;
+  color: #a9f8fa;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.68rem;
+}
+
+.showcase-preview > .ghostty-story-live {
+  margin: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.showcase-preview .ghostty-story-live > .ghostty-terminal,
+.showcase-preview .ghostty-story-live > pre {
+  min-height: 34rem;
+  max-height: 65vh;
+  overflow: auto;
+  border: 1px solid rgb(132 154 200 / 20%);
+  border-radius: 0.7rem;
+  background:
+    radial-gradient(circle at 80% 0, rgb(42 167 244 / 9%), transparent 46%),
+    #07111f;
+}
+
+.showcase-preview .ghostty-story-live > pre {
+  margin: 0;
+  padding: 1.5rem;
+}
+
+.showcase-preview-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.showcase-preview-meta > div {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+  border: 1px solid rgb(132 154 200 / 13%);
+  border-radius: 0.75rem;
+  background: rgb(13 20 35 / 74%);
+  padding: 0.9rem;
+}
+
+.showcase-preview > .showcase-preview-meta {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.showcase-preview-meta strong {
+  color: #dfe8f8;
+  font-size: 0.72rem;
+}
+
+.showcase-preview-meta span {
+  overflow-wrap: anywhere;
+  color: var(--color-fd-muted-foreground);
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
+.showcase-source {
+  border-top: 1px solid rgb(132 154 200 / 14%);
+  padding-top: 0.9rem;
+}
+
+.showcase-source summary {
+  cursor: pointer;
+  color: var(--tuil-cyan);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.showcase-source pre {
+  max-height: 22rem;
+  overflow: auto;
+  margin: 0.75rem 0 0;
+  border: 1px solid rgb(132 154 200 / 14%);
+  border-radius: 0.65rem;
+  background: #050911;
+  padding: 1rem;
+}
+
+.showcase-source p {
+  margin: 0.75rem 0 0;
+  color: var(--color-fd-muted-foreground);
+  font-size: 0.72rem;
 }
 
 .showcase-gallery > nav {

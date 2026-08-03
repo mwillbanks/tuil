@@ -34,6 +34,7 @@
     "@mwillbanks/tuil": "workspace:*",
     "@mwillbanks/tuil-devtools": "workspace:*",
     "@mwillbanks/tuil-ink": "workspace:*",
+    "@mwillbanks/tuil-story": "workspace:*",
     "@mwillbanks/tuil-testing": "workspace:*",
     "@mwillbanks/tuil-theme": "workspace:*",
     "react": "catalog:",

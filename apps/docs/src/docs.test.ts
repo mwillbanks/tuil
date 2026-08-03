@@ -1,17 +1,14 @@
-import { expect, test } from "bun:test";
+import { expect, setDefaultTimeout, test } from "bun:test";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { generateReferenceDocs } from "../../../tooling/docs/generate-reference.ts";
 import { prepareDocsAssets } from "../../../tooling/docs/prepare-assets.ts";
 import { GET } from "./app/api/search/route.ts";
-import { getLLMText } from "./lib/get-llm-text.ts";
-import {
-  localeFromPath,
-  localizeDocsHref,
-  localizeMarkdownDocsPaths,
-} from "./lib/i18n.ts";
-import { source } from "./lib/source.ts";
+import { localeFromPath } from "./lib/i18n.ts";
+import { hasDocsIcon, source } from "./lib/source.ts";
+
+setDefaultTimeout(60_000);
 
 async function countFiles(pattern: string, cwd: string): Promise<number> {
   let count = 0;
@@ -33,84 +30,58 @@ test("Fumadocs source exposes the documentation tree", () => {
   ]) {
     expect(source.getPage(page, "en")?.url).toBe(`/docs/${page.join("/")}`);
   }
-  expect(source.getPage(["concepts", "architecture"], "es")?.url).toBe(
-    "/es/docs/concepts/architecture",
-  );
-  expect(source.getLanguages().map(({ language }) => language)).toEqual([
-    "en",
-    "es",
-  ]);
+  expect(source.getLanguages().map(({ language }) => language)).toEqual(["en"]);
 });
 
 test("documentation search exposes the static export handler", () => {
   expect(GET).toBeFunction();
 });
 
-test("localized documentation keeps search and content links in locale", () => {
-  expect(localeFromPath("/es/docs/concepts/events")).toBe("es");
+test("documentation uses one English locale", () => {
+  expect(localeFromPath("/es/docs/concepts/events")).toBe("en");
   expect(localeFromPath("/docs/concepts/events")).toBe("en");
-  expect(localizeDocsHref("/docs/concepts/events", "es")).toBe(
-    "/es/docs/concepts/events",
-  );
-  expect(localizeDocsHref("/playground", "es")).toBe("/playground");
-  expect(localizeDocsHref("/docs#install", "es")).toBe("/es/docs#install");
-  expect(localizeDocsHref("/docs?tab=api", "es")).toBe("/es/docs?tab=api");
-  expect(localizeDocsHref("https://example.com/docs", "es")).toBe(
-    "https://example.com/docs",
-  );
-  expect(
-    localizeMarkdownDocsPaths(
-      '[Architecture](/docs/concepts/architecture) [Install](/docs#install) <Card href="/docs?tab=api" />',
-      "es",
-    ),
-  ).toBe(
-    '[Architecture](/es/docs/concepts/architecture) [Install](/es/docs#install) <Card href="/es/docs?tab=api" />',
-  );
-});
-
-test("localized LLM text applies locale before the deployment base path", async () => {
-  const previousBasePath = process.env["NEXT_PUBLIC_BASE_PATH"];
-  process.env["NEXT_PUBLIC_BASE_PATH"] = "/tuil";
-  try {
-    const page = {
-      data: {
-        description: "Localized page",
-        getText: () =>
-          Promise.resolve(
-            '[Install](/docs#install) <Card href="/docs/reference" />',
-          ),
-        title: "Introduction",
-      },
-      locale: "es",
-      url: "/es/docs",
-    } as unknown as Parameters<typeof getLLMText>[0];
-    const text = await getLLMText(page);
-    expect(text).toContain("Source: /tuil/es/docs");
-    expect(text).toContain("[Install](/tuil/es/docs#install)");
-    expect(text).toContain('href="/tuil/es/docs/reference"');
-    expect(text).not.toContain("](/tuil/docs");
-  } finally {
-    if (previousBasePath === undefined) {
-      delete process.env["NEXT_PUBLIC_BASE_PATH"];
-    } else {
-      process.env["NEXT_PUBLIC_BASE_PATH"] = previousBasePath;
-    }
-  }
 });
 
 test("reference generation covers every package and component family", async () => {
   await generateReferenceDocs();
   const contentRoot = resolve(import.meta.dir, "../content/docs/reference");
-  expect(await countFiles("packages/*/index.mdx", contentRoot)).toBe(30);
+  expect(await countFiles("packages/*/index.mdx", contentRoot)).toBe(31);
   expect(await countFiles("components/*/index.mdx", contentRoot)).toBe(16);
   const cliReference = await readFile(
     join(contentRoot, "packages/cli/index.mdx"),
     "utf8",
   );
-  expect(cliReference).toContain("| `InitWizard` | export |");
-  expect(cliReference).toContain("| `main` | function |");
+  expect(cliReference).toContain(
+    "[`InitWizard`](/docs/reference/packages/cli/api/init-wizard)",
+  );
+  expect(cliReference).toContain(
+    "[`main`](/docs/reference/packages/cli/api/main)",
+  );
   expect(cliReference).not.toContain("| `App` |");
   expect(cliReference).not.toContain("| `operands` |");
+
+  const manifest = (await Bun.file(
+    resolve(import.meta.dir, "../public/integrations/story-manifest.json"),
+  ).json()) as {
+    readonly stories: readonly {
+      readonly storyId: string;
+      readonly variant: string;
+    }[];
+  };
+  const publishedStories = new Set(
+    manifest.stories.map((story) => `${story.storyId}:${story.variant}`),
+  );
+  for await (const path of new Bun.Glob("components/**/*.mdx").scan({
+    cwd: contentRoot,
+    absolute: true,
+  })) {
+    const content = await Bun.file(path).text();
+    for (const match of content.matchAll(
+      /<PublishedStory storyId="([^"]+)" variant="([^"]+)" \/>/gu,
+    )) {
+      expect(publishedStories.has(`${match[1]}:${match[2]}`)).toBeTrue();
+    }
+  }
 });
 
 test("generated package examples compile their documented imports", async () => {
@@ -141,6 +112,7 @@ test("generated package examples compile their documented imports", async () => 
     expect(entrypoints.length).toBeGreaterThan(0);
     const result = await Bun.build({
       entrypoints,
+      external: ["@mwillbanks/tuil-ghostty-web"],
       outdir: join(directory, "out"),
       target: "bun",
     });
@@ -167,8 +139,18 @@ test("documentation assets preserve the repository-owned logo", async () => {
           storyTitle: "Components/Foundation",
           variant: "Running",
           frame: "Build pipeline",
+          ansiFrame: "Build pipeline",
+          htmlFrame: "Build pipeline",
+          description: "Executable foundation story.",
+          source: "renderStoryRequest(catalog, request);",
+          args: {},
+          argSchema: {},
+          semantics: [],
           events: [],
+          actions: ["render"],
           focus: ["Run build (button)"],
+          capabilities: ["keyboard", "focus"],
+          packageDependencies: ["@mwillbanks/tuil-story"],
           controls: {
             height: 24,
             interactive: true,
@@ -181,6 +163,11 @@ test("documentation assets preserve the repository-owned logo", async () => {
     expect(await readFile(join(directory, "logo.svg"), "utf8")).toBe(
       await readFile(logoSource, "utf8"),
     );
+    expect(
+      await Bun.file(
+        join(directory, "integrations/story-manifest.json"),
+      ).json(),
+    ).toMatchObject({ version: 1 });
     expect(await readFile(join(directory, ".nojekyll"), "utf8")).toBe("");
     expect(
       JSON.parse(
@@ -215,6 +202,7 @@ test("package-manager commands use translatable npm code fences", async () => {
 test("every documentation navigation item declares an icon", async () => {
   const contentRoot = resolve(import.meta.dir, "../content/docs");
   const missingIcons: string[] = [];
+  const unknownIcons: string[] = [];
   for await (const path of new Bun.Glob("**/*.{mdx,json}").scan({
     cwd: contentRoot,
     absolute: true,
@@ -228,6 +216,11 @@ test("every documentation navigation item declares an icon", async () => {
     ) {
       missingIcons.push(path);
     }
+    for (const match of content.matchAll(/(?:^icon:\s+|"icon":\s*")(\w+)/gm)) {
+      const icon = match[1];
+      if (icon && !hasDocsIcon(icon)) unknownIcons.push(`${path}:${icon}`);
+    }
   }
   expect(missingIcons).toEqual([]);
+  expect(unknownIcons).toEqual([]);
 });

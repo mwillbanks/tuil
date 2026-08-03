@@ -38,49 +38,49 @@ flowchart LR
 
 ## API
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `AppLifecycleState` | type | `packages/core/src/lifecycle.ts` |
-| `ColorDepth` | type | `packages/core/src/terminal.ts` |
-| `Command` | interface | `packages/core/src/commands.ts` |
-| `CommandContext` | interface | `packages/core/src/commands.ts` |
-| `CommandExecution` | interface | `packages/core/src/commands.ts` |
-| `CommandRegistry` | class | `packages/core/src/commands.ts` |
-| `CommandRegistryChange` | type | `packages/core/src/commands.ts` |
-| `createGlobalSearchExpression` | function | `packages/core/src/text.ts` |
-| `defineCommand` | function | `packages/core/src/commands.ts` |
-| `defineService` | function | `packages/core/src/services.ts` |
-| `deleteOnDispose` | function | `packages/core/src/disposable.ts` |
-| `detectTerminalCapabilities` | function | `packages/core/src/terminal.ts` |
-| `Disposable` | interface | `packages/core/src/disposable.ts` |
-| `DisposableStack` | class | `packages/core/src/disposable.ts` |
-| `Disposer` | type | `packages/core/src/disposable.ts` |
-| `escapeTerminalControlCharacters` | function | `packages/core/src/text.ts` |
-| `hasTerminalControlCharacters` | function | `packages/core/src/text.ts` |
-| `isSafeRegularExpressionSource` | function | `packages/core/src/text.ts` |
-| `Lifecycle` | class | `packages/core/src/lifecycle.ts` |
-| `RenderMode` | type | `packages/core/src/terminal.ts` |
-| `resolveRenderMode` | function | `packages/core/src/terminal.ts` |
-| `resolveTerminalViewport` | function | `packages/core/src/terminal.ts` |
-| `SemanticMetadata` | interface | `packages/core/src/semantics.ts` |
-| `SemanticRole` | type | `packages/core/src/semantics.ts` |
-| `ServiceContainer` | class | `packages/core/src/services.ts` |
-| `ServiceDefinition` | interface | `packages/core/src/services.ts` |
-| `ServiceFactoryContext` | interface | `packages/core/src/services.ts` |
-| `ServiceMap` | type | `packages/core/src/services.ts` |
-| `sliceTerminalText` | function | `packages/core/src/text.ts` |
-| `TerminalBounds` | interface | `packages/core/src/semantics.ts` |
-| `TerminalCapabilities` | interface | `packages/core/src/terminal.ts` |
-| `TerminalCapabilityInput` | interface | `packages/core/src/terminal.ts` |
-| `TerminalInputProbe` | interface | `packages/core/src/terminal.ts` |
-| `TerminalOutputProbe` | interface | `packages/core/src/terminal.ts` |
-| `TerminalPlatform` | type | `packages/core/src/terminal.ts` |
-| `terminalTextWidth` | function | `packages/core/src/text.ts` |
-| `TerminalViewport` | type | `packages/core/src/terminal.ts` |
-| `terminalViewportBreakpoints` | constant | `packages/core/src/terminal.ts` |
-| `toDisposable` | function | `packages/core/src/disposable.ts` |
-| `truncateTerminalText` | function | `packages/core/src/text.ts` |
-| `wrapTerminalText` | function | `packages/core/src/text.ts` |
+| [`AppLifecycleState`](/docs/reference/packages/core/api/app-lifecycle-state) | `type AppLifecycleState` | Public type AppLifecycleState. |
+| [`ColorDepth`](/docs/reference/packages/core/api/color-depth) | `type ColorDepth` | Public type ColorDepth. |
+| [`Command`](/docs/reference/packages/core/api/command) | `interface Command` | Public interface Command. |
+| [`CommandContext`](/docs/reference/packages/core/api/command-context) | `interface CommandContext` | Public interface CommandContext. |
+| [`CommandExecution`](/docs/reference/packages/core/api/command-execution) | `interface CommandExecution` | Public interface CommandExecution. |
+| [`CommandRegistry`](/docs/reference/packages/core/api/command-registry) | `class CommandRegistry` | Public class CommandRegistry. |
+| [`CommandRegistryChange`](/docs/reference/packages/core/api/command-registry-change) | `type CommandRegistryChange` | Public type CommandRegistryChange. |
+| [`createGlobalSearchExpression`](/docs/reference/packages/core/api/create-global-search-expression) | `function createGlobalSearchExpression` | Public function createGlobalSearchExpression. |
+| [`defineCommand`](/docs/reference/packages/core/api/define-command) | `function defineCommand` | Public function defineCommand. |
+| [`defineService`](/docs/reference/packages/core/api/define-service) | `function defineService` | Public function defineService. |
+| [`deleteOnDispose`](/docs/reference/packages/core/api/delete-on-dispose) | `function deleteOnDispose` | Public function deleteOnDispose. |
+| [`detectTerminalCapabilities`](/docs/reference/packages/core/api/detect-terminal-capabilities) | `function detectTerminalCapabilities` | Public function detectTerminalCapabilities. |
+| [`Disposable`](/docs/reference/packages/core/api/disposable) | `interface Disposable` | Public interface Disposable. |
+| [`DisposableStack`](/docs/reference/packages/core/api/disposable-stack) | `class DisposableStack` | Public class DisposableStack. |
+| [`Disposer`](/docs/reference/packages/core/api/disposer) | `type Disposer` | Public type Disposer. |
+| [`escapeTerminalControlCharacters`](/docs/reference/packages/core/api/escape-terminal-control-characters) | `function escapeTerminalControlCharacters` | Public function escapeTerminalControlCharacters. |
+| [`hasTerminalControlCharacters`](/docs/reference/packages/core/api/has-terminal-control-characters) | `function hasTerminalControlCharacters` | Public function hasTerminalControlCharacters. |
+| [`isSafeRegularExpressionSource`](/docs/reference/packages/core/api/is-safe-regular-expression-source) | `function isSafeRegularExpressionSource` | Public function isSafeRegularExpressionSource. |
+| [`Lifecycle`](/docs/reference/packages/core/api/lifecycle) | `class Lifecycle` | Public class Lifecycle. |
+| [`RenderMode`](/docs/reference/packages/core/api/render-mode) | `type RenderMode` | Public type RenderMode. |
+| [`resolveRenderMode`](/docs/reference/packages/core/api/resolve-render-mode) | `function resolveRenderMode` | Public function resolveRenderMode. |
+| [`resolveTerminalViewport`](/docs/reference/packages/core/api/resolve-terminal-viewport) | `function resolveTerminalViewport` | Public function resolveTerminalViewport. |
+| [`SemanticMetadata`](/docs/reference/packages/core/api/semantic-metadata) | `interface SemanticMetadata` | Public interface SemanticMetadata. |
+| [`SemanticRole`](/docs/reference/packages/core/api/semantic-role) | `type SemanticRole` | Public type SemanticRole. |
+| [`ServiceContainer`](/docs/reference/packages/core/api/service-container) | `class ServiceContainer` | Public class ServiceContainer. |
+| [`ServiceDefinition`](/docs/reference/packages/core/api/service-definition) | `interface ServiceDefinition` | Public interface ServiceDefinition. |
+| [`ServiceFactoryContext`](/docs/reference/packages/core/api/service-factory-context) | `interface ServiceFactoryContext` | Public interface ServiceFactoryContext. |
+| [`ServiceMap`](/docs/reference/packages/core/api/service-map) | `type ServiceMap` | Public type ServiceMap. |
+| [`sliceTerminalText`](/docs/reference/packages/core/api/slice-terminal-text) | `function sliceTerminalText` | Public function sliceTerminalText. |
+| [`TerminalBounds`](/docs/reference/packages/core/api/terminal-bounds) | `interface TerminalBounds` | Public interface TerminalBounds. |
+| [`TerminalCapabilities`](/docs/reference/packages/core/api/terminal-capabilities) | `interface TerminalCapabilities` | Public interface TerminalCapabilities. |
+| [`TerminalCapabilityInput`](/docs/reference/packages/core/api/terminal-capability-input) | `interface TerminalCapabilityInput` | Public interface TerminalCapabilityInput. |
+| [`TerminalInputProbe`](/docs/reference/packages/core/api/terminal-input-probe) | `interface TerminalInputProbe` | Public interface TerminalInputProbe. |
+| [`TerminalOutputProbe`](/docs/reference/packages/core/api/terminal-output-probe) | `interface TerminalOutputProbe` | Public interface TerminalOutputProbe. |
+| [`TerminalPlatform`](/docs/reference/packages/core/api/terminal-platform) | `type TerminalPlatform` | Public type TerminalPlatform. |
+| [`terminalTextWidth`](/docs/reference/packages/core/api/terminal-text-width) | `function terminalTextWidth` | Public function terminalTextWidth. |
+| [`TerminalViewport`](/docs/reference/packages/core/api/terminal-viewport) | `type TerminalViewport` | Public type TerminalViewport. |
+| [`terminalViewportBreakpoints`](/docs/reference/packages/core/api/terminal-viewport-breakpoints) | `constant terminalViewportBreakpoints` | Public constant terminalViewportBreakpoints. |
+| [`toDisposable`](/docs/reference/packages/core/api/to-disposable) | `function toDisposable` | Public function toDisposable. |
+| [`truncateTerminalText`](/docs/reference/packages/core/api/truncate-terminal-text) | `function truncateTerminalText` | Public function truncateTerminalText. |
+| [`wrapTerminalText`](/docs/reference/packages/core/api/wrap-terminal-text) | `function wrapTerminalText` | Public function wrapTerminalText. |
 
 ## Events and lifecycle
 
@@ -92,6 +92,8 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { Lifecycle } from "@mwillbanks/tuil-core";
+
 const lifecycle = new Lifecycle();
 await lifecycle.transition("initializing");
 ```

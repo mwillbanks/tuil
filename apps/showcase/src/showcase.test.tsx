@@ -59,7 +59,7 @@ test("showcase renders every portable application story", async () => {
 test("story surface runner owns readiness, signals, and child lifetimes", async () => {
   const bridge = surfaceProcess(null);
   const application = surfaceProcess(3);
-  const listeners: Array<() => void> = [];
+  const listeners = new Map<string, () => void>();
   let healthAttempts = 0;
   const runtime: StorySurfaceRuntime = {
     spawn: (command) =>
@@ -70,14 +70,16 @@ test("story surface runner owns readiness, signals, and child lifetimes", async 
       return Promise.resolve(new Response(null, { status: 200 }));
     }) as unknown as typeof fetch,
     sleep: () => Promise.resolve(),
-    once: (_signal, listener) => listeners.push(listener),
+    once: (signal, listener) => listeners.set(signal, listener),
+    off: (signal, listener) => {
+      if (listeners.get(signal) === listener) listeners.delete(signal);
+    },
   };
   expect(await runStorySurface("storybook", runtime)).toBe(3);
   expect(healthAttempts).toBe(2);
-  expect(listeners).toHaveLength(2);
-  listeners[0]?.();
-  expect(application.kills).toBe(1);
-  expect(bridge.kills).toBe(2);
+  expect(listeners.size).toBe(0);
+  expect(application.kills).toBe(0);
+  expect(bridge.kills).toBe(1);
 
   await expect(runStorySurface("unknown", runtime)).rejects.toThrow(
     "Expected development surface",
@@ -189,7 +191,7 @@ test("generates bounded snapshots and documentation for the entire catalog", asy
       (count, variants) => count + Object.keys(variants).length,
       0,
     ),
-  ).toBe(108);
+  ).toBe(109);
   expect(JSON.stringify(snapshots)).not.toContain('"events"');
   expect(JSON.stringify(snapshots)).not.toContain('"actions"');
   const documentation = await generateStoryCatalogDocumentation(

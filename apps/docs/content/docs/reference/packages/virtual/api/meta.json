@@ -1,0 +1,9 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "get-visible-terminal-indexes",
+    "terminal-virtualizer-options",
+    "terminal-virtual-range"
+  ]
+}

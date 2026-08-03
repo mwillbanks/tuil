@@ -36,18 +36,18 @@ flowchart LR
 
 ## API
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `cleanup` | function | `packages/testing-ink/src/index.ts` |
-| `clickPointerTarget` | function | `packages/testing-ink/src/index.ts` |
-| `dragPointerTarget` | function | `packages/testing-ink/src/index.ts` |
-| `normalizeTerminalFrame` | export | `packages/testing-ink/src/index.ts` |
-| `renderTuil` | function | `packages/testing-ink/src/index.ts` |
-| `screen` | constant | `packages/testing-ink/src/index.ts` |
-| `SemanticScreen` | export | `packages/testing-ink/src/index.ts` |
-| `TuilTestInstance` | interface | `packages/testing-ink/src/index.ts` |
-| `TuilUser` | class | `packages/testing-ink/src/index.ts` |
-| `user` | constant | `packages/testing-ink/src/index.ts` |
+| [`cleanup`](/docs/reference/packages/testing-ink/api/cleanup) | `function cleanup` | Public function cleanup. |
+| [`clickPointerTarget`](/docs/reference/packages/testing-ink/api/click-pointer-target) | `function clickPointerTarget` | Public function clickPointerTarget. |
+| [`dragPointerTarget`](/docs/reference/packages/testing-ink/api/drag-pointer-target) | `function dragPointerTarget` | Public function dragPointerTarget. |
+| [`normalizeTerminalFrame`](/docs/reference/packages/testing-ink/api/normalize-terminal-frame) | `export normalizeTerminalFrame` | Public export normalizeTerminalFrame. |
+| [`renderTuil`](/docs/reference/packages/testing-ink/api/render-tuil) | `function renderTuil` | Public function renderTuil. |
+| [`screen`](/docs/reference/packages/testing-ink/api/screen) | `constant screen` | Public constant screen. |
+| [`SemanticScreen`](/docs/reference/packages/testing-ink/api/semantic-screen) | `export SemanticScreen` | Public export SemanticScreen. |
+| [`TuilTestInstance`](/docs/reference/packages/testing-ink/api/tuil-test-instance) | `interface TuilTestInstance` | Public interface TuilTestInstance. |
+| [`TuilUser`](/docs/reference/packages/testing-ink/api/tuil-user) | `class TuilUser` | Public class TuilUser. |
+| [`user`](/docs/reference/packages/testing-ink/api/user) | `constant user` | Public constant user. |
 
 ## Events and lifecycle
 
@@ -59,6 +59,8 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { renderTuil } from "@mwillbanks/tuil-testing-ink";
+
 const view = renderTuil(<Button id="run">Run</Button>);
 await view.press("enter");
 ```

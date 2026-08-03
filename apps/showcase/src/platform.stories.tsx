@@ -16,7 +16,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 function story(name: keyof typeof adapter.stories): Story {
-  return showcaseStory(adapter, name, "platform");
+  return showcaseStory(adapter, String(name), "platform");
 }
 
 export const Renderer = story("Renderer");

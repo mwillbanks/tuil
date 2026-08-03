@@ -1,0 +1,13 @@
+{
+  "title": "Feedback",
+  "icon": "Lightning",
+  "pages": [
+    "index",
+    "alert",
+    "progress",
+    "spinner",
+    "alert-props",
+    "progress-props",
+    "spinner-props"
+  ]
+}

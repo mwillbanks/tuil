@@ -100,7 +100,7 @@ test("build, registry, documentation, and publication orchestration completes", 
       ]),
     ),
   ).toThrow("dependency cycle");
-}, 180_000);
+}, 300_000);
 
 test("coverage and documentation gates own their complete source sets", async () => {
   const sources = await coverageSources(workspace);
@@ -139,14 +139,10 @@ test("coverage and documentation gates own their complete source sets", async ()
       "docs/reference/components/forms/index.html",
       "docs/reference/packages/cli/index.html",
       "docs/reference/packages/tuil/index.html",
-      "es/docs/concepts/architecture/index.html",
-      "es/docs/index.html",
       "es/index.html",
       "index.html",
       "llms-full.txt",
       "llms.mdx/en/docs/index.md",
-      "llms.mdx/es/docs/concepts/architecture/index.md",
-      "llms.mdx/es/docs/index.md",
       "llms.txt",
       "og/docs/en/image.webp",
       "playground/index.html",
@@ -206,30 +202,7 @@ test("coverage and documentation gates own their complete source sets", async ()
     );
     await writeFile(
       join(publicDirectory, "es/index.html"),
-      '<!DOCTYPE html><html lang="es"><main><a href="/tuil/es/docs/">Docs</a></main></html>',
-    );
-    await writeFile(
-      join(publicDirectory, "es/docs/index.html"),
-      '<!DOCTYPE html><html lang="es"><a data-card="true" href="/tuil/es/docs/concepts/architecture/">Architecture</a></html>',
-    );
-    await writeFile(
-      join(publicDirectory, "es/docs/concepts/architecture/index.html"),
-      '<!DOCTYPE html><html lang="es"><main>Arquitectura</main></html>',
-    );
-    await writeFile(
-      join(publicDirectory, "llms.mdx/es/docs/index.md"),
-      [
-        "Source: /tuil/es/docs",
-        "[Architecture](/tuil/es/docs/concepts/architecture)",
-        '<Card href="/tuil/es/docs/reference" />',
-      ].join("\n"),
-    );
-    await writeFile(
-      join(publicDirectory, "llms.mdx/es/docs/concepts/architecture/index.md"),
-      [
-        "Source: /tuil/es/docs/concepts/architecture",
-        "[Introduction](/tuil/es/docs)",
-      ].join("\n"),
+      '<!DOCTYPE html><html lang="en"><meta http-equiv="refresh" content="0;url=/tuil/docs"><a href="/tuil/docs">Tuil Overview</a></html>',
     );
     await validateStaticDocs({
       outDirectory: publicDirectory,

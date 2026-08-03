@@ -4,7 +4,7 @@ description: "Inspect streaming logs, expandable structured values, and line-ori
 icon: Database
 ---
 
-import { logsStory as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
@@ -19,23 +19,23 @@ npx @mwillbanks/tuil add log-viewer json-viewer diff-viewer markdown-viewer code
 The CLI writes source-owned components beneath the destination configured in
 `tuil.config.ts`; the default import below assumes `src/components/tuil`.
 
-<ComponentStory.WithControl />
+<PublishedStory storyId="component-acceptance" variant="LogViewer" />
 
 ## Components and subcomponents
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `LogViewer` | function | `registry/data-display/log-viewer.tsx` |
-| `JsonViewer` | function | `registry/data-display/json-viewer.tsx` |
-| `flattenJson` | function | `registry/data-display/json-viewer.tsx` |
-| `DiffViewer` | function | `registry/data-display/diff-viewer.tsx` |
-| `createLineDiff` | function | `registry/data-display/diff-viewer.tsx` |
-| `MarkdownViewer` | function | `registry/data-display/rich-content.tsx` |
-| `CodeViewer` | function | `registry/data-display/rich-content.tsx` |
-| `Timeline` | function | `registry/data-display/rich-content.tsx` |
-| `BarChart` | function | `registry/data-display/rich-content.tsx` |
-| `StructuredContentSummary` | function | `registry/data-display/rich-content.tsx` |
-| `RichDiffViewer` | function | `registry/data-display/rich-content.tsx` |
+| [`LogViewer`](/docs/reference/components/structured-viewers/log-viewer) | `function LogViewer` | Public function LogViewer. |
+| [`JsonViewer`](/docs/reference/components/structured-viewers/json-viewer) | `function JsonViewer` | Public function JsonViewer. |
+| [`flattenJson`](/docs/reference/components/structured-viewers/flatten-json) | `function flattenJson` | Public function flattenJson. |
+| [`DiffViewer`](/docs/reference/components/structured-viewers/diff-viewer) | `function DiffViewer` | Public function DiffViewer. |
+| [`createLineDiff`](/docs/reference/components/structured-viewers/create-line-diff) | `function createLineDiff` | Public function createLineDiff. |
+| [`MarkdownViewer`](/docs/reference/components/structured-viewers/markdown-viewer) | `function MarkdownViewer` | Public function MarkdownViewer. |
+| [`CodeViewer`](/docs/reference/components/structured-viewers/code-viewer) | `function CodeViewer` | Public function CodeViewer. |
+| [`Timeline`](/docs/reference/components/structured-viewers/timeline) | `function Timeline` | Public function Timeline. |
+| [`BarChart`](/docs/reference/components/structured-viewers/bar-chart) | `function BarChart` | Public function BarChart. |
+| [`StructuredContentSummary`](/docs/reference/components/structured-viewers/structured-content-summary) | `function StructuredContentSummary` | Public function StructuredContentSummary. |
+| [`RichDiffViewer`](/docs/reference/components/structured-viewers/rich-diff-viewer) | `function RichDiffViewer` | Public function RichDiffViewer. |
 
 ## Interaction
 

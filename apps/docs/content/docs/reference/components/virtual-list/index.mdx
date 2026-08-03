@@ -4,7 +4,7 @@ description: "Render large collections by projecting only the terminal-visible r
 icon: FlowArrow
 ---
 
-import { virtualStory as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
@@ -19,13 +19,13 @@ npx @mwillbanks/tuil add virtual-list
 The CLI writes source-owned components beneath the destination configured in
 `tuil.config.ts`; the default import below assumes `src/components/tuil`.
 
-<ComponentStory.WithControl />
+<PublishedStory storyId="component-acceptance" variant="VirtualList" />
 
 ## Components and subcomponents
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `VirtualList` | function | `registry/data-display/virtual-list.tsx` |
+| [`VirtualList`](/docs/reference/components/virtual-list/virtual-list) | `function VirtualList` | Public function VirtualList. |
 
 ## Interaction
 

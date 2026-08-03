@@ -9,6 +9,7 @@
   "packages/events": "0.2.0",
   "packages/focus": "0.2.1",
   "packages/form": "0.2.0",
+  "packages/ghostty-web": "1.0.0",
   "packages/hotkeys": "1.0.0",
   "packages/ink": "1.0.0",
   "packages/log-viewer": "1.0.0",

@@ -1,0 +1,29 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "apply-registry-codemods",
+    "create-registry-lockfile",
+    "file-registry-source",
+    "http-registry-source",
+    "install-result",
+    "parse-registry-item",
+    "provenance-comment",
+    "registry-client",
+    "registry-codemod",
+    "registry-compatibility-issues",
+    "registry-diff",
+    "registry-file",
+    "registry-index-entry",
+    "registry-installer",
+    "registry-install-options",
+    "registry-integrity",
+    "registry-item",
+    "registry-item-type",
+    "registry-lockfile",
+    "registry-source",
+    "registry-transform-options",
+    "remove-result",
+    "verify-registry-lockfile"
+  ]
+}

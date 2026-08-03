@@ -4,7 +4,7 @@ description: "Communicate messages, completion, and pending work with theme toke
 icon: Lightning
 ---
 
-import { feedbackStory as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
@@ -19,15 +19,15 @@ npx @mwillbanks/tuil add alert progress spinner
 The CLI writes source-owned components beneath the destination configured in
 `tuil.config.ts`; the default import below assumes `src/components/tuil`.
 
-<ComponentStory.WithControl />
+<PublishedStory storyId="component-acceptance" variant="Alert" />
 
 ## Components and subcomponents
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `Alert` | function | `registry/feedback/alert.tsx` |
-| `Progress` | function | `registry/feedback/progress.tsx` |
-| `Spinner` | function | `registry/feedback/spinner.tsx` |
+| [`Alert`](/docs/reference/components/feedback/alert) | `function Alert` | Public function Alert. |
+| [`Progress`](/docs/reference/components/feedback/progress) | `function Progress` | Public function Progress. |
+| [`Spinner`](/docs/reference/components/feedback/spinner) | `function Spinner` | Public function Spinner. |
 
 ## Interaction
 

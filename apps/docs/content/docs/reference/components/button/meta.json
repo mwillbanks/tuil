@@ -1,0 +1,5 @@
+{
+  "title": "Button",
+  "icon": "CursorClick",
+  "pages": ["index", "button", "button-props"]
+}

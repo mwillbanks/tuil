@@ -1,0 +1,15 @@
+{
+  "title": "Typography and status",
+  "icon": "BookOpenText",
+  "pages": [
+    "index",
+    "text",
+    "heading",
+    "divider",
+    "badge",
+    "text-props",
+    "heading-props",
+    "divider-props",
+    "badge-props"
+  ]
+}

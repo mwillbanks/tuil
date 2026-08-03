@@ -53,6 +53,12 @@ export const platformStoryVariants = Object.freeze({
       detail: "input · navigation · data · feedback · layout",
     },
   },
+  TerminalImage: {
+    args: {
+      area: "Terminal image",
+      detail: "RGBA fixture · full color · deterministic text fallback",
+    },
+  },
   ProductionApps: {
     args: {
       area: "Production applications",

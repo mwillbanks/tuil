@@ -16,7 +16,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 function story(name: keyof typeof adapter.stories): Story {
-  return showcaseStory(adapter, name, "production");
+  return showcaseStory(adapter, String(name), "production");
 }
 
 export const GitClient = story("GitClient");

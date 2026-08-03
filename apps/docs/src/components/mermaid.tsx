@@ -15,7 +15,37 @@ function sanitizeMermaidSvg(svg: string): string {
     );
 }
 
-export function Mermaid(props: { readonly chart: string }): ReactNode {
+function describeMermaid(chart: string): string {
+  const statements = chart
+    .replaceAll("\\n", "\n")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(
+      (line) =>
+        line.length > 0 &&
+        !/^(?:flowchart|graph|sequenceDiagram|classDiagram|stateDiagram)/u.test(
+          line,
+        ),
+    )
+    .slice(0, 8)
+    .map((line) =>
+      line
+        .replaceAll(/\w+\["([^"]+)"\]/g, "$1")
+        .replaceAll(/--?>|==>/g, " leads to ")
+        .replaceAll(/\s+/g, " "),
+    );
+  return statements.length > 0
+    ? statements.join("; ")
+    : "A diagram supporting the surrounding documentation.";
+}
+
+export function Mermaid(props: {
+  readonly chart: string;
+  readonly description?: string;
+  readonly title?: string;
+}): ReactNode {
+  const title = props.title ?? "Documentation flow diagram";
+  const description = props.description ?? describeMermaid(props.chart);
   try {
     const svg = sanitizeMermaidSvg(
       renderMermaidSVG(props.chart.replaceAll("\\n", "\n"), {
@@ -31,14 +61,19 @@ export function Mermaid(props: { readonly chart: string }): ReactNode {
       }),
     );
     return (
-      <Image
-        alt="Mermaid diagram"
-        className="tuil-mermaid"
-        height={540}
-        src={`data:image/svg+xml,${encodeURIComponent(svg)}`}
-        unoptimized
-        width={960}
-      />
+      <figure className="tuil-mermaid-figure">
+        <Image
+          alt={`${title}. ${description}`}
+          className="tuil-mermaid"
+          height={540}
+          src={`data:image/svg+xml,${encodeURIComponent(svg)}`}
+          unoptimized
+          width={960}
+        />
+        <figcaption className="sr-only">
+          <strong>{title}.</strong> {description}
+        </figcaption>
+      </figure>
     );
   } catch {
     return (
