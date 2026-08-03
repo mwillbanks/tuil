@@ -1,13 +1,6 @@
 name: Dependency security
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/security.yml"
-      - "bun.lock"
-      - "osv-scanner.toml"
-      - "**/package.json"
   schedule:
     - cron: "19 8 * * 1"
   workflow_dispatch:
