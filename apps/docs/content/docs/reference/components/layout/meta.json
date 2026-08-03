@@ -1,0 +1,27 @@
+{
+  "title": "Layout and panes",
+  "icon": "Boxes",
+  "pages": [
+    "index",
+    "box",
+    "container",
+    "stack",
+    "hstack",
+    "vstack",
+    "pane",
+    "split-pane",
+    "header",
+    "footer",
+    "sidebar",
+    "pane-tabs",
+    "scroll-area",
+    "resizable-pane",
+    "box-props",
+    "container-props",
+    "stack-props",
+    "split-pane-props",
+    "pane-tabs-props",
+    "scroll-area-props",
+    "resizable-pane-props"
+  ]
+}

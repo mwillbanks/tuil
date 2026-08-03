@@ -1,0 +1,10 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "protocol-limits",
+    "protocol-message-type",
+    "protocol-redacted-value",
+    "protocol-version"
+  ]
+}

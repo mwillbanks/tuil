@@ -4,7 +4,7 @@ description: "Layer focus-trapped dialogs, contextual help, transient notices, a
 icon: Browser
 ---
 
-import { overlaysStory as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
@@ -19,30 +19,30 @@ npx @mwillbanks/tuil add dialog confirm-dialog tooltip toast command-palette dra
 The CLI writes source-owned components beneath the destination configured in
 `tuil.config.ts`; the default import below assumes `src/components/tuil`.
 
-<ComponentStory.WithControl />
+<PublishedStory storyId="component-acceptance" variant="Dialog" />
 
 ## Components and subcomponents
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `Dialog` | constant | `registry/feedback/overlays.tsx` |
-| `Dialog.Trigger` | subcomponent | `registry/feedback/overlays.tsx` |
-| `Dialog.Content` | subcomponent | `registry/feedback/overlays.tsx` |
-| `Dialog.Title` | subcomponent | `registry/feedback/overlays.tsx` |
-| `Dialog.Description` | subcomponent | `registry/feedback/overlays.tsx` |
-| `Dialog.Confirm` | subcomponent | `registry/feedback/overlays.tsx` |
-| `Dialog.Cancel` | subcomponent | `registry/feedback/overlays.tsx` |
-| `ConfirmDialog` | function | `registry/feedback/overlays.tsx` |
-| `Tooltip` | function | `registry/feedback/overlays.tsx` |
-| `ToastProvider` | function | `registry/feedback/overlays.tsx` |
-| `useToast` | function | `registry/feedback/overlays.tsx` |
-| `Toast` | function | `registry/feedback/overlays.tsx` |
-| `ToastViewport` | function | `registry/feedback/overlays.tsx` |
-| `CommandPalette` | function | `registry/feedback/overlays.tsx` |
-| `Drawer` | constant | `registry/feedback/overlays.tsx` |
-| `Popover` | constant | `registry/feedback/overlays.tsx` |
-| `Skeleton` | function | `registry/feedback/overlays.tsx` |
-| `ErrorBoundary` | class | `registry/feedback/overlays.tsx` |
+| [`Dialog`](/docs/reference/components/overlays/dialog) | `constant Dialog` | Public constant Dialog. |
+| [`Dialog.Trigger`](/docs/reference/components/overlays/dialog-trigger) | `subcomponent Dialog.Trigger` | Public subcomponent Dialog.Trigger. |
+| [`Dialog.Content`](/docs/reference/components/overlays/dialog-content) | `subcomponent Dialog.Content` | Public subcomponent Dialog.Content. |
+| [`Dialog.Title`](/docs/reference/components/overlays/dialog-title) | `subcomponent Dialog.Title` | Public subcomponent Dialog.Title. |
+| [`Dialog.Description`](/docs/reference/components/overlays/dialog-description) | `subcomponent Dialog.Description` | Public subcomponent Dialog.Description. |
+| [`Dialog.Confirm`](/docs/reference/components/overlays/dialog-confirm) | `subcomponent Dialog.Confirm` | Public subcomponent Dialog.Confirm. |
+| [`Dialog.Cancel`](/docs/reference/components/overlays/dialog-cancel) | `subcomponent Dialog.Cancel` | Public subcomponent Dialog.Cancel. |
+| [`ConfirmDialog`](/docs/reference/components/overlays/confirm-dialog) | `function ConfirmDialog` | Public function ConfirmDialog. |
+| [`Tooltip`](/docs/reference/components/overlays/tooltip) | `function Tooltip` | Public function Tooltip. |
+| [`ToastProvider`](/docs/reference/components/overlays/toast-provider) | `function ToastProvider` | Public function ToastProvider. |
+| [`useToast`](/docs/reference/components/overlays/use-toast) | `function useToast` | Public function useToast. |
+| [`Toast`](/docs/reference/components/overlays/toast) | `function Toast` | Public function Toast. |
+| [`ToastViewport`](/docs/reference/components/overlays/toast-viewport) | `function ToastViewport` | Public function ToastViewport. |
+| [`CommandPalette`](/docs/reference/components/overlays/command-palette) | `function CommandPalette` | Public function CommandPalette. |
+| [`Drawer`](/docs/reference/components/overlays/drawer) | `constant Drawer` | Public constant Drawer. |
+| [`Popover`](/docs/reference/components/overlays/popover) | `constant Popover` | Public constant Popover. |
+| [`Skeleton`](/docs/reference/components/overlays/skeleton) | `function Skeleton` | Public function Skeleton. |
+| [`ErrorBoundary`](/docs/reference/components/overlays/error-boundary) | `class ErrorBoundary` | Public class ErrorBoundary. |
 
 ## Interaction
 

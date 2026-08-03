@@ -1,0 +1,26 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "devtools-action-context",
+    "devtools-action-contribution",
+    "devtools-action-history-snapshot",
+    "devtools-action-record",
+    "devtools-capability",
+    "devtools-contribution",
+    "devtools-extension",
+    "devtools-extension-registry",
+    "devtools-observer-contribution",
+    "devtools-observer-kind",
+    "devtools-panel",
+    "devtools-panel-contribution",
+    "devtools-panels",
+    "devtools-permission",
+    "devtools-query-contribution",
+    "devtools-store",
+    "inspect-runtime",
+    "runtime-inspection",
+    "tuil-devtools",
+    "tuil-devtools-props"
+  ]
+}

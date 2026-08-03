@@ -4,8 +4,8 @@ export const i18nConfig = {
   defaultLanguage: "en",
   fallbackLanguage: "en",
   hideLocale: "default-locale",
-  languages: ["en", "es"],
-} satisfies I18nConfig<"en" | "es">;
+  languages: ["en"],
+} satisfies I18nConfig<"en">;
 
 export const i18n = defineI18n(i18nConfig);
 
@@ -27,32 +27,14 @@ export function localizeDocsHref(
 ): string | undefined;
 export function localizeDocsHref(
   href: string | undefined,
-  locale: DocsLocale,
+  _locale: DocsLocale,
 ): string | undefined {
-  if (
-    locale === i18n.defaultLanguage ||
-    !href ||
-    !/^\/docs(?:$|[/?#])/.test(href)
-  ) {
-    return href;
-  }
-  return `/${locale}${href}`;
+  return href;
 }
 
 export function localizeMarkdownDocsPaths(
   markdown: string,
-  locale: DocsLocale,
+  _locale: DocsLocale,
 ): string {
-  if (locale === i18n.defaultLanguage) return markdown;
-  return markdown
-    .replace(
-      /(\]\()(\/docs(?:[/?#][^)\s]*)?)(\))/g,
-      (_match, open: string, path: string, close: string) =>
-        `${open}${localizeDocsHref(path, locale)}${close}`,
-    )
-    .replace(
-      /(\b(?:href|src)=["'])(\/docs(?:[/?#][^"']*)?)(["'])/g,
-      (_match, open: string, path: string, close: string) =>
-        `${open}${localizeDocsHref(path, locale)}${close}`,
-    );
+  return markdown;
 }

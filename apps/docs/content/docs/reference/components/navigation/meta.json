@@ -1,0 +1,22 @@
+{
+  "title": "Navigation",
+  "icon": "Compass",
+  "pages": [
+    "index",
+    "tabs",
+    "menu",
+    "menubar",
+    "breadcrumbs",
+    "stepper",
+    "tab-select",
+    "pagination",
+    "outline",
+    "tabs-props",
+    "menu-props",
+    "menubar-props",
+    "breadcrumbs-props",
+    "stepper-props",
+    "tab-select-props",
+    "pagination-props"
+  ]
+}

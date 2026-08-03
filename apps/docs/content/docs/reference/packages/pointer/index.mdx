@@ -36,14 +36,14 @@ flowchart LR
 
 ## API
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `DecodedPointerInput` | interface | `packages/pointer/src/index.ts` |
-| `ParsedPointerInput` | interface | `packages/pointer/src/index.ts` |
-| `parseSgrPointer` | function | `packages/pointer/src/index.ts` |
-| `PointerButton` | type | `packages/pointer/src/index.ts` |
-| `PointerEventType` | type | `packages/pointer/src/index.ts` |
-| `PointerModifiers` | interface | `packages/pointer/src/index.ts` |
+| [`DecodedPointerInput`](/docs/reference/packages/pointer/api/decoded-pointer-input) | `interface DecodedPointerInput` | Public interface DecodedPointerInput. |
+| [`ParsedPointerInput`](/docs/reference/packages/pointer/api/parsed-pointer-input) | `interface ParsedPointerInput` | Public interface ParsedPointerInput. |
+| [`parseSgrPointer`](/docs/reference/packages/pointer/api/parse-sgr-pointer) | `function parseSgrPointer` | Public function parseSgrPointer. |
+| [`PointerButton`](/docs/reference/packages/pointer/api/pointer-button) | `type PointerButton` | Public type PointerButton. |
+| [`PointerEventType`](/docs/reference/packages/pointer/api/pointer-event-type) | `type PointerEventType` | Public type PointerEventType. |
+| [`PointerModifiers`](/docs/reference/packages/pointer/api/pointer-modifiers) | `interface PointerModifiers` | Public interface PointerModifiers. |
 
 ## Events and lifecycle
 
@@ -55,6 +55,8 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { parseSgrPointer } from "@mwillbanks/tuil-pointer";
+
 const event = parseSgrPointer(sequence);
 ```
 

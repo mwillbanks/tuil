@@ -4,7 +4,7 @@ description: "Display nested typed data with stable IDs, expansion state, virtua
 icon: TreeStructure
 ---
 
-import { treeStory as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
@@ -19,13 +19,13 @@ npx @mwillbanks/tuil add tree
 The CLI writes source-owned components beneath the destination configured in
 `tuil.config.ts`; the default import below assumes `src/components/tuil`.
 
-<ComponentStory.WithControl />
+<PublishedStory storyId="component-acceptance" variant="Tree" />
 
 ## Components and subcomponents
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `Tree` | function | `registry/data-display/tree.tsx` |
+| [`Tree`](/docs/reference/components/tree/tree) | `function Tree` | Public function Tree. |
 
 ## Interaction
 

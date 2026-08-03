@@ -4,21 +4,20 @@ description: "Render terminal images when the capability profile permits them an
 icon: Aperture
 ---
 
-import { imageStory as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
 Render terminal images when the capability profile permits them and deterministic text fallbacks everywhere else.
 
-<ComponentStory.WithControl />
+<PublishedStory storyId="platform-expansion" variant="TerminalImage" />
 
 ## Components and subcomponents
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `Image` | component | `packages/ink/src/image.tsx` |
-| `resolveImageProtocol` | component | `packages/ink/src/image.tsx` |
-| `renderImageFallback` | component | `packages/ink/src/image.tsx` |
+| [`TerminalImage`](/docs/reference/components/terminal-image/terminal-image) | `function TerminalImage` | Public function TerminalImage. |
+| [`renderTerminalImage`](/docs/reference/components/terminal-image/render-terminal-image) | `function renderTerminalImage` | Public function renderTerminalImage. |
 
 ## Interaction
 
@@ -49,10 +48,10 @@ flowchart LR
 
 ```tsx
 import type { ComponentProps } from "react";
-import { Image } from "@mwillbanks/tuil-ink";
+import { TerminalImage } from "@mwillbanks/tuil-ink";
 
-export function Example(props: ComponentProps<typeof Image>) {
-  return <Image {...props} />;
+export function Example(props: ComponentProps<typeof TerminalImage>) {
+  return <TerminalImage {...props} />;
 }
 ```
 

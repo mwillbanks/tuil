@@ -3,6 +3,49 @@ import { cp, rm } from "node:fs/promises";
 import { basename, join, resolve } from "node:path";
 import { normalizePublishedDependencies } from "./publication-manifest.ts";
 
+interface WorkspaceManifest {
+  readonly name: string;
+  readonly dependencies?: Readonly<Record<string, string>>;
+  readonly peerDependencies?: Readonly<Record<string, string>>;
+}
+
+async function buildMissingWorkspaceDependencies(
+  directory: string,
+  manifest: WorkspaceManifest,
+): Promise<void> {
+  const workspaceRoot = resolve(directory, "../..");
+  const packageDirectories = new Map<string, string>();
+  for await (const path of new Bun.Glob("packages/*/package.json").scan({
+    cwd: workspaceRoot,
+    absolute: true,
+  })) {
+    const packageDirectory = resolve(path, "..");
+    const packageManifest = (await Bun.file(path).json()) as {
+      readonly name: string;
+    };
+    packageDirectories.set(packageManifest.name, packageDirectory);
+  }
+  const dependencies = {
+    ...manifest.dependencies,
+    ...manifest.peerDependencies,
+  };
+  for (const [dependency, version] of Object.entries(dependencies)) {
+    if (version !== "workspace:*") continue;
+    const dependencyDirectory = packageDirectories.get(dependency);
+    if (!dependencyDirectory || existsSync(join(dependencyDirectory, "dist"))) {
+      continue;
+    }
+    const process = Bun.spawn(["bun", "run", "build"], {
+      cwd: dependencyDirectory,
+      stdout: "inherit",
+      stderr: "inherit",
+    });
+    if ((await process.exited) !== 0) {
+      throw new Error(`Dependency build failed for ${dependency}`);
+    }
+  }
+}
+
 export async function buildPackage(directory = process.cwd()): Promise<void> {
   const entries = [
     "src/index.ts",
@@ -22,6 +65,24 @@ export async function buildPackage(directory = process.cwd()): Promise<void> {
     throw new Error(`No package entrypoint found in ${directory}`);
   }
   await rm(join(directory, "dist"), { recursive: true, force: true });
+  const manifest = (await Bun.file(
+    join(directory, "package.json"),
+  ).json()) as WorkspaceManifest & {
+    readonly version: string;
+    readonly description: string;
+    readonly license: string;
+    readonly homepage?: string;
+    readonly repository?: unknown;
+    readonly bugs?: unknown;
+    readonly keywords?: readonly string[];
+    readonly type?: string;
+    readonly sideEffects?: boolean;
+    readonly exports?: Readonly<Record<string, unknown>>;
+    readonly bin?: Readonly<Record<string, string>>;
+    readonly peerDependenciesMeta?: unknown;
+    readonly tuil?: unknown;
+  };
+  await buildMissingWorkspaceDependencies(directory, manifest);
 
   const build = Bun.spawn(
     [
@@ -90,7 +151,6 @@ export async function buildPackage(directory = process.cwd()): Promise<void> {
     throw new Error(`Declaration build failed for ${basename(directory)}`);
   }
 
-  const manifest = await Bun.file(join(directory, "package.json")).json();
   const workspaceManifest = (await Bun.file(
     resolve(directory, "../../package.json"),
   ).json()) as {

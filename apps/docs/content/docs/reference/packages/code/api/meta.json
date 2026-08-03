@@ -1,0 +1,18 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "code-diagnostic",
+    "code-parser",
+    "code-parse-result",
+    "code-span",
+    "code-theme",
+    "create-bundled-code-parsers",
+    "detect-code-language",
+    "incremental-syntax-engine",
+    "incremental-syntax-node",
+    "incremental-syntax-tree",
+    "regex-code-parser",
+    "tree-sitter-code-parser"
+  ]
+}

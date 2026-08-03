@@ -32,7 +32,16 @@ ignorePatterns = [
 ignoreUnresolvedImports = ["collections/browser", "collections/server"]
 
 # Source generation and package scripts use these dependencies indirectly.
-ignoreDependencies = ["collections"]
+ignoreDependencies = [
+  "@mwillbanks/tuil-ghostty-web",
+  "ansi-to-html",
+  "collections",
+  "ts-morph",
+]
+ignoreExports = [
+  { file = "packages/ghostty-web/src/shims/os.ts", exports = ["*"] },
+  { file = "packages/ghostty-web/src/shims/process.ts", exports = ["*"] },
+]
 
 [duplicates]
 minOccurrences = 2
@@ -52,6 +61,13 @@ ignore = [
   "packages/cli/src/generated-registry.ts",
   "packages/cli/src/generated-ui/**",
 ]
+
+[[health.thresholdOverrides]]
+files = ["apps/docs/src/components/visual-composer.tsx"]
+functions = ["VisualComposer"]
+maxCognitive = 30
+maxCrap = 180
+reason = "The composer coordinates the palette, tree, property editor, persistence, and live preview as one accessible workflow."
 
 [rules]
 stale-suppressions = "warn"

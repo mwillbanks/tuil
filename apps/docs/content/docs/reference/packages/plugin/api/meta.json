@@ -1,0 +1,14 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "default-extension-points",
+    "extension-point-map",
+    "extension-registry",
+    "plugin",
+    "plugin-capability",
+    "plugin-context",
+    "plugin-registry-entry",
+    "plugin-registry-query"
+  ]
+}

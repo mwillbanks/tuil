@@ -1,0 +1,29 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "create-log-theme",
+    "default-log-themes",
+    "live-indicator",
+    "log-density",
+    "log-detail",
+    "log-export-dialog",
+    "log-facet-panel",
+    "log-filter-bar",
+    "log-row",
+    "log-row-view",
+    "log-search-bar",
+    "log-source-badge",
+    "log-theme",
+    "log-theme-text-style",
+    "log-theme-variant",
+    "log-timeline",
+    "log-viewer",
+    "log-viewer-model",
+    "log-viewer-model-options",
+    "log-viewer-props",
+    "parse-error-row",
+    "structured-value",
+    "trace-context"
+  ]
+}

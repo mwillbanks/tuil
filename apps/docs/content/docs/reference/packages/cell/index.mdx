@@ -36,29 +36,29 @@ flowchart LR
 
 ## API
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `Cell` | interface | `packages/cell/src/index.ts` |
-| `CellAccelerator` | interface | `packages/cell/src/index.ts` |
-| `CellAttributes` | interface | `packages/cell/src/index.ts` |
-| `CellBuffer` | class | `packages/cell/src/index.ts` |
-| `CellFrame` | interface | `packages/cell/src/index.ts` |
-| `CellOutputMode` | type | `packages/cell/src/index.ts` |
-| `CellRendererBackend` | class | `packages/cell/src/index.ts` |
-| `CellRendererBackendOptions` | interface | `packages/cell/src/index.ts` |
-| `CellSceneNode` | interface | `packages/cell/src/index.ts` |
-| `CellTree` | type | `packages/cell/src/index.ts` |
-| `Color` | type | `packages/cell/src/index.ts` |
-| `composeCellScene` | function | `packages/cell/src/index.ts` |
-| `CursorState` | interface | `packages/cell/src/index.ts` |
-| `defaultColor` | constant | `packages/cell/src/index.ts` |
-| `diffCellFrames` | function | `packages/cell/src/index.ts` |
-| `emptyCell` | constant | `packages/cell/src/index.ts` |
-| `encodeCellOutput` | function | `packages/cell/src/index.ts` |
-| `loadNativeCellAccelerator` | function | `packages/cell/src/index.ts` |
-| `loadOptionalCellAccelerator` | function | `packages/cell/src/index.ts` |
-| `NativeCellAcceleratorOptions` | interface | `packages/cell/src/index.ts` |
-| `typescriptCellAccelerator` | constant | `packages/cell/src/index.ts` |
+| [`Cell`](/docs/reference/packages/cell/api/cell) | `interface Cell` | Public interface Cell. |
+| [`CellAccelerator`](/docs/reference/packages/cell/api/cell-accelerator) | `interface CellAccelerator` | Public interface CellAccelerator. |
+| [`CellAttributes`](/docs/reference/packages/cell/api/cell-attributes) | `interface CellAttributes` | Public interface CellAttributes. |
+| [`CellBuffer`](/docs/reference/packages/cell/api/cell-buffer) | `class CellBuffer` | Public class CellBuffer. |
+| [`CellFrame`](/docs/reference/packages/cell/api/cell-frame) | `interface CellFrame` | Public interface CellFrame. |
+| [`CellOutputMode`](/docs/reference/packages/cell/api/cell-output-mode) | `type CellOutputMode` | Public type CellOutputMode. |
+| [`CellRendererBackend`](/docs/reference/packages/cell/api/cell-renderer-backend) | `class CellRendererBackend` | Public class CellRendererBackend. |
+| [`CellRendererBackendOptions`](/docs/reference/packages/cell/api/cell-renderer-backend-options) | `interface CellRendererBackendOptions` | Public interface CellRendererBackendOptions. |
+| [`CellSceneNode`](/docs/reference/packages/cell/api/cell-scene-node) | `interface CellSceneNode` | Public interface CellSceneNode. |
+| [`CellTree`](/docs/reference/packages/cell/api/cell-tree) | `type CellTree` | Public type CellTree. |
+| [`Color`](/docs/reference/packages/cell/api/color) | `type Color` | Public type Color. |
+| [`composeCellScene`](/docs/reference/packages/cell/api/compose-cell-scene) | `function composeCellScene` | Public function composeCellScene. |
+| [`CursorState`](/docs/reference/packages/cell/api/cursor-state) | `interface CursorState` | Public interface CursorState. |
+| [`defaultColor`](/docs/reference/packages/cell/api/default-color) | `constant defaultColor` | Public constant defaultColor. |
+| [`diffCellFrames`](/docs/reference/packages/cell/api/diff-cell-frames) | `function diffCellFrames` | Public function diffCellFrames. |
+| [`emptyCell`](/docs/reference/packages/cell/api/empty-cell) | `constant emptyCell` | Public constant emptyCell. |
+| [`encodeCellOutput`](/docs/reference/packages/cell/api/encode-cell-output) | `function encodeCellOutput` | Public function encodeCellOutput. |
+| [`loadNativeCellAccelerator`](/docs/reference/packages/cell/api/load-native-cell-accelerator) | `function loadNativeCellAccelerator` | Public function loadNativeCellAccelerator. |
+| [`loadOptionalCellAccelerator`](/docs/reference/packages/cell/api/load-optional-cell-accelerator) | `function loadOptionalCellAccelerator` | Public function loadOptionalCellAccelerator. |
+| [`NativeCellAcceleratorOptions`](/docs/reference/packages/cell/api/native-cell-accelerator-options) | `interface NativeCellAcceleratorOptions` | Public interface NativeCellAcceleratorOptions. |
+| [`typescriptCellAccelerator`](/docs/reference/packages/cell/api/typescript-cell-accelerator) | `constant typescriptCellAccelerator` | Public constant typescriptCellAccelerator. |
 
 ## Events and lifecycle
 
@@ -70,6 +70,8 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { CellBuffer } from "@mwillbanks/tuil-cell";
+
 const buffer = new CellBuffer(80, 24);
 buffer.write(0, 0, "Ready");
 ```

@@ -1,0 +1,22 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "create-tuil-ghostty-document-app",
+    "create-tuil-ghostty-document-session",
+    "create-tuil-ghostty-feasibility-app",
+    "create-tuil-ghostty-story-app",
+    "generate-playground-tsx",
+    "initialize-tuil-ghostty",
+    "mount-tuil-ghostty",
+    "playground-component-catalog",
+    "playground-document-v1",
+    "playground-node-v1",
+    "tuil-ghostty-accessibility-options",
+    "tuil-ghostty-instance",
+    "tuil-ghostty-mount-options",
+    "tuil-ghostty-story-options",
+    "tuil-ghostty-terminal-options",
+    "validate-playground-document"
+  ]
+}

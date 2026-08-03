@@ -1,0 +1,23 @@
+{
+  "title": "Logs, JSON, and diffs",
+  "icon": "Database",
+  "pages": [
+    "index",
+    "log-viewer",
+    "json-viewer",
+    "flatten-json",
+    "diff-viewer",
+    "create-line-diff",
+    "markdown-viewer",
+    "code-viewer",
+    "timeline",
+    "bar-chart",
+    "structured-content-summary",
+    "rich-diff-viewer",
+    "log-viewer-props",
+    "json-viewer-props",
+    "diff-viewer-props",
+    "markdown-viewer-props",
+    "code-viewer-props"
+  ]
+}

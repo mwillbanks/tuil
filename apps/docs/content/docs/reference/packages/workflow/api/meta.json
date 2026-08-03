@@ -1,0 +1,24 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "create-workflow",
+    "define-operation-step",
+    "define-step",
+    "define-workflow",
+    "persisted-workflow",
+    "transition",
+    "workflow-context",
+    "workflow-definition",
+    "workflow-event",
+    "workflow-event-type",
+    "workflow-parallel-branch",
+    "workflow-parallel-snapshot",
+    "workflow-persistence",
+    "workflow-runner",
+    "workflow-snapshot",
+    "workflow-status",
+    "workflow-step",
+    "workflow-transition"
+  ]
+}

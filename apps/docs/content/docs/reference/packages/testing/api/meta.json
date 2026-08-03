@@ -1,0 +1,16 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "default-terminal-story-controls",
+    "define-tuil-stories",
+    "normalize-terminal-frame",
+    "queryable-semantic-node",
+    "semantic-query",
+    "semantic-screen",
+    "semantic-snapshot",
+    "terminal-story-controls",
+    "tuil-story",
+    "tuil-story-definition"
+  ]
+}

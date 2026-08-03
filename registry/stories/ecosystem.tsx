@@ -6,6 +6,7 @@ import {
   Button,
   Heading,
   Progress,
+  TerminalImage,
   Text,
 } from "@mwillbanks/tuil-ink";
 import {
@@ -17,6 +18,7 @@ import { LayoutProjection } from "@mwillbanks/tuil-renderer";
 import { defineTuilStories, TuilStoryCatalog } from "@mwillbanks/tuil-story";
 import { builtInFormatParsers } from "@mwillbanks/tuil-streaming";
 import type { ReactNode } from "react";
+import type { ProductionRecordSource } from "../../examples/_shared.tsx";
 import { AiCodingAssistantApplication } from "../../examples/ai-coding-assistant/src/index.tsx";
 import { DeploymentDashboardApplication } from "../../examples/deployment-dashboard/src/index.tsx";
 import { DocsBrowserApplication } from "../../examples/docs-browser/src/index.tsx";
@@ -302,6 +304,20 @@ const platformSurfaces: Readonly<Record<string, () => ReactNode>> =
         </Checkbox>
       </Box>
     ),
+    "Terminal image": () => (
+      <TerminalImage
+        alt="Four colored fixture pixels"
+        columns={4}
+        source={{
+          width: 2,
+          height: 2,
+          data: new Uint8Array([
+            255, 64, 64, 255, 64, 255, 64, 255, 64, 64, 255, 255, 255, 220, 64,
+            255,
+          ]),
+        }}
+      />
+    ),
     "Production applications": () => (
       <Tree
         label="Production examples"
@@ -347,11 +363,79 @@ const productionApplications = {
   "docs-browser": DocsBrowserApplication,
 } as const;
 
+const productionFixtureLines: Readonly<
+  Record<keyof typeof productionApplications, readonly string[]>
+> = {
+  "git-client": [
+    JSON.stringify({ kind: "branch", name: "main", current: true }),
+    JSON.stringify({ kind: "change", status: "M", path: "src/app.tsx" }),
+  ],
+  "log-explorer": [
+    "2026-08-02T12:00:00Z INFO fixture service ready",
+    "2026-08-02T12:00:01Z WARN fixture retry bounded",
+  ],
+  "otel-console": [
+    JSON.stringify({
+      timeUnixNano: "1",
+      severityText: "INFO",
+      body: "fixture trace ready",
+      traceId: "0123456789abcdef0123456789abcdef",
+      spanId: "0123456789abcdef",
+    }),
+  ],
+  "ai-coding-assistant": [
+    JSON.stringify({
+      provider: "fixture",
+      status: "ready",
+      model: "local-demo",
+    }),
+  ],
+  "deployment-dashboard": [
+    JSON.stringify({
+      id: "api",
+      service: "API",
+      environment: "staging",
+      status: "ready",
+    }),
+  ],
+  "file-manager": ["src", "src/app.tsx", "README.md"],
+  "workflow-runner": [
+    JSON.stringify({ id: "validate", title: "Validate", status: "complete" }),
+  ],
+  "docs-browser": [
+    JSON.stringify({
+      title: "Tuil Overview",
+      path: "/docs",
+      summary: "Fixture documentation entry",
+    }),
+  ],
+};
+
+function productionFixture(
+  application: keyof typeof productionApplications,
+): ProductionRecordSource {
+  const lines = productionFixtureLines[application];
+  return {
+    async *stream() {
+      yield lines;
+    },
+    async read(path) {
+      return `Fixture preview for ${path}`;
+    },
+    async execute() {},
+  };
+}
+
 function ProductionApplicationStory(props: {
   readonly application: keyof typeof productionApplications;
+  readonly hostIntegration?: boolean;
 }): ReactNode {
   const Application = productionApplications[props.application];
-  return <Application />;
+  return props.hostIntegration ? (
+    <Application />
+  ) : (
+    <Application source={productionFixture(props.application)} />
+  );
 }
 
 export const productionStories = defineTuilStories({

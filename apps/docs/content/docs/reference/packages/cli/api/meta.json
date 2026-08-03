@@ -1,0 +1,12 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "init-answers",
+    "init-wizard",
+    "install-bundled-skills",
+    "main",
+    "registry-item",
+    "registry-item-type"
+  ]
+}

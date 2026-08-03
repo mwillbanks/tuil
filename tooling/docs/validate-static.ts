@@ -14,15 +14,11 @@ const requiredFiles = [
   "docs/reference/components/forms/index.html",
   "docs/reference/packages/cli/index.html",
   "docs/reference/packages/tuil/index.html",
-  "es/docs/concepts/architecture/index.html",
-  "es/docs/index.html",
   "es/index.html",
   "index.html",
   "integrations/story-frames.json",
   "llms-full.txt",
   "llms.mdx/en/docs/index.md",
-  "llms.mdx/es/docs/concepts/architecture/index.md",
-  "llms.mdx/es/docs/index.md",
   "llms.txt",
   "logo.svg",
   "og/docs/en/image.webp",
@@ -47,6 +43,16 @@ async function requireFile(path: string): Promise<void> {
     (await stat(path)).isFile(),
     `Expected static documentation file: ${path}`,
   );
+}
+
+async function pathExists(path: string): Promise<boolean> {
+  try {
+    await stat(path);
+    return true;
+  } catch (cause) {
+    if ((cause as NodeJS.ErrnoException).code === "ENOENT") return false;
+    throw cause;
+  }
 }
 
 function extractInternalTargets(home: string): string[] {
@@ -162,36 +168,6 @@ function containsNone(value: string, fragments: readonly string[]): boolean {
   return fragments.every((fragment) => !value.includes(fragment));
 }
 
-async function readMatchingTextFiles(
-  directory: string,
-  pattern: string,
-): Promise<readonly string[]> {
-  const contents: string[] = [];
-  for await (const path of new Bun.Glob(pattern).scan({
-    absolute: true,
-    cwd: directory,
-    onlyFiles: true,
-  })) {
-    contents.push(await readFile(path, "utf8"));
-  }
-  return contents;
-}
-
-function extractRootRelativeTargets(markdown: string): readonly string[] {
-  return [
-    ...markdown.matchAll(/\]\((\/[^)\s]+)\)/g),
-    ...markdown.matchAll(/\b(?:href|src)=["'](\/[^"']+)["']/g),
-  ].map((match) => match[1] as string);
-}
-
-function usesPathPrefix(target: string, prefix: string): boolean {
-  if (!target.startsWith(prefix)) return false;
-  const suffix = target.at(prefix.length);
-  return (
-    suffix === undefined || suffix === "/" || suffix === "?" || suffix === "#"
-  );
-}
-
 function validateAIDeploymentPaths(
   index: string,
   full: string,
@@ -206,32 +182,8 @@ function validateAIDeploymentPaths(
   );
   if (!basePath) return;
   assertStaticDocs(
-    containsNone(index, ["](/docs", "](/es/docs"]) &&
-      containsNone(full, ["Source: /docs", "Source: /es/docs"]),
+    containsNone(index, ["](/docs"]) && containsNone(full, ["Source: /docs"]),
     "AI documentation retained a domain-root documentation URL",
-  );
-}
-
-async function validateLocalizedAIOutput(
-  outDirectory: string,
-  basePath: string,
-): Promise<void> {
-  const documents = await readMatchingTextFiles(
-    join(outDirectory, "llms.mdx/es/docs"),
-    "**/*.md",
-  );
-  assertStaticDocs(
-    documents.length > 1 &&
-      documents.every((document) =>
-        document.includes(`Source: ${basePath}/es/docs`),
-      ),
-    "Localized AI documentation is incomplete",
-  );
-  const targets = documents.flatMap(extractRootRelativeTargets);
-  assertStaticDocs(
-    targets.some((target) => usesPathPrefix(target, `${basePath}/es/docs`)) &&
-      targets.every((target) => !usesPathPrefix(target, `${basePath}/docs`)),
-    "Localized AI documentation links leave the active locale",
   );
 }
 
@@ -254,21 +206,6 @@ async function validateAIOutput(
     "llms-full.txt does not contain complete reference content",
   );
   validateAIDeploymentPaths(index, full, raw, basePath);
-  await validateLocalizedAIOutput(outDirectory, basePath);
-}
-
-async function validateLocalizedHTML(outDirectory: string): Promise<void> {
-  const documents = await readMatchingTextFiles(
-    join(outDirectory, "es"),
-    "**/*.html",
-  );
-  assertStaticDocs(
-    documents.length > 2 &&
-      documents.every((document) =>
-        document.startsWith('<!DOCTYPE html><html lang="es"'),
-      ),
-    "One or more localized pages declares the wrong HTML language",
-  );
 }
 
 async function validateDocsMetadataAndNavigation(
@@ -296,29 +233,18 @@ async function validateDocsMetadataAndNavigation(
     "Documentation metadata duplicated the GitHub Pages base path",
   );
 
-  const localizedHome = await readFile(
+  const retiredSpanishHome = await readFile(
     join(outDirectory, "es/index.html"),
     "utf8",
   );
-  const localizedDocs = await readFile(
-    join(outDirectory, "es/docs/index.html"),
-    "utf8",
-  );
-  await validateLocalizedHTML(outDirectory);
   assertStaticDocs(
-    !localizedHome.includes('<html id="__next_error__"') &&
-      localizedHome.includes(`href="${basePath}/es/docs/`),
-    "Localized home page is not a static, locale-aware landing page",
+    retiredSpanishHome.includes(`${basePath}/docs`),
+    "Retired Spanish documentation does not redirect to English docs",
   );
-  const localizedCards = [
-    ...localizedDocs.matchAll(/data-card="true"[^>]*href="([^"]+)"/g),
-  ];
   assertStaticDocs(
-    localizedCards.length > 0 &&
-      localizedCards.every((match) =>
-        match[1]?.startsWith(`${basePath}/es/docs/`),
-      ),
-    "Localized documentation card links leave the active locale",
+    !(await pathExists(join(outDirectory, "es/docs"))) &&
+      !(await pathExists(join(outDirectory, "llms.mdx/es"))),
+    "Static documentation emitted retired Spanish deep routes",
   );
 }
 

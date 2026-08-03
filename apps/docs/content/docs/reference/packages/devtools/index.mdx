@@ -34,28 +34,28 @@ flowchart LR
 
 ## API
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `DevtoolsActionContext` | interface | `packages/devtools/src/extensions.ts` |
-| `DevtoolsActionContribution` | interface | `packages/devtools/src/extensions.ts` |
-| `DevtoolsActionHistorySnapshot` | interface | `packages/devtools/src/extensions.ts` |
-| `DevtoolsActionRecord` | interface | `packages/devtools/src/extensions.ts` |
-| `DevtoolsCapability` | type | `packages/devtools/src/extensions.ts` |
-| `DevtoolsContribution` | interface | `packages/devtools/src/extensions.ts` |
-| `DevtoolsExtension` | type | `packages/devtools/src/extensions.ts` |
-| `DevtoolsExtensionRegistry` | class | `packages/devtools/src/extensions.ts` |
-| `DevtoolsObserverContribution` | interface | `packages/devtools/src/extensions.ts` |
-| `DevtoolsObserverKind` | type | `packages/devtools/src/extensions.ts` |
-| `DevtoolsPanel` | type | `packages/devtools/src/index.tsx` |
-| `DevtoolsPanelContribution` | interface | `packages/devtools/src/extensions.ts` |
-| `devtoolsPanels` | constant | `packages/devtools/src/index.tsx` |
-| `DevtoolsPermission` | type | `packages/devtools/src/extensions.ts` |
-| `DevtoolsQueryContribution` | interface | `packages/devtools/src/extensions.ts` |
-| `DevtoolsStore` | class | `packages/devtools/src/index.tsx` |
-| `inspectRuntime` | function | `packages/devtools/src/index.tsx` |
-| `RuntimeInspection` | interface | `packages/devtools/src/index.tsx` |
-| `TuilDevtools` | constant | `packages/devtools/src/index.tsx` |
-| `TuilDevtoolsProps` | interface | `packages/devtools/src/index.tsx` |
+| [`DevtoolsActionContext`](/docs/reference/packages/devtools/api/devtools-action-context) | `interface DevtoolsActionContext` | Public interface DevtoolsActionContext. |
+| [`DevtoolsActionContribution`](/docs/reference/packages/devtools/api/devtools-action-contribution) | `interface DevtoolsActionContribution` | Public interface DevtoolsActionContribution. |
+| [`DevtoolsActionHistorySnapshot`](/docs/reference/packages/devtools/api/devtools-action-history-snapshot) | `interface DevtoolsActionHistorySnapshot` | Public interface DevtoolsActionHistorySnapshot. |
+| [`DevtoolsActionRecord`](/docs/reference/packages/devtools/api/devtools-action-record) | `interface DevtoolsActionRecord` | Public interface DevtoolsActionRecord. |
+| [`DevtoolsCapability`](/docs/reference/packages/devtools/api/devtools-capability) | `type DevtoolsCapability` | Public type DevtoolsCapability. |
+| [`DevtoolsContribution`](/docs/reference/packages/devtools/api/devtools-contribution) | `interface DevtoolsContribution` | Public interface DevtoolsContribution. |
+| [`DevtoolsExtension`](/docs/reference/packages/devtools/api/devtools-extension) | `type DevtoolsExtension` | Public type DevtoolsExtension. |
+| [`DevtoolsExtensionRegistry`](/docs/reference/packages/devtools/api/devtools-extension-registry) | `class DevtoolsExtensionRegistry` | Public class DevtoolsExtensionRegistry. |
+| [`DevtoolsObserverContribution`](/docs/reference/packages/devtools/api/devtools-observer-contribution) | `interface DevtoolsObserverContribution` | Public interface DevtoolsObserverContribution. |
+| [`DevtoolsObserverKind`](/docs/reference/packages/devtools/api/devtools-observer-kind) | `type DevtoolsObserverKind` | Public type DevtoolsObserverKind. |
+| [`DevtoolsPanel`](/docs/reference/packages/devtools/api/devtools-panel) | `type DevtoolsPanel` | Public type DevtoolsPanel. |
+| [`DevtoolsPanelContribution`](/docs/reference/packages/devtools/api/devtools-panel-contribution) | `interface DevtoolsPanelContribution` | Public interface DevtoolsPanelContribution. |
+| [`devtoolsPanels`](/docs/reference/packages/devtools/api/devtools-panels) | `constant devtoolsPanels` | Public constant devtoolsPanels. |
+| [`DevtoolsPermission`](/docs/reference/packages/devtools/api/devtools-permission) | `type DevtoolsPermission` | Public type DevtoolsPermission. |
+| [`DevtoolsQueryContribution`](/docs/reference/packages/devtools/api/devtools-query-contribution) | `interface DevtoolsQueryContribution` | Public interface DevtoolsQueryContribution. |
+| [`DevtoolsStore`](/docs/reference/packages/devtools/api/devtools-store) | `class DevtoolsStore` | Public class DevtoolsStore. |
+| [`inspectRuntime`](/docs/reference/packages/devtools/api/inspect-runtime) | `function inspectRuntime` | Public function inspectRuntime. |
+| [`RuntimeInspection`](/docs/reference/packages/devtools/api/runtime-inspection) | `interface RuntimeInspection` | Public interface RuntimeInspection. |
+| [`TuilDevtools`](/docs/reference/packages/devtools/api/tuil-devtools) | `constant TuilDevtools` | Public constant TuilDevtools. |
+| [`TuilDevtoolsProps`](/docs/reference/packages/devtools/api/tuil-devtools-props) | `interface TuilDevtoolsProps` | Public interface TuilDevtoolsProps. |
 
 ## Events and lifecycle
 
@@ -67,6 +67,8 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { TuilDevtools } from "@mwillbanks/tuil-devtools";
+
 render(<TuilDevtools />);
 ```
 

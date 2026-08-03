@@ -40,23 +40,23 @@ flowchart LR
 
 ## API
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `createRouter` | function | `packages/router/src/index.ts` |
-| `defineRoutes` | function | `packages/router/src/index.ts` |
-| `FocusSnapshot` | interface | `packages/router/src/index.ts` |
-| `NavigationEntry` | interface | `packages/router/src/index.ts` |
-| `NavigationSurface` | type | `packages/router/src/index.ts` |
-| `NavigationTarget` | type | `packages/router/src/index.ts` |
-| `route` | function | `packages/router/src/index.ts` |
-| `RouteContext` | interface | `packages/router/src/index.ts` |
-| `RouteDefinition` | interface | `packages/router/src/index.ts` |
-| `RouteMatch` | interface | `packages/router/src/index.ts` |
-| `RouterEvent` | interface | `packages/router/src/index.ts` |
-| `RouterEventType` | type | `packages/router/src/index.ts` |
-| `RouterState` | interface | `packages/router/src/index.ts` |
-| `TerminalRouter` | class | `packages/router/src/index.ts` |
-| `TerminalRouterOptions` | interface | `packages/router/src/index.ts` |
+| [`createRouter`](/docs/reference/packages/router/api/create-router) | `function createRouter` | Public function createRouter. |
+| [`defineRoutes`](/docs/reference/packages/router/api/define-routes) | `function defineRoutes` | Public function defineRoutes. |
+| [`FocusSnapshot`](/docs/reference/packages/router/api/focus-snapshot) | `interface FocusSnapshot` | Public interface FocusSnapshot. |
+| [`NavigationEntry`](/docs/reference/packages/router/api/navigation-entry) | `interface NavigationEntry` | Public interface NavigationEntry. |
+| [`NavigationSurface`](/docs/reference/packages/router/api/navigation-surface) | `type NavigationSurface` | Public type NavigationSurface. |
+| [`NavigationTarget`](/docs/reference/packages/router/api/navigation-target) | `type NavigationTarget` | Public type NavigationTarget. |
+| [`route`](/docs/reference/packages/router/api/route) | `function route` | Public function route. |
+| [`RouteContext`](/docs/reference/packages/router/api/route-context) | `interface RouteContext` | Public interface RouteContext. |
+| [`RouteDefinition`](/docs/reference/packages/router/api/route-definition) | `interface RouteDefinition` | Public interface RouteDefinition. |
+| [`RouteMatch`](/docs/reference/packages/router/api/route-match) | `interface RouteMatch` | Public interface RouteMatch. |
+| [`RouterEvent`](/docs/reference/packages/router/api/router-event) | `interface RouterEvent` | Public interface RouterEvent. |
+| [`RouterEventType`](/docs/reference/packages/router/api/router-event-type) | `type RouterEventType` | Public type RouterEventType. |
+| [`RouterState`](/docs/reference/packages/router/api/router-state) | `interface RouterState` | Public interface RouterState. |
+| [`TerminalRouter`](/docs/reference/packages/router/api/terminal-router) | `class TerminalRouter` | Public class TerminalRouter. |
+| [`TerminalRouterOptions`](/docs/reference/packages/router/api/terminal-router-options) | `interface TerminalRouterOptions` | Public interface TerminalRouterOptions. |
 
 ## Events and lifecycle
 
@@ -68,6 +68,8 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { createRouter, defineRoutes, route } from "@mwillbanks/tuil-router";
+
 const router = createRouter(defineRoutes({ home: route({ path: "/" }) }));
 await router.navigate("home");
 ```

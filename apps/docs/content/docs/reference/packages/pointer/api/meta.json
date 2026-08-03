@@ -1,0 +1,12 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "decoded-pointer-input",
+    "parsed-pointer-input",
+    "parse-sgr-pointer",
+    "pointer-button",
+    "pointer-event-type",
+    "pointer-modifiers"
+  ]
+}

@@ -5,6 +5,5 @@ export const revalidate = false;
 export const { staticGET: GET } = createFromSource(source, {
   localeMap: {
     en: "english",
-    es: "spanish",
   },
 });

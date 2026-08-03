@@ -4,7 +4,7 @@ description: "Provide terminal-native local navigation, command menus, hierarchi
 icon: Compass
 ---
 
-import { navigationStory as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
@@ -19,20 +19,20 @@ npx @mwillbanks/tuil add tabs menu menubar breadcrumbs stepper tab-select pagina
 The CLI writes source-owned components beneath the destination configured in
 `tuil.config.ts`; the default import below assumes `src/components/tuil`.
 
-<ComponentStory.WithControl />
+<PublishedStory storyId="component-acceptance" variant="Tabs" />
 
 ## Components and subcomponents
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `Tabs` | function | `registry/navigation/navigation.tsx` |
-| `Menu` | function | `registry/navigation/navigation.tsx` |
-| `Menubar` | function | `registry/navigation/navigation.tsx` |
-| `Breadcrumbs` | function | `registry/navigation/navigation.tsx` |
-| `Stepper` | function | `registry/navigation/navigation.tsx` |
-| `TabSelect` | constant | `registry/navigation/navigation.tsx` |
-| `Pagination` | function | `registry/navigation/navigation.tsx` |
-| `Outline` | function | `registry/navigation/navigation.tsx` |
+| [`Tabs`](/docs/reference/components/navigation/tabs) | `function Tabs` | Public function Tabs. |
+| [`Menu`](/docs/reference/components/navigation/menu) | `function Menu` | Public function Menu. |
+| [`Menubar`](/docs/reference/components/navigation/menubar) | `function Menubar` | Public function Menubar. |
+| [`Breadcrumbs`](/docs/reference/components/navigation/breadcrumbs) | `function Breadcrumbs` | Public function Breadcrumbs. |
+| [`Stepper`](/docs/reference/components/navigation/stepper) | `function Stepper` | Public function Stepper. |
+| [`TabSelect`](/docs/reference/components/navigation/tab-select) | `constant TabSelect` | Public constant TabSelect. |
+| [`Pagination`](/docs/reference/components/navigation/pagination) | `function Pagination` | Public function Pagination. |
+| [`Outline`](/docs/reference/components/navigation/outline) | `function Outline` | Public function Outline. |
 
 ## Interaction
 

@@ -1,0 +1,30 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "adapted-tan-stack-field",
+    "adapt-tan-stack-field",
+    "create-form-hook",
+    "create-form-hook-contexts",
+    "field-validator",
+    "field-validators",
+    "form-field-registration",
+    "form-options",
+    "form-validation-error",
+    "tan-stack-field-like",
+    "terminal-field-binding",
+    "terminal-field-controller",
+    "terminal-field-options",
+    "terminal-field-state",
+    "terminal-form-controller",
+    "terminal-form-provider",
+    "use-form",
+    "use-register-terminal-field",
+    "use-store",
+    "use-terminal-field",
+    "use-terminal-form-controller",
+    "use-terminal-form-snapshot",
+    "validation-context",
+    "validation-trigger"
+  ]
+}

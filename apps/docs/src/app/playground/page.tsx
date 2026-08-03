@@ -2,12 +2,8 @@ import { HomeLayout } from "fumadocs-ui/layouts/home";
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import {
-  PlaygroundExplorer,
-  type PublishedStoryFrame,
-} from "@/components/story-explorer";
+import { VisualComposer } from "@/components/visual-composer";
 import { baseOptions } from "@/lib/layout.shared";
-import storyFrames from "../../../public/integrations/story-frames.json";
 
 export const metadata: Metadata = {
   title: "Playground",
@@ -23,18 +19,15 @@ export default function PlaygroundPage(): ReactNode {
           <p>PORTABLE RUNTIME LAB</p>
           <h1>Playground</h1>
           <span>
-            Browse the same story catalog used by the native terminal
-            playground. Frames are rendered during the docs build, so this
-            experience works without a server.
+            Run the existing TUIL and Ink runtime inside Ghostty Web. The
+            complete catalog remains available as deterministic static frames.
           </span>
           <div>
             <Link href="/docs/reference/components">Component reference</Link>
             <Link href="/showcase">Open showcase</Link>
           </div>
         </header>
-        <PlaygroundExplorer
-          frames={storyFrames as readonly PublishedStoryFrame[]}
-        />
+        <VisualComposer />
       </main>
     </HomeLayout>
   );

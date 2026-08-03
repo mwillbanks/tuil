@@ -4,7 +4,7 @@ description: "Move typed items between available and selected collections withou
 icon: ArrowsClockwise
 ---
 
-import { transferStory as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
@@ -19,13 +19,13 @@ npx @mwillbanks/tuil add transfer-list
 The CLI writes source-owned components beneath the destination configured in
 `tuil.config.ts`; the default import below assumes `src/components/tuil`.
 
-<ComponentStory.WithControl />
+<PublishedStory storyId="component-acceptance" variant="TransferList" />
 
 ## Components and subcomponents
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `TransferList` | function | `registry/forms/transfer-list.tsx` |
+| [`TransferList`](/docs/reference/components/transfer-list/transfer-list) | `function TransferList` | Public function TransferList. |
 
 ## Interaction
 

@@ -4,7 +4,7 @@ description: "Render typed rows and columns with terminal-width fitting, virtual
 icon: ListBullets
 ---
 
-import { tableStory as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
@@ -19,14 +19,14 @@ npx @mwillbanks/tuil add table data-table
 The CLI writes source-owned components beneath the destination configured in
 `tuil.config.ts`; the default import below assumes `src/components/tuil`.
 
-<ComponentStory.WithControl />
+<PublishedStory storyId="component-acceptance" variant="Table" />
 
 ## Components and subcomponents
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `Table` | function | `registry/data-display/complex-data.tsx` |
-| `DataTable` | function | `registry/data-display/complex-data.tsx` |
+| [`Table`](/docs/reference/components/tables/table) | `function Table` | Public function Table. |
+| [`DataTable`](/docs/reference/components/tables/data-table) | `function DataTable` | Public function DataTable. |
 
 ## Interaction
 

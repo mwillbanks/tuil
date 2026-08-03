@@ -4,7 +4,7 @@ description: "Connect semantic terminal controls to typed form state, validation
 icon: BracketsCurly
 ---
 
-import { formsStory as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
@@ -19,39 +19,39 @@ npx @mwillbanks/tuil add field text-input text-area number-input checkbox switch
 The CLI writes source-owned components beneath the destination configured in
 `tuil.config.ts`; the default import below assumes `src/components/tuil`.
 
-<ComponentStory.WithControl />
+<PublishedStory storyId="component-acceptance" variant="Field" />
 
 ## Components and subcomponents
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `Form` | function | `registry/forms/controls.tsx` |
-| `ValidationSummary` | function | `registry/forms/controls.tsx` |
-| `Field` | function | `registry/forms/controls.tsx` |
-| `FieldLabel` | constant | `registry/forms/controls.tsx` |
-| `FieldDescription` | constant | `registry/forms/controls.tsx` |
-| `FieldError` | constant | `registry/forms/controls.tsx` |
-| `FieldHint` | constant | `registry/forms/controls.tsx` |
-| `FieldGroup` | constant | `registry/forms/controls.tsx` |
-| `FieldSet` | constant | `registry/forms/controls.tsx` |
-| `TextInput` | function | `registry/forms/controls.tsx` |
-| `TextArea` | function | `registry/forms/controls.tsx` |
-| `NumberInput` | function | `registry/forms/controls.tsx` |
-| `Checkbox` | function | `registry/forms/controls.tsx` |
-| `Switch` | function | `registry/forms/controls.tsx` |
-| `RadioGroup` | function | `registry/forms/controls.tsx` |
-| `Select` | function | `registry/forms/controls.tsx` |
-| `MultiSelect` | function | `registry/forms/controls.tsx` |
-| `Autocomplete` | function | `registry/forms/controls.tsx` |
-| `PasswordInput` | function | `registry/forms/controls.tsx` |
-| `SearchInput` | function | `registry/forms/controls.tsx` |
-| `CommandLine` | function | `registry/forms/controls.tsx` |
-| `CodeEditor` | function | `registry/forms/controls.tsx` |
-| `InlineEditor` | constant | `registry/forms/controls.tsx` |
-| `EditableTableCell` | constant | `registry/forms/controls.tsx` |
-| `EditableTreeNode` | constant | `registry/forms/controls.tsx` |
-| `FormFieldEditor` | constant | `registry/forms/controls.tsx` |
-| `DateTimeInput` | function | `registry/forms/controls.tsx` |
+| [`Form`](/docs/reference/components/forms/form) | `function Form` | Public function Form. |
+| [`ValidationSummary`](/docs/reference/components/forms/validation-summary) | `function ValidationSummary` | Public function ValidationSummary. |
+| [`Field`](/docs/reference/components/forms/field) | `function Field` | Public function Field. |
+| [`FieldLabel`](/docs/reference/components/forms/field-label) | `constant FieldLabel` | Public constant FieldLabel. |
+| [`FieldDescription`](/docs/reference/components/forms/field-description) | `constant FieldDescription` | Public constant FieldDescription. |
+| [`FieldError`](/docs/reference/components/forms/field-error) | `constant FieldError` | Public constant FieldError. |
+| [`FieldHint`](/docs/reference/components/forms/field-hint) | `constant FieldHint` | Public constant FieldHint. |
+| [`FieldGroup`](/docs/reference/components/forms/field-group) | `constant FieldGroup` | Public constant FieldGroup. |
+| [`FieldSet`](/docs/reference/components/forms/field-set) | `constant FieldSet` | Public constant FieldSet. |
+| [`TextInput`](/docs/reference/components/forms/text-input) | `function TextInput` | Public function TextInput. |
+| [`TextArea`](/docs/reference/components/forms/text-area) | `function TextArea` | Public function TextArea. |
+| [`NumberInput`](/docs/reference/components/forms/number-input) | `function NumberInput` | Public function NumberInput. |
+| [`Checkbox`](/docs/reference/components/forms/checkbox) | `function Checkbox` | Public function Checkbox. |
+| [`Switch`](/docs/reference/components/forms/switch) | `function Switch` | Public function Switch. |
+| [`RadioGroup`](/docs/reference/components/forms/radio-group) | `function RadioGroup` | Public function RadioGroup. |
+| [`Select`](/docs/reference/components/forms/select) | `function Select` | Public function Select. |
+| [`MultiSelect`](/docs/reference/components/forms/multi-select) | `function MultiSelect` | Public function MultiSelect. |
+| [`Autocomplete`](/docs/reference/components/forms/autocomplete) | `function Autocomplete` | Public function Autocomplete. |
+| [`PasswordInput`](/docs/reference/components/forms/password-input) | `function PasswordInput` | Public function PasswordInput. |
+| [`SearchInput`](/docs/reference/components/forms/search-input) | `function SearchInput` | Public function SearchInput. |
+| [`CommandLine`](/docs/reference/components/forms/command-line) | `function CommandLine` | Public function CommandLine. |
+| [`CodeEditor`](/docs/reference/components/forms/code-editor) | `function CodeEditor` | Public function CodeEditor. |
+| [`InlineEditor`](/docs/reference/components/forms/inline-editor) | `constant InlineEditor` | Public constant InlineEditor. |
+| [`EditableTableCell`](/docs/reference/components/forms/editable-table-cell) | `constant EditableTableCell` | Public constant EditableTableCell. |
+| [`EditableTreeNode`](/docs/reference/components/forms/editable-tree-node) | `constant EditableTreeNode` | Public constant EditableTreeNode. |
+| [`FormFieldEditor`](/docs/reference/components/forms/form-field-editor) | `constant FormFieldEditor` | Public constant FormFieldEditor. |
+| [`DateTimeInput`](/docs/reference/components/forms/date-time-input) | `function DateTimeInput` | Public function DateTimeInput. |
 
 ## Interaction
 

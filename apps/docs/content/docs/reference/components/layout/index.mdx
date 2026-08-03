@@ -4,7 +4,7 @@ description: "Build capability-aware rows, columns, bounded containers, split pa
 icon: Boxes
 ---
 
-import { layoutStory as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
@@ -19,25 +19,25 @@ npx @mwillbanks/tuil add box container stack split-pane header footer sidebar pa
 The CLI writes source-owned components beneath the destination configured in
 `tuil.config.ts`; the default import below assumes `src/components/tuil`.
 
-<ComponentStory.WithControl />
+<PublishedStory storyId="component-acceptance" variant="Box" />
 
 ## Components and subcomponents
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `Box` | function | `registry/primitives/box.tsx` |
-| `Container` | function | `registry/primitives/container.tsx` |
-| `Stack` | function | `registry/primitives/stack.tsx` |
-| `HStack` | function | `registry/primitives/stack.tsx` |
-| `VStack` | function | `registry/primitives/stack.tsx` |
-| `Pane` | component | `registry/primitives/box.tsx` |
-| `SplitPane` | function | `registry/layout/panes.tsx` |
-| `Header` | constant | `registry/layout/panes.tsx` |
-| `Footer` | constant | `registry/layout/panes.tsx` |
-| `Sidebar` | constant | `registry/layout/panes.tsx` |
-| `PaneTabs` | function | `registry/layout/panes.tsx` |
-| `ScrollArea` | function | `registry/layout/panes.tsx` |
-| `ResizablePane` | function | `registry/layout/resizable-pane.tsx` |
+| [`Box`](/docs/reference/components/layout/box) | `function Box` | Public function Box. |
+| [`Container`](/docs/reference/components/layout/container) | `function Container` | Public function Container. |
+| [`Stack`](/docs/reference/components/layout/stack) | `function Stack` | Public function Stack. |
+| [`HStack`](/docs/reference/components/layout/hstack) | `function HStack` | Public function HStack. |
+| [`VStack`](/docs/reference/components/layout/vstack) | `function VStack` | Public function VStack. |
+| [`Pane`](/docs/reference/components/layout/pane) | `component Pane` | Public component Pane. |
+| [`SplitPane`](/docs/reference/components/layout/split-pane) | `function SplitPane` | Public function SplitPane. |
+| [`Header`](/docs/reference/components/layout/header) | `constant Header` | Public constant Header. |
+| [`Footer`](/docs/reference/components/layout/footer) | `constant Footer` | Public constant Footer. |
+| [`Sidebar`](/docs/reference/components/layout/sidebar) | `constant Sidebar` | Public constant Sidebar. |
+| [`PaneTabs`](/docs/reference/components/layout/pane-tabs) | `function PaneTabs` | Public function PaneTabs. |
+| [`ScrollArea`](/docs/reference/components/layout/scroll-area) | `function ScrollArea` | Public function ScrollArea. |
+| [`ResizablePane`](/docs/reference/components/layout/resizable-pane) | `function ResizablePane` | Public function ResizablePane. |
 
 ## Interaction
 

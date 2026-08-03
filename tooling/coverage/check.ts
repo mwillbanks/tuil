@@ -16,11 +16,13 @@ const sourcePatterns = [
   "tooling/**/*.{ts,tsx}",
 ] as const;
 const excludedPatterns = [
+  "**/*.d.ts",
   "**/*.test.{ts,tsx}",
   "**/*.stories.tsx",
   "packages/cli/src/generated-registry.ts",
   "packages/cli/src/generated-ui/**",
   "packages/code/src/worker.ts",
+  "tooling/browser/**",
 ] as const;
 
 export async function coverageSources(

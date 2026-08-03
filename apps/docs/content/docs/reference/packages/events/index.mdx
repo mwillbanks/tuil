@@ -38,22 +38,22 @@ flowchart LR
 
 ## API
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `defineEvents` | function | `packages/events/src/index.ts` |
-| `event` | function | `packages/events/src/index.ts` |
-| `EventBus` | class | `packages/events/src/index.ts` |
-| `EventDefinition` | interface | `packages/events/src/index.ts` |
-| `EventDefinitions` | type | `packages/events/src/index.ts` |
-| `EventEmitOptions` | interface | `packages/events/src/index.ts` |
-| `EventMap` | type | `packages/events/src/index.ts` |
-| `EventPhase` | type | `packages/events/src/index.ts` |
-| `EventPriority` | type | `packages/events/src/index.ts` |
-| `EventSource` | interface | `packages/events/src/index.ts` |
-| `EventSubscriptionOptions` | interface | `packages/events/src/index.ts` |
-| `EventTarget` | interface | `packages/events/src/index.ts` |
-| `ObservedEvent` | interface | `packages/events/src/index.ts` |
-| `TuilEvent` | interface | `packages/events/src/index.ts` |
+| [`defineEvents`](/docs/reference/packages/events/api/define-events) | `function defineEvents` | Public function defineEvents. |
+| [`event`](/docs/reference/packages/events/api/event) | `function event` | Public function event. |
+| [`EventBus`](/docs/reference/packages/events/api/event-bus) | `class EventBus` | Public class EventBus. |
+| [`EventDefinition`](/docs/reference/packages/events/api/event-definition) | `interface EventDefinition` | Public interface EventDefinition. |
+| [`EventDefinitions`](/docs/reference/packages/events/api/event-definitions) | `type EventDefinitions` | Public type EventDefinitions. |
+| [`EventEmitOptions`](/docs/reference/packages/events/api/event-emit-options) | `interface EventEmitOptions` | Public interface EventEmitOptions. |
+| [`EventMap`](/docs/reference/packages/events/api/event-map) | `type EventMap` | Public type EventMap. |
+| [`EventPhase`](/docs/reference/packages/events/api/event-phase) | `type EventPhase` | Public type EventPhase. |
+| [`EventPriority`](/docs/reference/packages/events/api/event-priority) | `type EventPriority` | Public type EventPriority. |
+| [`EventSource`](/docs/reference/packages/events/api/event-source) | `interface EventSource` | Public interface EventSource. |
+| [`EventSubscriptionOptions`](/docs/reference/packages/events/api/event-subscription-options) | `interface EventSubscriptionOptions` | Public interface EventSubscriptionOptions. |
+| [`EventTarget`](/docs/reference/packages/events/api/event-target) | `interface EventTarget` | Public interface EventTarget. |
+| [`ObservedEvent`](/docs/reference/packages/events/api/observed-event) | `interface ObservedEvent` | Public interface ObservedEvent. |
+| [`TuilEvent`](/docs/reference/packages/events/api/tuil-event) | `interface TuilEvent` | Public interface TuilEvent. |
 
 ## Events and lifecycle
 
@@ -65,6 +65,8 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { defineEvents, event, EventBus } from "@mwillbanks/tuil-events";
+
 const events = new EventBus(defineEvents({ "build:done": event<{ id: string }>() }));
 await events.emit("build:done", { id: "42" });
 ```

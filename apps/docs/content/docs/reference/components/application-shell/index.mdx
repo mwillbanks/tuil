@@ -4,7 +4,7 @@ description: "Compose full-screen terminal applications from a main content regi
 icon: SquaresFour
 ---
 
-import { shellStory as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
@@ -19,15 +19,15 @@ npx @mwillbanks/tuil add app-shell app-bar status-bar
 The CLI writes source-owned components beneath the destination configured in
 `tuil.config.ts`; the default import below assumes `src/components/tuil`.
 
-<ComponentStory.WithControl />
+<PublishedStory storyId="component-acceptance" variant="AppShell" />
 
 ## Components and subcomponents
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `AppShell` | function | `registry/components/app-shell.tsx` |
-| `AppBar` | function | `registry/components/app-bar.tsx` |
-| `StatusBar` | function | `registry/components/status-bar.tsx` |
+| [`AppShell`](/docs/reference/components/application-shell/app-shell) | `function AppShell` | Public function AppShell. |
+| [`AppBar`](/docs/reference/components/application-shell/app-bar) | `function AppBar` | Public function AppBar. |
+| [`StatusBar`](/docs/reference/components/application-shell/status-bar) | `function StatusBar` | Public function StatusBar. |
 
 ## Interaction
 

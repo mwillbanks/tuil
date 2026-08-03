@@ -34,11 +34,11 @@ flowchart LR
 
 ## API
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `resolveJsonPath` | function | `packages/content/src/index.ts` |
-| `StructuredContentModel` | class | `packages/content/src/index.ts` |
-| `TreeRow` | interface | `packages/content/src/index.ts` |
+| [`resolveJsonPath`](/docs/reference/packages/content/api/resolve-json-path) | `function resolveJsonPath` | Public function resolveJsonPath. |
+| [`StructuredContentModel`](/docs/reference/packages/content/api/structured-content-model) | `class StructuredContentModel` | Public class StructuredContentModel. |
+| [`TreeRow`](/docs/reference/packages/content/api/tree-row) | `interface TreeRow` | Public interface TreeRow. |
 
 ## Events and lifecycle
 
@@ -50,6 +50,8 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { StructuredContentModel } from "@mwillbanks/tuil-content";
+
 const model = new StructuredContentModel({ service: { ready: true } });
 ```
 

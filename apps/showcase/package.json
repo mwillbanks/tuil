@@ -26,14 +26,16 @@
   "scripts": {
     "start": "bun src/index.tsx",
     "dev": "bun src/index.tsx",
-    "storybook": "bun src/with-story-server.ts storybook",
-    "build:storybook": "storybook build --output-dir dist-storybook",
+    "storybook": "bun run --cwd ../../packages/ghostty-web build && storybook dev -p 6006",
+    "build:storybook": "bun run --cwd ../../packages/ghostty-web build && storybook build --output-dir dist-storybook",
     "build": "bun build src/index.tsx --outdir dist --target bun --packages external && bun run build:storybook",
     "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
   "dependencies": {
+    "@mwillbanks/tuil-ghostty-web": "workspace:*",
     "@mwillbanks/tuil-story": "workspace:*",
+    "@mwillbanks/tuil-testing": "workspace:*",
     "@mwillbanks/tuil-theme": "workspace:*",
     "react": "catalog:",
     "ink": "catalog:",

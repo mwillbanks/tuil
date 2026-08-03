@@ -1,5 +1,6 @@
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join, relative, resolve } from "node:path";
+import { type JSDocableNode, Node, Project, SyntaxKind } from "ts-morph";
 
 interface PackageGuidance {
   readonly operation: string;
@@ -102,6 +103,16 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
       "State changes are subscription-based. UI controls expose `onValueChange`, `onSubmit`, and field-level callbacks.",
     example:
       'const form = createForm({ initialValues: { name: "" }, onSubmit: async (values) => save(values) });',
+  },
+  "ghostty-web": {
+    operation:
+      "The optional browser adapter connects the existing Ink runtime to Ghostty Web through bounded TTY streams, ordered output, input forwarding, resize events, and a semantic DOM companion.",
+    lifecycle:
+      "lazy WASM initialization → terminal mount → stream bridge → resize and input → deterministic disposal",
+    events:
+      "Ghostty input enters the existing Ink input pipeline. Output and lifecycle failures reach the owning TUIL error boundary.",
+    example:
+      "const terminal = await mountTuilGhostty({ app, element });\nawait terminal.unmount();",
   },
   hotkeys: {
     operation:
@@ -300,6 +311,7 @@ interface ComponentGroup {
   readonly title: string;
   readonly icon: string;
   readonly story: string;
+  readonly storyId?: string;
   readonly registryItems?: readonly string[];
   readonly files: readonly string[];
   readonly components: readonly string[];
@@ -313,7 +325,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "application-shell",
     title: "Application shell",
     icon: "SquaresFour",
-    story: "shellStory",
+    story: "AppShell",
     registryItems: ["app-shell", "app-bar", "status-bar"],
     files: [
       "registry/components/app-shell.tsx",
@@ -332,7 +344,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "layout",
     title: "Layout and panes",
     icon: "Boxes",
-    story: "layoutStory",
+    story: "Box",
     registryItems: [
       "box",
       "container",
@@ -378,7 +390,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "button",
     title: "Button",
     icon: "CursorClick",
-    story: "buttonStory",
+    story: "Button",
     registryItems: ["button"],
     files: ["registry/components/button.tsx"],
     components: ["Button"],
@@ -392,7 +404,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "typography-status",
     title: "Typography and status",
     icon: "BookOpenText",
-    story: "typographyStory",
+    story: "Text",
     registryItems: ["text", "heading", "divider", "badge"],
     files: [
       "registry/data-display/text.tsx",
@@ -411,7 +423,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "feedback",
     title: "Feedback",
     icon: "Lightning",
-    story: "feedbackStory",
+    story: "Alert",
     registryItems: ["alert", "progress", "spinner"],
     files: [
       "registry/feedback/alert.tsx",
@@ -428,7 +440,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "overlays",
     title: "Dialogs, toasts, and overlays",
     icon: "Browser",
-    story: "overlaysStory",
+    story: "Dialog",
     registryItems: [
       "dialog",
       "confirm-dialog",
@@ -472,7 +484,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "forms",
     title: "Forms and controls",
     icon: "BracketsCurly",
-    story: "formsStory",
+    story: "Field",
     registryItems: [
       "field",
       "text-input",
@@ -535,7 +547,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "transfer-list",
     title: "Transfer list",
     icon: "ArrowsClockwise",
-    story: "transferStory",
+    story: "TransferList",
     registryItems: ["transfer-list"],
     files: ["registry/forms/transfer-list.tsx"],
     components: ["TransferList"],
@@ -549,7 +561,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "navigation",
     title: "Navigation",
     icon: "Compass",
-    story: "navigationStory",
+    story: "Tabs",
     registryItems: [
       "tabs",
       "menu",
@@ -582,7 +594,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "tables",
     title: "Tables",
     icon: "ListBullets",
-    story: "tableStory",
+    story: "Table",
     registryItems: ["table", "data-table"],
     files: ["registry/data-display/complex-data.tsx"],
     components: ["Table", "DataTable"],
@@ -597,7 +609,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "tree",
     title: "Tree",
     icon: "TreeStructure",
-    story: "treeStory",
+    story: "Tree",
     registryItems: ["tree"],
     files: ["registry/data-display/tree.tsx"],
     components: ["Tree"],
@@ -611,7 +623,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "structured-viewers",
     title: "Logs, JSON, and diffs",
     icon: "Database",
-    story: "logsStory",
+    story: "LogViewer",
     registryItems: [
       "log-viewer",
       "json-viewer",
@@ -653,7 +665,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "virtual-list",
     title: "Virtual list",
     icon: "FlowArrow",
-    story: "virtualStory",
+    story: "VirtualList",
     registryItems: ["virtual-list"],
     files: ["registry/data-display/virtual-list.tsx"],
     components: ["VirtualList"],
@@ -667,7 +679,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "workflow",
     title: "Workflow UI",
     icon: "FlowArrow",
-    story: "workflowStory",
+    story: "Workflow",
     registryItems: [
       "workflow",
       "operation-list",
@@ -703,7 +715,7 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "initializer",
     title: "Project initializer",
     icon: "RocketLaunch",
-    story: "initializerStory",
+    story: "InitWizard",
     registryItems: ["init-wizard"],
     files: ["registry/blocks/init-wizard.tsx"],
     components: ["InitWizard"],
@@ -718,9 +730,10 @@ const componentGroups: readonly ComponentGroup[] = [
     slug: "terminal-image",
     title: "Terminal image",
     icon: "Aperture",
-    story: "imageStory",
+    story: "TerminalImage",
+    storyId: "platform-expansion",
     files: ["packages/ink/src/image.tsx"],
-    components: ["Image", "resolveImageProtocol", "renderImageFallback"],
+    components: ["TerminalImage", "renderTerminalImage"],
     summary:
       "Render terminal images when the capability profile permits them and deterministic text fallbacks everywhere else.",
     interaction:
@@ -733,6 +746,140 @@ interface ApiSymbol {
   readonly name: string;
   readonly kind: string;
   readonly file: string;
+  readonly signature?: string;
+  readonly summary?: string;
+  readonly deprecated?: string;
+  readonly members?: readonly ApiMember[];
+  readonly parameters?: readonly ApiMember[];
+  readonly returns?: ApiMember;
+  readonly throws?: readonly string[];
+  readonly relatedTypes?: readonly string[];
+  readonly sourceLine?: number;
+}
+
+interface ApiMember {
+  readonly name: string;
+  readonly type: string;
+  readonly description: string;
+  readonly optional?: boolean;
+}
+
+const packageSymbolCache = new Map<string, readonly ApiSymbol[]>();
+const globalApiTargets = new Map<string, string>();
+
+function docs(node: Node): {
+  readonly summary?: string;
+  readonly deprecated?: string;
+  readonly params: ReadonlyMap<string, string>;
+  readonly returns?: string;
+  readonly throws: readonly string[];
+} {
+  const jsDocs = Node.isJSDocable(node)
+    ? (node as JSDocableNode).getJsDocs()
+    : [];
+  const summary = jsDocs
+    .map((item) => item.getDescription().trim())
+    .filter(Boolean)
+    .join(" ");
+  const tags = jsDocs.flatMap((item) => item.getTags());
+  const comment = (tag: (typeof tags)[number]) =>
+    tag.getCommentText()?.trim() ?? "";
+  return {
+    summary: summary || undefined,
+    deprecated:
+      tags
+        .find((tag) => tag.getTagName() === "deprecated")
+        ?.getCommentText()
+        ?.trim() ?? undefined,
+    params: new Map(
+      tags
+        .filter((tag) => tag.getTagName() === "param")
+        .map((tag) => {
+          const text = comment(tag);
+          const match = /^(\S+)\s*-?\s*([\s\S]*)$/u.exec(text);
+          return [match?.[1] ?? "", match?.[2] ?? ""] as const;
+        }),
+    ),
+    returns:
+      tags
+        .find((tag) => ["return", "returns"].includes(tag.getTagName()))
+        ?.getCommentText()
+        ?.trim() || undefined,
+    throws: tags
+      .filter((tag) => ["throw", "throws"].includes(tag.getTagName()))
+      .map(comment),
+  };
+}
+
+function memberDetails(node: Node): readonly ApiMember[] | undefined {
+  if (
+    !Node.isInterfaceDeclaration(node) &&
+    !Node.isClassDeclaration(node) &&
+    !Node.isTypeAliasDeclaration(node)
+  )
+    return undefined;
+  const type = node.getType();
+  if (!type.isObject()) return undefined;
+  const properties = Node.isClassDeclaration(node)
+    ? node.getMembers().flatMap((member) => {
+        const symbol = member.getSymbol();
+        return symbol ? [symbol] : [];
+      })
+    : type.getProperties();
+  return properties.flatMap((property) => {
+    const declaration =
+      property.getValueDeclaration() ?? property.getDeclarations()[0];
+    if (!declaration) return [];
+    if (
+      Node.isModifierable(declaration) &&
+      (declaration.hasModifier(SyntaxKind.PrivateKeyword) ||
+        declaration.hasModifier(SyntaxKind.ProtectedKeyword))
+    )
+      return [];
+    const name = property.getName();
+    const memberType = property
+      .getTypeAtLocation(declaration)
+      .getText(declaration);
+    const description = docs(declaration).summary;
+    return {
+      name,
+      type: memberType,
+      description:
+        description ??
+        `The \`${name}\` member uses the \`${memberType}\` contract.`,
+      optional: property.isOptional(),
+    };
+  });
+}
+
+function parameterDetails(node: Node): readonly ApiMember[] | undefined {
+  if (!Node.isFunctionDeclaration(node)) return undefined;
+  const documentation = docs(node);
+  return node.getParameters().map((parameter) => {
+    const name = parameter.getName();
+    const type = parameter.getTypeNode()?.getText() ?? "unknown";
+    return {
+      name,
+      type,
+      optional: parameter.isOptional(),
+      description:
+        documentation.params.get(name) ??
+        `Supplies the \`${name}\` value as \`${type}\`.`,
+    };
+  });
+}
+
+function declarationText(node: Node): string {
+  if (Node.isFunctionDeclaration(node)) {
+    const body = node.getBody();
+    return body
+      ? `${node.getSourceFile().getFullText().slice(node.getStart(), body.getStart()).trim()};`
+      : node.getText();
+  }
+  if (Node.isVariableDeclaration(node)) {
+    return `export const ${node.getName()}: ${node.getTypeNode()?.getText() ?? node.getType().getText(node)};`;
+  }
+  return node.getText();
 }
 
 type MaskMode =
@@ -879,18 +1026,80 @@ function exportedName(specifier: string): string | undefined {
   return name && /^[A-Za-z_$][\w$]*$/.test(name) ? name : undefined;
 }
 
-function declaredPublicSymbols(masked: string, file: string): ApiSymbol[] {
+function declarationSummary(
+  content: string,
+  index: number,
+): string | undefined {
+  const prefix = content.slice(0, index);
+  const match = /\/\*\*([\s\S]*?)\*\/\s*$/u.exec(prefix);
+  return match?.[1]
+    ?.split("\n")
+    .map((line) => line.replace(/^\s*\*\s?/u, "").trim())
+    .filter((line) => line && !line.startsWith("@"))
+    .join(" ");
+}
+
+function findDeclarationBlockEnd(masked: string, openingBrace: number): number {
+  let depth = 0;
+  for (let index = openingBrace; index < masked.length; index++) {
+    if (masked[index] === "{") depth++;
+    if (masked[index] === "}" && --depth === 0) return index;
+  }
+  return -1;
+}
+
+function declarationLineEnd(
+  content: string,
+  semicolon: number,
+  start: number,
+): number | undefined {
+  if (semicolon >= 0) return semicolon + 1;
+  const newline = content.indexOf("\n", start);
+  return newline >= 0 ? newline : undefined;
+}
+
+function declarationSignature(
+  content: string,
+  masked: string,
+  start: number,
+  kind: string,
+): string {
+  const semicolon = masked.indexOf(";", start);
+  const openingBrace = masked.indexOf("{", start);
+  if ((kind === "function" || kind === "class") && openingBrace >= 0) {
+    return `${content.slice(start, openingBrace).trim()};`;
+  }
+  if (openingBrace >= 0 && (semicolon < 0 || openingBrace < semicolon)) {
+    const blockEnd = findDeclarationBlockEnd(masked, openingBrace);
+    if (blockEnd >= 0) return content.slice(start, blockEnd + 1).trim();
+  }
+  const lineEnd = declarationLineEnd(content, semicolon, start);
+  return lineEnd === undefined
+    ? content.slice(start).trim()
+    : content.slice(start, lineEnd).trim();
+}
+
+function declaredPublicSymbols(
+  content: string,
+  masked: string,
+  file: string,
+): ApiSymbol[] {
   const symbols: ApiSymbol[] = [];
   for (const match of masked.matchAll(
     /^export\s+(?:declare\s+)?(?:async\s+)?(class|function|interface|type|enum|const|let|var)\s+([A-Za-z_$][\w$]*)/gm,
   )) {
     const rawKind = match[1];
     const name = match[2];
-    if (!rawKind || !name) continue;
+    if (!rawKind || !name || match.index === undefined) continue;
+    const kind = ["const", "let", "var"].includes(rawKind)
+      ? "constant"
+      : rawKind;
     symbols.push({
       name,
-      kind: ["const", "let", "var"].includes(rawKind) ? "constant" : rawKind,
+      kind,
       file,
+      signature: declarationSignature(content, masked, match.index, kind),
+      summary: declarationSummary(content, match.index),
     });
   }
   return symbols;
@@ -949,7 +1158,7 @@ async function scanPublicExports(
   );
   return {
     symbols: [
-      ...declaredPublicSymbols(masked, file),
+      ...declaredPublicSymbols(content, masked, file),
       ...namedPublicSymbols(masked, runtimeExports, file),
     ],
     starExports: starExportSpecifiers(content, masked),
@@ -1026,29 +1235,203 @@ async function exportedSymbols(
     }
   }
   for (const entrypoint of entrypoints) await visit(entrypoint);
-  return [
+  const discovered = [
     ...new Map(
       symbols
         .sort((left, right) => left.name.localeCompare(right.name))
         .map((symbol) => [`${symbol.name}:${symbol.kind}`, symbol]),
     ).values(),
   ];
+  const project = new Project({
+    tsConfigFilePath: resolve(workspace, "tsconfig.json"),
+    skipAddingFilesFromTsConfig: true,
+  });
+  const declarations = new Map<string, Node>();
+  for (const entrypoint of entrypoints) {
+    const source = project.addSourceFileAtPathIfExists(entrypoint);
+    if (!source) continue;
+    for (const [name, values] of source.getExportedDeclarations()) {
+      const declaration = values[0];
+      if (declaration && !declarations.has(name))
+        declarations.set(name, declaration);
+    }
+  }
+  const publicNames = new Set(discovered.map((symbol) => symbol.name));
+  return discovered.map((symbol) => {
+    const declaration = declarations.get(symbol.name);
+    if (!declaration) return symbol;
+    const documentation = docs(declaration);
+    const signature = declarationText(declaration);
+    const identifiers = new Set(
+      signature.match(/\b[A-Z][A-Za-z0-9_$]*\b/gu) ?? [],
+    );
+    identifiers.delete(symbol.name);
+    const returnType = Node.isFunctionDeclaration(declaration)
+      ? declaration.getReturnTypeNode()?.getText()
+      : undefined;
+    return {
+      ...symbol,
+      file: relative(workspace, declaration.getSourceFile().getFilePath()),
+      signature,
+      summary: documentation.summary ?? symbol.summary,
+      deprecated: documentation.deprecated,
+      members: memberDetails(declaration),
+      parameters: parameterDetails(declaration),
+      returns: returnType
+        ? {
+            name: "return",
+            type: returnType,
+            description:
+              documentation.returns ??
+              `Returns a value that satisfies \`${returnType}\`.`,
+          }
+        : undefined,
+      throws: documentation.throws,
+      relatedTypes: [...identifiers]
+        .filter((name) => publicNames.has(name))
+        .sort(),
+      sourceLine: declaration.getStartLineNumber(),
+    };
+  });
 }
 
 function escapeTable(value: string): string {
-  return value.replaceAll("|", "\\|").replaceAll("\n", " ");
+  return value
+    .replaceAll("|", "\\|")
+    .replaceAll("{", "&#123;")
+    .replaceAll("}", "&#125;")
+    .replaceAll("\n", " ");
 }
 
-function symbolTable(symbols: readonly ApiSymbol[]): string {
+function symbolSlug(name: string): string {
+  return name
+    .replace(/([a-z0-9])([A-Z])/gu, "$1-$2")
+    .replace(/[^a-zA-Z0-9]+/gu, "-")
+    .toLowerCase();
+}
+
+function symbolTable(symbols: readonly ApiSymbol[], apiBase: string): string {
   if (symbols.length === 0) return "No public declarations were discovered.";
   return [
-    "| Export | Kind | Source |",
+    "| API | Signature | Description |",
     "| --- | --- | --- |",
     ...symbols.map(
       (symbol) =>
-        `| \`${escapeTable(symbol.name)}\` | ${symbol.kind} | \`${escapeTable(symbol.file)}\` |`,
+        `| [\`${escapeTable(symbol.name)}\`](${apiBase}/${symbolSlug(symbol.name)}) | \`${symbol.kind} ${escapeTable(symbol.name)}\` | ${escapeTable(symbol.summary ?? `Public ${symbol.kind} ${symbol.name}.`)} |`,
     ),
   ].join("\n");
+}
+
+function relatedTypeLinks(
+  type: string,
+  symbols: ReadonlyMap<string, ApiSymbol>,
+  apiBase: string,
+): string {
+  const names = [...new Set(type.match(/\b[A-Z][A-Za-z0-9_$]*\b/gu) ?? [])]
+    .filter((name) => symbols.has(name) || globalApiTargets.has(name))
+    .sort();
+  return names.length
+    ? names
+        .map(
+          (name) =>
+            `[\`${name}\`](${symbols.has(name) ? `${apiBase}/${symbolSlug(name)}` : globalApiTargets.get(name)})`,
+        )
+        .join(", ")
+    : "—";
+}
+
+function memberTable(
+  members: readonly ApiMember[] | undefined,
+  symbols: ReadonlyMap<string, ApiSymbol>,
+  apiBase: string,
+): string {
+  if (!members?.length) return "This declaration has no public members.";
+  return [
+    "| Member | Type | Required | Description | Related types |",
+    "| --- | --- | --- | --- | --- |",
+    ...members.map(
+      (member) =>
+        `| \`${escapeTable(member.name)}\` | \`${escapeTable(member.type)}\` | ${member.optional ? "No" : "Yes"} | ${escapeTable(member.description)} | ${relatedTypeLinks(member.type, symbols, apiBase)} |`,
+    ),
+  ].join("\n");
+}
+
+async function writeApiDetails(
+  directory: string,
+  packageSlug: string,
+  packageName: string,
+  symbols: readonly ApiSymbol[],
+): Promise<void> {
+  const apiDirectory = resolve(directory, "api");
+  await mkdir(apiDirectory, { recursive: true });
+  const byName = new Map(symbols.map((symbol) => [symbol.name, symbol]));
+  const apiBase = `/docs/reference/packages/${packageSlug}/api`;
+  for (const symbol of symbols) {
+    const signature = symbol.signature ?? `export { ${symbol.name} };`;
+    await writeFile(
+      resolve(apiDirectory, `${symbolSlug(symbol.name)}.mdx`),
+      `---
+title: ${JSON.stringify(symbol.name)}
+description: ${JSON.stringify(symbol.summary ?? `${symbol.kind} exported by ${packageName}.`)}
+icon: BracketsCurly
+---
+
+{/* Generated by tooling/docs/generate-reference.ts. */}
+
+## ${symbol.kind}
+
+${symbol.summary ?? `Public ${symbol.kind} exported by \`${packageName}\`.`}
+
+${symbol.deprecated ? `> **Deprecated:** ${symbol.deprecated}` : ""}
+
+\`\`\`ts
+${signature}
+\`\`\`
+
+## Members
+
+${memberTable(symbol.members, byName, apiBase)}
+
+## Parameters
+
+${memberTable(symbol.parameters, byName, apiBase)}
+
+## Returns
+
+${symbol.returns ? `\`${symbol.returns.type}\` — ${symbol.returns.description}\n\nRelated types: ${relatedTypeLinks(symbol.returns.type, byName, apiBase)}` : "This declaration does not return a value."}
+
+## Throws
+
+${symbol.throws?.length ? symbol.throws.map((value) => `- ${value}`).join("\n") : "No thrown errors are documented for this declaration."}
+
+## Related types
+
+${symbol.relatedTypes?.length ? symbol.relatedTypes.map((name) => `- [\`${name}\`](${apiBase}/${symbolSlug(name)})`).join("\n") : "No package-local related types."}
+
+## Source
+
+[View the secondary source reference](https://github.com/mwillbanks/tuil/blob/main/${symbol.file}${symbol.sourceLine ? `#L${symbol.sourceLine}` : ""})
+
+## Package
+
+[${packageName}](/docs/reference/packages/${packageSlug})
+`,
+      "utf8",
+    );
+  }
+  await writeFile(
+    resolve(apiDirectory, "meta.json"),
+    `${JSON.stringify(
+      {
+        title: "API",
+        icon: "BracketsCurly",
+        pages: symbols.map((symbol) => symbolSlug(symbol.name)),
+      },
+      null,
+      2,
+    )}\n`,
+    "utf8",
+  );
 }
 
 function mermaidLifecycle(value: string): string {
@@ -1079,10 +1462,20 @@ async function packagePage(
   };
   const guidance = packageGuidance[directory];
   if (!guidance) throw new Error(`Missing package docs for ${directory}`);
-  const symbols = await exportedSymbols(
-    workspace,
-    await publicSourceEntrypoints(workspace, directory, manifest.exports),
-  );
+  const symbols =
+    packageSymbolCache.get(directory) ??
+    (await exportedSymbols(
+      workspace,
+      await publicSourceEntrypoints(workspace, directory, manifest.exports),
+    ));
+  const exampleSymbols = symbols
+    .map((symbol) => symbol.name)
+    .filter((name) => new RegExp(`\\b${name}\\b`, "u").test(guidance.example));
+  const exampleLanguage = guidance.example.startsWith("npx ") ? "npm" : "tsx";
+  const example =
+    exampleLanguage === "tsx" && exampleSymbols.length
+      ? `import { ${exampleSymbols.join(", ")} } from ${JSON.stringify(manifest.name)};\n\n${guidance.example}`
+      : guidance.example;
   const content = `---
 title: ${JSON.stringify(manifest.name)}
 description: ${JSON.stringify(manifest.description)}
@@ -1110,7 +1503,7 @@ ${mermaidLifecycle(guidance.lifecycle)}
 
 ## API
 
-${symbolTable(symbols)}
+${symbolTable(symbols, `/docs/reference/packages/${directory}/api`)}
 
 ## Events and lifecycle
 
@@ -1121,8 +1514,8 @@ runtime that disposes them in reverse order.
 
 ## Example
 
-\`\`\`tsx
-${guidance.example}
+\`\`\`${exampleLanguage}
+${example}
 \`\`\`
 
 ## Related
@@ -1139,6 +1532,12 @@ ${guidance.example}
   );
   await mkdir(resolve(output, ".."), { recursive: true });
   await writeFile(output, content, "utf8");
+  await writeApiDetails(
+    resolve(output, ".."),
+    directory,
+    manifest.name,
+    symbols,
+  );
   return { slug: directory, title: manifest.name };
 }
 
@@ -1151,14 +1550,31 @@ async function componentPage(
     group.files.map((file) => resolve(workspace, file)),
   );
   const byName = new Map(discovered.map((symbol) => [symbol.name, symbol]));
-  const symbols = group.components.map(
-    (name): ApiSymbol =>
-      byName.get(name) ?? {
-        name,
-        kind: name.includes(".") ? "subcomponent" : "component",
-        file: group.files[0] ?? "registry",
-      },
+  const symbols = group.components.map((name): ApiSymbol => {
+    const direct = byName.get(name);
+    const propsName = `${name.split(".").at(-1)}Props`;
+    const props = byName.get(propsName);
+    return direct
+      ? { ...direct, members: direct.members ?? props?.members }
+      : {
+          name,
+          kind: name.includes(".") ? "subcomponent" : "component",
+          file: group.files[0] ?? "registry",
+          members: props?.members,
+        };
+  });
+  const componentTypes = [
+    ...new Map(
+      group.components
+        .map((name) => byName.get(`${name.split(".").at(-1)}Props`))
+        .filter((symbol): symbol is ApiSymbol => Boolean(symbol))
+        .map((symbol) => [symbol.name, symbol]),
+    ).values(),
+  ];
+  const componentApiSymbols = new Map(
+    [...symbols, ...componentTypes].map((symbol) => [symbol.name, symbol]),
   );
+  const componentApiBase = `/docs/reference/components/${group.slug}`;
   const exampleImport = group.files[0]?.startsWith("registry/")
     ? `@/components/tuil/${group.files[0]
         .replace(/^registry\//, "")
@@ -1182,17 +1598,17 @@ description: ${JSON.stringify(group.summary)}
 icon: ${group.icon}
 ---
 
-import { ${group.story} as ComponentStory } from '@/components/reference-stories.story';
+import { PublishedStory } from '@/components/published-story';
 
 ## Overview
 
 ${group.summary}
 
-${install}<ComponentStory.WithControl />
+${install}<PublishedStory storyId=${JSON.stringify(group.storyId ?? "component-acceptance")} variant=${JSON.stringify(group.story)} />
 
 ## Components and subcomponents
 
-${symbolTable(symbols)}
+${symbolTable(symbols, `/docs/reference/components/${group.slug}`)}
 
 ## Interaction
 
@@ -1232,10 +1648,118 @@ your application, and use the package reference for the shared runtime contracts
   );
   await mkdir(resolve(output, ".."), { recursive: true });
   await writeFile(output, content, "utf8");
+  for (const symbol of symbols) {
+    const importName = symbol.name.split(".")[0] as string;
+    const componentContent = `---
+title: ${JSON.stringify(symbol.name)}
+description: ${JSON.stringify(symbol.summary ?? `${symbol.name} component API, behavior, and executable example.`)}
+icon: Cube
+---
+
+import { PublishedStory } from '@/components/published-story';
+
+{/* Generated by tooling/docs/generate-reference.ts. */}
+
+<PublishedStory storyId=${JSON.stringify(group.storyId ?? "component-acceptance")} variant=${JSON.stringify(group.story)} />
+
+## API and events
+
+${symbol.summary ?? group.summary}
+
+\`\`\`tsx
+${symbol.signature ?? `export { ${symbol.name} };`}
+\`\`\`
+
+### Props, functions, and events
+
+${memberTable(symbol.members, componentApiSymbols, componentApiBase)}
+
+${group.events}
+
+Callback props run after the documented input is accepted. Callbacks are not cancellable unless their return type or description states otherwise.
+
+## Interaction and capabilities
+
+${group.interaction}
+
+The published manifest records keyboard, focus, pointer, theme, terminal, semantic, event, and dependency requirements.
+
+## Complete import
+
+\`\`\`tsx
+import { ${importName} } from "${exampleImport}";
+\`\`\`
+`;
+    await writeFile(
+      resolve(output, "..", `${symbolSlug(symbol.name)}.mdx`),
+      componentContent,
+      "utf8",
+    );
+  }
+  for (const symbol of componentTypes) {
+    await writeFile(
+      resolve(output, "..", `${symbolSlug(symbol.name)}.mdx`),
+      `---
+title: ${JSON.stringify(symbol.name)}
+description: ${JSON.stringify(symbol.summary ?? `${symbol.name} component contract.`)}
+icon: BracketsCurly
+---
+
+{/* Generated by tooling/docs/generate-reference.ts. */}
+
+## Type
+
+\`\`\`ts
+${symbol.signature ?? `export interface ${symbol.name} {}`}
+\`\`\`
+
+## Members
+
+${memberTable(symbol.members, componentApiSymbols, componentApiBase)}
+
+## Source
+
+[View the secondary source reference](https://github.com/mwillbanks/tuil/blob/main/${symbol.file}${symbol.sourceLine ? `#L${symbol.sourceLine}` : ""})
+`,
+      "utf8",
+    );
+  }
+  await writeFile(
+    resolve(output, "..", "meta.json"),
+    `${JSON.stringify(
+      {
+        title: group.title,
+        icon: group.icon,
+        pages: [
+          "index",
+          ...symbols.map((symbol) => symbolSlug(symbol.name)),
+          ...componentTypes.map((symbol) => symbolSlug(symbol.name)),
+        ],
+      },
+      null,
+      2,
+    )}\n`,
+    "utf8",
+  );
 }
 
 export async function generateReferenceDocs(): Promise<void> {
   const workspace = resolve(import.meta.dir, "../..");
+  const packageDocsRoot = resolve(
+    workspace,
+    "apps/docs/content/docs/reference/packages",
+  );
+  const componentDocsRoot = resolve(
+    workspace,
+    "apps/docs/content/docs/reference/components",
+  );
+  for (const root of [packageDocsRoot, componentDocsRoot]) {
+    for (const entry of await readdir(root, { withFileTypes: true })) {
+      if (entry.isDirectory()) {
+        await rm(resolve(root, entry.name), { recursive: true, force: true });
+      }
+    }
+  }
   const packageDirectories = (
     await readdir(resolve(workspace, "packages"), {
       withFileTypes: true,
@@ -1244,6 +1768,24 @@ export async function generateReferenceDocs(): Promise<void> {
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
     .sort();
+  for (const directory of packageDirectories) {
+    const manifest = (await Bun.file(
+      resolve(workspace, "packages", directory, "package.json"),
+    ).json()) as { readonly exports: Readonly<Record<string, unknown>> };
+    const symbols = await exportedSymbols(
+      workspace,
+      await publicSourceEntrypoints(workspace, directory, manifest.exports),
+    );
+    packageSymbolCache.set(directory, symbols);
+    for (const symbol of symbols) {
+      if (!globalApiTargets.has(symbol.name)) {
+        globalApiTargets.set(
+          symbol.name,
+          `/docs/reference/packages/${directory}/api/${symbolSlug(symbol.name)}`,
+        );
+      }
+    }
+  }
   const packages = [];
   for (const directory of packageDirectories) {
     packages.push(await packagePage(workspace, directory));
@@ -1278,6 +1820,21 @@ export async function generateReferenceDocs(): Promise<void> {
     )}\n`,
     "utf8",
   );
+  const formatter = Bun.spawn(
+    [
+      "bun",
+      "biome",
+      "format",
+      "--write",
+      "apps/docs/content/docs/reference",
+      "--reporter",
+      "concise",
+    ],
+    { cwd: workspace, stdout: "ignore", stderr: "pipe" },
+  );
+  if ((await formatter.exited) !== 0) {
+    throw new Error(await new Response(formatter.stderr).text());
+  }
 }
 
 await (import.meta.main ? generateReferenceDocs() : undefined);

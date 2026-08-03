@@ -38,20 +38,20 @@ flowchart LR
 
 ## API
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `FocusChange` | interface | `packages/focus/src/index.ts` |
-| `FocusDirection` | type | `packages/focus/src/index.ts` |
-| `FocusManager` | class | `packages/focus/src/index.ts` |
-| `FocusNode` | interface | `packages/focus/src/index.ts` |
-| `FocusNodeInput` | type | `packages/focus/src/index.ts` |
-| `FocusProvider` | function | `packages/focus/src/index.ts` |
-| `FocusScope` | function | `packages/focus/src/index.ts` |
-| `FocusScopeDefinition` | interface | `packages/focus/src/index.ts` |
-| `FocusTrap` | function | `packages/focus/src/index.ts` |
-| `useFocusable` | function | `packages/focus/src/index.ts` |
-| `useFocusManager` | function | `packages/focus/src/index.ts` |
-| `useFocusScopeId` | function | `packages/focus/src/index.ts` |
+| [`FocusChange`](/docs/reference/packages/focus/api/focus-change) | `interface FocusChange` | Public interface FocusChange. |
+| [`FocusDirection`](/docs/reference/packages/focus/api/focus-direction) | `type FocusDirection` | Public type FocusDirection. |
+| [`FocusManager`](/docs/reference/packages/focus/api/focus-manager) | `class FocusManager` | Public class FocusManager. |
+| [`FocusNode`](/docs/reference/packages/focus/api/focus-node) | `interface FocusNode` | Public interface FocusNode. |
+| [`FocusNodeInput`](/docs/reference/packages/focus/api/focus-node-input) | `type FocusNodeInput` | Public type FocusNodeInput. |
+| [`FocusProvider`](/docs/reference/packages/focus/api/focus-provider) | `function FocusProvider` | Public function FocusProvider. |
+| [`FocusScope`](/docs/reference/packages/focus/api/focus-scope) | `function FocusScope` | Public function FocusScope. |
+| [`FocusScopeDefinition`](/docs/reference/packages/focus/api/focus-scope-definition) | `interface FocusScopeDefinition` | Public interface FocusScopeDefinition. |
+| [`FocusTrap`](/docs/reference/packages/focus/api/focus-trap) | `function FocusTrap` | Public function FocusTrap. |
+| [`useFocusable`](/docs/reference/packages/focus/api/use-focusable) | `function useFocusable` | Public function useFocusable. |
+| [`useFocusManager`](/docs/reference/packages/focus/api/use-focus-manager) | `function useFocusManager` | Public function useFocusManager. |
+| [`useFocusScopeId`](/docs/reference/packages/focus/api/use-focus-scope-id) | `function useFocusScopeId` | Public function useFocusScopeId. |
 
 ## Events and lifecycle
 
@@ -63,6 +63,8 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { FocusManager } from "@mwillbanks/tuil-focus";
+
 const focus = new FocusManager();
 focus.register({ id: "save", scopeId: "dialog" });
 focus.focus("save");

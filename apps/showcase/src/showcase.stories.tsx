@@ -1,13 +1,11 @@
-import { createStorybookAdapter } from "@mwillbanks/tuil-story/storybook";
 import type { Meta, StoryObj } from "@storybook/react";
 import { ecosystemBrowserStorySets } from "../../../registry/stories/ecosystem-story-data.ts";
+import { createShowcaseStorybookAdapter } from "./storybook-adapter.ts";
 
-const endpoint =
-  process.env["TUIL_STORY_ENDPOINT"] ?? "http://127.0.0.1:4317/api/tuil-story";
 const adapters = Object.fromEntries(
   ecosystemBrowserStorySets.map((set) => [
     set.id,
-    createStorybookAdapter(set, { endpoint }),
+    createShowcaseStorybookAdapter(set),
   ]),
 );
 const foundation = adapters["foundation"];

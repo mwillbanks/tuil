@@ -1,0 +1,25 @@
+{
+  "title": "API",
+  "icon": "BracketsCurly",
+  "pages": [
+    "built-in-log-parsers",
+    "common-log-parser",
+    "compile-log-query",
+    "container-log-parser",
+    "journald-parser",
+    "json-log-parser",
+    "log-buffer-statistics",
+    "log-diagnostic",
+    "log-enricher",
+    "log-parser",
+    "log-pipeline",
+    "log-record",
+    "log-redactor",
+    "log-source",
+    "normalize-severity",
+    "open-telemetry-log-parser",
+    "process-log-parser",
+    "syslog-parser",
+    "text-log-parser"
+  ]
+}

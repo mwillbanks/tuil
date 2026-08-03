@@ -1,0 +1,5 @@
+{
+  "title": "Tree",
+  "icon": "TreeStructure",
+  "pages": ["index", "tree", "tree-props"]
+}

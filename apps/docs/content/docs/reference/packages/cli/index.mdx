@@ -38,14 +38,14 @@ flowchart LR
 
 ## API
 
-| Export | Kind | Source |
+| API | Signature | Description |
 | --- | --- | --- |
-| `InitAnswers` | export | `packages/cli/src/index.tsx` |
-| `InitWizard` | export | `packages/cli/src/index.tsx` |
-| `installBundledSkills` | function | `packages/cli/src/index.tsx` |
-| `main` | function | `packages/cli/src/index.tsx` |
-| `RegistryItem` | export | `packages/cli/src/index.tsx` |
-| `RegistryItemType` | export | `packages/cli/src/index.tsx` |
+| [`InitAnswers`](/docs/reference/packages/cli/api/init-answers) | `export InitAnswers` | Public export InitAnswers. |
+| [`InitWizard`](/docs/reference/packages/cli/api/init-wizard) | `export InitWizard` | Public export InitWizard. |
+| [`installBundledSkills`](/docs/reference/packages/cli/api/install-bundled-skills) | `function installBundledSkills` | Public function installBundledSkills. |
+| [`main`](/docs/reference/packages/cli/api/main) | `function main` | Public function main. |
+| [`RegistryItem`](/docs/reference/packages/cli/api/registry-item) | `export RegistryItem` | Public export RegistryItem. |
+| [`RegistryItemType`](/docs/reference/packages/cli/api/registry-item-type) | `export RegistryItemType` | Public export RegistryItemType. |
 
 ## Events and lifecycle
 
@@ -56,7 +56,7 @@ runtime that disposes them in reverse order.
 
 ## Example
 
-```tsx
+```npm
 npx @mwillbanks/tuil create my-terminal-app
 ```
 

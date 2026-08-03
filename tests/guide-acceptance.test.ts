@@ -189,8 +189,10 @@ test("phase five ships every ecosystem surface with executable validation", asyn
     "packages/story/src/browser.tsx",
     "packages/story/src/static.ts",
     "apps/docs/source.config.ts",
-    "apps/docs/src/components/reference-story.tsx",
+    "apps/docs/src/components/ghostty-story.tsx",
+    "apps/docs/src/components/published-story.tsx",
     "apps/showcase/.storybook/main.ts",
+    "packages/ghostty-web/src/browser.tsx",
     "packages/devtools/src/index.tsx",
     ".release-please-manifest.json",
     "release-please-config.json",
@@ -199,6 +201,7 @@ test("phase five ships every ecosystem surface with executable validation", asyn
     ".github/workflows/release.yml",
     ".github/workflows/security.yml",
     "tooling/docs/validate-static.ts",
+    "tooling/browser/acceptance.ts",
     "tooling/release/verify-recovery.ts",
   ]) {
     expect(await Bun.file(join(root, path)).exists()).toBeTrue();
