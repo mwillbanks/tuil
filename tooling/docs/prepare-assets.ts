@@ -36,6 +36,37 @@ export interface PublishedStoryManifest {
   readonly stories: readonly StoryPublicationDescriptor[];
 }
 
+const publishedSemanticKeys = [
+  "key",
+  "id",
+  "testId",
+  "role",
+  "label",
+  "description",
+  "text",
+  "disabled",
+  "readOnly",
+  "selected",
+  "checked",
+  "expanded",
+  "valueText",
+  "layout",
+] as const;
+
+function serializePublishedSemantic(
+  value: unknown,
+): Readonly<Record<string, unknown>> {
+  if (!value || typeof value !== "object") return Object.freeze({});
+  const source = value as Readonly<Record<string, unknown>>;
+  return Object.freeze(
+    Object.fromEntries(
+      publishedSemanticKeys.flatMap((key) =>
+        source[key] === undefined ? [] : [[key, source[key]]],
+      ),
+    ),
+  );
+}
+
 export async function renderDocsStoryFrames(): Promise<
   readonly StoryPublicationDescriptor[]
 > {
@@ -73,9 +104,7 @@ export async function renderDocsStoryFrames(): Promise<
                 : typeof value,
           ]),
         ),
-        semantics: rendered.semantics as unknown as readonly Readonly<
-          Record<string, unknown>
-        >[],
+        semantics: rendered.semantics.map(serializePublishedSemantic),
         events: rendered.events.map((event) => event.type),
         actions: rendered.actions.map((action) => action.type),
         focus: rendered.focus.nodes.map(

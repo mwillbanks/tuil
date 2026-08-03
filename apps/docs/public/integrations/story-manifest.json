@@ -20,10 +20,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_3_",
           "id": "_idr_3_",
           "role": "heading",
           "label": "tuil init",
-          "key": "_idr_3_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -43,8 +43,8 @@
           }
         },
         {
-          "id": "_idr_2_",
           "key": "_idr_2_",
+          "id": "_idr_2_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -64,8 +64,8 @@
           }
         },
         {
-          "id": "_idr_1_",
           "key": "_idr_1_",
+          "id": "_idr_1_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -85,11 +85,11 @@
           }
         },
         {
+          "key": "tuil.init:stepper",
           "id": "tuil.init:stepper",
           "role": "status",
           "label": "Workflow progress",
           "valueText": "1 of 4",
-          "key": "tuil.init:stepper",
           "layout": {
             "bounds": {
               "x": 0,
@@ -109,11 +109,11 @@
           }
         },
         {
+          "key": "_idr_e_",
           "id": "_idr_e_",
           "role": "text",
           "label": "Route: starting",
           "text": "Route: starting",
-          "key": "_idr_e_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -133,12 +133,12 @@
           }
         },
         {
+          "key": "cancel-init",
           "id": "cancel-init",
           "role": "button",
           "label": "Cancel",
           "disabled": false,
           "readOnly": false,
-          "key": "cancel-init",
           "layout": {
             "bounds": {
               "x": 0,
@@ -158,8 +158,8 @@
           }
         },
         {
-          "id": "_idr_7_",
           "key": "_idr_7_",
+          "id": "_idr_7_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -179,8 +179,8 @@
           }
         },
         {
-          "id": "_idr_4_",
           "key": "_idr_4_",
+          "id": "_idr_4_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -200,11 +200,11 @@
           }
         },
         {
+          "key": "_idr_n_",
           "id": "_idr_n_",
           "role": "text",
           "label": "Tab navigate · Enter select · Ctrl+C cancel",
           "text": "Tab navigate · Enter select · Ctrl+C cancel",
-          "key": "_idr_n_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -224,9 +224,9 @@
           }
         },
         {
+          "key": "_idr_m_",
           "id": "_idr_m_",
           "role": "status",
-          "key": "_idr_m_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -246,9 +246,9 @@
           }
         },
         {
+          "key": "_idr_l_",
           "id": "_idr_l_",
           "role": "status",
-          "key": "_idr_l_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -268,9 +268,9 @@
           }
         },
         {
+          "key": "_idr_0_",
           "id": "_idr_0_",
           "role": "application",
-          "key": "_idr_0_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -309,14 +309,14 @@
           "label": "init-form"
         },
         {
+          "key": "init-project-name",
           "id": "init-project-name",
           "role": "textbox",
           "label": "Project name",
+          "text": "▌my-tuil-app",
           "disabled": false,
           "readOnly": false,
           "valueText": "my-tuil-app",
-          "text": "▌my-tuil-app",
-          "key": "init-project-name",
           "layout": {
             "bounds": {
               "x": 0,
@@ -343,6 +343,7 @@
           "valueText": "running"
         },
         {
+          "key": "tuil.init:stepper:step:name",
           "id": "tuil.init:stepper:step:name",
           "role": "button",
           "label": "Name",
@@ -364,10 +365,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "tuil.init:stepper:step:name"
+          }
         },
         {
+          "key": "tuil.init:stepper:step:template",
           "id": "tuil.init:stepper:step:template",
           "role": "button",
           "label": "Template",
@@ -389,10 +390,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "tuil.init:stepper:step:template"
+          }
         },
         {
+          "key": "tuil.init:stepper:step:features",
           "id": "tuil.init:stepper:step:features",
           "role": "button",
           "label": "Features",
@@ -414,10 +415,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "tuil.init:stepper:step:features"
+          }
         },
         {
+          "key": "tuil.init:stepper:step:confirm",
           "id": "tuil.init:stepper:step:confirm",
           "role": "button",
           "label": "Confirm",
@@ -439,8 +440,7 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "tuil.init:stepper:step:confirm"
+          }
         }
       ],
       "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
@@ -477,10 +477,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_r_",
           "id": "_idr_r_",
           "role": "heading",
           "label": "tuil init",
-          "key": "_idr_r_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -500,8 +500,8 @@
           }
         },
         {
-          "id": "_idr_q_",
           "key": "_idr_q_",
+          "id": "_idr_q_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -521,8 +521,8 @@
           }
         },
         {
-          "id": "_idr_p_",
           "key": "_idr_p_",
+          "id": "_idr_p_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -542,11 +542,11 @@
           }
         },
         {
+          "key": "tuil.init:stepper",
           "id": "tuil.init:stepper",
           "role": "status",
           "label": "Workflow progress",
           "valueText": "1 of 4",
-          "key": "tuil.init:stepper",
           "layout": {
             "bounds": {
               "x": 0,
@@ -566,11 +566,11 @@
           }
         },
         {
+          "key": "_idr_16_",
           "id": "_idr_16_",
           "role": "text",
           "label": "Route: starting",
           "text": "Route: starting",
-          "key": "_idr_16_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -590,14 +590,14 @@
           }
         },
         {
+          "key": "init-project-name",
           "id": "init-project-name",
           "role": "textbox",
           "label": "Project name",
+          "text": "static-tuil-app",
           "disabled": false,
           "readOnly": false,
           "valueText": "static-tuil-app",
-          "text": "static-tuil-app",
-          "key": "init-project-name",
           "layout": {
             "bounds": {
               "x": 0,
@@ -617,12 +617,12 @@
           }
         },
         {
+          "key": "cancel-init",
           "id": "cancel-init",
           "role": "button",
           "label": "Cancel",
           "disabled": false,
           "readOnly": false,
-          "key": "cancel-init",
           "layout": {
             "bounds": {
               "x": 0,
@@ -642,8 +642,8 @@
           }
         },
         {
-          "id": "_idr_v_",
           "key": "_idr_v_",
+          "id": "_idr_v_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -663,8 +663,8 @@
           }
         },
         {
-          "id": "_idr_s_",
           "key": "_idr_s_",
+          "id": "_idr_s_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -684,11 +684,11 @@
           }
         },
         {
+          "key": "_idr_1f_",
           "id": "_idr_1f_",
           "role": "text",
           "label": "Tab navigate · Enter select · Ctrl+C cancel",
           "text": "Tab navigate · Enter select · Ctrl+C cancel",
-          "key": "_idr_1f_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -708,9 +708,9 @@
           }
         },
         {
+          "key": "_idr_1e_",
           "id": "_idr_1e_",
           "role": "status",
-          "key": "_idr_1e_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -730,9 +730,9 @@
           }
         },
         {
+          "key": "_idr_1d_",
           "id": "_idr_1d_",
           "role": "status",
-          "key": "_idr_1d_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -752,9 +752,9 @@
           }
         },
         {
+          "key": "_idr_o_",
           "id": "_idr_o_",
           "role": "application",
-          "key": "_idr_o_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -800,6 +800,7 @@
           "valueText": "running"
         },
         {
+          "key": "tuil.init:stepper:step:name",
           "id": "tuil.init:stepper:step:name",
           "role": "button",
           "label": "Name",
@@ -821,10 +822,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "tuil.init:stepper:step:name"
+          }
         },
         {
+          "key": "tuil.init:stepper:step:template",
           "id": "tuil.init:stepper:step:template",
           "role": "button",
           "label": "Template",
@@ -846,10 +847,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "tuil.init:stepper:step:template"
+          }
         },
         {
+          "key": "tuil.init:stepper:step:features",
           "id": "tuil.init:stepper:step:features",
           "role": "button",
           "label": "Features",
@@ -871,10 +872,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "tuil.init:stepper:step:features"
+          }
         },
         {
+          "key": "tuil.init:stepper:step:confirm",
           "id": "tuil.init:stepper:step:confirm",
           "role": "button",
           "label": "Confirm",
@@ -896,8 +897,7 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "tuil.init:stepper:step:confirm"
+          }
         }
       ],
       "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
@@ -934,10 +934,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_1j_",
           "id": "_idr_1j_",
           "role": "heading",
           "label": "TUIL Git client",
-          "key": "_idr_1j_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -957,12 +957,12 @@
           }
         },
         {
+          "key": "git-client-refresh",
           "id": "git-client-refresh",
           "role": "button",
           "label": "Refresh",
           "disabled": false,
           "readOnly": false,
-          "key": "git-client-refresh",
           "layout": {
             "bounds": {
               "x": 17,
@@ -982,11 +982,11 @@
           }
         },
         {
+          "key": "_idr_1u_",
           "id": "_idr_1u_",
           "role": "application",
           "label": "Diff viewer",
           "valueText": "0 hunks",
-          "key": "_idr_1u_",
           "layout": {
             "bounds": {
               "x": 43,
@@ -1006,9 +1006,9 @@
           }
         },
         {
+          "key": "_idr_22_",
           "id": "_idr_22_",
           "role": "text",
-          "key": "_idr_22_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -1055,14 +1055,14 @@
           "role": "application"
         },
         {
+          "key": "git-client-search",
           "id": "git-client-search",
           "role": "textbox",
           "label": "Search",
+          "text": "▌",
           "disabled": false,
           "readOnly": false,
           "valueText": "",
-          "text": "▌",
-          "key": "git-client-search",
           "layout": {
             "bounds": {
               "x": 0,
@@ -1082,6 +1082,7 @@
           }
         },
         {
+          "key": "_idr_1r_:item:branch-0",
           "id": "_idr_1r_:item:branch-0",
           "role": "treeitem",
           "label": "* main",
@@ -1103,10 +1104,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "_idr_1r_:item:branch-0"
+          }
         },
         {
+          "key": "_idr_1r_",
           "id": "_idr_1r_",
           "role": "tree",
           "label": "Repository branches",
@@ -1129,10 +1130,10 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "_idr_1r_"
+          }
         },
         {
+          "key": "git-panes:divider:branches",
           "id": "git-panes:divider:branches",
           "role": "button",
           "label": "Resize branches",
@@ -1156,10 +1157,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "git-panes:divider:branches"
+          }
         },
         {
+          "key": "git-panes",
           "id": "git-panes",
           "role": "application",
           "label": "Split pane",
@@ -1182,8 +1183,7 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "git-panes"
+          }
         }
       ],
       "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
@@ -1226,10 +1226,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_27_",
           "id": "_idr_27_",
           "role": "heading",
           "label": "TUIL log explorer",
-          "key": "_idr_27_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -1249,12 +1249,12 @@
           }
         },
         {
+          "key": "log-explorer-refresh",
           "id": "log-explorer-refresh",
           "role": "button",
           "label": "Refresh",
           "disabled": false,
           "readOnly": false,
-          "key": "log-explorer-refresh",
           "layout": {
             "bounds": {
               "x": 19,
@@ -1274,9 +1274,9 @@
           }
         },
         {
+          "key": "_idr_2d_",
           "id": "_idr_2d_",
           "role": "text",
-          "key": "_idr_2d_",
           "layout": {
             "bounds": {
               "x": 7,
@@ -1296,9 +1296,9 @@
           }
         },
         {
+          "key": "_idr_2g_",
           "id": "_idr_2g_",
           "role": "text",
-          "key": "_idr_2g_",
           "layout": {
             "bounds": {
               "x": 8,
@@ -1318,9 +1318,9 @@
           }
         },
         {
+          "key": "_idr_2k_",
           "id": "_idr_2k_",
           "role": "text",
-          "key": "_idr_2k_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -1367,14 +1367,14 @@
           "role": "application"
         },
         {
+          "key": "log-explorer-search",
           "id": "log-explorer-search",
           "role": "textbox",
           "label": "Search",
+          "text": "▌",
           "disabled": false,
           "readOnly": false,
           "valueText": "",
-          "text": "▌",
-          "key": "log-explorer-search",
           "layout": {
             "bounds": {
               "x": 0,
@@ -1394,9 +1394,9 @@
           }
         },
         {
+          "key": "_idr_2n_",
           "id": "_idr_2n_",
           "role": "text",
-          "key": "_idr_2n_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -1416,8 +1416,8 @@
           }
         },
         {
-          "id": "_idr_2m_",
           "key": "_idr_2m_",
+          "id": "_idr_2m_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -1437,9 +1437,9 @@
           }
         },
         {
+          "key": "_idr_2p_",
           "id": "_idr_2p_",
           "role": "text",
-          "key": "_idr_2p_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -1459,8 +1459,8 @@
           }
         },
         {
-          "id": "_idr_2o_",
           "key": "_idr_2o_",
+          "id": "_idr_2o_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -1480,8 +1480,8 @@
           }
         },
         {
-          "id": "_idr_2l_",
           "key": "_idr_2l_",
+          "id": "_idr_2l_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -1501,11 +1501,11 @@
           }
         },
         {
+          "key": "log-stream",
           "id": "log-stream",
           "role": "application",
           "label": "Log viewer",
           "valueText": "2 records",
-          "key": "log-stream",
           "layout": {
             "bounds": {
               "x": 2,
@@ -1563,10 +1563,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_2t_",
           "id": "_idr_2t_",
           "role": "heading",
           "label": "TUIL OpenTelemetry console",
-          "key": "_idr_2t_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -1586,12 +1586,12 @@
           }
         },
         {
+          "key": "otel-console-refresh",
           "id": "otel-console-refresh",
           "role": "button",
           "label": "Refresh",
           "disabled": false,
           "readOnly": false,
-          "key": "otel-console-refresh",
           "layout": {
             "bounds": {
               "x": 28,
@@ -1611,11 +1611,11 @@
           }
         },
         {
+          "key": "_idr_34_",
           "id": "_idr_34_",
           "role": "text",
           "label": "OpenTelemetry stream and trace correlation",
           "text": "OpenTelemetry stream and trace correlation",
-          "key": "_idr_34_",
           "layout": {
             "bounds": {
               "x": 6,
@@ -1635,9 +1635,9 @@
           }
         },
         {
+          "key": "_idr_39_",
           "id": "_idr_39_",
           "role": "text",
-          "key": "_idr_39_",
           "layout": {
             "bounds": {
               "x": 6,
@@ -1657,11 +1657,11 @@
           }
         },
         {
+          "key": "_idr_3a_",
           "id": "_idr_3a_",
           "role": "text",
           "label": "No log records",
           "text": "No log records",
-          "key": "_idr_3a_",
           "layout": {
             "bounds": {
               "x": 6,
@@ -1681,11 +1681,11 @@
           }
         },
         {
+          "key": "otel-stream",
           "id": "otel-stream",
           "role": "application",
           "label": "Log viewer",
           "valueText": "0 records",
-          "key": "otel-stream",
           "layout": {
             "bounds": {
               "x": 6,
@@ -1705,11 +1705,11 @@
           }
         },
         {
+          "key": "_idr_3d_",
           "id": "_idr_3d_",
           "role": "text",
           "label": "Trace correlation",
           "text": "Trace correlation",
-          "key": "_idr_3d_",
           "layout": {
             "bounds": {
               "x": 56,
@@ -1729,11 +1729,11 @@
           }
         },
         {
+          "key": "_idr_3e_",
           "id": "_idr_3e_",
           "role": "text",
           "label": "No record selected",
           "text": "No record selected",
-          "key": "_idr_3e_",
           "layout": {
             "bounds": {
               "x": 56,
@@ -1753,11 +1753,11 @@
           }
         },
         {
+          "key": "_idr_3f_",
           "id": "_idr_3f_",
           "role": "progressbar",
           "label": "OpenTelemetry ingestion",
           "valueText": "0%",
-          "key": "_idr_3f_",
           "layout": {
             "bounds": {
               "x": 56,
@@ -1777,9 +1777,9 @@
           }
         },
         {
+          "key": "_idr_3g_",
           "id": "_idr_3g_",
           "role": "text",
-          "key": "_idr_3g_",
           "layout": {
             "bounds": {
               "x": 56,
@@ -1799,8 +1799,8 @@
           }
         },
         {
-          "id": "_idr_3c_",
           "key": "_idr_3c_",
+          "id": "_idr_3c_",
           "layout": {
             "bounds": {
               "x": 56,
@@ -1820,11 +1820,11 @@
           }
         },
         {
+          "key": "_idr_3h_",
           "id": "_idr_3h_",
           "role": "text",
           "label": "d detail · e static export · p pause · r resume · arrows navigate",
           "text": "d detail · e static export · p pause · r resume · arrows navigate",
-          "key": "_idr_3h_",
           "layout": {
             "bounds": {
               "x": 6,
@@ -1844,9 +1844,9 @@
           }
         },
         {
+          "key": "_idr_3i_",
           "id": "_idr_3i_",
           "role": "status",
-          "key": "_idr_3i_",
           "layout": {
             "bounds": {
               "x": 6,
@@ -1866,8 +1866,8 @@
           }
         },
         {
-          "id": "_idr_33_",
           "key": "_idr_33_",
+          "id": "_idr_33_",
           "layout": {
             "bounds": {
               "x": 6,
@@ -1887,9 +1887,9 @@
           }
         },
         {
+          "key": "_idr_3m_",
           "id": "_idr_3m_",
           "role": "text",
-          "key": "_idr_3m_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -1936,14 +1936,14 @@
           "role": "application"
         },
         {
+          "key": "otel-console-search",
           "id": "otel-console-search",
           "role": "textbox",
           "label": "Search",
+          "text": "▌",
           "disabled": false,
           "readOnly": false,
           "valueText": "",
-          "text": "▌",
-          "key": "otel-console-search",
           "layout": {
             "bounds": {
               "x": 0,
@@ -1963,6 +1963,7 @@
           }
         },
         {
+          "key": "otel-console-panes:divider:stream",
           "id": "otel-console-panes:divider:stream",
           "role": "button",
           "label": "Resize stream",
@@ -1986,10 +1987,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "otel-console-panes:divider:stream"
+          }
         },
         {
+          "key": "otel-console-panes",
           "id": "otel-console-panes",
           "role": "application",
           "label": "OpenTelemetry stream and trace correlation",
@@ -2012,8 +2013,7 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "otel-console-panes"
+          }
         }
       ],
       "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
@@ -2055,10 +2055,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_3q_",
           "id": "_idr_3q_",
           "role": "heading",
           "label": "TUIL AI coding assistant",
-          "key": "_idr_3q_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -2078,12 +2078,12 @@
           }
         },
         {
+          "key": "ai-coding-assistant-refresh",
           "id": "ai-coding-assistant-refresh",
           "role": "button",
           "label": "Refresh",
           "disabled": false,
           "readOnly": false,
-          "key": "ai-coding-assistant-refresh",
           "layout": {
             "bounds": {
               "x": 26,
@@ -2103,14 +2103,14 @@
           }
         },
         {
+          "key": "assistant-prompt",
           "id": "assistant-prompt",
           "role": "textbox",
           "label": "Prompt",
+          "text": "Fix the streaming parser",
           "disabled": false,
           "readOnly": false,
           "valueText": "Fix the streaming parser",
-          "text": "Fix the streaming parser",
-          "key": "assistant-prompt",
           "layout": {
             "bounds": {
               "x": 6,
@@ -2130,12 +2130,12 @@
           }
         },
         {
+          "key": "assistant-submit",
           "id": "assistant-submit",
           "role": "button",
           "label": "Submit to provider",
           "disabled": false,
           "readOnly": false,
-          "key": "assistant-submit",
           "layout": {
             "bounds": {
               "x": 6,
@@ -2155,9 +2155,9 @@
           }
         },
         {
+          "key": "_idr_47_",
           "id": "_idr_47_",
           "role": "text",
-          "key": "_idr_47_",
           "layout": {
             "bounds": {
               "x": 6,
@@ -2177,8 +2177,8 @@
           }
         },
         {
-          "id": "_idr_42_",
           "key": "_idr_42_",
+          "id": "_idr_42_",
           "layout": {
             "bounds": {
               "x": 6,
@@ -2198,11 +2198,11 @@
           }
         },
         {
+          "key": "_idr_49_",
           "id": "_idr_49_",
           "role": "application",
           "label": "Code viewer",
           "valueText": "0 lines · 0 matches",
-          "key": "_idr_49_",
           "layout": {
             "bounds": {
               "x": 43,
@@ -2222,9 +2222,9 @@
           }
         },
         {
+          "key": "_idr_4d_",
           "id": "_idr_4d_",
           "role": "text",
-          "key": "_idr_4d_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -2271,14 +2271,14 @@
           "role": "application"
         },
         {
+          "key": "ai-coding-assistant-search",
           "id": "ai-coding-assistant-search",
           "role": "textbox",
           "label": "Search",
+          "text": "▌",
           "disabled": false,
           "readOnly": false,
           "valueText": "",
-          "text": "▌",
-          "key": "ai-coding-assistant-search",
           "layout": {
             "bounds": {
               "x": 0,
@@ -2298,6 +2298,7 @@
           }
         },
         {
+          "key": "assistant-panes:divider:prompt",
           "id": "assistant-panes:divider:prompt",
           "role": "button",
           "label": "Resize prompt",
@@ -2321,10 +2322,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "assistant-panes:divider:prompt"
+          }
         },
         {
+          "key": "assistant-panes",
           "id": "assistant-panes",
           "role": "application",
           "label": "Split pane",
@@ -2347,8 +2348,7 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "assistant-panes"
+          }
         }
       ],
       "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
@@ -2392,10 +2392,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_4h_",
           "id": "_idr_4h_",
           "role": "heading",
           "label": "TUIL deployment dashboard",
-          "key": "_idr_4h_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -2415,12 +2415,12 @@
           }
         },
         {
+          "key": "deployment-dashboard-refresh",
           "id": "deployment-dashboard-refresh",
           "role": "button",
           "label": "Refresh",
           "disabled": false,
           "readOnly": false,
-          "key": "deployment-dashboard-refresh",
           "layout": {
             "bounds": {
               "x": 27,
@@ -2440,9 +2440,9 @@
           }
         },
         {
+          "key": "_idr_4s_",
           "id": "_idr_4s_",
           "role": "text",
-          "key": "_idr_4s_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -2489,14 +2489,14 @@
           "role": "application"
         },
         {
+          "key": "deployment-dashboard-search",
           "id": "deployment-dashboard-search",
           "role": "textbox",
           "label": "Search",
+          "text": "▌",
           "disabled": false,
           "readOnly": false,
           "valueText": "",
-          "text": "▌",
-          "key": "deployment-dashboard-search",
           "layout": {
             "bounds": {
               "x": 0,
@@ -2516,11 +2516,11 @@
           }
         },
         {
+          "key": "_idr_4n_",
           "id": "_idr_4n_",
           "role": "progressbar",
           "label": "Rollout",
           "valueText": "100%",
-          "key": "_idr_4n_",
           "layout": {
             "bounds": {
               "x": 1,
@@ -2540,6 +2540,7 @@
           }
         },
         {
+          "key": "deployment-table:cell:api:service",
           "id": "deployment-table:cell:api:service",
           "role": "cell",
           "label": "Service: API",
@@ -2561,10 +2562,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "deployment-table:cell:api:service"
+          }
         },
         {
+          "key": "deployment-table:cell:api:status",
           "id": "deployment-table:cell:api:status",
           "role": "cell",
           "label": "Status: ready",
@@ -2586,10 +2587,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "deployment-table:cell:api:status"
+          }
         },
         {
+          "key": "deployment-table:cell:api:region",
           "id": "deployment-table:cell:api:region",
           "role": "cell",
           "label": "Region: unknown",
@@ -2611,10 +2612,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "deployment-table:cell:api:region"
+          }
         },
         {
+          "key": "deployment-table:row:api",
           "id": "deployment-table:row:api",
           "role": "row",
           "label": "Row 1",
@@ -2636,10 +2637,10 @@
             "zIndex": 0,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "deployment-table:row:api"
+          }
         },
         {
+          "key": "deployment-table",
           "id": "deployment-table",
           "role": "table",
           "label": "Deployments",
@@ -2662,8 +2663,7 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "deployment-table"
+          }
         }
       ],
       "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
@@ -2700,10 +2700,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_54_",
           "id": "_idr_54_",
           "role": "heading",
           "label": "TUIL file manager",
-          "key": "_idr_54_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -2723,12 +2723,12 @@
           }
         },
         {
+          "key": "file-manager-refresh",
           "id": "file-manager-refresh",
           "role": "button",
           "label": "Refresh",
           "disabled": false,
           "readOnly": false,
-          "key": "file-manager-refresh",
           "layout": {
             "bounds": {
               "x": 19,
@@ -2748,9 +2748,9 @@
           }
         },
         {
+          "key": "_idr_5g_",
           "id": "_idr_5g_",
           "role": "text",
-          "key": "_idr_5g_",
           "layout": {
             "bounds": {
               "x": 43,
@@ -2770,9 +2770,9 @@
           }
         },
         {
+          "key": "_idr_5k_",
           "id": "_idr_5k_",
           "role": "text",
-          "key": "_idr_5k_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -2819,14 +2819,14 @@
           "role": "application"
         },
         {
+          "key": "file-manager-search",
           "id": "file-manager-search",
           "role": "textbox",
           "label": "Search",
+          "text": "▌",
           "disabled": false,
           "readOnly": false,
           "valueText": "",
-          "text": "▌",
-          "key": "file-manager-search",
           "layout": {
             "bounds": {
               "x": 0,
@@ -2846,6 +2846,7 @@
           }
         },
         {
+          "key": "file-tree:item:entry-0",
           "id": "file-tree:item:entry-0",
           "role": "treeitem",
           "label": "file-manager: ready revision=1",
@@ -2867,10 +2868,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "file-tree:item:entry-0"
+          }
         },
         {
+          "key": "file-tree:item:entry-1",
           "id": "file-tree:item:entry-1",
           "role": "treeitem",
           "label": "src",
@@ -2892,10 +2893,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "file-tree:item:entry-1"
+          }
         },
         {
+          "key": "file-tree:item:entry-2",
           "id": "file-tree:item:entry-2",
           "role": "treeitem",
           "label": "src/app.tsx",
@@ -2917,10 +2918,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "file-tree:item:entry-2"
+          }
         },
         {
+          "key": "file-tree:item:entry-3",
           "id": "file-tree:item:entry-3",
           "role": "treeitem",
           "label": "README.md",
@@ -2942,10 +2943,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "file-tree:item:entry-3"
+          }
         },
         {
+          "key": "file-tree",
           "id": "file-tree",
           "role": "tree",
           "label": "Files",
@@ -2968,10 +2969,10 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "file-tree"
+          }
         },
         {
+          "key": "file-manager-panes:divider:files",
           "id": "file-manager-panes:divider:files",
           "role": "button",
           "label": "Resize files",
@@ -2995,15 +2996,14 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "file-manager-panes:divider:files"
+          }
         },
         {
+          "key": "_idr_5h_",
           "id": "_idr_5h_",
           "role": "text",
           "label": "Fixture preview for README.md",
           "text": "Fixture preview for README.md",
-          "key": "_idr_5h_",
           "layout": {
             "bounds": {
               "x": 56,
@@ -3023,6 +3023,7 @@
           }
         },
         {
+          "key": "file-manager-panes",
           "id": "file-manager-panes",
           "role": "application",
           "label": "Split pane",
@@ -3045,8 +3046,7 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "file-manager-panes"
+          }
         }
       ],
       "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
@@ -3088,10 +3088,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_5r_",
           "id": "_idr_5r_",
           "role": "heading",
           "label": "TUIL workflow runner",
-          "key": "_idr_5r_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -3111,12 +3111,12 @@
           }
         },
         {
+          "key": "workflow-runner-refresh",
           "id": "workflow-runner-refresh",
           "role": "button",
           "label": "Refresh",
           "disabled": false,
           "readOnly": false,
-          "key": "workflow-runner-refresh",
           "layout": {
             "bounds": {
               "x": 22,
@@ -3136,12 +3136,12 @@
           }
         },
         {
+          "key": "workflow-run",
           "id": "workflow-run",
           "role": "button",
           "label": "Run workflow",
           "disabled": false,
           "readOnly": false,
-          "key": "workflow-run",
           "layout": {
             "bounds": {
               "x": 6,
@@ -3161,9 +3161,9 @@
           }
         },
         {
+          "key": "_idr_66_",
           "id": "_idr_66_",
           "role": "text",
-          "key": "_idr_66_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -3210,14 +3210,14 @@
           "role": "application"
         },
         {
+          "key": "workflow-runner-search",
           "id": "workflow-runner-search",
           "role": "textbox",
           "label": "Search",
+          "text": "▌",
           "disabled": false,
           "readOnly": false,
           "valueText": "",
-          "text": "▌",
-          "key": "workflow-runner-search",
           "layout": {
             "bounds": {
               "x": 0,
@@ -3237,11 +3237,11 @@
           }
         },
         {
+          "key": "_idr_63_",
           "id": "_idr_63_",
           "role": "progressbar",
           "label": "Workflow progress",
           "valueText": "100%",
-          "key": "_idr_63_",
           "layout": {
             "bounds": {
               "x": 17,
@@ -3299,10 +3299,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_6a_",
           "id": "_idr_6a_",
           "role": "heading",
           "label": "TUIL terminal documentation browser",
-          "key": "_idr_6a_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -3322,12 +3322,12 @@
           }
         },
         {
+          "key": "docs-browser-refresh",
           "id": "docs-browser-refresh",
           "role": "button",
           "label": "Refresh",
           "disabled": false,
           "readOnly": false,
-          "key": "docs-browser-refresh",
           "layout": {
             "bounds": {
               "x": 37,
@@ -3347,10 +3347,10 @@
           }
         },
         {
+          "key": "outline",
           "id": "outline",
           "role": "navigation",
           "label": "Outline",
-          "key": "outline",
           "layout": {
             "bounds": {
               "x": 6,
@@ -3370,11 +3370,11 @@
           }
         },
         {
+          "key": "_idr_6k_",
           "id": "_idr_6k_",
           "role": "application",
           "label": "Markdown viewer",
           "valueText": "1 blocks",
-          "key": "_idr_6k_",
           "layout": {
             "bounds": {
               "x": 43,
@@ -3394,9 +3394,9 @@
           }
         },
         {
+          "key": "_idr_6o_",
           "id": "_idr_6o_",
           "role": "text",
-          "key": "_idr_6o_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -3443,14 +3443,14 @@
           "role": "application"
         },
         {
+          "key": "docs-browser-search",
           "id": "docs-browser-search",
           "role": "textbox",
           "label": "Search",
+          "text": "▌",
           "disabled": false,
           "readOnly": false,
           "valueText": "",
-          "text": "▌",
-          "key": "docs-browser-search",
           "layout": {
             "bounds": {
               "x": 0,
@@ -3470,6 +3470,7 @@
           }
         },
         {
+          "key": "docs-panes:divider:outline",
           "id": "docs-panes:divider:outline",
           "role": "button",
           "label": "Resize outline",
@@ -3493,10 +3494,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "docs-panes:divider:outline"
+          }
         },
         {
+          "key": "docs-panes",
           "id": "docs-panes",
           "role": "application",
           "label": "Split pane",
@@ -3519,8 +3520,7 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "docs-panes"
+          }
         }
       ],
       "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
@@ -3562,9 +3562,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_6t_",
           "id": "_idr_6t_",
           "role": "text",
-          "key": "_idr_6t_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -3645,11 +3645,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_6v_",
           "id": "_idr_6v_",
           "role": "text",
           "label": "app-bar content",
           "text": "app-bar content",
-          "key": "_idr_6v_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -3669,9 +3669,9 @@
           }
         },
         {
+          "key": "_idr_70_",
           "id": "_idr_70_",
           "role": "text",
-          "key": "_idr_70_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -3731,11 +3731,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_72_",
           "id": "_idr_72_",
           "role": "text",
           "label": "app-shell content",
           "text": "app-shell content",
-          "key": "_idr_72_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -3755,9 +3755,9 @@
           }
         },
         {
+          "key": "_idr_73_",
           "id": "_idr_73_",
           "role": "text",
-          "key": "_idr_73_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -3817,9 +3817,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_77_",
           "id": "_idr_77_",
           "role": "text",
-          "key": "_idr_77_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -3839,14 +3839,14 @@
           }
         },
         {
+          "key": "acceptance-autocomplete",
           "id": "acceptance-autocomplete",
           "role": "textbox",
           "label": "autocomplete acceptance",
+          "text": "▌",
           "disabled": false,
           "readOnly": false,
           "valueText": "",
-          "text": "▌",
-          "key": "acceptance-autocomplete",
           "layout": {
             "bounds": {
               "x": 0,
@@ -3900,9 +3900,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_79_",
           "id": "_idr_79_",
           "role": "text",
-          "key": "_idr_79_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -3962,9 +3962,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_7a_",
           "id": "_idr_7a_",
           "role": "text",
-          "key": "_idr_7a_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4018,11 +4018,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_7c_",
           "id": "_idr_7c_",
           "role": "text",
           "label": "box content",
           "text": "box content",
-          "key": "_idr_7c_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4042,9 +4042,9 @@
           }
         },
         {
+          "key": "_idr_7d_",
           "id": "_idr_7d_",
           "role": "text",
-          "key": "_idr_7d_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4104,6 +4104,7 @@
       },
       "semantics": [
         {
+          "key": "acceptance-breadcrumbs:crumb:one",
           "id": "acceptance-breadcrumbs:crumb:one",
           "role": "button",
           "label": "One",
@@ -4125,10 +4126,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-breadcrumbs:crumb:one"
+          }
         },
         {
+          "key": "acceptance-breadcrumbs:crumb:two",
           "id": "acceptance-breadcrumbs:crumb:two",
           "role": "button",
           "label": "Two",
@@ -4150,14 +4151,13 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-breadcrumbs:crumb:two"
+          }
         },
         {
+          "key": "acceptance-breadcrumbs",
           "id": "acceptance-breadcrumbs",
           "role": "navigation",
           "label": "breadcrumbs acceptance",
-          "key": "acceptance-breadcrumbs",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4177,9 +4177,9 @@
           }
         },
         {
+          "key": "_idr_7i_",
           "id": "_idr_7i_",
           "role": "text",
-          "key": "_idr_7i_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4233,12 +4233,12 @@
       },
       "semantics": [
         {
+          "key": "acceptance-button",
           "id": "acceptance-button",
           "role": "button",
           "label": "button acceptance",
           "disabled": false,
           "readOnly": false,
-          "key": "acceptance-button",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4258,9 +4258,9 @@
           }
         },
         {
+          "key": "_idr_7l_",
           "id": "_idr_7l_",
           "role": "text",
-          "key": "_idr_7l_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4314,13 +4314,13 @@
       },
       "semantics": [
         {
+          "key": "acceptance-checkbox",
           "id": "acceptance-checkbox",
           "role": "checkbox",
           "label": "checkbox acceptance",
           "disabled": false,
           "readOnly": false,
           "checked": true,
-          "key": "acceptance-checkbox",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4340,9 +4340,9 @@
           }
         },
         {
+          "key": "_idr_7o_",
           "id": "_idr_7o_",
           "role": "text",
-          "key": "_idr_7o_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4396,9 +4396,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_7r_",
           "id": "_idr_7r_",
           "role": "text",
-          "key": "_idr_7r_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4418,15 +4418,15 @@
           }
         },
         {
+          "key": "acceptance-code-editor",
           "id": "acceptance-code-editor",
           "role": "textbox",
           "label": "code-editor acceptance",
           "description": "Multiline editor backed by the tuil editor contract",
+          "text": "▌acceptance",
           "disabled": false,
           "readOnly": false,
           "valueText": "acceptance",
-          "text": "▌acceptance",
-          "key": "acceptance-code-editor",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4480,11 +4480,11 @@
       },
       "semantics": [
         {
+          "key": "acceptance-code-viewer",
           "id": "acceptance-code-viewer",
           "role": "application",
           "label": "code-viewer acceptance",
           "valueText": "0 lines · 0 matches",
-          "key": "acceptance-code-viewer",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4504,9 +4504,9 @@
           }
         },
         {
+          "key": "_idr_7u_",
           "id": "_idr_7u_",
           "role": "text",
-          "key": "_idr_7u_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4560,9 +4560,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_81_",
           "id": "_idr_81_",
           "role": "text",
-          "key": "_idr_81_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4582,14 +4582,14 @@
           }
         },
         {
+          "key": "acceptance-command-line",
           "id": "acceptance-command-line",
           "role": "textbox",
           "label": "command-line acceptance",
+          "text": "▌acceptance",
           "disabled": false,
           "readOnly": false,
           "valueText": "acceptance",
-          "text": "▌acceptance",
-          "key": "acceptance-command-line",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4643,11 +4643,11 @@
       },
       "semantics": [
         {
+          "key": "command-palette:_idr_82_:command:acceptance.command",
           "id": "command-palette:_idr_82_:command:acceptance.command",
           "role": "option",
           "label": "Acceptance command",
           "selected": true,
-          "key": "command-palette:_idr_82_:command:acceptance.command",
           "layout": {
             "bounds": {
               "x": 2,
@@ -4667,9 +4667,9 @@
           }
         },
         {
+          "key": "_idr_87_",
           "id": "_idr_87_",
           "role": "text",
-          "key": "_idr_87_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4696,14 +4696,14 @@
           "expanded": true
         },
         {
+          "key": "command-palette:_idr_82_:input",
           "id": "command-palette:_idr_82_:input",
           "role": "textbox",
           "label": "Command search",
+          "text": "▌",
           "disabled": false,
           "readOnly": false,
           "valueText": "",
-          "text": "▌",
-          "key": "command-palette:_idr_82_:input",
           "layout": {
             "bounds": {
               "x": 2,
@@ -4757,12 +4757,12 @@
       },
       "semantics": [
         {
+          "key": "_idr_89_",
           "id": "_idr_89_",
           "role": "button",
           "label": "Cancel",
           "disabled": false,
           "readOnly": false,
-          "key": "_idr_89_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -4782,12 +4782,12 @@
           }
         },
         {
+          "key": "_idr_8b_",
           "id": "_idr_8b_",
           "role": "button",
           "label": "Confirm",
           "disabled": false,
           "readOnly": false,
-          "key": "_idr_8b_",
           "layout": {
             "bounds": {
               "x": 14,
@@ -4807,9 +4807,9 @@
           }
         },
         {
+          "key": "_idr_8d_",
           "id": "_idr_8d_",
           "role": "text",
-          "key": "_idr_8d_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4870,11 +4870,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_8f_",
           "id": "_idr_8f_",
           "role": "text",
           "label": "container content",
           "text": "container content",
-          "key": "_idr_8f_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4894,9 +4894,9 @@
           }
         },
         {
+          "key": "_idr_8g_",
           "id": "_idr_8g_",
           "role": "text",
-          "key": "_idr_8g_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -4956,6 +4956,7 @@
       },
       "semantics": [
         {
+          "key": "acceptance-data-table:cell:0:value",
           "id": "acceptance-data-table:cell:0:value",
           "role": "cell",
           "label": "Value: One",
@@ -4977,10 +4978,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-data-table:cell:0:value"
+          }
         },
         {
+          "key": "acceptance-data-table:row:0",
           "id": "acceptance-data-table:row:0",
           "role": "row",
           "label": "Row 1",
@@ -5002,10 +5003,10 @@
             "zIndex": 0,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-data-table:row:0"
+          }
         },
         {
+          "key": "acceptance-data-table",
           "id": "acceptance-data-table",
           "role": "table",
           "label": "data-table acceptance",
@@ -5028,13 +5029,12 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-data-table"
+          }
         },
         {
+          "key": "_idr_8l_",
           "id": "_idr_8l_",
           "role": "text",
-          "key": "_idr_8l_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5088,9 +5088,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_8o_",
           "id": "_idr_8o_",
           "role": "text",
-          "key": "_idr_8o_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5110,14 +5110,14 @@
           }
         },
         {
+          "key": "acceptance-date-time-input",
           "id": "acceptance-date-time-input",
           "role": "textbox",
           "label": "date-time-input acceptance",
+          "text": "▌acceptance",
           "disabled": false,
           "readOnly": false,
           "valueText": "acceptance",
-          "text": "▌acceptance",
-          "key": "acceptance-date-time-input",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5171,10 +5171,10 @@
       },
       "semantics": [
         {
+          "key": "acceptance-default",
           "id": "acceptance-default",
           "role": "application",
           "label": "default acceptance",
-          "key": "acceptance-default",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5194,9 +5194,9 @@
           }
         },
         {
+          "key": "_idr_8q_",
           "id": "_idr_8q_",
           "role": "text",
-          "key": "_idr_8q_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5250,9 +5250,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_8s_",
           "id": "_idr_8s_",
           "role": "text",
-          "key": "_idr_8s_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5313,9 +5313,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_8u_",
           "id": "_idr_8u_",
           "role": "text",
-          "key": "_idr_8u_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5340,198 +5340,7 @@
           "role": "status",
           "label": "diff-viewer acceptance",
           "disabled": false,
-          "valueText": "1 additions, 1 removals",
-          "targetId": "acceptance-diff-viewer",
-          "initialName": "acceptance-app",
-          "title": "diff-viewer acceptance",
-          "children": "diff-viewer content",
-          "source": "@@ -1 +1 @@\n-old\n+new",
-          "max": 10,
-          "defaultValue": "acceptance",
-          "defaultChecked": true,
-          "defaultOpen": false,
-          "items": [
-            {
-              "id": "one",
-              "label": "One",
-              "content": "One panel"
-            },
-            {
-              "id": "two",
-              "label": "Two",
-              "content": "Two panel"
-            }
-          ],
-          "menus": [
-            {
-              "id": "one",
-              "label": "One",
-              "items": [
-                {
-                  "id": "one",
-                  "label": "One",
-                  "content": "One panel"
-                },
-                {
-                  "id": "two",
-                  "label": "Two",
-                  "content": "Two panel"
-                }
-              ]
-            }
-          ],
-          "options": [
-            {
-              "value": "one",
-              "label": "One"
-            },
-            {
-              "value": "two",
-              "label": "Two"
-            }
-          ],
-          "operations": [],
-          "commands": [
-            {
-              "id": "acceptance.command",
-              "title": "Acceptance command"
-            }
-          ],
-          "rows": [
-            {
-              "id": "one",
-              "value": "One"
-            }
-          ],
-          "lines": ["INFO acceptance"],
-          "labels": ["One"],
-          "columns": [
-            {
-              "id": "value",
-              "header": "Value"
-            }
-          ],
-          "panes": [
-            {
-              "id": "one",
-              "content": {
-                "key": null,
-                "props": {
-                  "children": "One pane"
-                },
-                "_owner": {
-                  "tag": 0,
-                  "key": null,
-                  "stateNode": null,
-                  "return": null,
-                  "child": null,
-                  "sibling": null,
-                  "index": 0,
-                  "ref": null,
-                  "refCleanup": null,
-                  "pendingProps": null,
-                  "memoizedProps": null,
-                  "updateQueue": null,
-                  "memoizedState": null,
-                  "dependencies": null,
-                  "mode": 3,
-                  "flags": 524289,
-                  "subtreeFlags": 14158341,
-                  "deletions": null,
-                  "lanes": 0,
-                  "childLanes": 0,
-                  "alternate": null,
-                  "actualDuration": 2.4806260000000293,
-                  "actualStartTime": 771.801416,
-                  "selfBaseDuration": 1.3810419999999795,
-                  "treeBaseDuration": 2.4114989999999352,
-                  "_debugInfo": null,
-                  "_debugOwner": null,
-                  "_debugStack": {},
-                  "_debugTask": null,
-                  "_debugNeedsRemount": false,
-                  "_debugHookTypes": [
-                    "useContext",
-                    "useState",
-                    "useCallback",
-                    "useMemo"
-                  ]
-                },
-                "_store": {}
-              }
-            },
-            {
-              "id": "two",
-              "content": {
-                "key": null,
-                "props": {
-                  "children": "Two pane"
-                },
-                "_owner": {
-                  "tag": 0,
-                  "key": null,
-                  "stateNode": null,
-                  "return": null,
-                  "child": null,
-                  "sibling": null,
-                  "index": 0,
-                  "ref": null,
-                  "refCleanup": null,
-                  "pendingProps": null,
-                  "memoizedProps": null,
-                  "updateQueue": null,
-                  "memoizedState": null,
-                  "dependencies": null,
-                  "mode": 3,
-                  "flags": 524289,
-                  "subtreeFlags": 14158341,
-                  "deletions": null,
-                  "lanes": 0,
-                  "childLanes": 0,
-                  "alternate": null,
-                  "actualDuration": 2.4806260000000293,
-                  "actualStartTime": 771.801416,
-                  "selfBaseDuration": 1.3810419999999795,
-                  "treeBaseDuration": 2.4114989999999352,
-                  "_debugInfo": null,
-                  "_debugOwner": null,
-                  "_debugStack": {},
-                  "_debugTask": null,
-                  "_debugNeedsRemount": false,
-                  "_debugHookTypes": [
-                    "useContext",
-                    "useState",
-                    "useCallback",
-                    "useMemo"
-                  ]
-                },
-                "_store": {}
-              }
-            }
-          ],
-          "defaultSizes": [50, 50],
-          "defaultExtent": 10,
-          "minSize": 1,
-          "maxSize": 30,
-          "steps": [
-            {
-              "id": "one",
-              "label": "One",
-              "status": "complete"
-            }
-          ],
-          "toast": {
-            "id": "acceptance",
-            "title": "Acceptance",
-            "variant": "info",
-            "duration": 1000
-          },
-          "data": [
-            {
-              "label": "One",
-              "value": 1
-            }
-          ]
+          "valueText": "1 additions, 1 removals"
         }
       ],
       "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
@@ -5568,9 +5377,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_90_",
           "id": "_idr_90_",
           "role": "text",
-          "key": "_idr_90_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5631,9 +5440,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_92_",
           "id": "_idr_92_",
           "role": "text",
-          "key": "_idr_92_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5694,9 +5503,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_95_",
           "id": "_idr_95_",
           "role": "text",
-          "key": "_idr_95_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5716,14 +5525,14 @@
           }
         },
         {
+          "key": "acceptance-editable-table-cell",
           "id": "acceptance-editable-table-cell",
           "role": "textbox",
           "label": "editable-table-cell acceptance",
+          "text": "▌acceptance",
           "disabled": false,
           "readOnly": false,
           "valueText": "acceptance",
-          "text": "▌acceptance",
-          "key": "acceptance-editable-table-cell",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5777,9 +5586,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_98_",
           "id": "_idr_98_",
           "role": "text",
-          "key": "_idr_98_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5799,14 +5608,14 @@
           }
         },
         {
+          "key": "acceptance-editable-tree-node",
           "id": "acceptance-editable-tree-node",
           "role": "textbox",
           "label": "editable-tree-node acceptance",
+          "text": "▌acceptance",
           "disabled": false,
           "readOnly": false,
           "valueText": "acceptance",
-          "text": "▌acceptance",
-          "key": "acceptance-editable-tree-node",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5860,11 +5669,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_99_",
           "id": "_idr_99_",
           "role": "text",
           "label": "error-boundary content",
           "text": "error-boundary content",
-          "key": "_idr_99_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5884,9 +5693,9 @@
           }
         },
         {
+          "key": "_idr_9a_",
           "id": "_idr_9a_",
           "role": "text",
-          "key": "_idr_9a_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5940,11 +5749,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_9c_",
           "id": "_idr_9c_",
           "role": "text",
           "label": "field content",
           "text": "field content",
-          "key": "_idr_9c_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -5964,9 +5773,9 @@
           }
         },
         {
+          "key": "_idr_9d_",
           "id": "_idr_9d_",
           "role": "text",
-          "key": "_idr_9d_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6026,11 +5835,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_9e_",
           "id": "_idr_9e_",
           "role": "text",
           "label": "footer content",
           "text": "footer content",
-          "key": "_idr_9e_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6050,9 +5859,9 @@
           }
         },
         {
+          "key": "_idr_9f_",
           "id": "_idr_9f_",
           "role": "text",
-          "key": "_idr_9f_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6106,9 +5915,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_9i_",
           "id": "_idr_9i_",
           "role": "text",
-          "key": "_idr_9i_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6128,14 +5937,14 @@
           }
         },
         {
+          "key": "acceptance-form-field-editor",
           "id": "acceptance-form-field-editor",
           "role": "textbox",
           "label": "form-field-editor acceptance",
+          "text": "▌acceptance",
           "disabled": false,
           "readOnly": false,
           "valueText": "acceptance",
-          "text": "▌acceptance",
-          "key": "acceptance-form-field-editor",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6189,11 +5998,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_9j_",
           "id": "_idr_9j_",
           "role": "text",
           "label": "header content",
           "text": "header content",
-          "key": "_idr_9j_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6213,9 +6022,9 @@
           }
         },
         {
+          "key": "_idr_9k_",
           "id": "_idr_9k_",
           "role": "text",
-          "key": "_idr_9k_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6269,9 +6078,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_9m_",
           "id": "_idr_9m_",
           "role": "text",
-          "key": "_idr_9m_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6331,12 +6140,12 @@
       },
       "semantics": [
         {
+          "key": "_idr_9q_",
           "id": "_idr_9q_",
           "role": "button",
           "label": "Close",
           "disabled": false,
           "readOnly": false,
-          "key": "_idr_9q_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -6356,9 +6165,9 @@
           }
         },
         {
+          "key": "_idr_9s_",
           "id": "_idr_9s_",
           "role": "text",
-          "key": "_idr_9s_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6385,14 +6194,14 @@
           "expanded": true
         },
         {
+          "key": "acceptance-help-overlay:search",
           "id": "acceptance-help-overlay:search",
           "role": "textbox",
           "label": "Search help",
+          "text": "▌",
           "disabled": false,
           "readOnly": false,
           "valueText": "",
-          "text": "▌",
-          "key": "acceptance-help-overlay:search",
           "layout": {
             "bounds": {
               "x": 2,
@@ -6446,10 +6255,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_a0_",
           "id": "_idr_a0_",
           "role": "heading",
           "label": "tuil init",
-          "key": "_idr_a0_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6469,8 +6278,8 @@
           }
         },
         {
-          "id": "_idr_9v_",
           "key": "_idr_9v_",
+          "id": "_idr_9v_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6490,8 +6299,8 @@
           }
         },
         {
-          "id": "_idr_9u_",
           "key": "_idr_9u_",
+          "id": "_idr_9u_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6511,11 +6320,11 @@
           }
         },
         {
+          "key": "tuil.init:stepper",
           "id": "tuil.init:stepper",
           "role": "status",
           "label": "Workflow progress",
           "valueText": "1 of 4",
-          "key": "tuil.init:stepper",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6535,11 +6344,11 @@
           }
         },
         {
+          "key": "_idr_ab_",
           "id": "_idr_ab_",
           "role": "text",
           "label": "Route: starting",
           "text": "Route: starting",
-          "key": "_idr_ab_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6559,12 +6368,12 @@
           }
         },
         {
+          "key": "cancel-init",
           "id": "cancel-init",
           "role": "button",
           "label": "Cancel",
           "disabled": false,
           "readOnly": false,
-          "key": "cancel-init",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6584,8 +6393,8 @@
           }
         },
         {
-          "id": "_idr_a4_",
           "key": "_idr_a4_",
+          "id": "_idr_a4_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6605,8 +6414,8 @@
           }
         },
         {
-          "id": "_idr_a1_",
           "key": "_idr_a1_",
+          "id": "_idr_a1_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6626,11 +6435,11 @@
           }
         },
         {
+          "key": "_idr_ak_",
           "id": "_idr_ak_",
           "role": "text",
           "label": "Tab navigate · Enter select · Ctrl+C cancel",
           "text": "Tab navigate · Enter select · Ctrl+C cancel",
-          "key": "_idr_ak_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6650,9 +6459,9 @@
           }
         },
         {
+          "key": "_idr_aj_",
           "id": "_idr_aj_",
           "role": "status",
-          "key": "_idr_aj_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6672,9 +6481,9 @@
           }
         },
         {
+          "key": "_idr_ai_",
           "id": "_idr_ai_",
           "role": "status",
-          "key": "_idr_ai_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6694,9 +6503,9 @@
           }
         },
         {
+          "key": "_idr_9t_",
           "id": "_idr_9t_",
           "role": "application",
-          "key": "_idr_9t_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6716,9 +6525,9 @@
           }
         },
         {
+          "key": "_idr_al_",
           "id": "_idr_al_",
           "role": "text",
-          "key": "_idr_al_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6757,14 +6566,14 @@
           "label": "init-form"
         },
         {
+          "key": "init-project-name",
           "id": "init-project-name",
           "role": "textbox",
           "label": "Project name",
+          "text": "▌acceptance-app",
           "disabled": false,
           "readOnly": false,
           "valueText": "acceptance-app",
-          "text": "▌acceptance-app",
-          "key": "init-project-name",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6791,6 +6600,7 @@
           "valueText": "running"
         },
         {
+          "key": "tuil.init:stepper:step:name",
           "id": "tuil.init:stepper:step:name",
           "role": "button",
           "label": "Name",
@@ -6812,10 +6622,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "tuil.init:stepper:step:name"
+          }
         },
         {
+          "key": "tuil.init:stepper:step:template",
           "id": "tuil.init:stepper:step:template",
           "role": "button",
           "label": "Template",
@@ -6837,10 +6647,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "tuil.init:stepper:step:template"
+          }
         },
         {
+          "key": "tuil.init:stepper:step:features",
           "id": "tuil.init:stepper:step:features",
           "role": "button",
           "label": "Features",
@@ -6862,10 +6672,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "tuil.init:stepper:step:features"
+          }
         },
         {
+          "key": "tuil.init:stepper:step:confirm",
           "id": "tuil.init:stepper:step:confirm",
           "role": "button",
           "label": "Confirm",
@@ -6887,8 +6697,7 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "tuil.init:stepper:step:confirm"
+          }
         }
       ],
       "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
@@ -6925,9 +6734,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_ao_",
           "id": "_idr_ao_",
           "role": "text",
-          "key": "_idr_ao_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -6947,14 +6756,14 @@
           }
         },
         {
+          "key": "acceptance-inline-editor",
           "id": "acceptance-inline-editor",
           "role": "textbox",
           "label": "inline-editor acceptance",
+          "text": "▌acceptance",
           "disabled": false,
           "readOnly": false,
           "valueText": "acceptance",
-          "text": "▌acceptance",
-          "key": "acceptance-inline-editor",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7008,9 +6817,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_aq_",
           "id": "_idr_aq_",
           "role": "text",
-          "key": "_idr_aq_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7042,201 +6851,8 @@
           "role": "tree",
           "label": "json-viewer acceptance",
           "disabled": false,
-          "valueText": "2 visible nodes",
-          "targetId": "acceptance-json-viewer",
-          "initialName": "acceptance-app",
-          "title": "json-viewer acceptance",
-          "children": "json-viewer content",
-          "source": "# Acceptance\nSecond",
-          "before": "old",
-          "after": "new",
-          "max": 10,
-          "defaultValue": "acceptance",
-          "defaultChecked": true,
-          "defaultOpen": false,
-          "items": [
-            {
-              "id": "one",
-              "label": "One",
-              "content": "One panel"
-            },
-            {
-              "id": "two",
-              "label": "Two",
-              "content": "Two panel"
-            }
-          ],
-          "menus": [
-            {
-              "id": "one",
-              "label": "One",
-              "items": [
-                {
-                  "id": "one",
-                  "label": "One",
-                  "content": "One panel"
-                },
-                {
-                  "id": "two",
-                  "label": "Two",
-                  "content": "Two panel"
-                }
-              ]
-            }
-          ],
-          "options": [
-            {
-              "value": "one",
-              "label": "One"
-            },
-            {
-              "value": "two",
-              "label": "Two"
-            }
-          ],
-          "operations": [],
-          "commands": [
-            {
-              "id": "acceptance.command",
-              "title": "Acceptance command"
-            }
-          ],
-          "rows": [
-            {
-              "id": "one",
-              "value": "One"
-            }
-          ],
-          "lines": ["INFO acceptance"],
-          "labels": ["One"],
-          "columns": [
-            {
-              "id": "value",
-              "header": "Value"
-            }
-          ],
-          "panes": [
-            {
-              "id": "one",
-              "content": {
-                "key": null,
-                "props": {
-                  "children": "One pane"
-                },
-                "_owner": {
-                  "tag": 0,
-                  "key": null,
-                  "stateNode": null,
-                  "return": null,
-                  "child": null,
-                  "sibling": null,
-                  "index": 0,
-                  "ref": null,
-                  "refCleanup": null,
-                  "pendingProps": null,
-                  "memoizedProps": null,
-                  "updateQueue": null,
-                  "memoizedState": null,
-                  "dependencies": null,
-                  "mode": 3,
-                  "flags": 524289,
-                  "subtreeFlags": 14158341,
-                  "deletions": null,
-                  "lanes": 0,
-                  "childLanes": 2,
-                  "alternate": null,
-                  "actualDuration": 1.2144589999999198,
-                  "actualStartTime": 951.77575,
-                  "selfBaseDuration": 0.12412499999993543,
-                  "treeBaseDuration": 1.1602089999998952,
-                  "_debugInfo": null,
-                  "_debugOwner": null,
-                  "_debugStack": {},
-                  "_debugTask": null,
-                  "_debugNeedsRemount": false,
-                  "_debugHookTypes": [
-                    "useContext",
-                    "useState",
-                    "useCallback",
-                    "useMemo"
-                  ]
-                },
-                "_store": {}
-              }
-            },
-            {
-              "id": "two",
-              "content": {
-                "key": null,
-                "props": {
-                  "children": "Two pane"
-                },
-                "_owner": {
-                  "tag": 0,
-                  "key": null,
-                  "stateNode": null,
-                  "return": null,
-                  "child": null,
-                  "sibling": null,
-                  "index": 0,
-                  "ref": null,
-                  "refCleanup": null,
-                  "pendingProps": null,
-                  "memoizedProps": null,
-                  "updateQueue": null,
-                  "memoizedState": null,
-                  "dependencies": null,
-                  "mode": 3,
-                  "flags": 524289,
-                  "subtreeFlags": 14158341,
-                  "deletions": null,
-                  "lanes": 0,
-                  "childLanes": 2,
-                  "alternate": null,
-                  "actualDuration": 1.2144589999999198,
-                  "actualStartTime": 951.77575,
-                  "selfBaseDuration": 0.12412499999993543,
-                  "treeBaseDuration": 1.1602089999998952,
-                  "_debugInfo": null,
-                  "_debugOwner": null,
-                  "_debugStack": {},
-                  "_debugTask": null,
-                  "_debugNeedsRemount": false,
-                  "_debugHookTypes": [
-                    "useContext",
-                    "useState",
-                    "useCallback",
-                    "useMemo"
-                  ]
-                },
-                "_store": {}
-              }
-            }
-          ],
-          "defaultSizes": [50, 50],
-          "defaultExtent": 10,
-          "minSize": 1,
-          "maxSize": 30,
-          "steps": [
-            {
-              "id": "one",
-              "label": "One",
-              "status": "complete"
-            }
-          ],
-          "toast": {
-            "id": "acceptance",
-            "title": "Acceptance",
-            "variant": "info",
-            "duration": 1000
-          },
-          "data": [
-            {
-              "label": "One",
-              "value": 1
-            }
-          ],
-          "readOnly": false
+          "readOnly": false,
+          "valueText": "2 visible nodes"
         },
         {
           "key": "acceptance-json-viewer:node:$",
@@ -7281,9 +6897,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_au_",
           "id": "_idr_au_",
           "role": "text",
-          "key": "_idr_au_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7303,9 +6919,9 @@
           }
         },
         {
+          "key": "_idr_b0_",
           "id": "_idr_b0_",
           "role": "text",
-          "key": "_idr_b0_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7325,9 +6941,9 @@
           }
         },
         {
+          "key": "_idr_b3_",
           "id": "_idr_b3_",
           "role": "text",
-          "key": "_idr_b3_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7347,8 +6963,8 @@
           }
         },
         {
-          "id": "_idr_b2_",
           "key": "_idr_b2_",
+          "id": "_idr_b2_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7368,8 +6984,8 @@
           }
         },
         {
-          "id": "_idr_b1_",
           "key": "_idr_b1_",
+          "id": "_idr_b1_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7389,11 +7005,11 @@
           }
         },
         {
+          "key": "acceptance-log-viewer",
           "id": "acceptance-log-viewer",
           "role": "application",
           "label": "log-viewer acceptance",
           "valueText": "1 records",
-          "key": "acceptance-log-viewer",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7447,11 +7063,11 @@
       },
       "semantics": [
         {
+          "key": "acceptance-markdown-viewer",
           "id": "acceptance-markdown-viewer",
           "role": "application",
           "label": "markdown-viewer acceptance",
           "valueText": "2 blocks",
-          "key": "acceptance-markdown-viewer",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7471,9 +7087,9 @@
           }
         },
         {
+          "key": "_idr_b6_",
           "id": "_idr_b6_",
           "role": "text",
-          "key": "_idr_b6_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7527,6 +7143,7 @@
       },
       "semantics": [
         {
+          "key": "acceptance-menu:item:one",
           "id": "acceptance-menu:item:one",
           "role": "menuitem",
           "label": "One",
@@ -7547,10 +7164,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-menu:item:one"
+          }
         },
         {
+          "key": "acceptance-menu:item:two",
           "id": "acceptance-menu:item:two",
           "role": "menuitem",
           "label": "Two",
@@ -7571,14 +7188,13 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-menu:item:two"
+          }
         },
         {
+          "key": "acceptance-menu",
           "id": "acceptance-menu",
           "role": "menu",
           "label": "menu acceptance",
-          "key": "acceptance-menu",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7598,9 +7214,9 @@
           }
         },
         {
+          "key": "_idr_bb_",
           "id": "_idr_bb_",
           "role": "text",
-          "key": "_idr_bb_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7654,6 +7270,7 @@
       },
       "semantics": [
         {
+          "key": "acceptance-menubar:menu:one",
           "id": "acceptance-menubar:menu:one",
           "role": "menuitem",
           "label": "One",
@@ -7675,14 +7292,13 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-menubar:menu:one"
+          }
         },
         {
+          "key": "acceptance-menubar",
           "id": "acceptance-menubar",
           "role": "menu",
           "label": "menubar acceptance",
-          "key": "acceptance-menubar",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7702,6 +7318,7 @@
           }
         },
         {
+          "key": "acceptance-menubar:one:item:one",
           "id": "acceptance-menubar:one:item:one",
           "role": "menuitem",
           "label": "One",
@@ -7722,10 +7339,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-menubar:one:item:one"
+          }
         },
         {
+          "key": "acceptance-menubar:one:item:two",
           "id": "acceptance-menubar:one:item:two",
           "role": "menuitem",
           "label": "Two",
@@ -7746,14 +7363,13 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-menubar:one:item:two"
+          }
         },
         {
+          "key": "acceptance-menubar:one",
           "id": "acceptance-menubar:one",
           "role": "menu",
           "label": "One",
-          "key": "acceptance-menubar:one",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7773,9 +7389,9 @@
           }
         },
         {
+          "key": "_idr_bj_",
           "id": "_idr_bj_",
           "role": "text",
-          "key": "_idr_bj_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7829,14 +7445,14 @@
       },
       "semantics": [
         {
+          "key": "acceptance-multi-select",
           "id": "acceptance-multi-select",
           "role": "listbox",
           "label": "multi-select acceptance",
+          "text": "One",
           "disabled": false,
           "readOnly": false,
           "valueText": "one",
-          "text": "One",
-          "key": "acceptance-multi-select",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7856,12 +7472,12 @@
           }
         },
         {
+          "key": "acceptance-multi-select:one",
           "id": "acceptance-multi-select:one",
           "role": "option",
           "label": "One",
           "selected": true,
           "checked": true,
-          "key": "acceptance-multi-select:one",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7881,12 +7497,12 @@
           }
         },
         {
+          "key": "acceptance-multi-select:two",
           "id": "acceptance-multi-select:two",
           "role": "option",
           "label": "Two",
           "selected": false,
           "checked": false,
-          "key": "acceptance-multi-select:two",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7906,9 +7522,9 @@
           }
         },
         {
+          "key": "_idr_bo_",
           "id": "_idr_bo_",
           "role": "text",
-          "key": "_idr_bo_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7962,9 +7578,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_bs_",
           "id": "_idr_bs_",
           "role": "text",
-          "key": "_idr_bs_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -7984,14 +7600,14 @@
           }
         },
         {
+          "key": "acceptance-number-input",
           "id": "acceptance-number-input",
           "role": "textbox",
           "label": "number-input acceptance",
+          "text": "▌1",
           "disabled": false,
           "readOnly": false,
           "valueText": "1",
-          "text": "▌1",
-          "key": "acceptance-number-input",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8045,9 +7661,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_bt_",
           "id": "_idr_bt_",
           "role": "text",
-          "key": "_idr_bt_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8108,9 +7724,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_bu_",
           "id": "_idr_bu_",
           "role": "text",
-          "key": "_idr_bu_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8186,10 +7802,10 @@
       },
       "semantics": [
         {
+          "key": "acceptance-outline",
           "id": "acceptance-outline",
           "role": "navigation",
           "label": "outline acceptance",
-          "key": "acceptance-outline",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8209,9 +7825,9 @@
           }
         },
         {
+          "key": "_idr_c0_",
           "id": "_idr_c0_",
           "role": "text",
-          "key": "_idr_c0_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8265,11 +7881,11 @@
       },
       "semantics": [
         {
+          "key": "acceptance-pagination",
           "id": "acceptance-pagination",
           "role": "navigation",
           "label": "pagination acceptance",
           "valueText": "1 of 3",
-          "key": "acceptance-pagination",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8289,9 +7905,9 @@
           }
         },
         {
+          "key": "_idr_c2_",
           "id": "_idr_c2_",
           "role": "text",
-          "key": "_idr_c2_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8345,11 +7961,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_c3_",
           "id": "_idr_c3_",
           "role": "text",
           "label": "pane-tabs content",
           "text": "pane-tabs content",
-          "key": "_idr_c3_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8369,9 +7985,9 @@
           }
         },
         {
+          "key": "_idr_c4_",
           "id": "_idr_c4_",
           "role": "text",
-          "key": "_idr_c4_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8425,9 +8041,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_c7_",
           "id": "_idr_c7_",
           "role": "text",
-          "key": "_idr_c7_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8447,14 +8063,14 @@
           }
         },
         {
+          "key": "acceptance-password-input",
           "id": "acceptance-password-input",
           "role": "textbox",
           "label": "password-input acceptance",
+          "text": "▌••••••••••",
           "disabled": false,
           "readOnly": false,
           "valueText": "[REDACTED]",
-          "text": "▌••••••••••",
-          "key": "acceptance-password-input",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8508,9 +8124,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_c9_",
           "id": "_idr_c9_",
           "role": "text",
-          "key": "_idr_c9_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8571,9 +8187,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_cb_",
           "id": "_idr_cb_",
           "role": "text",
-          "key": "_idr_cb_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8634,12 +8250,12 @@
       },
       "semantics": [
         {
+          "key": "acceptance-radio-group:one",
           "id": "acceptance-radio-group:one",
           "role": "radio",
           "label": "One",
           "selected": true,
           "checked": true,
-          "key": "acceptance-radio-group:one",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8659,12 +8275,12 @@
           }
         },
         {
+          "key": "acceptance-radio-group:two",
           "id": "acceptance-radio-group:two",
           "role": "radio",
           "label": "Two",
           "selected": false,
           "checked": false,
-          "key": "acceptance-radio-group:two",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8684,9 +8300,9 @@
           }
         },
         {
+          "key": "_idr_cf_",
           "id": "_idr_cf_",
           "role": "text",
-          "key": "_idr_cf_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8740,11 +8356,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_ch_",
           "id": "_idr_ch_",
           "role": "text",
           "label": "resizable-pane content",
           "text": "resizable-pane content",
-          "key": "_idr_ch_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8764,9 +8380,9 @@
           }
         },
         {
+          "key": "_idr_ci_",
           "id": "_idr_ci_",
           "role": "text",
-          "key": "_idr_ci_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -8791,207 +8407,16 @@
           "role": "application",
           "label": "resizable-pane acceptance",
           "disabled": false,
-          "valueText": "10 cells",
-          "targetId": "acceptance-resizable-pane",
-          "initialName": "acceptance-app",
-          "title": "resizable-pane acceptance",
-          "source": "# Acceptance\nSecond",
-          "before": "old",
-          "after": "new",
-          "max": 10,
-          "defaultValue": "acceptance",
-          "defaultChecked": true,
-          "defaultOpen": false,
-          "items": [
-            {
-              "id": "one",
-              "label": "One",
-              "content": "One panel"
-            },
-            {
-              "id": "two",
-              "label": "Two",
-              "content": "Two panel"
-            }
-          ],
-          "menus": [
-            {
-              "id": "one",
-              "label": "One",
-              "items": [
-                {
-                  "id": "one",
-                  "label": "One",
-                  "content": "One panel"
-                },
-                {
-                  "id": "two",
-                  "label": "Two",
-                  "content": "Two panel"
-                }
-              ]
-            }
-          ],
-          "options": [
-            {
-              "value": "one",
-              "label": "One"
-            },
-            {
-              "value": "two",
-              "label": "Two"
-            }
-          ],
-          "operations": [],
-          "commands": [
-            {
-              "id": "acceptance.command",
-              "title": "Acceptance command"
-            }
-          ],
-          "rows": [
-            {
-              "id": "one",
-              "value": "One"
-            }
-          ],
-          "lines": ["INFO acceptance"],
-          "labels": ["One"],
-          "columns": [
-            {
-              "id": "value",
-              "header": "Value"
-            }
-          ],
-          "panes": [
-            {
-              "id": "one",
-              "content": {
-                "key": null,
-                "props": {
-                  "children": "One pane"
-                },
-                "_owner": {
-                  "tag": 0,
-                  "key": null,
-                  "stateNode": null,
-                  "return": null,
-                  "child": null,
-                  "sibling": null,
-                  "index": 0,
-                  "ref": null,
-                  "refCleanup": null,
-                  "pendingProps": null,
-                  "memoizedProps": null,
-                  "updateQueue": null,
-                  "memoizedState": null,
-                  "dependencies": null,
-                  "mode": 3,
-                  "flags": 524289,
-                  "subtreeFlags": 14158341,
-                  "deletions": null,
-                  "lanes": 0,
-                  "childLanes": 2,
-                  "alternate": null,
-                  "actualDuration": 0.5167039999996632,
-                  "actualStartTime": 1148.812833,
-                  "selfBaseDuration": 0.09733299999993505,
-                  "treeBaseDuration": 0.45603899999969144,
-                  "_debugInfo": null,
-                  "_debugOwner": null,
-                  "_debugStack": {},
-                  "_debugTask": null,
-                  "_debugNeedsRemount": false,
-                  "_debugHookTypes": [
-                    "useContext",
-                    "useState",
-                    "useCallback",
-                    "useMemo"
-                  ]
-                },
-                "_store": {}
-              }
-            },
-            {
-              "id": "two",
-              "content": {
-                "key": null,
-                "props": {
-                  "children": "Two pane"
-                },
-                "_owner": {
-                  "tag": 0,
-                  "key": null,
-                  "stateNode": null,
-                  "return": null,
-                  "child": null,
-                  "sibling": null,
-                  "index": 0,
-                  "ref": null,
-                  "refCleanup": null,
-                  "pendingProps": null,
-                  "memoizedProps": null,
-                  "updateQueue": null,
-                  "memoizedState": null,
-                  "dependencies": null,
-                  "mode": 3,
-                  "flags": 524289,
-                  "subtreeFlags": 14158341,
-                  "deletions": null,
-                  "lanes": 0,
-                  "childLanes": 2,
-                  "alternate": null,
-                  "actualDuration": 0.5167039999996632,
-                  "actualStartTime": 1148.812833,
-                  "selfBaseDuration": 0.09733299999993505,
-                  "treeBaseDuration": 0.45603899999969144,
-                  "_debugInfo": null,
-                  "_debugOwner": null,
-                  "_debugStack": {},
-                  "_debugTask": null,
-                  "_debugNeedsRemount": false,
-                  "_debugHookTypes": [
-                    "useContext",
-                    "useState",
-                    "useCallback",
-                    "useMemo"
-                  ]
-                },
-                "_store": {}
-              }
-            }
-          ],
-          "defaultSizes": [50, 50],
-          "steps": [
-            {
-              "id": "one",
-              "label": "One",
-              "status": "complete"
-            }
-          ],
-          "toast": {
-            "id": "acceptance",
-            "title": "Acceptance",
-            "variant": "info",
-            "duration": 1000
-          },
-          "data": [
-            {
-              "label": "One",
-              "value": 1
-            }
-          ],
-          "height": 3,
-          "width": 30,
-          "readOnly": false
+          "readOnly": false,
+          "valueText": "10 cells"
         },
         {
           "key": "acceptance-resizable-pane:handle",
           "id": "acceptance-resizable-pane:handle",
           "role": "button",
           "label": "Resize resizable-pane acceptance",
-          "selected": true,
           "disabled": false,
+          "selected": true,
           "valueText": "10 cells"
         }
       ],
@@ -9029,11 +8454,11 @@
       },
       "semantics": [
         {
+          "key": "acceptance-rich-diff-viewer",
           "id": "acceptance-rich-diff-viewer",
           "role": "application",
           "label": "rich-diff-viewer acceptance",
           "valueText": "1 hunks",
-          "key": "acceptance-rich-diff-viewer",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9053,9 +8478,9 @@
           }
         },
         {
+          "key": "_idr_cl_",
           "id": "_idr_cl_",
           "role": "text",
-          "key": "_idr_cl_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9109,10 +8534,10 @@
       },
       "semantics": [
         {
+          "key": "acceptance-scroll-area",
           "id": "acceptance-scroll-area",
           "role": "application",
           "label": "scroll-area acceptance",
-          "key": "acceptance-scroll-area",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9132,9 +8557,9 @@
           }
         },
         {
+          "key": "_idr_cn_",
           "id": "_idr_cn_",
           "role": "text",
-          "key": "_idr_cn_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9188,9 +8613,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_cq_",
           "id": "_idr_cq_",
           "role": "text",
-          "key": "_idr_cq_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9210,14 +8635,14 @@
           }
         },
         {
+          "key": "acceptance-search-input",
           "id": "acceptance-search-input",
           "role": "textbox",
           "label": "search-input acceptance",
+          "text": "▌acceptance",
           "disabled": false,
           "readOnly": false,
           "valueText": "acceptance",
-          "text": "▌acceptance",
-          "key": "acceptance-search-input",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9271,6 +8696,7 @@
       },
       "semantics": [
         {
+          "key": "acceptance-select",
           "id": "acceptance-select",
           "role": "listbox",
           "label": "select acceptance",
@@ -9278,7 +8704,6 @@
           "readOnly": false,
           "expanded": false,
           "valueText": "one",
-          "key": "acceptance-select",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9298,9 +8723,9 @@
           }
         },
         {
+          "key": "_idr_ct_",
           "id": "_idr_ct_",
           "role": "text",
-          "key": "_idr_ct_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9354,11 +8779,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_cu_",
           "id": "_idr_cu_",
           "role": "text",
           "label": "sidebar content",
           "text": "sidebar content",
-          "key": "_idr_cu_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9378,9 +8803,9 @@
           }
         },
         {
+          "key": "_idr_cv_",
           "id": "_idr_cv_",
           "role": "text",
-          "key": "_idr_cv_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9434,9 +8859,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_d0_",
           "id": "_idr_d0_",
           "role": "text",
-          "key": "_idr_d0_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9490,13 +8915,13 @@
       },
       "semantics": [
         {
+          "key": "acceptance-slider",
           "id": "acceptance-slider",
           "role": "slider",
           "label": "slider acceptance",
           "disabled": false,
           "readOnly": false,
           "valueText": "1",
-          "key": "acceptance-slider",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9516,9 +8941,9 @@
           }
         },
         {
+          "key": "_idr_d3_",
           "id": "_idr_d3_",
           "role": "text",
-          "key": "_idr_d3_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9572,9 +8997,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_d5_",
           "id": "_idr_d5_",
           "role": "text",
-          "key": "_idr_d5_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9634,9 +9059,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_d6_",
           "id": "_idr_d6_",
           "role": "text",
-          "key": "_idr_d6_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9696,11 +9121,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_d9_",
           "id": "_idr_d9_",
           "role": "text",
           "label": "One pane",
           "text": "One pane",
-          "key": "_idr_d9_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9720,11 +9145,11 @@
           }
         },
         {
+          "key": "_idr_db_",
           "id": "_idr_db_",
           "role": "text",
           "label": "Two pane",
           "text": "Two pane",
-          "key": "_idr_db_",
           "layout": {
             "bounds": {
               "x": 15,
@@ -9744,9 +9169,9 @@
           }
         },
         {
+          "key": "_idr_dc_",
           "id": "_idr_dc_",
           "role": "text",
-          "key": "_idr_dc_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9766,6 +9191,7 @@
           }
         },
         {
+          "key": "acceptance-split-pane:divider:one",
           "id": "acceptance-split-pane:divider:one",
           "role": "button",
           "label": "Resize one",
@@ -9789,10 +9215,10 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-split-pane:divider:one"
+          }
         },
         {
+          "key": "acceptance-split-pane",
           "id": "acceptance-split-pane",
           "role": "application",
           "label": "split-pane acceptance",
@@ -9815,8 +9241,7 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-split-pane"
+          }
         }
       ],
       "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
@@ -9853,11 +9278,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_de_",
           "id": "_idr_de_",
           "role": "text",
           "label": "stack content",
           "text": "stack content",
-          "key": "_idr_de_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9877,9 +9302,9 @@
           }
         },
         {
+          "key": "_idr_df_",
           "id": "_idr_df_",
           "role": "text",
-          "key": "_idr_df_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9939,11 +9364,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_dh_",
           "id": "_idr_dh_",
           "role": "text",
           "label": "status-bar content",
           "text": "status-bar content",
-          "key": "_idr_dh_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -9963,9 +9388,9 @@
           }
         },
         {
+          "key": "_idr_di_",
           "id": "_idr_di_",
           "role": "text",
-          "key": "_idr_di_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10025,6 +9450,7 @@
       },
       "semantics": [
         {
+          "key": "acceptance-stepper:step:one",
           "id": "acceptance-stepper:step:one",
           "role": "button",
           "label": "One",
@@ -10046,15 +9472,14 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-stepper:step:one"
+          }
         },
         {
+          "key": "acceptance-stepper",
           "id": "acceptance-stepper",
           "role": "status",
           "label": "stepper acceptance",
           "valueText": "1 of 1",
-          "key": "acceptance-stepper",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10074,9 +9499,9 @@
           }
         },
         {
+          "key": "_idr_dm_",
           "id": "_idr_dm_",
           "role": "text",
-          "key": "_idr_dm_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10130,9 +9555,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_dn_",
           "id": "_idr_dn_",
           "role": "text",
-          "key": "_idr_dn_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10186,13 +9611,13 @@
       },
       "semantics": [
         {
+          "key": "acceptance-switch",
           "id": "acceptance-switch",
           "role": "switch",
           "label": "switch acceptance",
           "disabled": false,
           "readOnly": false,
           "checked": true,
-          "key": "acceptance-switch",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10212,9 +9637,9 @@
           }
         },
         {
+          "key": "_idr_dq_",
           "id": "_idr_dq_",
           "role": "text",
-          "key": "_idr_dq_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10268,6 +9693,7 @@
       },
       "semantics": [
         {
+          "key": "acceptance-tab-select:tab:one",
           "id": "acceptance-tab-select:tab:one",
           "role": "tab",
           "label": "One",
@@ -10289,10 +9715,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-tab-select:tab:one"
+          }
         },
         {
+          "key": "acceptance-tab-select:tab:two",
           "id": "acceptance-tab-select:tab:two",
           "role": "tab",
           "label": "Two",
@@ -10314,14 +9740,13 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-tab-select:tab:two"
+          }
         },
         {
+          "key": "acceptance-tab-select:panel:one",
           "id": "acceptance-tab-select:panel:one",
           "role": "tabpanel",
           "label": "One",
-          "key": "acceptance-tab-select:panel:one",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10341,10 +9766,10 @@
           }
         },
         {
+          "key": "acceptance-tab-select",
           "id": "acceptance-tab-select",
           "role": "navigation",
           "label": "tab-select acceptance",
-          "key": "acceptance-tab-select",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10364,9 +9789,9 @@
           }
         },
         {
+          "key": "_idr_e0_",
           "id": "_idr_e0_",
           "role": "text",
-          "key": "_idr_e0_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10420,6 +9845,7 @@
       },
       "semantics": [
         {
+          "key": "acceptance-table:cell:one:value",
           "id": "acceptance-table:cell:one:value",
           "role": "cell",
           "label": "Value: One",
@@ -10441,10 +9867,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-table:cell:one:value"
+          }
         },
         {
+          "key": "acceptance-table:row:one",
           "id": "acceptance-table:row:one",
           "role": "row",
           "label": "Row 1",
@@ -10466,10 +9892,10 @@
             "zIndex": 0,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-table:row:one"
+          }
         },
         {
+          "key": "acceptance-table",
           "id": "acceptance-table",
           "role": "table",
           "label": "table acceptance",
@@ -10492,13 +9918,12 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-table"
+          }
         },
         {
+          "key": "_idr_e5_",
           "id": "_idr_e5_",
           "role": "text",
-          "key": "_idr_e5_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10552,6 +9977,7 @@
       },
       "semantics": [
         {
+          "key": "acceptance-tabs:tab:one",
           "id": "acceptance-tabs:tab:one",
           "role": "tab",
           "label": "One",
@@ -10573,10 +9999,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-tabs:tab:one"
+          }
         },
         {
+          "key": "acceptance-tabs:tab:two",
           "id": "acceptance-tabs:tab:two",
           "role": "tab",
           "label": "Two",
@@ -10598,14 +10024,13 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-tabs:tab:two"
+          }
         },
         {
+          "key": "acceptance-tabs:panel:one",
           "id": "acceptance-tabs:panel:one",
           "role": "tabpanel",
           "label": "One",
-          "key": "acceptance-tabs:panel:one",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10625,10 +10050,10 @@
           }
         },
         {
+          "key": "acceptance-tabs",
           "id": "acceptance-tabs",
           "role": "navigation",
           "label": "tabs acceptance",
-          "key": "acceptance-tabs",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10648,9 +10073,9 @@
           }
         },
         {
+          "key": "_idr_eb_",
           "id": "_idr_eb_",
           "role": "text",
-          "key": "_idr_eb_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10704,11 +10129,11 @@
       },
       "semantics": [
         {
+          "key": "_idr_ed_",
           "id": "_idr_ed_",
           "role": "text",
           "label": "plugin terminal-platform-plugin@0.2.0",
           "text": "plugin terminal-platform-plugin@0.2.0",
-          "key": "_idr_ed_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10728,10 +10153,10 @@
           }
         },
         {
+          "key": "acceptance-terminal-platform-plugin",
           "id": "acceptance-terminal-platform-plugin",
           "role": "application",
           "label": "terminal-platform-plugin acceptance",
-          "key": "acceptance-terminal-platform-plugin",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10751,9 +10176,9 @@
           }
         },
         {
+          "key": "_idr_ee_",
           "id": "_idr_ee_",
           "role": "text",
-          "key": "_idr_ee_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10807,9 +10232,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_eh_",
           "id": "_idr_eh_",
           "role": "text",
-          "key": "_idr_eh_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10829,14 +10254,14 @@
           }
         },
         {
+          "key": "acceptance-text-area",
           "id": "acceptance-text-area",
           "role": "textbox",
           "label": "text-area acceptance",
+          "text": "▌acceptance",
           "disabled": false,
           "readOnly": false,
           "valueText": "acceptance",
-          "text": "▌acceptance",
-          "key": "acceptance-text-area",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10890,9 +10315,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_ek_",
           "id": "_idr_ek_",
           "role": "text",
-          "key": "_idr_ek_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10912,14 +10337,14 @@
           }
         },
         {
+          "key": "acceptance-text-input",
           "id": "acceptance-text-input",
           "role": "textbox",
           "label": "text-input acceptance",
+          "text": "▌acceptance",
           "disabled": false,
           "readOnly": false,
           "valueText": "acceptance",
-          "text": "▌acceptance",
-          "key": "acceptance-text-input",
           "layout": {
             "bounds": {
               "x": 0,
@@ -10973,9 +10398,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_em_",
           "id": "_idr_em_",
           "role": "text",
-          "key": "_idr_em_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -11036,9 +10461,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_en_",
           "id": "_idr_en_",
           "role": "text",
-          "key": "_idr_en_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -11092,9 +10517,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_eo_",
           "id": "_idr_eo_",
           "role": "text",
-          "key": "_idr_eo_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -11154,6 +10579,7 @@
       },
       "semantics": [
         {
+          "key": "acceptance-tooltip",
           "id": "acceptance-tooltip",
           "role": "button",
           "label": "Tooltip target",
@@ -11174,13 +10600,12 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-tooltip"
+          }
         },
         {
+          "key": "_idr_eq_",
           "id": "_idr_eq_",
           "role": "text",
-          "key": "_idr_eq_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -11241,9 +10666,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_es_",
           "id": "_idr_es_",
           "role": "text",
-          "key": "_idr_es_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -11289,189 +10714,8 @@
           "role": "form",
           "label": "transfer-list acceptance",
           "disabled": false,
-          "valueText": "1 selected",
-          "targetId": "acceptance-transfer-list",
-          "initialName": "acceptance-app",
-          "title": "transfer-list acceptance",
-          "children": "transfer-list content",
-          "source": "# Acceptance\nSecond",
-          "before": "old",
-          "after": "new",
-          "max": 10,
-          "defaultChecked": true,
-          "defaultOpen": false,
-          "menus": [
-            {
-              "id": "one",
-              "label": "One",
-              "items": [
-                {
-                  "id": "one",
-                  "label": "One",
-                  "content": "One panel"
-                },
-                {
-                  "id": "two",
-                  "label": "Two",
-                  "content": "Two panel"
-                }
-              ]
-            }
-          ],
-          "options": [
-            {
-              "value": "one",
-              "label": "One"
-            },
-            {
-              "value": "two",
-              "label": "Two"
-            }
-          ],
-          "operations": [],
-          "commands": [
-            {
-              "id": "acceptance.command",
-              "title": "Acceptance command"
-            }
-          ],
-          "rows": [
-            {
-              "id": "one",
-              "value": "One"
-            }
-          ],
-          "lines": ["INFO acceptance"],
-          "labels": ["One"],
-          "columns": [
-            {
-              "id": "value",
-              "header": "Value"
-            }
-          ],
-          "panes": [
-            {
-              "id": "one",
-              "content": {
-                "key": null,
-                "props": {
-                  "children": "One pane"
-                },
-                "_owner": {
-                  "tag": 0,
-                  "key": null,
-                  "stateNode": null,
-                  "return": null,
-                  "child": null,
-                  "sibling": null,
-                  "index": 0,
-                  "ref": null,
-                  "refCleanup": null,
-                  "pendingProps": null,
-                  "memoizedProps": null,
-                  "updateQueue": null,
-                  "memoizedState": null,
-                  "dependencies": null,
-                  "mode": 3,
-                  "flags": 524289,
-                  "subtreeFlags": 14158341,
-                  "deletions": null,
-                  "lanes": 0,
-                  "childLanes": 2,
-                  "alternate": null,
-                  "actualDuration": 0.7428349999995589,
-                  "actualStartTime": 1450.390041,
-                  "selfBaseDuration": 0.07091699999978118,
-                  "treeBaseDuration": 0.6475849999992533,
-                  "_debugInfo": null,
-                  "_debugOwner": null,
-                  "_debugStack": {},
-                  "_debugTask": null,
-                  "_debugNeedsRemount": false,
-                  "_debugHookTypes": [
-                    "useContext",
-                    "useState",
-                    "useCallback",
-                    "useMemo"
-                  ]
-                },
-                "_store": {}
-              }
-            },
-            {
-              "id": "two",
-              "content": {
-                "key": null,
-                "props": {
-                  "children": "Two pane"
-                },
-                "_owner": {
-                  "tag": 0,
-                  "key": null,
-                  "stateNode": null,
-                  "return": null,
-                  "child": null,
-                  "sibling": null,
-                  "index": 0,
-                  "ref": null,
-                  "refCleanup": null,
-                  "pendingProps": null,
-                  "memoizedProps": null,
-                  "updateQueue": null,
-                  "memoizedState": null,
-                  "dependencies": null,
-                  "mode": 3,
-                  "flags": 524289,
-                  "subtreeFlags": 14158341,
-                  "deletions": null,
-                  "lanes": 0,
-                  "childLanes": 2,
-                  "alternate": null,
-                  "actualDuration": 0.7428349999995589,
-                  "actualStartTime": 1450.390041,
-                  "selfBaseDuration": 0.07091699999978118,
-                  "treeBaseDuration": 0.6475849999992533,
-                  "_debugInfo": null,
-                  "_debugOwner": null,
-                  "_debugStack": {},
-                  "_debugTask": null,
-                  "_debugNeedsRemount": false,
-                  "_debugHookTypes": [
-                    "useContext",
-                    "useState",
-                    "useCallback",
-                    "useMemo"
-                  ]
-                },
-                "_store": {}
-              }
-            }
-          ],
-          "defaultSizes": [50, 50],
-          "defaultExtent": 10,
-          "minSize": 1,
-          "maxSize": 30,
-          "steps": [
-            {
-              "id": "one",
-              "label": "One",
-              "status": "complete"
-            }
-          ],
-          "toast": {
-            "id": "acceptance",
-            "title": "Acceptance",
-            "variant": "info",
-            "duration": 1000
-          },
-          "data": [
-            {
-              "label": "One",
-              "value": 1
-            }
-          ],
-          "width": 30,
-          "readOnly": false
+          "readOnly": false,
+          "valueText": "1 selected"
         },
         {
           "key": "acceptance-transfer-list:available:two",
@@ -11515,9 +10759,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_f1_",
           "id": "_idr_f1_",
           "role": "text",
-          "key": "_idr_f1_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -11537,6 +10781,7 @@
           }
         },
         {
+          "key": "acceptance-tree:item:one",
           "id": "acceptance-tree:item:one",
           "role": "treeitem",
           "label": "One",
@@ -11559,10 +10804,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-tree:item:one"
+          }
         },
         {
+          "key": "acceptance-tree:item:two",
           "id": "acceptance-tree:item:two",
           "role": "treeitem",
           "label": "Two",
@@ -11584,10 +10829,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-tree:item:two"
+          }
         },
         {
+          "key": "acceptance-tree",
           "id": "acceptance-tree",
           "role": "tree",
           "label": "tree acceptance",
@@ -11610,8 +10855,7 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-tree"
+          }
         }
       ],
       "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
@@ -11648,9 +10892,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_f6_",
           "id": "_idr_f6_",
           "role": "text",
-          "key": "_idr_f6_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -11670,6 +10914,7 @@
           }
         },
         {
+          "key": "acceptance-virtual-list:item:one",
           "id": "acceptance-virtual-list:item:one",
           "role": "option",
           "label": "one",
@@ -11691,10 +10936,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-virtual-list:item:one"
+          }
         },
         {
+          "key": "acceptance-virtual-list:item:two",
           "id": "acceptance-virtual-list:item:two",
           "role": "option",
           "label": "two",
@@ -11716,10 +10961,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-virtual-list:item:two"
+          }
         },
         {
+          "key": "acceptance-virtual-list",
           "id": "acceptance-virtual-list",
           "role": "listbox",
           "label": "virtual-list acceptance",
@@ -11742,8 +10987,7 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance-virtual-list"
+          }
         }
       ],
       "events": ["app:configure", "app:initialize", "app:mount", "app:ready"],
@@ -11780,6 +11024,7 @@
       },
       "semantics": [
         {
+          "key": "acceptance:stepper:step:ready",
           "id": "acceptance:stepper:step:ready",
           "role": "button",
           "label": "Ready",
@@ -11801,15 +11046,14 @@
             "zIndex": 1,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "acceptance:stepper:step:ready"
+          }
         },
         {
+          "key": "acceptance:stepper",
           "id": "acceptance:stepper",
           "role": "status",
           "label": "Workflow progress",
           "valueText": "1 of 1",
-          "key": "acceptance:stepper",
           "layout": {
             "bounds": {
               "x": 0,
@@ -11829,9 +11073,9 @@
           }
         },
         {
+          "key": "_idr_fb_",
           "id": "_idr_fb_",
           "role": "text",
-          "key": "_idr_fb_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -11892,9 +11136,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_g0_",
           "id": "_idr_g0_",
           "role": "text",
-          "key": "_idr_g0_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -11914,8 +11158,8 @@
           }
         },
         {
-          "id": "_idr_fc_",
           "key": "_idr_fc_",
+          "id": "_idr_fc_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -11935,6 +11179,7 @@
           }
         },
         {
+          "key": "story-table:cell:api:task",
           "id": "story-table:cell:api:task",
           "role": "cell",
           "label": "Task: API",
@@ -11956,10 +11201,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:cell:api:task"
+          }
         },
         {
+          "key": "story-table:cell:api:status",
           "id": "story-table:cell:api:status",
           "role": "cell",
           "label": "Status: ready",
@@ -11981,10 +11226,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:cell:api:status"
+          }
         },
         {
+          "key": "story-table:row:api",
           "id": "story-table:row:api",
           "role": "row",
           "label": "Row 1",
@@ -12006,10 +11251,10 @@
             "zIndex": 0,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:row:api"
+          }
         },
         {
+          "key": "story-table:cell:docs:task",
           "id": "story-table:cell:docs:task",
           "role": "cell",
           "label": "Task: Docs",
@@ -12031,10 +11276,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:cell:docs:task"
+          }
         },
         {
+          "key": "story-table:cell:docs:status",
           "id": "story-table:cell:docs:status",
           "role": "cell",
           "label": "Status: running",
@@ -12056,10 +11301,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:cell:docs:status"
+          }
         },
         {
+          "key": "story-table:row:docs",
           "id": "story-table:row:docs",
           "role": "row",
           "label": "Row 2",
@@ -12081,10 +11326,10 @@
             "zIndex": 0,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:row:docs"
+          }
         },
         {
+          "key": "story-table:cell:release:task",
           "id": "story-table:cell:release:task",
           "role": "cell",
           "label": "Task: Release",
@@ -12106,10 +11351,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:cell:release:task"
+          }
         },
         {
+          "key": "story-table:cell:release:status",
           "id": "story-table:cell:release:status",
           "role": "cell",
           "label": "Status: queued",
@@ -12131,10 +11376,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:cell:release:status"
+          }
         },
         {
+          "key": "story-table:row:release",
           "id": "story-table:row:release",
           "role": "row",
           "label": "Row 3",
@@ -12156,10 +11401,10 @@
             "zIndex": 0,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:row:release"
+          }
         },
         {
+          "key": "story-table",
           "id": "story-table",
           "role": "table",
           "label": "Release tasks",
@@ -12182,10 +11427,10 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "story-table"
+          }
         },
         {
+          "key": "story-tree:item:src",
           "id": "story-tree:item:src",
           "role": "treeitem",
           "label": "src",
@@ -12208,10 +11453,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-tree:item:src"
+          }
         },
         {
+          "key": "story-tree:item:app",
           "id": "story-tree:item:app",
           "role": "treeitem",
           "label": "app.tsx",
@@ -12233,10 +11478,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-tree:item:app"
+          }
         },
         {
+          "key": "story-tree:item:theme",
           "id": "story-tree:item:theme",
           "role": "treeitem",
           "label": "theme.ts",
@@ -12258,10 +11503,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-tree:item:theme"
+          }
         },
         {
+          "key": "story-tree",
           "id": "story-tree",
           "role": "tree",
           "label": "Files",
@@ -12284,13 +11529,12 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "story-tree"
+          }
         },
         {
+          "key": "_idr_g4_",
           "id": "_idr_g4_",
           "role": "text",
-          "key": "_idr_g4_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -12310,8 +11554,8 @@
           }
         },
         {
-          "id": "_idr_g3_",
           "key": "_idr_g3_",
+          "id": "_idr_g3_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -12331,9 +11575,9 @@
           }
         },
         {
+          "key": "_idr_g6_",
           "id": "_idr_g6_",
           "role": "text",
-          "key": "_idr_g6_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -12353,8 +11597,8 @@
           }
         },
         {
-          "id": "_idr_g5_",
           "key": "_idr_g5_",
+          "id": "_idr_g5_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -12374,9 +11618,9 @@
           }
         },
         {
+          "key": "_idr_g8_",
           "id": "_idr_g8_",
           "role": "text",
-          "key": "_idr_g8_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -12396,8 +11640,8 @@
           }
         },
         {
-          "id": "_idr_g7_",
           "key": "_idr_g7_",
+          "id": "_idr_g7_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -12417,8 +11661,8 @@
           }
         },
         {
-          "id": "_idr_g2_",
           "key": "_idr_g2_",
+          "id": "_idr_g2_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -12438,11 +11682,11 @@
           }
         },
         {
+          "key": "story-logs",
           "id": "story-logs",
           "role": "application",
           "label": "Build logs",
           "valueText": "3 records",
-          "key": "story-logs",
           "layout": {
             "bounds": {
               "x": 0,
@@ -12500,9 +11744,9 @@
       },
       "semantics": [
         {
+          "key": "_idr_gr_",
           "id": "_idr_gr_",
           "role": "text",
-          "key": "_idr_gr_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -12522,9 +11766,9 @@
           }
         },
         {
+          "key": "_idr_gu_",
           "id": "_idr_gu_",
           "role": "text",
-          "key": "_idr_gu_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -12544,8 +11788,8 @@
           }
         },
         {
-          "id": "_idr_g9_",
           "key": "_idr_g9_",
+          "id": "_idr_g9_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -12565,6 +11809,7 @@
           }
         },
         {
+          "key": "story-table:cell:api:task",
           "id": "story-table:cell:api:task",
           "role": "cell",
           "label": "Task: API",
@@ -12586,10 +11831,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:cell:api:task"
+          }
         },
         {
+          "key": "story-table:cell:api:status",
           "id": "story-table:cell:api:status",
           "role": "cell",
           "label": "Status: ready",
@@ -12611,10 +11856,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:cell:api:status"
+          }
         },
         {
+          "key": "story-table:row:api",
           "id": "story-table:row:api",
           "role": "row",
           "label": "Row 1",
@@ -12636,10 +11881,10 @@
             "zIndex": 0,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:row:api"
+          }
         },
         {
+          "key": "story-table:cell:docs:task",
           "id": "story-table:cell:docs:task",
           "role": "cell",
           "label": "Task: Docs",
@@ -12661,10 +11906,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:cell:docs:task"
+          }
         },
         {
+          "key": "story-table:cell:docs:status",
           "id": "story-table:cell:docs:status",
           "role": "cell",
           "label": "Status: running",
@@ -12686,10 +11931,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:cell:docs:status"
+          }
         },
         {
+          "key": "story-table:row:docs",
           "id": "story-table:row:docs",
           "role": "row",
           "label": "Row 2",
@@ -12711,10 +11956,10 @@
             "zIndex": 0,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:row:docs"
+          }
         },
         {
+          "key": "story-table:cell:release:task",
           "id": "story-table:cell:release:task",
           "role": "cell",
           "label": "Task: Release",
@@ -12736,10 +11981,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:cell:release:task"
+          }
         },
         {
+          "key": "story-table:cell:release:status",
           "id": "story-table:cell:release:status",
           "role": "cell",
           "label": "Status: queued",
@@ -12761,10 +12006,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:cell:release:status"
+          }
         },
         {
+          "key": "story-table:row:release",
           "id": "story-table:row:release",
           "role": "row",
           "label": "Row 3",
@@ -12786,10 +12031,10 @@
             "zIndex": 0,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-table:row:release"
+          }
         },
         {
+          "key": "story-table",
           "id": "story-table",
           "role": "table",
           "label": "Release tasks",
@@ -12812,10 +12057,10 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "story-table"
+          }
         },
         {
+          "key": "story-tree:item:src",
           "id": "story-tree:item:src",
           "role": "treeitem",
           "label": "src",
@@ -12838,10 +12083,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-tree:item:src"
+          }
         },
         {
+          "key": "story-tree:item:app",
           "id": "story-tree:item:app",
           "role": "treeitem",
           "label": "app.tsx",
@@ -12863,10 +12108,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-tree:item:app"
+          }
         },
         {
+          "key": "story-tree:item:theme",
           "id": "story-tree:item:theme",
           "role": "treeitem",
           "label": "theme.ts",
@@ -12888,10 +12133,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-tree:item:theme"
+          }
         },
         {
+          "key": "story-tree",
           "id": "story-tree",
           "role": "tree",
           "label": "Files",
@@ -12914,13 +12159,12 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "story-tree"
+          }
         },
         {
+          "key": "_idr_h2_",
           "id": "_idr_h2_",
           "role": "text",
-          "key": "_idr_h2_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -12940,8 +12184,8 @@
           }
         },
         {
-          "id": "_idr_h1_",
           "key": "_idr_h1_",
+          "id": "_idr_h1_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -12961,8 +12205,8 @@
           }
         },
         {
-          "id": "_idr_h0_",
           "key": "_idr_h0_",
+          "id": "_idr_h0_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -12982,11 +12226,11 @@
           }
         },
         {
+          "key": "story-logs",
           "id": "story-logs",
           "role": "application",
           "label": "Build logs",
           "valueText": "1 records",
-          "key": "story-logs",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13046,13 +12290,13 @@
       },
       "semantics": [
         {
+          "key": "story-git",
           "id": "story-git",
           "role": "checkbox",
           "label": "Initialize Git",
           "disabled": false,
           "readOnly": false,
           "checked": true,
-          "key": "story-git",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13072,6 +12316,7 @@
           }
         },
         {
+          "key": "story-language",
           "id": "story-language",
           "role": "listbox",
           "label": "Language",
@@ -13079,7 +12324,6 @@
           "readOnly": false,
           "expanded": false,
           "valueText": "typescript",
-          "key": "story-language",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13099,8 +12343,8 @@
           }
         },
         {
-          "id": "_idr_h3_",
           "key": "_idr_h3_",
+          "id": "_idr_h3_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13126,14 +12370,14 @@
           "label": "Project name"
         },
         {
+          "key": "story-project",
           "id": "story-project",
           "role": "textbox",
           "label": "Project name",
+          "text": "▌my-app",
           "disabled": false,
           "readOnly": false,
           "valueText": "my-app",
-          "text": "▌my-app",
-          "key": "story-project",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13193,13 +12437,13 @@
       },
       "semantics": [
         {
+          "key": "story-git",
           "id": "story-git",
           "role": "checkbox",
           "label": "Initialize Git",
           "disabled": false,
           "readOnly": false,
           "checked": true,
-          "key": "story-git",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13219,6 +12463,7 @@
           }
         },
         {
+          "key": "story-language",
           "id": "story-language",
           "role": "listbox",
           "label": "Language",
@@ -13226,7 +12471,6 @@
           "readOnly": false,
           "expanded": false,
           "valueText": "javascript",
-          "key": "story-language",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13246,8 +12490,8 @@
           }
         },
         {
-          "id": "_idr_hb_",
           "key": "_idr_hb_",
+          "id": "_idr_hb_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13273,14 +12517,14 @@
           "label": "Project name"
         },
         {
+          "key": "story-project",
           "id": "story-project",
           "role": "textbox",
           "label": "Project name",
+          "text": "▌terminal-app",
           "disabled": false,
           "readOnly": false,
           "valueText": "terminal-app",
-          "text": "▌terminal-app",
-          "key": "story-project",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13340,10 +12584,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_hk_",
           "id": "_idr_hk_",
           "role": "heading",
           "label": "Build pipeline",
-          "key": "_idr_hk_",
           "layout": {
             "bounds": {
               "x": 1,
@@ -13363,10 +12607,10 @@
           }
         },
         {
+          "key": "_idr_hl_",
           "id": "_idr_hl_",
           "role": "text",
           "label": "running",
-          "key": "_idr_hl_",
           "layout": {
             "bounds": {
               "x": 1,
@@ -13386,11 +12630,11 @@
           }
         },
         {
+          "key": "_idr_hm_",
           "id": "_idr_hm_",
           "role": "progressbar",
           "label": "Build progress",
           "valueText": "62%",
-          "key": "_idr_hm_",
           "layout": {
             "bounds": {
               "x": 1,
@@ -13410,12 +12654,12 @@
           }
         },
         {
+          "key": "run-build",
           "id": "run-build",
           "role": "button",
           "label": "Run build",
           "disabled": false,
           "readOnly": false,
-          "key": "run-build",
           "layout": {
             "bounds": {
               "x": 1,
@@ -13435,8 +12679,8 @@
           }
         },
         {
-          "id": "_idr_hj_",
           "key": "_idr_hj_",
+          "id": "_idr_hj_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13492,10 +12736,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_hq_",
           "id": "_idr_hq_",
           "role": "heading",
           "label": "Build pipeline",
-          "key": "_idr_hq_",
           "layout": {
             "bounds": {
               "x": 1,
@@ -13515,10 +12759,10 @@
           }
         },
         {
+          "key": "_idr_hr_",
           "id": "_idr_hr_",
           "role": "text",
           "label": "complete",
-          "key": "_idr_hr_",
           "layout": {
             "bounds": {
               "x": 1,
@@ -13538,11 +12782,11 @@
           }
         },
         {
+          "key": "_idr_hs_",
           "id": "_idr_hs_",
           "role": "progressbar",
           "label": "Build progress",
           "valueText": "100%",
-          "key": "_idr_hs_",
           "layout": {
             "bounds": {
               "x": 1,
@@ -13562,12 +12806,12 @@
           }
         },
         {
+          "key": "run-build",
           "id": "run-build",
           "role": "button",
           "label": "Run build",
           "disabled": false,
           "readOnly": false,
-          "key": "run-build",
           "layout": {
             "bounds": {
               "x": 1,
@@ -13587,8 +12831,8 @@
           }
         },
         {
-          "id": "_idr_hp_",
           "key": "_idr_hp_",
+          "id": "_idr_hp_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13642,6 +12886,7 @@
       },
       "semantics": [
         {
+          "key": "story-navigation:tab:overview",
           "id": "story-navigation:tab:overview",
           "role": "tab",
           "label": "Overview",
@@ -13663,10 +12908,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-navigation:tab:overview"
+          }
         },
         {
+          "key": "story-navigation:tab:settings",
           "id": "story-navigation:tab:settings",
           "role": "tab",
           "label": "Settings",
@@ -13688,14 +12933,13 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-navigation:tab:settings"
+          }
         },
         {
+          "key": "story-navigation:panel:overview",
           "id": "story-navigation:panel:overview",
           "role": "tabpanel",
           "label": "Overview",
-          "key": "story-navigation:panel:overview",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13715,10 +12959,10 @@
           }
         },
         {
+          "key": "story-navigation",
           "id": "story-navigation",
           "role": "navigation",
           "label": "Application sections",
-          "key": "story-navigation",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13772,6 +13016,7 @@
       },
       "semantics": [
         {
+          "key": "story-navigation:tab:overview",
           "id": "story-navigation:tab:overview",
           "role": "tab",
           "label": "Overview",
@@ -13793,10 +13038,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-navigation:tab:overview"
+          }
         },
         {
+          "key": "story-navigation:tab:settings",
           "id": "story-navigation:tab:settings",
           "role": "tab",
           "label": "Settings",
@@ -13818,14 +13063,13 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "story-navigation:tab:settings"
+          }
         },
         {
+          "key": "story-navigation:panel:settings",
           "id": "story-navigation:panel:settings",
           "role": "tabpanel",
           "label": "Settings",
-          "key": "story-navigation:panel:settings",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13845,10 +13089,10 @@
           }
         },
         {
+          "key": "story-navigation",
           "id": "story-navigation",
           "role": "navigation",
           "label": "Application sections",
-          "key": "story-navigation",
           "layout": {
             "bounds": {
               "x": 0,
@@ -13904,10 +13148,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_ia_",
           "id": "_idr_ia_",
           "role": "heading",
           "label": "Renderer",
-          "key": "_idr_ia_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -13927,11 +13171,11 @@
           }
         },
         {
+          "key": "_idr_ib_",
           "id": "_idr_ib_",
           "role": "text",
           "label": "Ink and Bun cell backends · 80×24 · dirty cells 12",
           "text": "Ink and Bun cell backends · 80×24 · dirty cells 12",
-          "key": "_idr_ib_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -13951,9 +13195,9 @@
           }
         },
         {
+          "key": "_idr_ic_",
           "id": "_idr_ic_",
           "role": "text",
-          "key": "_idr_ic_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -13973,8 +13217,8 @@
           }
         },
         {
-          "id": "_idr_i9_",
           "key": "_idr_i9_",
+          "id": "_idr_i9_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -14030,10 +13274,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_ie_",
           "id": "_idr_ie_",
           "role": "heading",
           "label": "Pointer and scroll",
-          "key": "_idr_ie_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14053,11 +13297,11 @@
           }
         },
         {
+          "key": "_idr_if_",
           "id": "_idr_if_",
           "role": "text",
           "label": "SGR mouse · captured drag · viewport 120/100000",
           "text": "SGR mouse · captured drag · viewport 120/100000",
-          "key": "_idr_if_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14077,12 +13321,12 @@
           }
         },
         {
+          "key": "pointer-story-target",
           "id": "pointer-story-target",
           "role": "button",
           "label": "Click, focus, or press Enter",
           "disabled": false,
           "readOnly": false,
-          "key": "pointer-story-target",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14102,8 +13346,8 @@
           }
         },
         {
-          "id": "_idr_id_",
           "key": "_idr_id_",
+          "id": "_idr_id_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -14159,10 +13403,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_ij_",
           "id": "_idr_ij_",
           "role": "heading",
           "label": "Editors",
-          "key": "_idr_ij_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14182,11 +13426,11 @@
           }
         },
         {
+          "key": "_idr_ik_",
           "id": "_idr_ik_",
           "role": "text",
           "label": "NORMAL · 3 selections · undo 8 · diagnostics 1",
           "text": "NORMAL · 3 selections · undo 8 · diagnostics 1",
-          "key": "_idr_ik_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14206,8 +13450,8 @@
           }
         },
         {
-          "id": "_idr_ii_",
           "key": "_idr_ii_",
+          "id": "_idr_ii_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -14227,14 +13471,14 @@
           }
         },
         {
+          "key": "editor-story",
           "id": "editor-story",
           "role": "textbox",
           "label": "Editor buffer",
+          "text": "▌const ready = true;",
           "disabled": false,
           "readOnly": false,
           "valueText": "const ready = true;",
-          "text": "▌const ready = true;",
-          "key": "editor-story",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14290,10 +13534,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_io_",
           "id": "_idr_io_",
           "role": "heading",
           "label": "Rich documents",
-          "key": "_idr_io_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14313,11 +13557,11 @@
           }
         },
         {
+          "key": "_idr_ip_",
           "id": "_idr_ip_",
           "role": "text",
           "label": "tree-native search · unknown callout node · lossless JSON",
           "text": "tree-native search · unknown callout node · lossless JSON",
-          "key": "_idr_ip_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14337,6 +13581,7 @@
           }
         },
         {
+          "key": "_idr_iq_:item:document",
           "id": "_idr_iq_:item:document",
           "role": "treeitem",
           "label": "document",
@@ -14359,10 +13604,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "_idr_iq_:item:document"
+          }
         },
         {
+          "key": "_idr_iq_:item:callout",
           "id": "_idr_iq_:item:callout",
           "role": "treeitem",
           "label": "callout (plugin)",
@@ -14385,10 +13630,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "_idr_iq_:item:callout"
+          }
         },
         {
+          "key": "_idr_iq_:item:callout-text",
           "id": "_idr_iq_:item:callout-text",
           "role": "treeitem",
           "label": "Caution",
@@ -14410,10 +13655,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "_idr_iq_:item:callout-text"
+          }
         },
         {
+          "key": "_idr_iq_",
           "id": "_idr_iq_",
           "role": "tree",
           "label": "Rich document tree",
@@ -14436,12 +13681,11 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "_idr_iq_"
+          }
         },
         {
-          "id": "_idr_in_",
           "key": "_idr_in_",
+          "id": "_idr_in_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -14497,10 +13741,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_j0_",
           "id": "_idr_j0_",
           "role": "heading",
           "label": "Streaming content",
-          "key": "_idr_j0_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14520,11 +13764,11 @@
           }
         },
         {
+          "key": "_idr_j1_",
           "id": "_idr_j1_",
           "role": "text",
           "label": "Markdown → transformer → table + raw projection",
           "text": "Markdown → transformer → table + raw projection",
-          "key": "_idr_j1_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14544,9 +13788,9 @@
           }
         },
         {
+          "key": "_idr_j2_",
           "id": "_idr_j2_",
           "role": "text",
-          "key": "_idr_j2_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14566,8 +13810,8 @@
           }
         },
         {
-          "id": "_idr_iv_",
           "key": "_idr_iv_",
+          "id": "_idr_iv_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -14623,10 +13867,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_j4_",
           "id": "_idr_j4_",
           "role": "heading",
           "label": "Logging",
-          "key": "_idr_j4_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14646,11 +13890,11 @@
           }
         },
         {
+          "key": "_idr_j5_",
           "id": "_idr_j5_",
           "role": "text",
           "label": "LIVE · 100000 records · severity >= warn",
           "text": "LIVE · 100000 records · severity >= warn",
-          "key": "_idr_j5_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14670,9 +13914,9 @@
           }
         },
         {
+          "key": "_idr_j9_",
           "id": "_idr_j9_",
           "role": "text",
-          "key": "_idr_j9_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14692,8 +13936,8 @@
           }
         },
         {
-          "id": "_idr_j3_",
           "key": "_idr_j3_",
+          "id": "_idr_j3_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -14713,9 +13957,9 @@
           }
         },
         {
+          "key": "_idr_jd_",
           "id": "_idr_jd_",
           "role": "text",
-          "key": "_idr_jd_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14735,8 +13979,8 @@
           }
         },
         {
-          "id": "_idr_jc_",
           "key": "_idr_jc_",
+          "id": "_idr_jc_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14756,9 +14000,9 @@
           }
         },
         {
+          "key": "_idr_jf_",
           "id": "_idr_jf_",
           "role": "text",
-          "key": "_idr_jf_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14778,8 +14022,8 @@
           }
         },
         {
-          "id": "_idr_je_",
           "key": "_idr_je_",
+          "id": "_idr_je_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14799,9 +14043,9 @@
           }
         },
         {
+          "key": "_idr_jh_",
           "id": "_idr_jh_",
           "role": "text",
-          "key": "_idr_jh_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14821,8 +14065,8 @@
           }
         },
         {
-          "id": "_idr_jg_",
           "key": "_idr_jg_",
+          "id": "_idr_jg_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14842,8 +14086,8 @@
           }
         },
         {
-          "id": "_idr_jb_",
           "key": "_idr_jb_",
+          "id": "_idr_jb_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14863,11 +14107,11 @@
           }
         },
         {
+          "key": "_idr_j6_",
           "id": "_idr_j6_",
           "role": "application",
           "label": "Live records",
           "valueText": "3 records",
-          "key": "_idr_j6_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14923,10 +14167,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_jj_",
           "id": "_idr_jj_",
           "role": "heading",
           "label": "Devtools",
-          "key": "_idr_jj_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14946,11 +14190,11 @@
           }
         },
         {
+          "key": "_idr_jk_",
           "id": "_idr_jk_",
           "role": "text",
           "label": "Focus tree · frames · editor · logs · action history",
           "text": "Focus tree · frames · editor · logs · action history",
-          "key": "_idr_jk_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14970,9 +14214,9 @@
           }
         },
         {
+          "key": "_idr_jl_",
           "id": "_idr_jl_",
           "role": "text",
-          "key": "_idr_jl_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -14992,8 +14236,8 @@
           }
         },
         {
-          "id": "_idr_ji_",
           "key": "_idr_ji_",
+          "id": "_idr_ji_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -15049,10 +14293,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_jn_",
           "id": "_idr_jn_",
           "role": "heading",
           "label": "Registry and plugins",
-          "key": "_idr_jn_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -15072,11 +14316,11 @@
           }
         },
         {
+          "key": "_idr_jo_",
           "id": "_idr_jo_",
           "role": "text",
           "label": "version 2.0.0 · integrity verified · upgrade available",
           "text": "version 2.0.0 · integrity verified · upgrade available",
-          "key": "_idr_jo_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -15096,9 +14340,9 @@
           }
         },
         {
+          "key": "_idr_jp_",
           "id": "_idr_jp_",
           "role": "text",
-          "key": "_idr_jp_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -15118,8 +14362,8 @@
           }
         },
         {
-          "id": "_idr_jm_",
           "key": "_idr_jm_",
+          "id": "_idr_jm_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -15175,10 +14419,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_jr_",
           "id": "_idr_jr_",
           "role": "heading",
           "label": "Component families",
-          "key": "_idr_jr_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -15198,11 +14442,11 @@
           }
         },
         {
+          "key": "_idr_js_",
           "id": "_idr_js_",
           "role": "text",
           "label": "input · navigation · data · feedback · layout",
           "text": "input · navigation · data · feedback · layout",
-          "key": "_idr_js_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -15222,10 +14466,10 @@
           }
         },
         {
+          "key": "_idr_ju_",
           "id": "_idr_ju_",
           "role": "text",
           "label": "ready",
-          "key": "_idr_ju_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -15245,13 +14489,13 @@
           }
         },
         {
+          "key": "component-story-check",
           "id": "component-story-check",
           "role": "checkbox",
           "label": "Enabled",
           "disabled": false,
           "readOnly": false,
           "checked": true,
-          "key": "component-story-check",
           "layout": {
             "bounds": {
               "x": 10,
@@ -15271,8 +14515,8 @@
           }
         },
         {
-          "id": "_idr_jt_",
           "key": "_idr_jt_",
+          "id": "_idr_jt_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -15292,8 +14536,8 @@
           }
         },
         {
-          "id": "_idr_jq_",
           "key": "_idr_jq_",
+          "id": "_idr_jq_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -15349,10 +14593,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_k2_",
           "id": "_idr_k2_",
           "role": "heading",
           "label": "Terminal image",
-          "key": "_idr_k2_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -15372,11 +14616,11 @@
           }
         },
         {
+          "key": "_idr_k3_",
           "id": "_idr_k3_",
           "role": "text",
           "label": "RGBA fixture · full color · deterministic text fallback",
           "text": "RGBA fixture · full color · deterministic text fallback",
-          "key": "_idr_k3_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -15396,8 +14640,8 @@
           }
         },
         {
-          "id": "_idr_k1_",
           "key": "_idr_k1_",
+          "id": "_idr_k1_",
           "layout": {
             "bounds": {
               "x": 0,
@@ -15459,10 +14703,10 @@
       },
       "semantics": [
         {
+          "key": "_idr_k6_",
           "id": "_idr_k6_",
           "role": "heading",
           "label": "Production applications",
-          "key": "_idr_k6_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -15482,11 +14726,11 @@
           }
         },
         {
+          "key": "_idr_k7_",
           "id": "_idr_k7_",
           "role": "text",
           "label": "Git · logs · OTEL · AI · deploy · files · workflow · docs",
           "text": "Git · logs · OTEL · AI · deploy · files · workflow · docs",
-          "key": "_idr_k7_",
           "layout": {
             "bounds": {
               "x": 2,
@@ -15506,6 +14750,7 @@
           }
         },
         {
+          "key": "_idr_k8_:item:git",
           "id": "_idr_k8_:item:git",
           "role": "treeitem",
           "label": "Git client",
@@ -15527,10 +14772,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "_idr_k8_:item:git"
+          }
         },
         {
+          "key": "_idr_k8_:item:logs",
           "id": "_idr_k8_:item:logs",
           "role": "treeitem",
           "label": "Log explorer",
@@ -15552,10 +14797,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "_idr_k8_:item:logs"
+          }
         },
         {
+          "key": "_idr_k8_:item:otel",
           "id": "_idr_k8_:item:otel",
           "role": "treeitem",
           "label": "OTEL console",
@@ -15577,10 +14822,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "_idr_k8_:item:otel"
+          }
         },
         {
+          "key": "_idr_k8_:item:assistant",
           "id": "_idr_k8_:item:assistant",
           "role": "treeitem",
           "label": "AI coding assistant",
@@ -15602,10 +14847,10 @@
             "zIndex": 1,
             "focusable": false,
             "pointerEvents": "auto"
-          },
-          "key": "_idr_k8_:item:assistant"
+          }
         },
         {
+          "key": "_idr_k8_",
           "id": "_idr_k8_",
           "role": "tree",
           "label": "Production examples",
@@ -15628,12 +14873,11 @@
             "zIndex": 0,
             "focusable": true,
             "pointerEvents": "auto"
-          },
-          "key": "_idr_k8_"
+          }
         },
         {
-          "id": "_idr_k5_",
           "key": "_idr_k5_",
+          "id": "_idr_k5_",
           "layout": {
             "bounds": {
               "x": 0,
