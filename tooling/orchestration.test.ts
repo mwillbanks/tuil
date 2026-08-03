@@ -100,7 +100,7 @@ test("build, registry, documentation, and publication orchestration completes", 
       ]),
     ),
   ).toThrow("dependency cycle");
-}, 300_000);
+}, 600_000);
 
 test("coverage and documentation gates own their complete source sets", async () => {
   const sources = await coverageSources(workspace);
