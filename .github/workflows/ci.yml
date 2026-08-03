@@ -40,10 +40,9 @@ jobs:
       - name: Verify conventional pull request title
         if: ${{ github.event_name == 'pull_request' }}
         env:
+          COMMITLINT_PR_TITLE: "true"
           PULL_REQUEST_TITLE: ${{ github.event.pull_request.title }}
-        run: >-
-          printf '%s\n' "$PULL_REQUEST_TITLE" |
-          bunx --no-install commitlint --config commitlint.pr-title.config.cjs
+        run: printf '%s\n' "$PULL_REQUEST_TITLE" | bunx --no-install commitlint
       - name: Verify workspace
         run: bun run check
       - name: Publish coverage
