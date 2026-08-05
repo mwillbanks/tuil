@@ -42,9 +42,9 @@
     "ink-testing-library": "catalog:"
   },
   "devDependencies": {
-    "@storybook/react": "^10.5.4",
-    "@storybook/react-vite": "^10.5.4",
-    "storybook": "^10.5.4",
+    "@storybook/react": "^10.5.5",
+    "@storybook/react-vite": "^10.5.5",
+    "storybook": "^10.5.5",
     "vite": "^8.1.5"
   }
 }
