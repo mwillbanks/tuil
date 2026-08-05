@@ -572,6 +572,37 @@ test("backend input preserves empty Ink input when keyboard flags identify an ar
   await instance.unmount();
 });
 
+test("backend input does not dispatch terminal focus sequences as text", async () => {
+  const output = new TestTerminal();
+  const input = new TestTerminal();
+  const received: string[] = [];
+  function InputProbe() {
+    useTerminalInput((value) => {
+      received.push(value);
+      return true;
+    });
+    return createElement(Text, null, "Input probe");
+  }
+  const app = createApp({
+    component: InputProbe,
+    renderer: "ink",
+    renderers: [new InkRendererBackend()],
+    terminal: {
+      mode: "interactive",
+      capabilities: { colorDepth: 24, width: 20, height: 2 },
+    },
+  });
+  const instance = await render(app, {
+    stdin: input as unknown as NodeJS.ReadStream,
+    stdout: output as unknown as NodeJS.WriteStream,
+  });
+  input.send("\u001b[I");
+  input.send("\u001b[O");
+  await Bun.sleep(25);
+  expect(received).toEqual([]);
+  await instance.unmount();
+});
+
 test("JSON renderer emits semantic-only changes", () => {
   const backend = new InkRendererBackend();
   const context = {

@@ -14,6 +14,13 @@ export type TerminalInputHandler = (
   key: Key,
 ) => boolean | Promise<boolean>;
 
+const terminalControlSequence = /^(?:\[[0-?]*[ -/]*[@-~]|O[@-~])$/u;
+const terminalEscape = String.fromCharCode(27);
+
+export function isTerminalControlSequence(input: string): boolean {
+  return input.includes(terminalEscape) || terminalControlSequence.test(input);
+}
+
 interface TerminalInputRegistration {
   readonly id: number;
   readonly priority: number;

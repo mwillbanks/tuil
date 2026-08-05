@@ -41,7 +41,11 @@ import {
   useRef,
   useState,
 } from "react";
-import { TerminalInputContext, TerminalInputRouter } from "./input.ts";
+import {
+  isTerminalControlSequence,
+  TerminalInputContext,
+  TerminalInputRouter,
+} from "./input.ts";
 import { OverlayProvider, useOverlayStatus } from "./overlay.tsx";
 import { parseInkRendererScene } from "./renderer-scene.ts";
 import { SemanticProvider, SemanticRegistry } from "./semantics.ts";
@@ -50,7 +54,11 @@ import { VirtualTerminalScreen } from "./vt-screen.ts";
 export * from "./components.tsx";
 export * from "./image.tsx";
 export type { TerminalInputHandler } from "./input.ts";
-export { TerminalInputLayer, useTerminalInput } from "./input.ts";
+export {
+  isTerminalControlSequence,
+  TerminalInputLayer,
+  useTerminalInput,
+} from "./input.ts";
 export * from "./overlay.tsx";
 export * from "./pointer.ts";
 export * from "./renderer-backend.ts";
@@ -116,6 +124,7 @@ async function dispatchTerminalInput(options: {
     options.input,
   );
   if (decoded.events.length > 0 && !decoded.passthrough) return;
+  if (isTerminalControlSequence(decoded.passthrough)) return;
   const consumed = await options.router.dispatch(
     decoded.passthrough,
     options.key,
