@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-ink",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Ink renderer, terminal input, semantics, primitives, and overlays for tuil.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-renderer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Renderer-neutral layout, frame scheduling, terminal integration, and backend contracts for tuil.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

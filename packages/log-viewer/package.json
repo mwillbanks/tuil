@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-log-viewer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Virtualized searchable themed log viewer models and terminal component projections for tuil.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

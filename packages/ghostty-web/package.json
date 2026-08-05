@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-ghostty-web",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Browser adapter that runs existing TUIL Ink applications inside Ghostty Web.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",
