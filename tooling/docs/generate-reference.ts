@@ -1410,7 +1410,7 @@ ${symbol.relatedTypes?.length ? symbol.relatedTypes.map((name) => `- [\`${name}\
 
 ## Source
 
-[View the secondary source reference](https://github.com/mwillbanks/tuil/blob/main/${symbol.file}${symbol.sourceLine ? `#L${symbol.sourceLine}` : ""})
+[View the secondary source reference](https://github.com/mwillbanks/tuil/blob/main/${symbol.file})
 
 ## Package
 
@@ -1719,7 +1719,7 @@ ${memberTable(symbol.members, componentApiSymbols, componentApiBase)}
 
 ## Source
 
-[View the secondary source reference](https://github.com/mwillbanks/tuil/blob/main/${symbol.file}${symbol.sourceLine ? `#L${symbol.sourceLine}` : ""})
+[View the secondary source reference](https://github.com/mwillbanks/tuil/blob/main/${symbol.file})
 `,
       "utf8",
     );
