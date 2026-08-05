@@ -55,7 +55,6 @@ export * from "./components.tsx";
 export * from "./image.tsx";
 export type { TerminalInputHandler } from "./input.ts";
 export {
-  isTerminalControlSequence,
   TerminalInputLayer,
   useTerminalInput,
 } from "./input.ts";

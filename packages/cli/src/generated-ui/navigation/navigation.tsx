@@ -9,6 +9,7 @@ import {
 import {
   resolveSlotProps,
   type SlottedComponentProps,
+  type Theme,
   useTheme,
 } from "@mwillbanks/tuil-theme";
 import { Box, type BoxProps, Text, type TextProps } from "ink";
@@ -22,6 +23,16 @@ import {
   useRef,
   useState,
 } from "react";
+
+function selectionColor(
+  theme: Theme,
+  active: boolean,
+  selected: boolean,
+): string | undefined {
+  if (active) return theme.colors.primary.foreground;
+  if (selected) return theme.colors.muted;
+  return undefined;
+}
 
 export interface NavigationItem {
   readonly id: string;
@@ -255,11 +266,11 @@ export function Tabs({
                 bold={focused && index === active}
                 underline={item.id === selected}
                 dimColor={item.disabled}
-                color={
-                  item.id === selected
-                    ? theme.colors.primary.foreground
-                    : undefined
-                }
+                color={selectionColor(
+                  theme,
+                  focused && index === active,
+                  item.id === selected,
+                )}
                 {...resolveSlotProps(slotProps?.item, state, theme)}
               >
                 {app.mode === "interactive" && focused && index === active
@@ -457,6 +468,11 @@ export function Menu({
               <Item
                 bold={focused && index === activePath.at(-1)}
                 dimColor={item.disabled}
+                color={
+                  focused && index === activePath.at(-1)
+                    ? theme.colors.primary.foreground
+                    : undefined
+                }
                 {...resolveSlotProps(slotProps?.item, state, theme)}
               >
                 {focused && index === activePath.at(-1) ? "> " : "  "}
@@ -590,6 +606,11 @@ export function Menubar({
                 bold={focused && index === active}
                 underline={index === active}
                 dimColor={candidate.disabled}
+                color={selectionColor(
+                  theme,
+                  focused && index === active,
+                  index === active,
+                )}
                 {...resolveSlotProps(slotProps?.item, state, theme)}
               >
                 {candidate.label}
@@ -666,6 +687,11 @@ function BreadcrumbTrail(props: {
           index === props.current || (props.focused && index === props.active)
         }
         dimColor={item.disabled}
+        color={selectionColor(
+          props.theme,
+          props.focused && index === props.active,
+          index === props.current,
+        )}
         {...resolveSlotProps(props.slotProps, props.state, props.theme)}
       >
         {breadcrumbSeparator(index, props.separator, props.unicode)}
@@ -896,7 +922,9 @@ export function Stepper({
                       ? theme.colors.danger.foreground
                       : status === "completed"
                         ? theme.colors.success.foreground
-                        : undefined
+                        : status === "current"
+                          ? theme.colors.muted
+                          : undefined
                   }
                   {...resolveSlotProps(slotProps?.item, state, theme)}
                 >
@@ -991,6 +1019,7 @@ export function Outline(props: {
   readonly label?: string;
   readonly items: readonly OutlineItem[];
 }): ReactNode {
+  const theme = useTheme();
   const id = props.id ?? "outline";
   return (
     <SemanticContainer
@@ -1000,7 +1029,11 @@ export function Outline(props: {
     >
       <Box flexDirection="column">
         {props.items.map((item) => (
-          <Text key={item.id} bold={item.selected}>
+          <Text
+            key={item.id}
+            bold={item.selected}
+            color={item.selected ? theme.colors.muted : undefined}
+          >
             {"  ".repeat(item.depth ?? 0)}
             {item.selected ? "› " : "  "}
             {item.label}

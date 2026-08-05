@@ -29,6 +29,7 @@ import {
 import {
   resolveSlotProps,
   type SlottedComponentProps,
+  type Theme,
   useTheme,
 } from "@mwillbanks/tuil-theme";
 import { Box, type BoxProps, type Key, Text, type TextProps } from "ink";
@@ -43,6 +44,16 @@ import {
   useRef,
   useState,
 } from "react";
+
+function selectionColor(
+  theme: Theme,
+  active: boolean,
+  selected: boolean,
+): string | undefined {
+  if (active) return theme.colors.primary.foreground;
+  if (selected) return theme.colors.muted;
+  return undefined;
+}
 
 export interface FieldProps
   extends CommonComponentProps,
@@ -1330,7 +1341,7 @@ function ToggleControl({
       checked={selected}
       bold={focused}
       dimColor={disabled}
-      color={selected ? app.theme.colors.primary.foreground : undefined}
+      color={selectionColor(app.theme, focused, selected)}
     >
       {role === "switch"
         ? `[${selected ? "ON" : "OFF"}]`
@@ -1741,11 +1752,11 @@ export function RadioGroup<T extends string>({
           disabled={option.disabled}
           bold={focused && index === active}
           dimColor={option.disabled}
-          color={
-            option.value === selected
-              ? app.theme.colors.primary.foreground
-              : undefined
-          }
+          color={selectionColor(
+            app.theme,
+            focused && index === active,
+            option.value === selected,
+          )}
         >
           <SemanticOption
             id={`${id}:${option.value}`}
@@ -1973,7 +1984,7 @@ export function Select<T extends string>({
       >
         <Indicator
           bold={focused}
-          color={focused ? theme.colors.primary.foreground : undefined}
+          color={selectionColor(theme, focused, selected !== undefined)}
           {...resolveSlotProps(slotProps?.indicator, state, theme)}
         >
           {expanded
@@ -2002,7 +2013,7 @@ export function Select<T extends string>({
           ) : (
             visible.map((option, index) => {
               const optionState = {
-                active: index === active,
+                active: focused && index === active,
                 selected: option.value === selected,
                 disabled: option.disabled ?? false,
               };
@@ -2019,11 +2030,11 @@ export function Select<T extends string>({
                   <Option
                     bold={optionState.active}
                     dimColor={option.disabled}
-                    color={
-                      optionState.selected
-                        ? theme.colors.primary.foreground
-                        : undefined
-                    }
+                    color={selectionColor(
+                      theme,
+                      optionState.active,
+                      optionState.selected,
+                    )}
                     {...resolveSlotProps(slotProps?.option, optionState, theme)}
                   >
                     <SemanticOption
@@ -2080,7 +2091,7 @@ export function MultiSelect<T extends string>({
   readOnly = false,
   ...props
 }: MultiSelectProps<T>): ReactNode {
-  const app = useApp();
+  const theme = useTheme();
   const generated = useId();
   const id = props.id ?? generated;
   const initialValue = useMemo<readonly T[]>(
@@ -2181,6 +2192,7 @@ export function MultiSelect<T extends string>({
         readOnly={readOnly}
         valueText={selected.join(",")}
         bold={focused}
+        color={selectionColor(theme, focused, selected.length > 0)}
       >
         {selected.length > 0
           ? options
@@ -2204,7 +2216,7 @@ export function MultiSelect<T extends string>({
             disabled={option.disabled}
             bold={focused && index === active}
             dimColor={option.disabled}
-            color={checked ? app.theme.colors.primary.foreground : undefined}
+            color={selectionColor(theme, focused && index === active, checked)}
           >
             <SemanticOption
               id={`${id}:${option.value}`}
@@ -2254,6 +2266,7 @@ export function Autocomplete<T extends string>({
   ...props
 }: AutocompleteProps<T>): ReactNode {
   const app = useApp();
+  const theme = useTheme();
   const generated = useId();
   const id = props.id ?? generated;
   const [internal, setInternal] = useState(defaultValue);
@@ -2317,6 +2330,9 @@ export function Autocomplete<T extends string>({
               disabled={option.disabled}
               bold={index === active}
               dimColor={option.disabled}
+              color={
+                index === active ? theme.colors.primary.foreground : undefined
+              }
             >
               <SemanticOption
                 id={`${id}:${option.value}`}

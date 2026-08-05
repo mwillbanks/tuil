@@ -421,11 +421,16 @@ export function PaneTabs({
   active,
   children,
 }: PaneTabsProps): ReactNode {
+  const theme = useTheme();
   return (
     <Box flexDirection="column">
       <Box gap={1}>
         {labels.map((label, index) => (
-          <Text key={label} bold={index === active}>
+          <Text
+            key={label}
+            bold={index === active}
+            color={index === active ? theme.colors.muted : undefined}
+          >
             {index === active ? `[${label}]` : label}
           </Text>
         ))}
