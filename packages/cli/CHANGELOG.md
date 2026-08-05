@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.1](https://github.com/mwillbanks/tuil/compare/tuil-cli-v1.0.0...tuil-cli-v1.0.1) (2026-08-05)
+
+
+### Bug Fixes
+
+* stabilize terminal inputs and selections ([#17](https://github.com/mwillbanks/tuil/issues/17)) ([71bca6c](https://github.com/mwillbanks/tuil/commit/71bca6c53f3b9a1d614ddd378d0b59fecc424000))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mwillbanks/tuil bumped to 1.0.1
+    * @mwillbanks/tuil-ink bumped to 1.0.1
+
 ## [1.0.0](https://github.com/mwillbanks/tuil/compare/tuil-cli-v0.2.0...tuil-cli-v1.0.0) (2026-08-02)
 
 

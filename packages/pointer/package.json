@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-pointer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Renderer-neutral terminal pointer parsing, hit testing, capture, and dispatch for tuil.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

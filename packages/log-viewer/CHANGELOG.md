@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.1](https://github.com/mwillbanks/tuil/compare/tuil-log-viewer-v1.0.0...tuil-log-viewer-v1.0.1) (2026-08-05)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mwillbanks/tuil-ink bumped to 1.0.1
+  * devDependencies
+    * @mwillbanks/tuil-testing-ink bumped to 1.0.1
+
 ## [1.0.0](https://github.com/mwillbanks/tuil/compare/tuil-log-viewer-v0.2.0...tuil-log-viewer-v1.0.0) (2026-08-02)
 
 

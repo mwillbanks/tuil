@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.1](https://github.com/mwillbanks/tuil/compare/tuil-story-v1.0.0...tuil-story-v1.0.1) (2026-08-05)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mwillbanks/tuil bumped to 1.0.1
+    * @mwillbanks/tuil-testing-ink bumped to 1.0.1
+
 ## [1.0.0](https://github.com/mwillbanks/tuil/compare/tuil-story-v0.2.0...tuil-story-v1.0.0) (2026-08-02)
 
 

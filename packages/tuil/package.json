@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A renderer-neutral terminal application runtime with React Ink compatibility.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

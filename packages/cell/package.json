@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-cell",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Pure Bun cell renderer with an explicit native diff profiling boundary.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

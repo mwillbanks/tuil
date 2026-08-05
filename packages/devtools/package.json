@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-devtools",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Runtime inspector and developer overlay for tuil applications.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",

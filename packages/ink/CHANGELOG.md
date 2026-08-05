@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.0.1](https://github.com/mwillbanks/tuil/compare/tuil-ink-v1.0.0...tuil-ink-v1.0.1) (2026-08-05)
+
+
+### Bug Fixes
+
+* repair main-screen renderer repaint ([#15](https://github.com/mwillbanks/tuil/issues/15)) ([9c1d2a8](https://github.com/mwillbanks/tuil/commit/9c1d2a8c6d4dccd44efdbb7e6f3d661dec05bc48))
+* stabilize terminal inputs and selections ([#17](https://github.com/mwillbanks/tuil/issues/17)) ([71bca6c](https://github.com/mwillbanks/tuil/commit/71bca6c53f3b9a1d614ddd378d0b59fecc424000))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mwillbanks/tuil bumped to 1.0.1
+    * @mwillbanks/tuil-pointer bumped to 1.0.1
+    * @mwillbanks/tuil-renderer bumped to 1.0.1
+
 ## [1.0.0](https://github.com/mwillbanks/tuil/compare/tuil-ink-v0.2.0...tuil-ink-v1.0.0) (2026-08-02)
 
 
