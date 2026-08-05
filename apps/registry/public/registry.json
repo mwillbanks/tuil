@@ -816,7 +816,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-5e90d6755797adbfd491b57beb23bedb81103e49b964ed0d51f4d74427020be9",
+      "integrity": "sha256-77938810ba3c88979d0893dc0ee42bc794d12ce811fc686bdf45b62b4862f756",
       "files": [
         {
           "path": "src/components/tuil/forms/controls.tsx",
@@ -1800,7 +1800,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-eb2a473a86f9ef2e60c63fc5c42699712e20e26f2e685566247cb9b6dde73ebc",
+      "integrity": "sha256-87df42f720bee2c45ee5ddc79e4094c3d904a8484a2890b8e788774f6e45f116",
       "files": [
         {
           "path": "src/components/tuil/layout/panes.tsx",
@@ -2062,7 +2062,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-638368e6e86b94934c5f2077fc498c66733a737b538fab9b4cf75c756e89e649",
+      "integrity": "sha256-bb0813f3b0ce4f32c42ec009e2789c73a3bc153bbd79a924cf7f127e17f46715",
       "files": [
         {
           "path": "src/components/tuil/navigation/navigation.tsx",
@@ -2313,7 +2313,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-4e7d5ce3dd7fa8cd8559f51d54b05d39112c7202f9df8f5191589f14a4a2ee6a",
+      "integrity": "sha256-60c04ac2aca3464b952b099ca6676b176859f132992a8a30c9239126253cd868",
       "files": [
         {
           "path": "src/components/tuil/forms/transfer-list.tsx",

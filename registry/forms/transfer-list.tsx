@@ -9,6 +9,7 @@ import {
 import {
   resolveSlotProps,
   type SlottedComponentProps,
+  type Theme,
   useTheme,
 } from "@mwillbanks/tuil-theme";
 import { Box, type BoxProps, Text, type TextProps } from "ink";
@@ -20,6 +21,16 @@ import {
   useMemo,
   useState,
 } from "react";
+
+function selectionColor(
+  theme: Theme,
+  active: boolean,
+  selected: boolean,
+): string | undefined {
+  if (active) return theme.colors.primary.foreground;
+  if (selected) return theme.colors.muted;
+  return undefined;
+}
 
 export interface TransferListItem<TData = unknown> {
   readonly id: string;
@@ -268,6 +279,11 @@ export function TransferList<TData>({
                     inverse={active}
                     bold={active}
                     dimColor={item.disabled}
+                    color={selectionColor(
+                      theme,
+                      active,
+                      panelSide === "selected",
+                    )}
                     {...resolveSlotProps(slotProps?.item, state, theme)}
                   >
                     <TerminalSemanticNode

@@ -8,6 +8,7 @@ import {
 import { useHotkey } from "@mwillbanks/tuil-hotkeys";
 import { useTerminalInput } from "@mwillbanks/tuil-ink";
 import { cleanup, renderTuil } from "@mwillbanks/tuil-testing-ink";
+import { Text, type TextProps } from "ink";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "./components/button.tsx";
 import {
@@ -743,6 +744,34 @@ test("controlled selection controls refresh active state and radio groups releas
   );
   await select.user.press("enter");
   expect(selectChanges).toEqual(["javascript"]);
+});
+
+test("selection controls distinguish selected and active option colors", async () => {
+  const optionStyles: Array<Pick<TextProps, "bold" | "color">> = [];
+  const Option = (props: TextProps) => {
+    optionStyles.push({ bold: props.bold, color: props.color });
+    return <Text {...props} />;
+  };
+  const view = renderTuil(
+    <Select
+      id="styled-select"
+      label="Styled select"
+      autoFocus
+      open
+      defaultValue="typescript"
+      options={options}
+      slots={{ option: Option }}
+    />,
+    { terminal: { capabilities: { colorDepth: 24 } } },
+  );
+  await view.ready;
+  await view.user.press("arrowDown");
+  expect(optionStyles.slice(-3)).toEqual([
+    { bold: false, color: "gray" },
+    { bold: true, color: "cyan" },
+    { bold: false, color: undefined },
+  ]);
+  await view.cleanup();
 });
 
 test("confirm, tooltip, toast, and command palette complete overlay contracts", async () => {
