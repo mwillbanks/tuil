@@ -708,6 +708,7 @@ export function diffCellFrames(
   ]);
   return Object.freeze({
     bytes: new TextEncoder().encode(output),
+    fullFrame: false,
     changedCells: changed.length,
     changedRows,
     dirtyRects: mergeDirtyCells(changed),
@@ -818,6 +819,7 @@ export function encodeCellOutput(
   if (mode === "static") {
     return Object.freeze({
       bytes: new TextEncoder().encode(cellFrameText(frame)),
+      fullFrame: true,
       changedCells: frame.cells.length,
       changedRows: Object.freeze(
         Array.from({ length: frame.height }, (_, index) => index),
@@ -845,6 +847,7 @@ export function encodeCellOutput(
         semantics: frame.semantics,
       }),
     ),
+    fullFrame: true,
     changedCells: frame.cells.length,
     changedRows: Object.freeze(
       Array.from({ length: frame.height }, (_, index) => index),

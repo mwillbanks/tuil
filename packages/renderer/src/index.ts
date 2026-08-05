@@ -265,6 +265,12 @@ export interface RendererFrame {
 
 export interface RendererOutput {
   readonly bytes: Uint8Array;
+  /**
+   * Whether `bytes` describes the complete owned surface or only changed
+   * regions. Output sessions use this to repaint main-screen frames without
+   * invalidating coordinate-based deltas.
+   */
+  readonly fullFrame?: boolean;
   readonly changedCells: number;
   readonly changedRows: readonly number[];
   readonly dirtyRects: readonly TerminalBounds[];
@@ -1023,8 +1029,8 @@ export class TerminalOutputSession {
   ): Promise<void> {
     if (!this.#entered) await this.enter();
     if (this.ownership === "inline") await this.#write("\u001b8");
-    await this.#write(this.#prepareOutput(output.bytes));
-    this.#lastFrame = this.#prepareOutput(repaint.bytes).slice();
+    await this.#write(this.#prepareOutput(output));
+    this.#lastFrame = this.#prepareOutput(repaint).slice();
     await this.#target.flush?.();
   }
 
@@ -1111,10 +1117,19 @@ export class TerminalOutputSession {
     }
   }
 
-  #prepareOutput(bytes: Uint8Array): Uint8Array {
-    return this.ownership === "inline"
-      ? inlineRelativeOutput(bytes, this.#ownedRows)
-      : bytes;
+  #prepareOutput(output: RendererOutput): Uint8Array {
+    const bytes =
+      this.ownership === "inline"
+        ? inlineRelativeOutput(output.bytes, this.#ownedRows)
+        : output.bytes;
+    if (this.ownership !== "main" || !output.fullFrame || bytes.length === 0) {
+      return bytes;
+    }
+    const prefix = new TextEncoder().encode("\u001b[H\u001b[2J\u001b[H");
+    const prepared = new Uint8Array(prefix.length + bytes.length);
+    prepared.set(prefix);
+    prepared.set(bytes, prefix.length);
+    return prepared;
   }
 
   #capture(bytes: Uint8Array): void {

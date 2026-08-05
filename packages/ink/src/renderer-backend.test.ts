@@ -5,13 +5,16 @@ import { CellRendererBackend } from "@mwillbanks/tuil-cell";
 import {
   defineRendererApplication,
   LayoutProjection,
+  RendererApplicationDriver,
   runRendererConformance,
+  TerminalOutputSession,
 } from "@mwillbanks/tuil-renderer";
 import { Text as InkText } from "ink";
 import { createElement, useState } from "react";
 import { Button, Text } from "./components.tsx";
 import { render, useTerminalInput } from "./index.ts";
 import { InkRendererBackend } from "./renderer-backend.ts";
+import { VirtualTerminalScreen } from "./vt-screen.ts";
 
 test("Ink backend passes renderer-neutral frame, static, semantics, resize, and cleanup contracts", async () => {
   const controller = new AbortController();
@@ -99,6 +102,56 @@ test("Ink backend handles string frames, unchanged diffs, and cancellation", () 
   expect(() =>
     backend.render({ lines: ["x"] }, { ...context, signal: controller.signal }),
   ).toThrow("cancelled");
+});
+
+test("Ink backend repaints complete main-screen frames on a terminal", async () => {
+  const screen = new VirtualTerminalScreen(40, 4);
+  const output = new TerminalOutputSession(
+    {
+      write(data) {
+        screen.write(
+          typeof data === "string" ? data : new TextDecoder().decode(data),
+        );
+        return true;
+      },
+    },
+    "main",
+    { rows: 4 },
+  );
+  let lines = ["first", "stale"];
+  const driver = new RendererApplicationDriver({
+    application: defineRendererApplication({
+      project: () => ({ lines }),
+    }),
+    backend: new InkRendererBackend(),
+    session: output,
+    context: (signal) => ({
+      capabilities: {
+        width: 40,
+        height: 4,
+        colorDepth: 24,
+        unicode: true,
+        hyperlinks: false,
+        interactive: true,
+        tty: true,
+        alternateScreen: false,
+        mouse: false,
+        images: false,
+        reducedMotion: false,
+        platform: "linux",
+      },
+      mode: "interactive",
+      layout: new LayoutProjection(),
+      signal,
+    }),
+  });
+
+  await driver.draw(new AbortController().signal);
+  expect(screen.snapshot()).toBe("first\nstale");
+  lines = ["updated"];
+  await driver.draw(new AbortController().signal);
+  expect(screen.snapshot()).toBe("updated");
+  await driver.dispose();
 });
 
 test("Ink backend escapes malicious renderer-neutral scene text", () => {

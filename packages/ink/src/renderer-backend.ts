@@ -234,6 +234,7 @@ export class InkRendererBackend implements RendererBackend<InkRendererTree> {
     const dirty = dirtyOutput(before?.frame, current, after.frame, rows);
     return Object.freeze({
       bytes: outputBytes(mode, current.payload, after.rendered, changed),
+      fullFrame: mode !== "silent",
       changedCells: mode === "silent" ? 0 : changed,
       ...dirty,
     });
