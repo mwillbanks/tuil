@@ -1774,14 +1774,7 @@ ${memberTable(symbol.members, componentApiSymbols, componentApiBase)}
   );
 }
 
-export async function generateReferenceDocs(
-  options: Readonly<{ outputRoot?: string }> = {},
-): Promise<void> {
-  const workspace = resolve(import.meta.dir, "../..");
-  const referenceRoot = resolve(
-    options.outputRoot ??
-      resolve(workspace, "apps/docs/content/docs/reference"),
-  );
+async function resetReferenceRoots(referenceRoot: string): Promise<void> {
   const packageDocsRoot = resolve(referenceRoot, "packages");
   const componentDocsRoot = resolve(referenceRoot, "components");
   for (const root of [packageDocsRoot, componentDocsRoot]) {
@@ -1792,14 +1785,12 @@ export async function generateReferenceDocs(
       }
     }
   }
-  const packageDirectories = (
-    await readdir(resolve(workspace, "packages"), {
-      withFileTypes: true,
-    })
-  )
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .sort();
+}
+
+async function discoverPackageSymbols(
+  workspace: string,
+  packageDirectories: readonly string[],
+): Promise<void> {
   for (const directory of packageDirectories) {
     const manifest = (await Bun.file(
       resolve(workspace, "packages", directory, "package.json"),
@@ -1818,6 +1809,26 @@ export async function generateReferenceDocs(
       }
     }
   }
+}
+
+export async function generateReferenceDocs(
+  options: Readonly<{ outputRoot?: string }> = {},
+): Promise<void> {
+  const workspace = resolve(import.meta.dir, "../..");
+  const referenceRoot = resolve(
+    options.outputRoot ??
+      resolve(workspace, "apps/docs/content/docs/reference"),
+  );
+  await resetReferenceRoots(referenceRoot);
+  const packageDirectories = (
+    await readdir(resolve(workspace, "packages"), {
+      withFileTypes: true,
+    })
+  )
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+  await discoverPackageSymbols(workspace, packageDirectories);
   const packages = [];
   for (const directory of packageDirectories) {
     packages.push(await packagePage(workspace, directory, referenceRoot));

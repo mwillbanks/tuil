@@ -38,6 +38,13 @@ ignoreDependencies = [
   "collections",
   "ts-morph",
 ]
+ignoreDependencyOverrides = [
+  { package = "brace-expansion", source = "package.json" },
+  { package = "fast-uri", source = "package.json" },
+  { package = "js-yaml", source = "package.json" },
+  { package = "nanoid", source = "package.json" },
+  { package = "postcss", source = "package.json" },
+]
 ignoreExports = [
   { file = "packages/ghostty-web/src/shims/os.ts", exports = ["*"] },
   { file = "packages/ghostty-web/src/shims/process.ts", exports = ["*"] },

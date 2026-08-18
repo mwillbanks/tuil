@@ -79,6 +79,9 @@ test("build, registry, documentation, and publication orchestration completes", 
   const spawn = async (): Promise<number> => 0;
   await buildAll.buildAll({ spawn });
   await buildEcosystem.buildEcosystem({ spawn });
+  expect(
+    await buildAll.spawnBuild(["bun", "-e", "process.exit(0)"], workspace),
+  ).toBe(0);
 
   expect(() => assertPublication(false, "invalid")).toThrow("invalid");
   expect(() =>

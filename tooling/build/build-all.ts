@@ -7,6 +7,23 @@ interface PackageManifest {
   readonly peerDependencies?: Readonly<Record<string, string>>;
 }
 
+export type BuildSpawn = (
+  command: readonly string[],
+  cwd: string,
+) => Promise<number>;
+
+export async function spawnBuild(
+  command: readonly string[],
+  cwd: string,
+): Promise<number> {
+  const process = Bun.spawn([...command], {
+    cwd,
+    stdout: "inherit",
+    stderr: "inherit",
+  });
+  return process.exited;
+}
+
 export function orderWorkspacePackages(
   manifests: ReadonlyMap<string, PackageManifest>,
   directoriesByName: ReadonlyMap<string, string>,
@@ -43,7 +60,7 @@ export function orderWorkspacePackages(
 
 export async function buildAll(
   options: Readonly<{
-    spawn?: (command: readonly string[], cwd: string) => Promise<number>;
+    spawn?: BuildSpawn;
   }> = {},
 ): Promise<void> {
   const packagesDirectory = join(import.meta.dir, "../../packages");
@@ -64,16 +81,7 @@ export async function buildAll(
   }
 
   const packages = orderWorkspacePackages(manifests, directoriesByName);
-  const spawn =
-    options.spawn ??
-    (async (command: readonly string[], cwd: string): Promise<number> => {
-      const process = Bun.spawn([...command], {
-        cwd,
-        stdout: "inherit",
-        stderr: "inherit",
-      });
-      return process.exited;
-    });
+  const spawn = options.spawn ?? spawnBuild;
   for (const packageName of packages) {
     const directory = join(packagesDirectory, packageName);
     if ((await spawn(["bun", "run", "build"], directory)) !== 0) {
