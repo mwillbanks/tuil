@@ -43,55 +43,59 @@ test("documentation uses one English locale", () => {
 });
 
 test("reference generation covers every package and component family", async () => {
-  await generateReferenceDocs();
-  const contentRoot = resolve(import.meta.dir, "../content/docs/reference");
-  expect(await countFiles("packages/*/index.mdx", contentRoot)).toBe(31);
-  expect(await countFiles("components/*/index.mdx", contentRoot)).toBe(16);
-  const cliReference = await readFile(
-    join(contentRoot, "packages/cli/index.mdx"),
-    "utf8",
-  );
-  expect(cliReference).toContain(
-    "[`InitWizard`](/docs/reference/packages/cli/api/init-wizard)",
-  );
-  expect(cliReference).toContain(
-    "[`main`](/docs/reference/packages/cli/api/main)",
-  );
-  expect(cliReference).not.toContain("| `App` |");
-  expect(cliReference).not.toContain("| `operands` |");
+  const contentRoot = await mkdtemp(join(tmpdir(), "tuil-reference-"));
+  try {
+    await generateReferenceDocs({ outputRoot: contentRoot });
+    expect(await countFiles("packages/*/index.mdx", contentRoot)).toBe(31);
+    expect(await countFiles("components/*/index.mdx", contentRoot)).toBe(16);
+    const cliReference = await readFile(
+      join(contentRoot, "packages/cli/index.mdx"),
+      "utf8",
+    );
+    expect(cliReference).toContain(
+      "[`InitWizard`](/docs/reference/packages/cli/api/init-wizard)",
+    );
+    expect(cliReference).toContain(
+      "[`main`](/docs/reference/packages/cli/api/main)",
+    );
+    expect(cliReference).not.toContain("| `App` |");
+    expect(cliReference).not.toContain("| `operands` |");
 
-  const manifest = (await Bun.file(
-    resolve(import.meta.dir, "../public/integrations/story-manifest.json"),
-  ).json()) as {
-    readonly stories: readonly {
-      readonly storyId: string;
-      readonly variant: string;
-    }[];
-  };
-  const publishedStories = new Set(
-    manifest.stories.map((story) => `${story.storyId}:${story.variant}`),
-  );
-  for await (const path of new Bun.Glob("components/**/*.mdx").scan({
-    cwd: contentRoot,
-    absolute: true,
-  })) {
-    const content = await Bun.file(path).text();
-    for (const match of content.matchAll(
-      /<PublishedStory storyId="([^"]+)" variant="([^"]+)" \/>/gu,
-    )) {
-      expect(publishedStories.has(`${match[1]}:${match[2]}`)).toBeTrue();
+    const manifest = (await Bun.file(
+      resolve(import.meta.dir, "../public/integrations/story-manifest.json"),
+    ).json()) as {
+      readonly stories: readonly {
+        readonly storyId: string;
+        readonly variant: string;
+      }[];
+    };
+    const publishedStories = new Set(
+      manifest.stories.map((story) => `${story.storyId}:${story.variant}`),
+    );
+    for await (const path of new Bun.Glob("components/**/*.mdx").scan({
+      cwd: contentRoot,
+      absolute: true,
+    })) {
+      const content = await Bun.file(path).text();
+      for (const match of content.matchAll(
+        /<PublishedStory storyId="([^"]+)" variant="([^"]+)" \/>/gu,
+      )) {
+        expect(publishedStories.has(`${match[1]}:${match[2]}`)).toBeTrue();
+      }
     }
+  } finally {
+    await rm(contentRoot, { recursive: true, force: true });
   }
 });
 
 test("generated package examples compile their documented imports", async () => {
-  await generateReferenceDocs();
-  const contentRoot = resolve(import.meta.dir, "../content/docs/reference");
+  const contentRoot = await mkdtemp(join(tmpdir(), "tuil-reference-"));
   const directory = await mkdtemp(
     resolve(import.meta.dir, "../../../.tmp-doc-snippets-"),
   );
   const entrypoints: string[] = [];
   try {
+    await generateReferenceDocs({ outputRoot: contentRoot });
     for await (const path of new Bun.Glob("packages/*/index.mdx").scan({
       cwd: contentRoot,
       absolute: true,
@@ -122,6 +126,7 @@ test("generated package examples compile their documented imports", async () => 
     ).toBeTrue();
   } finally {
     await rm(directory, { recursive: true, force: true });
+    await rm(contentRoot, { recursive: true, force: true });
   }
 });
 

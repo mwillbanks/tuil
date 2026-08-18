@@ -1,14 +1,6 @@
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 
-const packagesDirectory = join(import.meta.dir, "../../packages");
-const packageDirectories = (
-  await readdir(packagesDirectory, { withFileTypes: true })
-)
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .sort();
-
 interface PackageManifest {
   readonly name: string;
   readonly dependencies?: Readonly<Record<string, string>>;
@@ -49,27 +41,45 @@ export function orderWorkspacePackages(
   return Object.freeze(packages);
 }
 
-const manifests = new Map<string, PackageManifest>();
-const directoriesByName = new Map<string, string>();
-for (const directory of packageDirectories) {
-  const manifest = (await Bun.file(
-    join(packagesDirectory, directory, "package.json"),
-  ).json()) as PackageManifest;
-  manifests.set(manifest.name, manifest);
-  directoriesByName.set(manifest.name, directory);
-}
+export async function buildAll(
+  options: Readonly<{
+    spawn?: (command: readonly string[], cwd: string) => Promise<number>;
+  }> = {},
+): Promise<void> {
+  const packagesDirectory = join(import.meta.dir, "../../packages");
+  const packageDirectories = (
+    await readdir(packagesDirectory, { withFileTypes: true })
+  )
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+  const manifests = new Map<string, PackageManifest>();
+  const directoriesByName = new Map<string, string>();
+  for (const directory of packageDirectories) {
+    const manifest = (await Bun.file(
+      join(packagesDirectory, directory, "package.json"),
+    ).json()) as PackageManifest;
+    manifests.set(manifest.name, manifest);
+    directoriesByName.set(manifest.name, directory);
+  }
 
-const packages = orderWorkspacePackages(manifests, directoriesByName);
-
-for (const packageName of packages) {
-  const directory = join(packagesDirectory, packageName);
-  const process = Bun.spawn(["bun", "run", "build"], {
-    cwd: directory,
-    stdout: "inherit",
-    stderr: "inherit",
-  });
-
-  if ((await process.exited) !== 0) {
-    throw new Error(`Build failed for @mwillbanks/tuil-${packageName}`);
+  const packages = orderWorkspacePackages(manifests, directoriesByName);
+  const spawn =
+    options.spawn ??
+    (async (command: readonly string[], cwd: string): Promise<number> => {
+      const process = Bun.spawn([...command], {
+        cwd,
+        stdout: "inherit",
+        stderr: "inherit",
+      });
+      return process.exited;
+    });
+  for (const packageName of packages) {
+    const directory = join(packagesDirectory, packageName);
+    if ((await spawn(["bun", "run", "build"], directory)) !== 0) {
+      throw new Error(`Build failed for @mwillbanks/tuil-${packageName}`);
+    }
   }
 }
+
+await (import.meta.main ? buildAll() : undefined);

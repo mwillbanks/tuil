@@ -29,7 +29,7 @@
     "build": "bun run prepare:assets && next build && bun ../../tooling/docs/validate-static.ts",
     "typecheck": "bun run prepare:assets && fumadocs-mdx && tsc --noEmit",
     "lint": "bun biome check . --reporter concise --error-on-warnings",
-    "test": "bun run prepare:assets && fumadocs-mdx && bun test --bail",
+    "test": "bun test --bail",
     "check": "bun run lint && bun run typecheck && bun run test && bun run build",
     "postinstall": "fumadocs-mdx"
   },

@@ -1448,6 +1448,7 @@ function mermaidLifecycle(value: string): string {
 async function packagePage(
   workspace: string,
   directory: string,
+  referenceRoot: string,
 ): Promise<{ readonly slug: string; readonly title: string }> {
   const manifestPath = resolve(
     workspace,
@@ -1524,12 +1525,7 @@ ${example}
 - [Events](/docs/concepts/events)
 - [Testing](/docs/guides/testing)
 `;
-  const output = resolve(
-    workspace,
-    "apps/docs/content/docs/reference/packages",
-    directory,
-    "index.mdx",
-  );
+  const output = resolve(referenceRoot, "packages", directory, "index.mdx");
   await mkdir(resolve(output, ".."), { recursive: true });
   await writeFile(output, content, "utf8");
   await writeApiDetails(
@@ -1544,6 +1540,7 @@ ${example}
 async function componentPage(
   workspace: string,
   group: ComponentGroup,
+  referenceRoot: string,
 ): Promise<void> {
   const discovered = await exportedSymbols(
     workspace,
@@ -1640,12 +1637,7 @@ export function Example(props: ComponentProps<typeof ${group.components[0]}>) {
 Registry-installed components are source-owned: customize the generated file in
 your application, and use the package reference for the shared runtime contracts.
 `;
-  const output = resolve(
-    workspace,
-    "apps/docs/content/docs/reference/components",
-    group.slug,
-    "index.mdx",
-  );
+  const output = resolve(referenceRoot, "components", group.slug, "index.mdx");
   await mkdir(resolve(output, ".."), { recursive: true });
   await writeFile(output, content, "utf8");
   for (const symbol of symbols) {
@@ -1743,17 +1735,18 @@ ${memberTable(symbol.members, componentApiSymbols, componentApiBase)}
   );
 }
 
-export async function generateReferenceDocs(): Promise<void> {
+export async function generateReferenceDocs(
+  options: Readonly<{ outputRoot?: string }> = {},
+): Promise<void> {
   const workspace = resolve(import.meta.dir, "../..");
-  const packageDocsRoot = resolve(
-    workspace,
-    "apps/docs/content/docs/reference/packages",
+  const referenceRoot = resolve(
+    options.outputRoot ??
+      resolve(workspace, "apps/docs/content/docs/reference"),
   );
-  const componentDocsRoot = resolve(
-    workspace,
-    "apps/docs/content/docs/reference/components",
-  );
+  const packageDocsRoot = resolve(referenceRoot, "packages");
+  const componentDocsRoot = resolve(referenceRoot, "components");
   for (const root of [packageDocsRoot, componentDocsRoot]) {
+    await mkdir(root, { recursive: true });
     for (const entry of await readdir(root, { withFileTypes: true })) {
       if (entry.isDirectory()) {
         await rm(resolve(root, entry.name), { recursive: true, force: true });
@@ -1788,14 +1781,14 @@ export async function generateReferenceDocs(): Promise<void> {
   }
   const packages = [];
   for (const directory of packageDirectories) {
-    packages.push(await packagePage(workspace, directory));
+    packages.push(await packagePage(workspace, directory, referenceRoot));
   }
   for (const group of componentGroups) {
-    await componentPage(workspace, group);
+    await componentPage(workspace, group, referenceRoot);
   }
 
   await writeFile(
-    resolve(workspace, "apps/docs/content/docs/reference/packages/meta.json"),
+    resolve(referenceRoot, "packages/meta.json"),
     `${JSON.stringify(
       {
         title: "Packages",
@@ -1808,7 +1801,7 @@ export async function generateReferenceDocs(): Promise<void> {
     "utf8",
   );
   await writeFile(
-    resolve(workspace, "apps/docs/content/docs/reference/components/meta.json"),
+    resolve(referenceRoot, "components/meta.json"),
     `${JSON.stringify(
       {
         title: "Components",
@@ -1826,7 +1819,7 @@ export async function generateReferenceDocs(): Promise<void> {
       "biome",
       "format",
       "--write",
-      "apps/docs/content/docs/reference",
+      referenceRoot,
       "--reporter",
       "concise",
     ],

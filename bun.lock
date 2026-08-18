@@ -223,7 +223,7 @@
     },
     "packages/cell": {
       "name": "@mwillbanks/tuil-cell",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "dependencies": {
         "@mwillbanks/tuil-core": "workspace:*",
         "@mwillbanks/tuil-renderer": "workspace:*",
@@ -232,7 +232,7 @@
     },
     "packages/cli": {
       "name": "@mwillbanks/tuil-cli",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "bin": {
         "tuil": "./dist/bin.js",
       },
@@ -277,7 +277,7 @@
     },
     "packages/devtools": {
       "name": "@mwillbanks/tuil-devtools",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "dependencies": {
         "@mwillbanks/tuil": "workspace:*",
         "@mwillbanks/tuil-ink": "workspace:*",
@@ -319,7 +319,7 @@
     },
     "packages/ghostty-web": {
       "name": "@mwillbanks/tuil-ghostty-web",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "dependencies": {
         "@mwillbanks/tuil": "workspace:*",
         "@mwillbanks/tuil-ink": "workspace:*",
@@ -341,7 +341,7 @@
     },
     "packages/ink": {
       "name": "@mwillbanks/tuil-ink",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "dependencies": {
         "@mwillbanks/tuil": "workspace:*",
         "@mwillbanks/tuil-core": "workspace:*",
@@ -360,7 +360,7 @@
     },
     "packages/log-viewer": {
       "name": "@mwillbanks/tuil-log-viewer",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "dependencies": {
         "@mwillbanks/tuil-editor": "workspace:*",
         "@mwillbanks/tuil-focus": "workspace:*",
@@ -400,7 +400,7 @@
     },
     "packages/pointer": {
       "name": "@mwillbanks/tuil-pointer",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "dependencies": {
         "@mwillbanks/tuil-renderer": "workspace:*",
       },
@@ -421,7 +421,7 @@
     },
     "packages/renderer": {
       "name": "@mwillbanks/tuil-renderer",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "dependencies": {
         "@mwillbanks/tuil-core": "workspace:*",
       },
@@ -439,7 +439,7 @@
     },
     "packages/story": {
       "name": "@mwillbanks/tuil-story",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "dependencies": {
         "@mwillbanks/tuil": "workspace:*",
         "@mwillbanks/tuil-core": "workspace:*",
@@ -486,7 +486,7 @@
     },
     "packages/testing-ink": {
       "name": "@mwillbanks/tuil-testing-ink",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "dependencies": {
         "@mwillbanks/tuil": "workspace:*",
         "@mwillbanks/tuil-ink": "workspace:*",
@@ -513,7 +513,7 @@
     },
     "packages/tuil": {
       "name": "@mwillbanks/tuil",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "bin": {
         "tuil": "./dist/cli.js",
       },
@@ -563,6 +563,8 @@
   "overrides": {
     "brace-expansion": "5.0.9",
     "fast-uri": "3.1.5",
+    "js-yaml": "4.3.1",
+    "nanoid": "3.3.18",
     "postcss": "8.5.23",
     "sharp": "0.35.3",
   },
@@ -1729,7 +1731,7 @@
 
     "js-tokens": ["js-tokens@4.0.0", "", {}, "sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ=="],
 
-    "js-yaml": ["js-yaml@4.3.0", "", { "dependencies": { "argparse": "^2.0.1" }, "bin": { "js-yaml": "bin/js-yaml.js" } }, "sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q=="],
+    "js-yaml": ["js-yaml@4.3.1", "", { "dependencies": { "argparse": "^2.0.1" }, "bin": { "js-yaml": "bin/js-yaml.js" } }, "sha512-CY6crGq313MX8GkwvB7tzgp99vjQxY1++5y10/BKN/GUfHqWaOGQMNZkBvqSzsZKWk/ijwHlWzzkLulsGHhjWQ=="],
 
     "jsesc": ["jsesc@3.1.0", "", { "bin": { "jsesc": "bin/jsesc" } }, "sha512-/sM3dO2FOzXjKQhJuo0Q173wf2KOo8t4I8vHy6lF9poUp7bKT0/NHE8fPX23PwfhnykfqnC2xRxOnVw5XuGIaA=="],
 
@@ -1907,7 +1909,7 @@
 
     "ms": ["ms@2.1.3", "", {}, "sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA=="],
 
-    "nanoid": ["nanoid@3.3.16", "", { "bin": { "nanoid": "bin/nanoid.cjs" } }, "sha512-bzlKTyNJ7+LdGIIwy8ijFpIqEQIvafahV7eYykJ8Cvh42EdJeODoJ6gUJXpQJvej1BddH8OqTXZNE/KfbWAu8Q=="],
+    "nanoid": ["nanoid@3.3.18", "", { "bin": { "nanoid": "bin/nanoid.cjs" } }, "sha512-DTg4MJbGMWkfi6VZFdNt2/caMbQy4Ou+Op/hJQvGEWcnVfoA1QA+xzRKAzw9jD6+GVOOeYr/mIcuDSdug6F6+w=="],
 
     "next": ["next@16.2.12", "", { "dependencies": { "@next/env": "16.2.12", "@swc/helpers": "0.5.15", "baseline-browser-mapping": "^2.9.19", "caniuse-lite": "^1.0.30001579", "postcss": "8.4.31", "styled-jsx": "5.1.6" }, "optionalDependencies": { "@next/swc-darwin-arm64": "16.2.12", "@next/swc-darwin-x64": "16.2.12", "@next/swc-linux-arm64-gnu": "16.2.12", "@next/swc-linux-arm64-musl": "16.2.12", "@next/swc-linux-x64-gnu": "16.2.12", "@next/swc-linux-x64-musl": "16.2.12", "@next/swc-win32-arm64-msvc": "16.2.12", "@next/swc-win32-x64-msvc": "16.2.12", "sharp": "^0.34.5" }, "peerDependencies": { "@opentelemetry/api": "^1.1.0", "@playwright/test": "^1.51.1", "babel-plugin-react-compiler": "*", "react": "^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0", "react-dom": "^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0", "sass": "^1.3.0" }, "optionalPeers": ["@opentelemetry/api", "@playwright/test", "babel-plugin-react-compiler", "sass"], "bin": { "next": "dist/bin/next" } }, "sha512-iD59eYQWmbFcEbX7v/acG5DRym9iw1DdaPoD0WTA920naWsE25wShzJW4+UvAs8MK9EC2kBfIH6vtto1H1PHGw=="],
 

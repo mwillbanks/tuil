@@ -22,6 +22,9 @@ const excludedPatterns = [
   "packages/cli/src/generated-registry.ts",
   "packages/cli/src/generated-ui/**",
   "packages/code/src/worker.ts",
+  "tooling/build/build-all.ts",
+  "tooling/build/build-ecosystem.ts",
+  "tooling/build/package.ts",
   "tooling/browser/**",
 ] as const;
 

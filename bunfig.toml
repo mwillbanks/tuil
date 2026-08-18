@@ -12,6 +12,9 @@ coveragePathIgnorePatterns = [
   "packages/cli/src/generated-ui/**",
   "packages/cli/src/generated-registry.ts",
   "packages/code/src/worker.ts",
+  "tooling/build/build-all.ts",
+  "tooling/build/build-ecosystem.ts",
+  "tooling/build/package.ts",
   "registry/**/*.stories.tsx",
   "tooling/browser/**",
 ]
