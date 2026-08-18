@@ -53,13 +53,13 @@
     "@mwillbanks/tuil-testing-ink": "workspace:*",
     "@mwillbanks/tuil-theme": "workspace:*",
     "ansi-to-html": "^0.7.2",
-    "chalk": "^5.6.2"
+    "chalk": "^6.0.0"
   },
   "devDependencies": {
     "react-dom": "catalog:"
   },
   "peerDependencies": {
-    "@storybook/react": "^10.5.4",
+    "@storybook/react": "^10.5.9",
     "ink": "catalog:",
     "ink-testing-library": "catalog:",
     "react": "catalog:"

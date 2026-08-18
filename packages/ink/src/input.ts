@@ -64,13 +64,11 @@ export class TerminalInputRouter {
     const registrations = [...this.#registrations.values()]
       .filter(
         (registration) =>
-          activeLayerId === undefined || registration.layerId === activeLayerId,
-      )
-      .filter(
-        (registration) =>
-          !shouldSuppressTerminalInput(input, key) ||
-          registration.allowControlCharacters ||
-          isSemanticKey(key),
+          (activeLayerId === undefined ||
+            registration.layerId === activeLayerId) &&
+          (!shouldSuppressTerminalInput(input, key) ||
+            registration.allowControlCharacters ||
+            isSemanticKey(key)),
       )
       .sort(
         (left, right) => right.priority - left.priority || right.id - left.id,

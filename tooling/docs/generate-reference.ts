@@ -318,6 +318,7 @@ interface ComponentGroup {
   readonly summary: string;
   readonly interaction: string;
   readonly events: string;
+  readonly guidance?: string;
 }
 
 const componentGroups: readonly ComponentGroup[] = [
@@ -604,6 +605,40 @@ const componentGroups: readonly ComponentGroup[] = [
       "Arrow keys navigate cells or rows; Space toggles selection; Enter activates; configured keys sort columns.",
     events:
       "`onActivate`, `onSelectionChange`, `onToggleSelection`, and `onSortColumn` expose table intent.",
+    guidance: `## TanStack Table v9 setup
+
+\`DataTable\` accepts a TanStack Table v9 instance configured with the exported
+\`dataTableFeatures\` feature set.
+
+\`\`\`tsx
+import { createColumnHelper, useTable } from "@tanstack/react-table";
+import {
+  DataTable,
+  dataTableFeatures,
+} from "@/components/tuil/data-display/complex-data";
+
+interface Person {
+  id: string;
+  name: string;
+}
+
+const columnHelper = createColumnHelper<typeof dataTableFeatures, Person>();
+const columns = columnHelper.columns([
+  columnHelper.accessor("name", { header: "Name" }),
+]);
+
+export function PeopleTable({ people }: { people: Person[] }) {
+  const table = useTable({
+    features: dataTableFeatures,
+    data: people,
+    columns,
+    getRowId: (person) => person.id,
+  });
+
+  return <DataTable table={table} />;
+}
+\`\`\`
+`,
   },
   {
     slug: "tree",
@@ -1615,6 +1650,8 @@ ${group.interaction}
 
 ${group.events}
 
+${group.guidance ?? ""}
+
 Every interactive component publishes semantic roles, labels, state, and focus
 identity through the renderer's \`SemanticRegistry\`. Callback failures flow to
 the owning application's error boundary.
@@ -1673,6 +1710,8 @@ Callback props run after the documented input is accepted. Callbacks are not can
 ## Interaction and capabilities
 
 ${group.interaction}
+
+${group.guidance ?? ""}
 
 The published manifest records keyboard, focus, pointer, theme, terminal, semantic, event, and dependency requirements.
 

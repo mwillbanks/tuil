@@ -2021,7 +2021,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-753c69edfbda094487d198c598614dd5435a84a81ab13ac14dd104461b52579a",
+      "integrity": "sha256-efd5862c7061e0170981aaa8a073506633bb2d94a7d94a13812c4beff406c24b",
       "files": [
         {
           "path": "src/components/tuil/data-display/complex-data.tsx",

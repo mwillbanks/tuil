@@ -18,9 +18,16 @@ import {
   useTerminalVirtualizer,
 } from "@mwillbanks/tuil-virtual";
 import {
-  createCell,
+  columnPinningFeature,
+  columnSizingFeature,
+  constructCell,
+  createSortedRowModel,
   flexRender,
+  type RowData,
+  rowSelectionFeature,
+  rowSortingFeature,
   type Table as TanStackTable,
+  tableFeatures,
 } from "@tanstack/react-table";
 import { Box, type BoxProps, Text, type TextProps } from "ink";
 import {
@@ -34,6 +41,14 @@ import {
 } from "react";
 
 export { fitTerminalText } from "@mwillbanks/tuil-virtual";
+
+export const dataTableFeatures = tableFeatures({
+  columnPinningFeature,
+  columnSizingFeature,
+  rowSelectionFeature,
+  rowSortingFeature,
+  sortedRowModel: createSortedRowModel(),
+});
 
 function semanticValue(value: unknown): string {
   if (value === null) return "null";
@@ -885,10 +900,10 @@ export function Table<TData>({
   );
 }
 
-export interface DataTableProps<TData>
+export interface DataTableProps<TData extends RowData>
   extends CommonComponentProps,
     SlottedComponentProps<TableSlots> {
-  readonly table: TanStackTable<TData>;
+  readonly table: TanStackTable<typeof dataTableFeatures, TData>;
   readonly height?: number;
   readonly width?: number;
   readonly focusMode?: "row" | "cell";
@@ -899,7 +914,7 @@ export interface DataTableProps<TData>
   readonly onActivate?: (row: TData, columnId: string) => void | Promise<void>;
 }
 
-export function DataTable<TData>({
+export function DataTable<TData extends RowData>({
   table,
   height = 10,
   width = 80,
@@ -911,11 +926,11 @@ export function DataTable<TData>({
   onActivate,
   ...props
 }: DataTableProps<TData>): ReactNode {
-  const leftColumns = table.getLeftVisibleLeafColumns();
+  const leftColumns = table.getStartVisibleLeafColumns();
   const centerColumns = table.getCenterVisibleLeafColumns();
-  const rightColumns = table.getRightVisibleLeafColumns();
+  const rightColumns = table.getEndVisibleLeafColumns();
   const columns = [...leftColumns, ...centerColumns, ...rightColumns];
-  const defaultColumnDefinition = table._getDefaultColumnDef();
+  const defaultColumnDefinition = table.getDefaultColumnDef();
   const headersByColumn = new Map(
     table.getFlatHeaders().map((header) => [header.column.id, header] as const),
   );
@@ -970,7 +985,7 @@ export function DataTable<TData>({
             projectedColumns.flatMap((projectedColumn) => {
               const column = columnById.get(projectedColumn.id);
               if (!column) return [];
-              const cell = createCell(table, row, column, column.id);
+              const cell = constructCell(column, row, table);
               const raw = cell.getValue();
               const renderer = cell.column.columnDef.cell;
               const customRenderer =

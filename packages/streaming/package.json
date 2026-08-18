@@ -36,11 +36,11 @@
     "dist"
   ],
   "dependencies": {
-    "fast-xml-parser": "^5.10.1",
+    "fast-xml-parser": "^5.11.0",
     "mdast-util-from-markdown": "^2.0.3",
     "mdast-util-gfm": "^3.1.0",
     "micromark-extension-gfm": "^3.0.0",
-    "smol-toml": "^1.7.1",
+    "smol-toml": "^1.8.0",
     "yaml": "^2.9.0"
   }
 }

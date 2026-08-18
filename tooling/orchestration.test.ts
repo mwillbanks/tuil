@@ -43,6 +43,21 @@ test("build, registry, documentation, and publication orchestration completes", 
   const referenceRoot = await mkdtemp(join(tmpdir(), "tuil-reference-"));
   try {
     await generateReferenceDocs({ outputRoot: referenceRoot });
+    const dataTableReference = await readFile(
+      join(referenceRoot, "components/tables/data-table.mdx"),
+      "utf8",
+    );
+    const dataTablePropsReference = await readFile(
+      join(referenceRoot, "components/tables/data-table-props.mdx"),
+      "utf8",
+    );
+    expect(dataTablePropsReference).toContain(
+      "TanStackTable<typeof dataTableFeatures, TData>",
+    );
+    expect(dataTableReference).toContain(
+      "createColumnHelper<typeof dataTableFeatures, Person>()",
+    );
+    expect(dataTableReference).toContain("features: dataTableFeatures");
   } finally {
     await rm(referenceRoot, { recursive: true, force: true });
   }
