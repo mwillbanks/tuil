@@ -574,13 +574,6 @@ async function handleTextInput(
   const text = state.allowControlCharacters && key.tab && !input ? "\t" : input;
   const keyName = editorKeyName(text, key);
   if (await handleEditorControlInput(keyName, key, state)) return true;
-  if (
-    text &&
-    hasTerminalControlCharacters(text) &&
-    !state.allowControlCharacters
-  ) {
-    return false;
-  }
   if (rejectsTextInput(text, key, state)) return false;
   if (exceedsEditorLength(text, state)) return true;
   const cursor = state.session.snapshot().selections[0]?.head ?? position(0, 0);

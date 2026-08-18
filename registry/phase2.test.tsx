@@ -137,6 +137,8 @@ test("text inputs keep shifted keys printable and gate literal controls", async 
   expect(values.at(-1)).toBe("P");
   await view.user.press("\u001b[I");
   expect(values.at(-1)).toBe("P");
+  await view.user.press("\u0001");
+  expect(values.at(-1)).toBe("P");
   await view.user.press("tab");
   expect(view.app.focus.focusedId).toBe("after-printable");
   await view.cleanup();
