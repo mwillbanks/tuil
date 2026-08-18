@@ -134,6 +134,91 @@ describe("foundational Ink components", () => {
     expect(output).toContain("\u001b[<u");
   });
 
+  test("reconstructs shorter wrapped rows after a live resize", async () => {
+    const stdout = new PassThrough();
+    Object.assign(stdout, { columns: 151, rows: 54, isTTY: true });
+    const stdin = new PassThrough();
+    Object.assign(stdin, {
+      isTTY: true,
+      setRawMode() {},
+      ref() {},
+      unref() {},
+    });
+    let showMembers = () => {};
+    function ResizeWorkflow() {
+      const [members, setMembers] = useState(false);
+      showMembers = () => setMembers(true);
+      const size = useTerminalSize();
+      return (
+        <VStack width={size.width}>
+          <Text>Project setup</Text>
+          <Text>Workspace</Text>
+          <Text>{`${size.width}x${size.height}`}</Text>
+          <Text>SPARKY · SparkLabs</Text>
+          {members ? (
+            <>
+              <Text>Select workspace members</Text>
+              <Text>api/bun-typescript @ 1.0.0 [api]</Text>
+              <Text>cli/bun-typescript @ 1.0.0 [cli]</Text>
+              <Text wrap="truncate-end">
+                package/api-sdk-typescript @ 1.0.0 [package]
+              </Text>
+              <Text>Selected: none</Text>
+            </>
+          ) : (
+            <>
+              <Text>Project name</Text>
+              <Text>_</Text>
+              <Text>
+                Target: /private/tmp/example/generated-project-with-a-long-name
+              </Text>
+              <Text>Type a stable name, then press Enter.</Text>
+            </>
+          )}
+        </VStack>
+      );
+    }
+    const app = createApp({
+      component: ResizeWorkflow,
+      renderer: "ink",
+      renderers: [new InkRendererBackend()],
+      terminal: {
+        mode: "interactive",
+        capabilities: {
+          alternateScreen: true,
+          interactive: true,
+          tty: true,
+          width: 151,
+          height: 54,
+        },
+      },
+    });
+    const instance = await render(app, {
+      alternateScreen: true,
+      patchConsole: false,
+      stdin: stdin as unknown as NodeJS.ReadStream,
+      stdout: stdout as unknown as NodeJS.WriteStream,
+    });
+    showMembers();
+    await Bun.sleep(25);
+    Object.assign(stdout, { columns: 60, rows: 18 });
+    stdout.emit("resize");
+    Object.assign(stdout, { columns: 151, rows: 54 });
+    stdout.emit("resize");
+    Object.assign(stdout, { columns: 80, rows: 24 });
+    stdout.emit("resize");
+    await Bun.sleep(25);
+    const frame = app.renderTelemetry.snapshot().frame as
+      | { readonly payload?: { readonly frame?: string } }
+      | undefined;
+    expect(frame?.payload?.frame).toContain(
+      "package/api-sdk-typescript @ 1.0.0 [package]",
+    );
+    expect(frame?.payload?.frame).toContain("80x24");
+    expect(frame?.payload?.frame).not.toContain("[package]e]");
+    await instance.unmount();
+  });
+
   test("rolls back renderer and static-render failures", async () => {
     const mountError = new Error("mount failed");
     const cleanupError = new Error("cleanup failed");
@@ -778,6 +863,27 @@ describe("foundational Ink components", () => {
     await view.user.press("\u001b[<0;2;1m");
     expect(presses).toBe(1);
     expect(view.app.focus.focusedId).toBe("pointer-button");
+    await view.cleanup();
+  });
+
+  test("does not forward pointer or terminal control input to text handlers", async () => {
+    const received: string[] = [];
+    function InputProbe() {
+      useTerminalInput((input) => {
+        received.push(input);
+        return true;
+      });
+      return <Text>Input probe</Text>;
+    }
+    const view = renderTuil(<InputProbe />);
+    await view.ready;
+    await view.user.press("\u001b[<0;2;1M");
+    await view.user.press("\u001b[<0;2;1m");
+    await view.user.press("\u001b[A");
+    await view.user.press("\u001b[I");
+    await view.user.type("project-name");
+    expect(received.join("")).toBe("project-name");
+    expect(received.some((input) => input.includes("["))).toBeFalse();
     await view.cleanup();
   });
 

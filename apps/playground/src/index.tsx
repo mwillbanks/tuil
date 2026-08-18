@@ -257,7 +257,7 @@ function LoadedPlayground(
       }
       return false;
     },
-    { priority: 50_000 },
+    { priority: 50_000, allowControlCharacters: true },
   );
   const viewportHeight = Math.max(4, app.capabilities.height - 13);
   const scroll = (delta: number) =>

@@ -593,6 +593,41 @@ test("output ownership protocols preserve only their owned terminal surface", as
   );
 });
 
+test("output sessions track resized terminal viewports", async () => {
+  for (const ownership of ["alternate", "main", "embedded"] as const) {
+    const session = new TerminalOutputSession(
+      { write: () => true },
+      ownership,
+      { rows: 8 },
+    );
+    expect(session.viewportHeight).toBe(8);
+    await session.resize(3);
+    expect(session.viewportHeight).toBe(3);
+  }
+
+  const inline = new TerminalOutputSession({ write: () => true }, "inline", {
+    rows: 8,
+    inlineRows: 4,
+  });
+  expect(inline.viewportHeight).toBe(4);
+  await inline.resize(2);
+  expect(inline.viewportHeight).toBe(2);
+
+  const emulator = new TerminalProtocolEmulator();
+  const split = new TerminalOutputSession(emulator, "split-footer", {
+    rows: 8,
+    splitFooterRows: 2,
+  });
+  await split.enter();
+  await split.resize(3);
+  expect(split.viewportHeight).toBe(2);
+  expect(emulator.scrollRegion).toEqual([2, 3]);
+  await split.resize(1);
+  expect(split.viewportHeight).toBe(1);
+  expect(emulator.scrollRegion).toEqual([1, 1]);
+  await split.close();
+});
+
 test("terminal integration covers OSC reads, notifications, kitty keys, platform clipboard, and diagnostics", async () => {
   const encoded = btoa("copied");
   expect(parseOsc52Response(`\u001b]52;c;${encoded}\u0007`)).toBe("copied");

@@ -25,6 +25,7 @@ interface TerminalInputRegistration {
   readonly id: number;
   readonly priority: number;
   readonly layerId?: string;
+  readonly allowControlCharacters: boolean;
   readonly handler: TerminalInputHandler;
 }
 
@@ -41,10 +42,17 @@ export class TerminalInputRouter {
     handler: TerminalInputHandler,
     priority: number,
     layerId?: string,
+    allowControlCharacters = false,
   ): () => void {
     const id = this.#nextId;
     this.#nextId += 1;
-    this.#registrations.set(id, { id, priority, layerId, handler });
+    this.#registrations.set(id, {
+      id,
+      priority,
+      layerId,
+      allowControlCharacters,
+      handler,
+    });
     return deleteOnDispose(this.#registrations, id);
   }
 
@@ -57,6 +65,12 @@ export class TerminalInputRouter {
       .filter(
         (registration) =>
           activeLayerId === undefined || registration.layerId === activeLayerId,
+      )
+      .filter(
+        (registration) =>
+          !shouldSuppressTerminalInput(input, key) ||
+          registration.allowControlCharacters ||
+          isSemanticKey(key),
       )
       .sort(
         (left, right) => right.priority - left.priority || right.id - left.id,
@@ -90,6 +104,7 @@ export function useTerminalInput(
     readonly enabled?: boolean;
     readonly priority?: number;
     readonly layerId?: string;
+    readonly allowControlCharacters?: boolean;
   } = {},
 ): void {
   const router = useContext(TerminalInputContext);
@@ -99,12 +114,49 @@ export function useTerminalInput(
   const enabled = options.enabled ?? true;
   const priority = options.priority ?? 0;
   const layerId = options.layerId ?? inheritedLayerId;
+  const allowControlCharacters = options.allowControlCharacters ?? false;
   useEffect(() => {
     if (!router || !enabled) return;
     return router.register(
       (input, key) => handlerRef.current(input, key),
       priority,
       layerId,
+      allowControlCharacters,
     );
-  }, [enabled, layerId, priority, router]);
+  }, [allowControlCharacters, enabled, layerId, priority, router]);
+}
+
+export function hasTerminalControlCharacters(input: string): boolean {
+  return [...input].some((character) => {
+    const codePoint = character.codePointAt(0) ?? 0;
+    return codePoint <= 0x1f || (codePoint >= 0x7f && codePoint <= 0x9f);
+  });
+}
+
+function isSemanticKey(key: Key): boolean {
+  return Boolean(
+    key.backspace ||
+      key.ctrl ||
+      key.delete ||
+      key.downArrow ||
+      key.end ||
+      key.escape ||
+      key.home ||
+      key.leftArrow ||
+      key.meta ||
+      key.pageDown ||
+      key.pageUp ||
+      key.return ||
+      key.rightArrow ||
+      key.shift ||
+      key.tab ||
+      key.upArrow,
+  );
+}
+
+export function shouldSuppressTerminalInput(input: string, key: Key): boolean {
+  return (
+    (isTerminalControlSequence(input) || hasTerminalControlCharacters(input)) &&
+    !isSemanticKey(key)
+  );
 }

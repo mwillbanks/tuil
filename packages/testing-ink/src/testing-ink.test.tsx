@@ -31,9 +31,10 @@ test("global queries, input, rerenders, and resizes follow the active render", a
     Promise.resolve(),
   );
   await directUser.press("enter");
+  await directUser.press("shift+p");
   await directUser.press("raw");
   await directUser.type("ok");
-  expect(inputs).toEqual(["\r", "raw", "o", "k"]);
+  expect(inputs).toEqual(["\r", "P", "raw", "o", "k"]);
 
   const view = renderTuil(
     <Box>

@@ -81,7 +81,11 @@ export class TuilUser {
 
   async press(keys: string): Promise<void> {
     await this.ready;
-    this.write(keySequences[keys] ?? keys);
+    const shiftedCharacter = /^shift\+([a-z])$/u.exec(keys)?.[1];
+    this.write(
+      keySequences[keys] ??
+        (shiftedCharacter ? shiftedCharacter.toUpperCase() : keys),
+    );
     await Bun.sleep(50);
   }
 

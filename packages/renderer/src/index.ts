@@ -944,8 +944,9 @@ function inlineRelativeOutput(
 
 export class TerminalOutputSession {
   readonly #target: OutputTarget;
-  readonly #rows: number;
-  readonly #ownedRows: number;
+  #rows: number;
+  readonly #requestedOwnedRows: number;
+  #ownedRows: number;
   readonly #embeddedOutput: "capture" | "passthrough" | "tee";
   readonly #captureLimitBytes: number;
   readonly #captureBuffer?: Uint8Array;
@@ -968,7 +969,8 @@ export class TerminalOutputSession {
       ownership === "split-footer"
         ? positiveRowCount(options.splitFooterRows, 4)
         : positiveRowCount(options.inlineRows, 1);
-    this.#ownedRows = Math.min(requestedOwnedRows, this.#rows);
+    this.#requestedOwnedRows = requestedOwnedRows;
+    this.#ownedRows = Math.min(this.#requestedOwnedRows, this.#rows);
     this.#embeddedOutput =
       options.embeddedOutput ??
       (options.embeddedPassthrough === false
@@ -989,6 +991,19 @@ export class TerminalOutputSession {
     return this.ownership === "split-footer" || this.ownership === "inline"
       ? this.#ownedRows
       : this.#rows;
+  }
+
+  async resize(rows: number): Promise<void> {
+    const nextRows = positiveRowCount(rows, this.#rows);
+    if (nextRows === this.#rows) return;
+    this.#rows = nextRows;
+    this.#ownedRows = Math.min(this.#requestedOwnedRows, this.#rows);
+    if (!this.#entered || this.ownership !== "split-footer") return;
+    const footerStart = this.#rows - this.#ownedRows + 1;
+    await this.#write("\u001b[?6l\u001b[r");
+    await this.#write(
+      `\u001b[?25l\u001b[${footerStart};${this.#rows}r\u001b[?6h\u001b[H`,
+    );
   }
 
   capturedOutput(): Uint8Array {
@@ -1122,7 +1137,11 @@ export class TerminalOutputSession {
       this.ownership === "inline"
         ? inlineRelativeOutput(output.bytes, this.#ownedRows)
         : output.bytes;
-    if (this.ownership !== "main" || !output.fullFrame || bytes.length === 0) {
+    if (
+      (this.ownership !== "main" && this.ownership !== "alternate") ||
+      !output.fullFrame ||
+      bytes.length === 0
+    ) {
       return bytes;
     }
     const prefix = new TextEncoder().encode("\u001b[H\u001b[2J\u001b[H");

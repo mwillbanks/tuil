@@ -118,6 +118,46 @@ test("text controls edit, validate, submit, and step numeric values", async () =
   expect(number.app.focus.focusedId).toBe("after-count");
 });
 
+test("text inputs keep shifted keys printable and gate literal controls", async () => {
+  const values: string[] = [];
+  const view = renderTuil(
+    <>
+      <TextInput
+        id="printable-input"
+        label="Printable input"
+        autoFocus
+        onValueChange={(value) => {
+          values.push(value);
+        }}
+      />
+      <Button id="after-printable">After printable</Button>
+    </>,
+  );
+  await view.user.press("shift+p");
+  expect(values.at(-1)).toBe("P");
+  await view.user.press("\u001b[I");
+  expect(values.at(-1)).toBe("P");
+  await view.user.press("tab");
+  expect(view.app.focus.focusedId).toBe("after-printable");
+  await view.cleanup();
+
+  const allowedValues: string[] = [];
+  const allowed = renderTuil(
+    <TextInput
+      id="control-input"
+      label="Control input"
+      autoFocus
+      allowControlCharacters
+      onValueChange={(value) => {
+        allowedValues.push(value);
+      }}
+    />,
+  );
+  await allowed.user.press("tab");
+  expect(allowedValues.at(-1)).toBe("\t");
+  await allowed.cleanup();
+});
+
 test("selection controls expose semantic state and keyboard behavior", async () => {
   const toggles: boolean[] = [];
   const checkbox = renderTuil(
