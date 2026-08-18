@@ -3,10 +3,12 @@ import { relative, resolve } from "node:path";
 const repositoryRoot = resolve(import.meta.dir, "../..");
 const coverageFile = resolve(repositoryRoot, "coverage/lcov.info");
 
-// Generated mirrors are byte-validated by the registry gate. Tests and
-// declarative story definitions are not implementation coverage targets. The
-// Tree-sitter worker runs in a separate isolate and is exercised through public
-// CodeDocument integration tests, outside Bun's parent-process LCOV.
+// Generated mirrors are byte-validated by the registry gate. Tests,
+// declarative story definitions, and executable build checks are not unit
+// coverage targets. Dedicated build and publication gates validate those
+// scripts. The Tree-sitter worker runs in a separate isolate and is exercised
+// through public CodeDocument integration tests, outside Bun's parent-process
+// LCOV.
 const sourcePatterns = [
   "apps/playground/src/**/*.{ts,tsx}",
   "apps/showcase/src/**/*.{ts,tsx}",
@@ -25,6 +27,7 @@ const excludedPatterns = [
   "tooling/build/build-all.ts",
   "tooling/build/build-ecosystem.ts",
   "tooling/build/package.ts",
+  "tooling/build/publication-smoke.ts",
   "tooling/browser/**",
 ] as const;
 

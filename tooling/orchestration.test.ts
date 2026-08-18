@@ -15,6 +15,7 @@ import {
   validateStaticDocs,
 } from "./docs/validate-static.ts";
 import type { PublishArtifact } from "./release/artifacts.ts";
+import { assertPublication } from "./release/assert-publication.ts";
 import { type PublishRuntime, publishRelease } from "./release/publish.ts";
 import {
   expectedReleaseTags,
@@ -79,10 +80,7 @@ test("build, registry, documentation, and publication orchestration completes", 
   await buildAll.buildAll({ spawn });
   await buildEcosystem.buildEcosystem({ spawn });
 
-  const publication = await import("./build/publication-smoke.ts");
-  expect(() => publication.assertPublication(false, "invalid")).toThrow(
-    "invalid",
-  );
+  expect(() => assertPublication(false, "invalid")).toThrow("invalid");
   expect(() =>
     buildAll.orderWorkspacePackages(
       new Map<

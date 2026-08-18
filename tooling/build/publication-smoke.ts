@@ -13,13 +13,7 @@ import {
   discoverPublishArtifacts,
   npmPackArguments,
 } from "../release/artifacts.ts";
-
-export function assertPublication(
-  condition: unknown,
-  message: string,
-): asserts condition {
-  if (!condition) throw new Error(message);
-}
+import { assertPublication } from "../release/assert-publication.ts";
 
 const workspace = resolve(import.meta.dir, "../..");
 const packageRoot = join(workspace, "packages");
