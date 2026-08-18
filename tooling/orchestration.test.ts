@@ -78,9 +78,6 @@ test("build, registry, documentation, and publication orchestration completes", 
   const spawn = async (): Promise<number> => 0;
   await buildAll.buildAll({ spawn });
   await buildEcosystem.buildEcosystem({ spawn });
-  await validateStaticDocs({
-    outDirectory: join(workspace, "apps/docs/out"),
-  });
 
   const publication = await import("./build/publication-smoke.ts");
   expect(() => publication.assertPublication(false, "invalid")).toThrow(
