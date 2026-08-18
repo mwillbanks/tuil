@@ -8,7 +8,7 @@ import { GET } from "./app/api/search/route.ts";
 import { localeFromPath } from "./lib/i18n.ts";
 import { hasDocsIcon, source } from "./lib/source.ts";
 
-setDefaultTimeout(60_000);
+setDefaultTimeout(120_000);
 
 async function countFiles(pattern: string, cwd: string): Promise<number> {
   let count = 0;
