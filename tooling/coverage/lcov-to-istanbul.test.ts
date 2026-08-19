@@ -61,6 +61,20 @@ test("preserves end_of_record in source filenames", () => {
   );
 });
 
+test("normalizes CRLF field lines", () => {
+  const result = lcovToIstanbul(
+    "SF:packages/core/src/index.ts\r\nDA:1,1\r\nend_of_record\r\n",
+    "/workspace",
+  );
+
+  expect(result["/workspace/packages/core/src/index.ts"]?.path).toBe(
+    "/workspace/packages/core/src/index.ts",
+  );
+  expect(Object.keys(result)).not.toContain(
+    "/workspace/packages/core/src/index.ts\r",
+  );
+});
+
 test("writes Istanbul and V8 JSON from Bun line coverage", async () => {
   const workspace = await mkdtemp(join(tmpdir(), "tuil-coverage-"));
   try {

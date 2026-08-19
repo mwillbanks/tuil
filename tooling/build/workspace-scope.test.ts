@@ -185,7 +185,7 @@ test("rejects a missing explicit base instead of using the environment", async (
 test("discovers manifests and resolves tracked and untracked changes", async () => {
   const workspace = await createWorkspace();
   try {
-    const all = await resolveBuildScope(workspace, ["--all"]);
+    const all = await resolveBuildScope(workspace, ["--all", "--base", "HEAD"]);
     expect(all).toMatchObject({
       all: true,
       base: "HEAD",
