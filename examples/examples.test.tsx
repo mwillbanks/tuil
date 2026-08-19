@@ -1,4 +1,5 @@
 import { afterEach, expect, test } from "bun:test";
+import { PassThrough } from "node:stream";
 import { createApp } from "@mwillbanks/tuil";
 import { renderStatic } from "@mwillbanks/tuil-ink";
 import { cleanup, renderTuil } from "@mwillbanks/tuil-testing-ink";
@@ -748,10 +749,17 @@ test("examples execute their interactive callbacks and cleanup paths", async () 
 });
 
 test("example runner stops cleanly on interrupt", async () => {
+  const stdout = new PassThrough();
   setTimeout(() => {
     process.emit("SIGINT", "SIGINT");
   }, 25);
-  await runExample("minimal");
+  await runExample(
+    "minimal",
+    {},
+    {
+      stdout: stdout as unknown as NodeJS.WriteStream,
+    },
+  );
 });
 
 test("full-screen example transitions, handles menus, prompts, and resizes", async () => {

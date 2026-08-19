@@ -15,6 +15,7 @@ coveragePathIgnorePatterns = [
   "tooling/build/build-all.ts",
   "tooling/build/build-ecosystem.ts",
   "tooling/build/package.ts",
+  "tooling/build/workspace.ts",
   "registry/**/*.stories.tsx",
   "tooling/browser/**",
 ]

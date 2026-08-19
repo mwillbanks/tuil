@@ -33,6 +33,7 @@ ignoreUnresolvedImports = ["collections/browser", "collections/server"]
 
 # Source generation and package scripts use these dependencies indirectly.
 ignoreDependencies = [
+  "@fallow-cli/fallow-cov",
   "@mwillbanks/tuil-ghostty-web",
   "ansi-to-html",
   "collections",
