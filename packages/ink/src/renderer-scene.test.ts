@@ -96,4 +96,12 @@ describe("Ink renderer scene projection", () => {
     ]);
     expect(parseInkRendererScene("", []).styledLines).toEqual([[]]);
   });
+
+  test("projects standalone terminal erase commands as an empty scene", () => {
+    for (const frame of ["\u001b[2J", "\u001b[K", "\u001b[3X"]) {
+      const scene = parseInkRendererScene(frame, []);
+      expect(scene.lines).toEqual([""]);
+      expect(scene.styledLines).toEqual([[]]);
+    }
+  });
 });

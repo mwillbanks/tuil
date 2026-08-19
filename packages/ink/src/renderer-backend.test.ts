@@ -787,3 +787,28 @@ test("default Ink telemetry reconstructs the full screen for later-line-only upd
   );
   await instance.unmount();
 });
+
+test("default Ink telemetry records standalone erase frames", async () => {
+  const output = new TestTerminal();
+  const input = new TestTerminal();
+  const app = createApp({
+    component: () => createElement(Text, null, "Visible"),
+    terminal: {
+      mode: "interactive",
+      capabilities: { width: 20, height: 2, interactive: true, tty: true },
+    },
+  });
+  const instance = await render(app, {
+    stdin: input as unknown as NodeJS.ReadStream,
+    stdout: output as unknown as NodeJS.WriteStream,
+  });
+  await Bun.sleep(10);
+  instance.ink?.rerender(createElement(InkText, null, ""));
+  await instance.ink?.waitUntilRenderFlush();
+  await Bun.sleep(10);
+  expect(
+    (app.renderTelemetry.snapshot().frame as { payload: { frame: string } })
+      .payload.frame,
+  ).toBe("");
+  await instance.unmount();
+});

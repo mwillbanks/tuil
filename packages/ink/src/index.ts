@@ -334,7 +334,7 @@ interface ActiveRenderer {
 
 const terminalPresentationSequence =
   // biome-ignore lint/suspicious/noControlCharactersInRegex: ANSI CSI, OSC, and save/restore are the input grammar.
-  /\u001b(?:\[[0-?]*[ -/]*[@-~]|\][^\u0007\u001b]*(?:\u0007|\u001b\\)|[78])/gu;
+  /\u001b(?:\[[0-?]*[ -/]*[@-IL-WY-~]|\][^\u0007\u001b]*(?:\u0007|\u001b\\)|[78])/gu;
 
 function isPresentationOnlyFrame(frame: string): boolean {
   return (
