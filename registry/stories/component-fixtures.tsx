@@ -7,11 +7,7 @@ import {
   defineStep,
   defineWorkflow,
 } from "@mwillbanks/tuil-workflow";
-import {
-  createColumnHelper,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { createColumnHelper, useTable } from "@tanstack/react-table";
 import {
   type ComponentType,
   createElement,
@@ -173,11 +169,13 @@ const acceptanceOperations = Object.freeze([
 ]);
 
 const acceptanceDataTableRows = [{ id: "one", value: "One" }];
-const acceptanceDataTableColumnHelper =
-  createColumnHelper<(typeof acceptanceDataTableRows)[number]>();
-const acceptanceDataTableColumns = [
+const acceptanceDataTableColumnHelper = createColumnHelper<
+  typeof complexData.dataTableFeatures,
+  (typeof acceptanceDataTableRows)[number]
+>();
+const acceptanceDataTableColumns = acceptanceDataTableColumnHelper.columns([
   acceptanceDataTableColumnHelper.accessor("value", { header: "Value" }),
-];
+]);
 
 const containerChildrenNames = new Set([
   "app-bar",
@@ -599,10 +597,10 @@ function DataTablePreview(props: {
     columnId: string,
   ) => void | Promise<void>;
 }): ReactNode {
-  const table = useReactTable({
+  const table = useTable({
+    features: complexData.dataTableFeatures,
     data: acceptanceDataTableRows,
     columns: acceptanceDataTableColumns,
-    getCoreRowModel: getCoreRowModel(),
   });
   return (
     <complexData.DataTable

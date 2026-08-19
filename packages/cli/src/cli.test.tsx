@@ -604,7 +604,7 @@ describe("tuil CLI", () => {
     ) as { dependencies: Record<string, string> };
     expect(libraryPackage.dependencies).toMatchObject({
       "@mwillbanks/tuil-virtual": "^0.2.0",
-      "@tanstack/react-table": "^8.21.3",
+      "@tanstack/react-table": "^9.1.2",
       diff: "^9.0.0",
       "react-dom": "^19.2.8",
     });

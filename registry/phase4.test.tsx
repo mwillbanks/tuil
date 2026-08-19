@@ -6,15 +6,18 @@ import {
 } from "@mwillbanks/tuil-virtual";
 import {
   type ColumnDef,
-  getCoreRowModel,
-  getSortedRowModel,
+  createColumnHelper,
   type RowSelectionState,
   type SortingState,
-  useReactTable,
+  useTable,
 } from "@tanstack/react-table";
 import { Box, Text } from "ink";
 import { useState } from "react";
-import { DataTable, Table } from "./data-display/complex-data.tsx";
+import {
+  DataTable,
+  dataTableFeatures,
+  Table,
+} from "./data-display/complex-data.tsx";
 import { createLineDiff, DiffViewer } from "./data-display/diff-viewer.tsx";
 import { flattenJson, JsonViewer } from "./data-display/json-viewer.tsx";
 import { type LogEntry, LogViewer } from "./data-display/log-viewer.tsx";
@@ -190,10 +193,14 @@ const people: readonly Person[] = [
   { id: "c", name: "Gamma", score: 3 },
 ];
 
-const personColumns: ColumnDef<Person>[] = [
-  { accessorKey: "name", header: "Name", size: 12 },
-  { accessorKey: "score", header: "Score", size: 8 },
-];
+const personColumnHelper = createColumnHelper<
+  typeof dataTableFeatures,
+  Person
+>();
+const personColumns = personColumnHelper.columns([
+  personColumnHelper.accessor("name", { header: "Name", size: 12 }),
+  personColumnHelper.accessor("score", { header: "Score", size: 8 }),
+]);
 
 let visiblePersonIds: readonly string[] = [];
 let currentSorting: SortingState = [];
@@ -201,15 +208,14 @@ let currentSorting: SortingState = [];
 function DataTableHarness(): React.ReactNode {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const table = useReactTable({
+  const table = useTable({
+    features: dataTableFeatures,
     data: [...people],
     columns: personColumns,
     state: { sorting, rowSelection },
     onSortingChange: setSorting,
     onRowSelectionChange: setRowSelection,
     getRowId: (row) => row.id,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     enableRowSelection: true,
   });
   currentSorting = sorting;
@@ -311,27 +317,28 @@ test("tables preserve falsey rows during rendering and interaction", async () =>
 test("data tables render only columns fitted to the terminal viewport", async () => {
   let headerRenders = 0;
   let cellRenders = 0;
-  const columns: ColumnDef<Record<string, never>>[] = Array.from(
-    { length: 10_000 },
-    (_value, index) => ({
-      id: `column-${index}`,
-      accessorFn: () => index,
-      size: 4,
-      header: () => {
-        headerRenders += 1;
-        return <Text>{`H${index}`}</Text>;
-      },
-      cell: () => {
-        cellRenders += 1;
-        return <Text>{`C${index}`}</Text>;
-      },
-    }),
-  );
+  const columns: ColumnDef<
+    typeof dataTableFeatures,
+    Record<string, never>,
+    unknown
+  >[] = Array.from({ length: 10_000 }, (_value, index) => ({
+    id: `column-${index}`,
+    accessorFn: () => index,
+    size: 4,
+    header: () => {
+      headerRenders += 1;
+      return <Text>{`H${index}`}</Text>;
+    },
+    cell: () => {
+      cellRenders += 1;
+      return <Text>{`C${index}`}</Text>;
+    },
+  }));
   function WideTable(): React.ReactNode {
-    const table = useReactTable({
+    const table = useTable({
+      features: dataTableFeatures,
       data: [{}],
       columns,
-      getCoreRowModel: getCoreRowModel(),
     });
     return (
       <DataTable
@@ -354,7 +361,8 @@ test("data tables render only columns fitted to the terminal viewport", async ()
 
 test("data tables preserve rich header and cell render results", async () => {
   function RichTable(): React.ReactNode {
-    const table = useReactTable({
+    const table = useTable({
+      features: dataTableFeatures,
       data: [
         {
           value: "UNUSED",
@@ -406,7 +414,6 @@ test("data tables preserve rich header and cell render results", async () => {
           cell: () => [undefined, true, <Text key="cell-empty-node">Y</Text>],
         },
       ],
-      getCoreRowModel: getCoreRowModel(),
     });
     return (
       <DataTable
@@ -523,7 +530,8 @@ test("tables integrate TanStack sorting, row selection, and raw cell models", as
 
 test("data tables honor left and right pinning and constrain JSX cells", async () => {
   function PinnedHarness(): React.ReactNode {
-    const table = useReactTable({
+    const table = useTable({
+      features: dataTableFeatures,
       data: [{ a: "alpha", b: "beta", c: "gamma" }],
       columns: [
         { accessorKey: "a", header: "A", size: 4 },
@@ -531,9 +539,8 @@ test("data tables honor left and right pinning and constrain JSX cells", async (
         { accessorKey: "c", header: "C", size: 4 },
       ],
       initialState: {
-        columnPinning: { left: ["b"], right: ["c"] },
+        columnPinning: { start: ["b"], end: ["c"] },
       },
-      getCoreRowModel: getCoreRowModel(),
     });
     return (
       <DataTable

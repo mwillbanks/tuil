@@ -177,6 +177,21 @@ test("cell diffs cover resize invalidation, cursor hiding, and identical frames"
   ).toThrow("outside 2x1");
 });
 
+test("cell deltas erase stale rows without requiring full-frame repaint", () => {
+  const previous = new CellBuffer(12, 2);
+  previous.write(0, 0, "first");
+  previous.write(0, 1, "stale");
+  const current = new CellBuffer(12, 1);
+  current.write(0, 0, "updated");
+  const output = new TextDecoder().decode(
+    diffCellFrames(previous.frame(), current.frame()).bytes,
+  );
+  expect(output).toContain("\u001b[2;1H\u001b[2K");
+  expect(
+    diffCellFrames(previous.frame(), current.frame()).fullFrame,
+  ).toBeFalse();
+});
+
 test("renderer scenes preserve named, indexed, and RGB cell colors", async () => {
   const backend = new CellRendererBackend();
   const frame = await backend.render(

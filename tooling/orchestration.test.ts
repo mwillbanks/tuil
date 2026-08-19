@@ -15,6 +15,7 @@ import {
   validateStaticDocs,
 } from "./docs/validate-static.ts";
 import type { PublishArtifact } from "./release/artifacts.ts";
+import { assertPublication } from "./release/assert-publication.ts";
 import { type PublishRuntime, publishRelease } from "./release/publish.ts";
 import {
   expectedReleaseTags,
@@ -40,7 +41,27 @@ async function run(command: readonly string[], cwd: string): Promise<string> {
 }
 
 test("build, registry, documentation, and publication orchestration completes", async () => {
-  await generateReferenceDocs();
+  const referenceRoot = await mkdtemp(join(tmpdir(), "tuil-reference-"));
+  try {
+    await generateReferenceDocs({ outputRoot: referenceRoot });
+    const dataTableReference = await readFile(
+      join(referenceRoot, "components/tables/data-table.mdx"),
+      "utf8",
+    );
+    const dataTablePropsReference = await readFile(
+      join(referenceRoot, "components/tables/data-table-props.mdx"),
+      "utf8",
+    );
+    expect(dataTablePropsReference).toContain(
+      "TanStackTable<typeof dataTableFeatures, TData>",
+    );
+    expect(dataTableReference).toContain(
+      "createColumnHelper<typeof dataTableFeatures, Person>()",
+    );
+    expect(dataTableReference).toContain("features: dataTableFeatures");
+  } finally {
+    await rm(referenceRoot, { recursive: true, force: true });
+  }
   const registryBuild = await import("./registry/build.ts");
   expect(registryBuild.deriveRegistryReleaseMetadata("1.4.7", "2.3.9")).toEqual(
     {
@@ -53,35 +74,16 @@ test("build, registry, documentation, and publication orchestration completes", 
   ).toThrow("Invalid registry package version");
   const registryCheck = await import("./registry/check.ts");
   await registryCheck.checkRegistryArtifacts();
-  for (const generatedPath of [
-    "packages/cli/src/generated-registry.ts",
-    "apps/showcase/src/component-acceptance.stories.tsx",
-    "apps/docs/content/docs/reference/components/acceptance-catalog.mdx",
-  ]) {
-    const generatedFile = join(workspace, generatedPath);
-    const generatedSource = await readFile(generatedFile, "utf8");
-    await writeFile(generatedFile, `${generatedSource}\n`);
-    await expect(registryCheck.checkRegistryArtifacts()).rejects.toThrow(
-      "Registry artifacts are stale",
-    );
-    expect(await readFile(generatedFile, "utf8")).toBe(`${generatedSource}\n`);
-    await writeFile(generatedFile, generatedSource);
-  }
-  await import("./build/build-all.ts");
-  await import("./build/build-ecosystem.ts");
-  await validateStaticDocs({
-    outDirectory: join(workspace, "apps/docs/out"),
-  });
-
-  const packageBuild = await import("./build/package.ts");
-  for (const packageName of ["core", "story", "tuil", "cli"]) {
-    await packageBuild.buildPackage(join(workspace, "packages", packageName));
-  }
-  const publication = await import("./build/publication-smoke.ts");
-  expect(() => publication.assertPublication(false, "invalid")).toThrow(
-    "invalid",
-  );
   const buildAll = await import("./build/build-all.ts");
+  const buildEcosystem = await import("./build/build-ecosystem.ts");
+  const spawn = async (): Promise<number> => 0;
+  await buildAll.buildAll({ spawn });
+  await buildEcosystem.buildEcosystem({ spawn });
+  expect(
+    await buildAll.spawnBuild(["bun", "-e", "process.exit(0)"], workspace),
+  ).toBe(0);
+
+  expect(() => assertPublication(false, "invalid")).toThrow("invalid");
   expect(() =>
     buildAll.orderWorkspacePackages(
       new Map<

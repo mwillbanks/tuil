@@ -21,6 +21,7 @@ import {
 } from "@mwillbanks/tuil-form";
 import {
   type CommonComponentProps,
+  hasTerminalControlCharacters,
   Text as SemanticText,
   usePointerEvent,
   useSemanticNode,
@@ -400,6 +401,7 @@ interface TextEditorProps extends CommonComponentProps {
   readonly onArrowUp?: () => void | Promise<void>;
   readonly onArrowDown?: () => void | Promise<void>;
   readonly registerWithForm?: boolean;
+  readonly allowControlCharacters?: boolean;
 }
 
 function characters(value: string): string[] {
@@ -444,6 +446,7 @@ interface TextInputState {
   readonly onArrowDown?: () => void | Promise<void>;
   readonly onSubmit?: (value: string) => void | Promise<void>;
   readonly validate: () => Promise<boolean>;
+  readonly allowControlCharacters: boolean;
 }
 
 function adjacentEditorPosition(
@@ -556,7 +559,8 @@ function rejectsTextInput(
     key.ctrl ||
     key.meta ||
     key.escape ||
-    key.tab ||
+    (key.tab && !state.allowControlCharacters) ||
+    (hasTerminalControlCharacters(input) && !state.allowControlCharacters) ||
     state.readOnly ||
     state.disabled
   );
@@ -567,13 +571,14 @@ async function handleTextInput(
   key: Key,
   state: TextInputState,
 ): Promise<boolean> {
-  const keyName = editorKeyName(input, key);
+  const text = state.allowControlCharacters && key.tab && !input ? "\t" : input;
+  const keyName = editorKeyName(text, key);
   if (await handleEditorControlInput(keyName, key, state)) return true;
-  if (rejectsTextInput(input, key, state)) return false;
-  if (exceedsEditorLength(input, state)) return true;
+  if (rejectsTextInput(text, key, state)) return false;
+  if (exceedsEditorLength(text, state)) return true;
   const cursor = state.session.snapshot().selections[0]?.head ?? position(0, 0);
   state.session.dispatch({
-    changes: [{ range: { anchor: cursor, head: cursor }, insert: input }],
+    changes: [{ range: { anchor: cursor, head: cursor }, insert: text }],
   });
   return true;
 }
@@ -870,6 +875,7 @@ function useTextEditorInteraction(options: {
   readonly onArrowDown?: () => void | Promise<void>;
   readonly onSubmit?: (value: string) => void | Promise<void>;
   readonly onBlur?: () => void | Promise<void>;
+  readonly allowControlCharacters?: boolean;
   readonly adaptedField?: AdaptedTanStackField<string>;
   readonly field: TerminalFieldBinding<string>;
   readonly editor: EditorSession;
@@ -907,8 +913,13 @@ function useTextEditorInteraction(options: {
         onArrowDown: options.onArrowDown,
         onSubmit: options.onSubmit,
         validate: async () => (await options.field.validate("submit")).valid,
+        allowControlCharacters: options.allowControlCharacters ?? false,
       }),
-    { enabled: focused, priority: 2_000 },
+    {
+      enabled: focused,
+      priority: 2_000,
+      allowControlCharacters: options.allowControlCharacters ?? false,
+    },
   );
   return focused;
 }
@@ -928,6 +939,7 @@ function TextEditorControl({
     onValueChange,
     onSubmit,
     onBlur,
+    allowControlCharacters = false,
     field: adaptedField,
     validators,
     placeholder,
@@ -989,6 +1001,7 @@ function TextEditorControl({
     onArrowDown,
     onSubmit,
     onBlur,
+    allowControlCharacters,
     adaptedField,
     field: terminalField,
     editor,

@@ -19,6 +19,7 @@ export function useTerminalInput(
     readonly enabled?: boolean;
     readonly priority?: number;
     readonly layerId?: string;
+    readonly allowControlCharacters?: boolean;
   } = {},
 ): void;
 ```
@@ -32,7 +33,7 @@ This declaration has no public members.
 | Member | Type | Required | Description | Related types |
 | --- | --- | --- | --- | --- |
 | `handler` | `TerminalInputHandler` | Yes | Supplies the `handler` value as `TerminalInputHandler`. | [`TerminalInputHandler`](/docs/reference/packages/ink/api/terminal-input-handler) |
-| `options` | `&#123;     readonly enabled?: boolean;     readonly priority?: number;     readonly layerId?: string;   &#125;` | No | Supplies the `options` value as `&#123;     readonly enabled?: boolean;     readonly priority?: number;     readonly layerId?: string;   &#125;`. | — |
+| `options` | `&#123;     readonly enabled?: boolean;     readonly priority?: number;     readonly layerId?: string;     readonly allowControlCharacters?: boolean;   &#125;` | No | Supplies the `options` value as `&#123;     readonly enabled?: boolean;     readonly priority?: number;     readonly layerId?: string;     readonly allowControlCharacters?: boolean;   &#125;`. | — |
 
 ## Returns
 

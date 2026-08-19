@@ -816,7 +816,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-77938810ba3c88979d0893dc0ee42bc794d12ce811fc686bdf45b62b4862f756",
+      "integrity": "sha256-fb49249e3aed38175b88c1dacd2bcf7bfc6cda632aa6a36e9c0bb1e1f81824c3",
       "files": [
         {
           "path": "src/components/tuil/forms/controls.tsx",
@@ -2021,7 +2021,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-753c69edfbda094487d198c598614dd5435a84a81ab13ac14dd104461b52579a",
+      "integrity": "sha256-efd5862c7061e0170981aaa8a073506633bb2d94a7d94a13812c4beff406c24b",
       "files": [
         {
           "path": "src/components/tuil/data-display/complex-data.tsx",

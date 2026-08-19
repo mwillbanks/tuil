@@ -508,7 +508,7 @@ function projectFiles(
     dependencies["@mwillbanks/tuil-workflow"] = "^0.2.0";
   }
   if (template === "component-library") {
-    dependencies["@tanstack/react-table"] = "^8.21.3";
+    dependencies["@tanstack/react-table"] = "^9.1.2";
     dependencies["@mwillbanks/tuil-virtual"] = "^0.2.0";
     dependencies["diff"] = "^9.0.0";
     dependencies["react-dom"] = "^19.2.8";

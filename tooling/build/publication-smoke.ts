@@ -13,13 +13,7 @@ import {
   discoverPublishArtifacts,
   npmPackArguments,
 } from "../release/artifacts.ts";
-
-export function assertPublication(
-  condition: unknown,
-  message: string,
-): asserts condition {
-  if (!condition) throw new Error(message);
-}
+import { assertPublication } from "../release/assert-publication.ts";
 
 const workspace = resolve(import.meta.dir, "../..");
 const packageRoot = join(workspace, "packages");
@@ -272,7 +266,7 @@ try {
         type: "module",
         dependencies: {
           "@tanstack/react-form": "^1.33.2",
-          "@tanstack/react-table": "^8.21.3",
+          "@tanstack/react-table": "^9.1.2",
           "@tanstack/react-virtual": "^3.14.8",
           "@tanstack/pacer": "^0.21.1",
           diff: "^9.0.0",

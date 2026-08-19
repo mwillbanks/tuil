@@ -42,7 +42,7 @@ import {
   useState,
 } from "react";
 import {
-  isTerminalControlSequence,
+  shouldSuppressTerminalInput,
   TerminalInputContext,
   TerminalInputRouter,
 } from "./input.ts";
@@ -55,6 +55,7 @@ export * from "./components.tsx";
 export * from "./image.tsx";
 export type { TerminalInputHandler } from "./input.ts";
 export {
+  hasTerminalControlCharacters,
   TerminalInputLayer,
   useTerminalInput,
 } from "./input.ts";
@@ -123,13 +124,13 @@ async function dispatchTerminalInput(options: {
     options.input,
   );
   if (decoded.events.length > 0 && !decoded.passthrough) return;
-  if (isTerminalControlSequence(decoded.passthrough)) return;
   const consumed = await options.router.dispatch(
     decoded.passthrough,
     options.key,
     options.overlay.getTopId(),
   );
   if (consumed) return;
+  if (shouldSuppressTerminalInput(decoded.passthrough, options.key)) return;
   const binding = await options.app.hotkeys.dispatch(
     decoded.passthrough,
     options.key,
@@ -331,6 +332,16 @@ interface ActiveRenderer {
   stop(): Promise<void>;
 }
 
+const terminalPresentationSequence =
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: ANSI CSI, OSC, and save/restore are the input grammar.
+  /\u001b(?:\[[0-?]*[ -/]*[@-IL-WY-~]|\][^\u0007\u001b]*(?:\u0007|\u001b\\)|[78])/gu;
+
+function isPresentationOnlyFrame(frame: string): boolean {
+  return (
+    frame.length === 0 || frame.replace(terminalPresentationSequence, "") === ""
+  );
+}
+
 class InkFrameCapture extends EventEmitter {
   readonly #terminal: NodeJS.WriteStream;
   #frame = "";
@@ -362,8 +373,10 @@ class InkFrameCapture extends EventEmitter {
   }
 
   write = (frame: string | Uint8Array): boolean => {
-    this.#frame =
+    const decoded =
       typeof frame === "string" ? frame : new TextDecoder().decode(frame);
+    if (isPresentationOnlyFrame(decoded)) return true;
+    this.#frame = decoded;
     this.#onFrame?.();
     return true;
   };
@@ -555,30 +568,33 @@ function createBackendLifecycle(options: {
   readonly input: NodeJS.ReadStream;
   readonly captured: CapturedBackendApplication;
   readonly driver: RendererApplicationDriver;
+  readonly session: TerminalOutputSession;
   readonly scheduler: FrameScheduler;
   readonly failures: RendererFailureChannel;
 }): ActiveRenderer {
   const { app, captured, input, output, scheduler } = options;
   const unsubscribe = app.subscribeRender(() => scheduler.request());
+  let pendingApplication = Promise.resolve();
   const invokeApplication = (
     operation: (() => void | Promise<void>) | undefined,
   ) => {
     if (!operation) return;
-    void Promise.resolve()
+    pendingApplication = pendingApplication
       .then(operation)
-      .then(() => app.invalidate(), options.failures.report);
+      .then(() => app.invalidate())
+      .catch(options.failures.report);
   };
   const onInput = (data: Buffer | string) => {
     invokeApplication(() => options.driver.input(data.toString()));
   };
   const onResize = () => {
+    const width = output.columns ?? app.capabilities.width;
+    const height = output.rows ?? app.capabilities.height;
     captured.capture?.emit("resize");
-    invokeApplication(() =>
-      options.driver.resize(
-        output.columns ?? app.capabilities.width,
-        output.rows ?? app.capabilities.height,
-      ),
-    );
+    invokeApplication(async () => {
+      await options.session.resize(height);
+      await options.driver.resize(width, height);
+    });
   };
   if (app.mode === "interactive" && !captured.ink) input.on("data", onInput);
   output.on("resize", onResize);
@@ -590,6 +606,7 @@ function createBackendLifecycle(options: {
       if (!captured.ink) input.off("data", onInput);
       output.off("resize", onResize);
       const failures: unknown[] = [];
+      await captureCleanupFailure(failures, () => pendingApplication);
       const waitForIdle = async () => {
         while (!scheduler.statistics().idle) {
           await new Promise<void>((resolve) => setTimeout(resolve, 0));
@@ -638,6 +655,7 @@ async function createBackendRenderer(
     input,
     captured,
     driver,
+    session,
     scheduler,
     failures,
   });

@@ -88,6 +88,7 @@ test("Ink backend handles string frames, unchanged diffs, and cancellation", () 
   };
   const first = backend.render({ lines: ["text"] }, context);
   expect((first.payload as { frame: string }).frame).toBe("text");
+  expect(backend.diff(undefined, first).fullFrame).toBeTrue();
   expect(
     backend.diff(undefined, backend.render({ lines: ["a", "b"] }, context)),
   ).toEqual(
@@ -135,6 +136,56 @@ test("Ink backend repaints complete main-screen frames on a terminal", async () 
         interactive: true,
         tty: true,
         alternateScreen: false,
+        mouse: false,
+        images: false,
+        reducedMotion: false,
+        platform: "linux",
+      },
+      mode: "interactive",
+      layout: new LayoutProjection(),
+      signal,
+    }),
+  });
+
+  await driver.draw(new AbortController().signal);
+  expect(screen.snapshot()).toBe("first\nstale");
+  lines = ["updated"];
+  await driver.draw(new AbortController().signal);
+  expect(screen.snapshot()).toBe("updated");
+  await driver.dispose();
+});
+
+test("Ink backend repaints complete alternate-screen frames on a terminal", async () => {
+  const screen = new VirtualTerminalScreen(40, 4);
+  const output = new TerminalOutputSession(
+    {
+      write(data) {
+        screen.write(
+          typeof data === "string" ? data : new TextDecoder().decode(data),
+        );
+        return true;
+      },
+    },
+    "alternate",
+    { rows: 4 },
+  );
+  let lines = ["first", "stale"];
+  const driver = new RendererApplicationDriver({
+    application: defineRendererApplication({
+      project: () => ({ lines }),
+    }),
+    backend: new InkRendererBackend(),
+    session: output,
+    context: (signal) => ({
+      capabilities: {
+        width: 40,
+        height: 4,
+        colorDepth: 24,
+        unicode: true,
+        hyperlinks: false,
+        interactive: true,
+        tty: true,
+        alternateScreen: true,
         mouse: false,
         images: false,
         reducedMotion: false,
@@ -288,9 +339,9 @@ test("Ink backend preserves shared styles, links, cursor, clipping, and frame-ow
   expect(interactiveOutput).toContain("\u001b[0;38;5;12;1m");
   expect(interactiveOutput).toContain("\u001b]8;;https://example.test\u0007");
   expect(interactiveOutput).toContain("\u001b[1;4H\u001b[6 q\u001b[?25h");
-  expect(
-    JSON.parse(new TextDecoder().decode(backend.diff(undefined, json).bytes)),
-  ).toEqual(
+  const jsonOutput = backend.diff(undefined, json);
+  expect(jsonOutput.fullFrame).toBeFalse();
+  expect(JSON.parse(new TextDecoder().decode(jsonOutput.bytes))).toEqual(
     expect.objectContaining({
       frame: "json",
       semantics: [{ role: "status", label: "JSON" }],
@@ -734,5 +785,30 @@ test("default Ink telemetry reconstructs the full screen for later-line-only upd
       dirtyRects: [{ x: 0, y: 1, width: 7, height: 1 }],
     }),
   );
+  await instance.unmount();
+});
+
+test("default Ink telemetry records standalone erase frames", async () => {
+  const output = new TestTerminal();
+  const input = new TestTerminal();
+  const app = createApp({
+    component: () => createElement(Text, null, "Visible"),
+    terminal: {
+      mode: "interactive",
+      capabilities: { width: 20, height: 2, interactive: true, tty: true },
+    },
+  });
+  const instance = await render(app, {
+    stdin: input as unknown as NodeJS.ReadStream,
+    stdout: output as unknown as NodeJS.WriteStream,
+  });
+  await Bun.sleep(10);
+  instance.ink?.rerender(createElement(InkText, null, ""));
+  await instance.ink?.waitUntilRenderFlush();
+  await Bun.sleep(10);
+  expect(
+    (app.renderTelemetry.snapshot().frame as { payload: { frame: string } })
+      .payload.frame,
+  ).toBe("");
   await instance.unmount();
 });

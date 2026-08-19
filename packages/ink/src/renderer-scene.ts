@@ -133,8 +133,8 @@ export function parseInkRendererScene(
   let link: string | undefined;
   const bell = "\u0007";
   const pattern =
-    // biome-ignore lint/suspicious/noControlCharactersInRegex: ANSI SGR and OSC 8 are the input grammar.
-    /\u001b\[[0-9;]*m|\u001b\]8;;[^\u0007\u001b]*(?:\u0007|\u001b\\)|\r?\n/g;
+    // biome-ignore lint/suspicious/noControlCharactersInRegex: ANSI CSI and OSC 8 are the input grammar.
+    /\u001b\[[0-?]*[ -/]*[@-~]|\u001b\]8;;[^\u0007\u001b]*(?:\u0007|\u001b\\)|\r?\n/g;
   let offset = 0;
   const append = (text: string) => {
     if (!text) return;
@@ -155,7 +155,7 @@ export function parseInkRendererScene(
     } else if (token === "\n" || token === "\r\n") {
       plain += "\n";
       styledLines.push([]);
-    } else {
+    } else if (token.startsWith("\u001b]8;;")) {
       const target = token.slice(5, token.endsWith(bell) ? -1 : -2).trim();
       link = target || undefined;
     }

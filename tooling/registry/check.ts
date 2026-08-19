@@ -1,5 +1,6 @@
-import { readFile, rm, writeFile } from "node:fs/promises";
-import { relative, resolve } from "node:path";
+import { cp, mkdir, mkdtemp, readFile, rm, symlink } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, relative, resolve } from "node:path";
 import {
   parseRegistryItem,
   type RegistryItem,
@@ -21,12 +22,14 @@ const generatedPatterns = [
   "registry/workflows/workflow.tsx",
 ] as const;
 
-async function generatedFiles(): Promise<readonly string[]> {
+async function generatedFiles(
+  root = repositoryRoot,
+): Promise<readonly string[]> {
   const files = new Set<string>();
   for (const pattern of generatedPatterns) {
     const glob = new Bun.Glob(pattern);
     for await (const path of glob.scan({
-      cwd: repositoryRoot,
+      cwd: root,
       absolute: true,
       onlyFiles: true,
     })) {
@@ -34,16 +37,6 @@ async function generatedFiles(): Promise<readonly string[]> {
     }
   }
   return [...files].sort();
-}
-
-async function snapshot(
-  paths: readonly string[],
-): Promise<ReadonlyMap<string, string>> {
-  return new Map(
-    await Promise.all(
-      paths.map(async (path) => [path, await readFile(path, "utf8")] as const),
-    ),
-  );
 }
 
 const indexedMetadataFields = [
@@ -135,8 +128,7 @@ async function checkPublishedManifest(
   validateIndexedItem(item, indexed.get(item.name));
 }
 
-async function checkPublishedMetadata(): Promise<void> {
-  const publicDirectory = resolve(repositoryRoot, "apps/registry/public");
+async function checkPublishedMetadata(publicDirectory: string): Promise<void> {
   const index = JSON.parse(
     await readFile(resolve(publicDirectory, "registry.json"), "utf8"),
   ) as { readonly items?: readonly Record<string, unknown>[] };
@@ -155,12 +147,40 @@ async function checkPublishedMetadata(): Promise<void> {
 }
 
 export async function checkRegistryArtifacts(): Promise<void> {
-  const paths = await generatedFiles();
-  const before = await snapshot(paths);
-  let afterPaths: readonly string[] = [];
+  const expectedPaths = await generatedFiles();
+  const temporaryRoot = await mkdtemp(join(tmpdir(), "tuil-registry-check-"));
   try {
+    await symlink(
+      resolve(repositoryRoot, "node_modules"),
+      resolve(temporaryRoot, "node_modules"),
+      "junction",
+    );
+    for (const path of [
+      "biome.json",
+      ".gitignore",
+      "package.json",
+      "apps/registry/public",
+      "packages/registry",
+      "packages/tuil/package.json",
+      "registry",
+      "tooling/registry",
+    ]) {
+      await cp(resolve(repositoryRoot, path), resolve(temporaryRoot, path), {
+        recursive: true,
+      });
+    }
+    await mkdir(resolve(temporaryRoot, "apps/showcase/src"), {
+      recursive: true,
+    });
+    await mkdir(
+      resolve(temporaryRoot, "apps/docs/content/docs/reference/components"),
+      { recursive: true },
+    );
+    await mkdir(resolve(temporaryRoot, "packages/cli/src"), {
+      recursive: true,
+    });
     const build = Bun.spawn([process.execPath, "tooling/registry/build.ts"], {
-      cwd: repositoryRoot,
+      cwd: temporaryRoot,
       stdout: "pipe",
       stderr: "pipe",
     });
@@ -174,32 +194,40 @@ export async function checkRegistryArtifacts(): Promise<void> {
         `Registry generation failed during verification:\n${stdout}${stderr}`,
       );
     }
-    await checkPublishedMetadata();
-    afterPaths = await generatedFiles();
-    const after = await snapshot(afterPaths);
-    const changed = [...new Set([...paths, ...afterPaths])].filter(
-      (path) => before.get(path) !== after.get(path),
+    await checkPublishedMetadata(
+      resolve(temporaryRoot, "apps/registry/public"),
     );
+    const generatedPaths = await generatedFiles(temporaryRoot);
+    const expectedRelativePaths = expectedPaths.map((path) =>
+      relative(repositoryRoot, path),
+    );
+    const generatedRelativePaths = generatedPaths.map((path) =>
+      relative(temporaryRoot, path),
+    );
+    const changed: string[] = [];
+    for (const relativePath of new Set([
+      ...expectedRelativePaths,
+      ...generatedRelativePaths,
+    ])) {
+      const expectedFile = Bun.file(resolve(repositoryRoot, relativePath));
+      const generatedFile = Bun.file(resolve(temporaryRoot, relativePath));
+      if (
+        !(await expectedFile.exists()) ||
+        !(await generatedFile.exists()) ||
+        (await expectedFile.text()) !== (await generatedFile.text())
+      ) {
+        changed.push(relativePath);
+      }
+    }
     if (changed.length > 0) {
       throw new Error(
         `Registry artifacts are stale:\n${changed
-          .map((path) => `- ${relative(repositoryRoot, path)}`)
+          .map((path) => `- ${path}`)
           .join("\n")}\nRun "bun run registry:build" and commit the results.`,
       );
     }
   } finally {
-    afterPaths = afterPaths.length > 0 ? afterPaths : await generatedFiles();
-    for (const path of new Set([...paths, ...afterPaths])) {
-      const content = before.get(path);
-      if (content === undefined) {
-        await rm(path, { force: true });
-      } else if (
-        !(await Bun.file(path).exists()) ||
-        (await Bun.file(path).text()) !== content
-      ) {
-        await writeFile(path, content, "utf8");
-      }
-    }
+    await rm(temporaryRoot, { recursive: true, force: true });
   }
 }
 
