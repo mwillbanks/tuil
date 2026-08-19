@@ -67,10 +67,21 @@ test("writes Istanbul and V8 JSON from Bun line coverage", async () => {
     const sourcePath = join(workspace, "source.ts");
     const lcovPath = join(workspace, "lcov.info");
     const istanbulPath = join(workspace, "coverage-final.json");
+    const istanbulOnlyPath = join(workspace, "coverage-istanbul-only.json");
     const runtimePath = join(workspace, "runtime-coverage.json");
     await writeFile(
       sourcePath,
-      "export function example() {\n  return 1;\n}\n",
+      [
+        "export function example() {",
+        "  return 1;",
+        "}",
+        "export const arrow = () => 2;",
+        "export const object = { property: () => 3 };",
+        "export default function () { return 4; }",
+        "[() => 5];",
+        "declare function signature(): void;",
+        "",
+      ].join("\n"),
     );
     await writeFile(
       lcovPath,
@@ -78,6 +89,10 @@ test("writes Istanbul and V8 JSON from Bun line coverage", async () => {
         "SF:source.ts",
         "DA:1,1",
         "DA:2,3",
+        "DA:4,2",
+        "DA:5,1",
+        "DA:6,1",
+        "DA:7,1",
         "end_of_record",
         "SF:deleted.ts",
         "DA:1,1",
@@ -85,6 +100,7 @@ test("writes Istanbul and V8 JSON from Bun line coverage", async () => {
       ].join("\n"),
     );
     await writeIstanbulCoverage(lcovPath, istanbulPath, workspace, runtimePath);
+    await writeIstanbulCoverage(lcovPath, istanbulOnlyPath, workspace);
     const istanbul = JSON.parse(await readFile(istanbulPath, "utf8")) as Record<
       string,
       { readonly fnMap: Readonly<Record<string, { readonly name: string }>> }
@@ -106,6 +122,9 @@ test("writes Istanbul and V8 JSON from Bun line coverage", async () => {
       functionName: "example",
       ranges: [{ count: 3 }],
     });
+    expect(
+      runtime.result[0]?.functions.map((entry) => entry.functionName),
+    ).toEqual(["", "example", "arrow", "property", "<anonymous>", "<arrow>"]);
   } finally {
     await rm(workspace, { recursive: true, force: true });
   }
