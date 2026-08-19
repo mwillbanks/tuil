@@ -48,6 +48,19 @@ test("converts LCOV statements, functions, and branches to Istanbul JSON", () =>
   });
 });
 
+test("preserves end_of_record in source filenames", () => {
+  const result = lcovToIstanbul(
+    ["SF:packages/core/src/end_of_record.ts", "DA:1,1", "end_of_record"].join(
+      "\n",
+    ),
+    "/workspace",
+  );
+
+  expect(result["/workspace/packages/core/src/end_of_record.ts"]?.path).toBe(
+    "/workspace/packages/core/src/end_of_record.ts",
+  );
+});
+
 test("writes Istanbul and V8 JSON from Bun line coverage", async () => {
   const workspace = await mkdtemp(join(tmpdir(), "tuil-coverage-"));
   try {

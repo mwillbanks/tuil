@@ -78,7 +78,14 @@ export function selectImpactedWorkspaces(
   if (all) return new Set(buildable.map((manifest) => manifest.name));
 
   const globalBuildChange = changedFiles.some(isGlobalBuildFile);
-  if (globalBuildChange) {
+  const deletedWorkspaceManifest = changedFiles.some(
+    (path) =>
+      /^(?:packages|apps|examples)\/[^/]+\/package\.json$/.test(path) &&
+      !manifests.some(
+        (manifest) => `${manifest.directory}/package.json` === path,
+      ),
+  );
+  if (globalBuildChange || deletedWorkspaceManifest) {
     return new Set(buildable.map((manifest) => manifest.name));
   }
 
@@ -198,10 +205,14 @@ export async function resolveBuildScope(
   const all =
     args.includes("--all") || process.env["TUIL_BUILD_ALL"] === "true";
   const baseIndex = args.indexOf("--base");
-  const base =
-    (baseIndex >= 0 ? args[baseIndex + 1] : undefined) ??
-    process.env["TUIL_BUILD_BASE"] ??
-    "HEAD";
+  let base = process.env["TUIL_BUILD_BASE"] ?? "HEAD";
+  if (baseIndex >= 0) {
+    const baseArgument = args[baseIndex + 1];
+    if (!baseArgument || baseArgument.startsWith("--")) {
+      throw new Error("--base requires a Git reference");
+    }
+    base = baseArgument;
+  }
   if (!base || base.startsWith("--")) {
     throw new Error("--base requires a Git reference");
   }

@@ -82,7 +82,7 @@ export function lcovToIstanbul(
   workspace: string,
 ): Readonly<Record<string, IstanbulFileCoverage>> {
   const coverage: Record<string, IstanbulFileCoverage> = {};
-  for (const record of source.split("end_of_record")) {
+  for (const record of source.split(/^end_of_record\r?$/m)) {
     const lines = record.split("\n").filter(Boolean);
     const sourcePath = lines.find((line) => line.startsWith("SF:"))?.slice(3);
     if (!sourcePath) continue;

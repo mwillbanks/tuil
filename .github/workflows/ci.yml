@@ -40,7 +40,7 @@ jobs:
       - name: Verify workspace
         env:
           TUIL_BUILD_ALL: ${{ github.event_name == 'workflow_dispatch' }}
-          TUIL_BUILD_BASE: ${{ github.event.pull_request.base.sha || github.event.before || 'HEAD' }}
+          TUIL_BUILD_BASE: ${{ github.event.pull_request.base.sha || (github.event.before != '0000000000000000000000000000000000000000' && github.event.before) || 'HEAD' }}
         run: bun run check
       - name: Publish coverage
         uses: codecov/codecov-action@v7

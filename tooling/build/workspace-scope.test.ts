@@ -1,5 +1,7 @@
 import { expect, test } from "bun:test";
+import { resolve } from "node:path";
 import {
+  resolveBuildScope,
   selectImpactedWorkspaces,
   type WorkspaceManifest,
 } from "./workspace-scope.ts";
@@ -47,4 +49,28 @@ test("builds every workspace for shared build infrastructure changes", () => {
   expect([
     ...selectImpactedWorkspaces(manifests, ["tooling/build/package.ts"]),
   ]).toEqual(["core", "feature", "application", "unrelated"]);
+});
+
+test("builds every remaining workspace when a workspace manifest is deleted", () => {
+  expect([
+    ...selectImpactedWorkspaces(manifests, ["packages/removed/package.json"]),
+  ]).toEqual(["core", "feature", "application", "unrelated"]);
+});
+
+test("rejects a missing explicit base instead of using the environment", async () => {
+  const environmentBase = process.env["TUIL_BUILD_BASE"];
+  process.env["TUIL_BUILD_BASE"] = "HEAD";
+  try {
+    for (const args of [
+      ["--all", "--base"],
+      ["--base", "--all"],
+    ]) {
+      await expect(
+        resolveBuildScope(resolve(import.meta.dir, "../.."), args),
+      ).rejects.toThrow("--base requires a Git reference");
+    }
+  } finally {
+    if (environmentBase === undefined) delete process.env["TUIL_BUILD_BASE"];
+    else process.env["TUIL_BUILD_BASE"] = environmentBase;
+  }
 });
