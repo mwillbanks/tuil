@@ -16,6 +16,7 @@ import {
   TerminalImage,
   type TerminalImageSource,
   Text,
+  type TuilRenderOptions,
   useTerminalInput,
   useTerminalSize,
   useTerminalViewport,
@@ -1461,12 +1462,14 @@ export function ExampleApplication(props: {
 export async function runExample(
   kind: ExampleKind,
   options: Omit<Parameters<typeof ExampleApplication>[0], "kind"> = {},
+  renderOptions: TuilRenderOptions = {},
 ): Promise<void> {
   const app = createApp({
     id: `tuil-example-${kind}`,
     component: () => createElement(ExampleApplication, { kind, ...options }),
   });
   const instance = await render(app, {
+    ...renderOptions,
     alternateScreen: kind === "full-screen" && app.capabilities.alternateScreen,
   });
   const stop = () => {

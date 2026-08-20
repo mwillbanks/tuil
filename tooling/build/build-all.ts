@@ -61,6 +61,7 @@ export function orderWorkspacePackages(
 export async function buildAll(
   options: Readonly<{
     spawn?: BuildSpawn;
+    include?: ReadonlySet<string>;
   }> = {},
 ): Promise<void> {
   const packagesDirectory = join(import.meta.dir, "../../packages");
@@ -72,18 +73,24 @@ export async function buildAll(
     .sort();
   const manifests = new Map<string, PackageManifest>();
   const directoriesByName = new Map<string, string>();
+  const namesByDirectory = new Map<string, string>();
   for (const directory of packageDirectories) {
     const manifest = (await Bun.file(
       join(packagesDirectory, directory, "package.json"),
     ).json()) as PackageManifest;
     manifests.set(manifest.name, manifest);
     directoriesByName.set(manifest.name, directory);
+    namesByDirectory.set(directory, manifest.name);
   }
 
   const packages = orderWorkspacePackages(manifests, directoriesByName);
   const spawn = options.spawn ?? spawnBuild;
   for (const packageName of packages) {
     const directory = join(packagesDirectory, packageName);
+    const name = namesByDirectory.get(packageName);
+    if (options.include && (!name || !options.include.has(name))) {
+      continue;
+    }
     if ((await spawn(["bun", "run", "build"], directory)) !== 0) {
       throw new Error(`Build failed for @mwillbanks/tuil-${packageName}`);
     }

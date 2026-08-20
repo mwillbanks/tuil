@@ -28,6 +28,7 @@ const excludedPatterns = [
   "tooling/build/build-ecosystem.ts",
   "tooling/build/package.ts",
   "tooling/build/publication-smoke.ts",
+  "tooling/build/workspace.ts",
   "tooling/browser/**",
 ] as const;
 

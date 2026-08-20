@@ -92,7 +92,11 @@ describe("foundational Ink components", () => {
       component: () => <Text>Rendered frame</Text>,
       terminal: { mode: "static" },
     });
-    const rendered = await render(renderedApp, { patchConsole: false });
+    const stdout = new PassThrough();
+    const rendered = await render(renderedApp, {
+      patchConsole: false,
+      stdout: stdout as unknown as NodeJS.WriteStream,
+    });
     expect(rendered.ink).toBeDefined();
     await rendered.unmount();
   });
