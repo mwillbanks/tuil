@@ -6,7 +6,7 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["markdown-viewer"],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -19,5 +19,5 @@
     "license": "MIT",
     "mode": "replace"
   },
-  "integrity": "sha256-a880e3bfd332ce5285f8b6d27a17ef24c3bccc1da0f95aaa54a0db9905031657"
+  "integrity": "sha256-9f388a8988f3268165a00e31fc83580e19f8f150caeb60fd7f2862d80489a4bb"
 }

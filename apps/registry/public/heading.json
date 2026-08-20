@@ -23,7 +23,7 @@
       "source": "registry/data-display/heading.tsx"
     }
   ],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -31,5 +31,5 @@
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-6851748331f5386c238f7bdcf2ea672af0d80003a985470207d6faecf082b34f"
+  "integrity": "sha256-30293afe7161271406a17c41adeba5e922239c0487ae3331f4168c46e0929d0c"
 }

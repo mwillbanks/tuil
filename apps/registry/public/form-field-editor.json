@@ -6,7 +6,7 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["field"],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -19,5 +19,5 @@
     "license": "MIT",
     "mode": "replace"
   },
-  "integrity": "sha256-0c9c38a57f91918503983184f0c44e09d7a815bfe8bd6a13a242710fa40ae506"
+  "integrity": "sha256-7d8c6899f505ce53c7b290873d0c30dafee6c8b0249e48decd070a631b6a34d4"
 }

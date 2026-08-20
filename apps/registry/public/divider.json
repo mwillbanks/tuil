@@ -22,7 +22,7 @@
       "source": "registry/data-display/divider.tsx"
     }
   ],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -30,5 +30,5 @@
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-feec8810f2b2a4a8c3af0ad0dfefe8ab0b6c9e947a62735be19dee55595fb087"
+  "integrity": "sha256-f8d6ee0a1b817fc005c125d5a8b88e95c6ba1eaee10e0bd04c732d3587387835"
 }

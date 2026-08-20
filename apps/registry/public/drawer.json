@@ -6,7 +6,7 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["dialog"],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -19,5 +19,5 @@
     "license": "MIT",
     "mode": "replace"
   },
-  "integrity": "sha256-e6f340c845b1fdfa39ecd858d411ec3aea11e6338ab5d646189ea7cf7cb60860"
+  "integrity": "sha256-0472ef7b115b455478c80367ea8a8fca7ca898875931c17bdec02a394d129614"
 }
