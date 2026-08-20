@@ -32,7 +32,7 @@
     "react"
   ],
   "registryDependencies": ["button", "dialog", "text-input", "tabs"],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -40,5 +40,5 @@
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-baac3926b7706af9f49f13e919f2a837c33a60ffaa6f29d7c4267cb11923ed91"
+  "integrity": "sha256-90d5dd0b6198487cf4de161746244f3db881d69b00c103ed88591660519458c6"
 }

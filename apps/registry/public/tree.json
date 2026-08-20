@@ -23,7 +23,7 @@
   ],
   "dependencies": ["@mwillbanks/tuil", "@mwillbanks/tuil-ink", "react"],
   "registryDependencies": [],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -31,5 +31,5 @@
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-01ec43845371447f8964748bd3565c9be033bf29387fe793586048e5f9ce3b03"
+  "integrity": "sha256-9d3a662c34b3047e8186cc477617f6d7491e250e8fe65f848f6b156dd46d7df3"
 }

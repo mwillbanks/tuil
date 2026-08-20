@@ -23,7 +23,7 @@
     }
   ],
   "registryDependencies": ["box", "text"],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -31,5 +31,5 @@
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-56124f611a26b3d5c7f89032c8784b7ca3dee724755dae635670e8782a9eb5c5"
+  "integrity": "sha256-18e334a164fc745a727600ec407bd889d824eb7d2b614a781880b7df0245d044"
 }

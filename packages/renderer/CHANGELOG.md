@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/mwillbanks/tuil/compare/tuil-renderer-v1.0.1...tuil-renderer-v1.0.2) (2026-08-20)
+
+
+### Bug Fixes
+
+* stabilize terminal runtime and dependencies ([#21](https://github.com/mwillbanks/tuil/issues/21)) ([92d20fb](https://github.com/mwillbanks/tuil/commit/92d20fb530e51998117e181529f6ef9076052fd1))
+
 ## [1.0.1](https://github.com/mwillbanks/tuil/compare/tuil-renderer-v1.0.0...tuil-renderer-v1.0.1) (2026-08-05)
 
 

@@ -19,7 +19,7 @@
     "react"
   ],
   "registryDependencies": [],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -32,5 +32,5 @@
     "license": "MIT",
     "mode": "replace"
   },
-  "integrity": "sha256-2eb886540161dbd538cab2ee41402228cd9090229351440a7743938a9ee5fe48"
+  "integrity": "sha256-2a12e37dd2880c914e91035c84e0bc9872e76716838f550557185a84e78ebee8"
 }

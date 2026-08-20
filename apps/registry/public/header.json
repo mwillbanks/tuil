@@ -6,7 +6,7 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["split-pane"],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -19,5 +19,5 @@
     "license": "MIT",
     "mode": "replace"
   },
-  "integrity": "sha256-f2aad002026698f464f4385a41011a5c7ae994eb8a7924e6629a9fcd209a6fdc"
+  "integrity": "sha256-2de0b7f205a98c2ec2e980fed5ff53027d2ded45996cc815986923f2fa3d3ff4"
 }

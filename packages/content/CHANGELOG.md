@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.1](https://github.com/mwillbanks/tuil/compare/tuil-content-v1.0.0...tuil-content-v1.0.1) (2026-08-20)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mwillbanks/tuil-streaming bumped to 1.0.1
+
 ## [1.0.0](https://github.com/mwillbanks/tuil/compare/tuil-content-v0.2.0...tuil-content-v1.0.0) (2026-08-02)
 
 
