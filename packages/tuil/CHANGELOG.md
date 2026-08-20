@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.2](https://github.com/mwillbanks/tuil/compare/tuil-v1.0.1...tuil-v1.0.2) (2026-08-20)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mwillbanks/tuil-pointer bumped to 1.0.2
+    * @mwillbanks/tuil-renderer bumped to 1.0.2
+    * @mwillbanks/tuil-streaming bumped to 1.0.1
+
 ## [1.0.1](https://github.com/mwillbanks/tuil/compare/tuil-v1.0.0...tuil-v1.0.1) (2026-08-05)
 
 

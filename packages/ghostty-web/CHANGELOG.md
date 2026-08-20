@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.2](https://github.com/mwillbanks/tuil/compare/tuil-ghostty-web-v1.0.1...tuil-ghostty-web-v1.0.2) (2026-08-20)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mwillbanks/tuil bumped to 1.0.2
+    * @mwillbanks/tuil-ink bumped to 1.0.2
+
 ## [1.0.1](https://github.com/mwillbanks/tuil/compare/tuil-ghostty-web-v1.0.0...tuil-ghostty-web-v1.0.1) (2026-08-05)
 
 

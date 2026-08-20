@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.2](https://github.com/mwillbanks/tuil/compare/tuil-story-v1.0.1...tuil-story-v1.0.2) (2026-08-20)
+
+
+### Bug Fixes
+
+* stabilize terminal runtime and dependencies ([#21](https://github.com/mwillbanks/tuil/issues/21)) ([92d20fb](https://github.com/mwillbanks/tuil/commit/92d20fb530e51998117e181529f6ef9076052fd1))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mwillbanks/tuil bumped to 1.0.2
+    * @mwillbanks/tuil-testing-ink bumped to 1.0.2
+
 ## [1.0.1](https://github.com/mwillbanks/tuil/compare/tuil-story-v1.0.0...tuil-story-v1.0.1) (2026-08-05)
 
 
