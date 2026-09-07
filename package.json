@@ -87,14 +87,14 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@opentui/core": "^0.5.4",
+    "@opentui/core": "^0.5.10",
     "@tanstack/react-table": "catalog:",
     "diff": "catalog:",
     "ink": "^7.1.1",
     "react": "^19.2.8"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.9",
+    "@biomejs/biome": "^2.5.12",
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
     "@fallow-cli/fallow-cov": "^0.4.1",
@@ -103,12 +103,12 @@
     "@tanstack/react-virtual": "catalog:",
     "@types/bun": "latest",
     "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
+    "@types/react-dom": "^19.2.7",
     "ansi-to-html": "^0.7.2",
-    "fallow": "^3.17.0",
+    "fallow": "^3.21.0",
     "husky": "^9.1.7",
     "ink-testing-library": "^4.0.0",
-    "lint-staged": "^17.3.0",
+    "lint-staged": "^17.4.1",
     "nusm": "catalog:",
     "playwright": "^1.62.1",
     "react-dom": "catalog:",
