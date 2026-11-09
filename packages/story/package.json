@@ -53,7 +53,7 @@
     "@mwillbanks/tuil-testing-ink": "workspace:*",
     "@mwillbanks/tuil-theme": "workspace:*",
     "ansi-to-html": "^0.7.2",
-    "chalk": "^6.0.0"
+    "chalk": "^6.0.1"
   },
   "devDependencies": {
     "react-dom": "catalog:"
