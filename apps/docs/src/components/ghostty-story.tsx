@@ -5,6 +5,7 @@ import type { PublishedStoryFrame } from "./story-explorer";
 
 export function GhosttyStory(props: {
   readonly frame: PublishedStoryFrame;
+  readonly onSettled?: () => void;
 }): ReactNode {
   const host = useRef<HTMLDivElement>(null);
   const [revision, setRevision] = useState(0);
@@ -68,6 +69,10 @@ export function GhosttyStory(props: {
       void dispose?.().catch(() => undefined);
     };
   }, [props.frame, revision]);
+
+  useEffect(() => {
+    if (current) props.onSettled?.();
+  }, [current, props.onSettled]);
 
   return (
     <section className="ghostty-story-live ghostty-workspace">

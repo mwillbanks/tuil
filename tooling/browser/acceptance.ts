@@ -160,17 +160,32 @@ async function waitForTerminal(page: Page): Promise<void> {
       .first()
       .waitFor({ timeout: 20_000 }),
     page
-      .getByText(/(?:Browser terminal|Terminal) failed:/u)
+      .getByText(
+        /(?:Browser terminal failed:|Terminal failed:|Interactive terminal unavailable:)/u,
+      )
       .first()
       .waitFor({ timeout: 20_000 })
       .then(async () => {
         const failure = await page
-          .getByText(/(?:Browser terminal|Terminal) failed:/u)
+          .getByText(
+            /(?:Browser terminal failed:|Terminal failed:|Interactive terminal unavailable:)/u,
+          )
           .first()
           .textContent();
         throw new Error(failure ?? "Browser terminal failed.");
       }),
   ]);
+}
+
+async function waitForShowcasePreview(page: Page): Promise<void> {
+  await waitForTerminal(page);
+  await page.waitForFunction(() => {
+    const preview = document.querySelector(".showcase-preview:focus-within");
+    if (!preview) return false;
+    const visibleTop =
+      preview.getBoundingClientRect().top - (visualViewport?.offsetTop ?? 0);
+    return visibleTop >= 0 && visibleTop < 140;
+  });
 }
 
 const docsBasePath = normalizeBasePath(
@@ -303,20 +318,7 @@ try {
   await page.getByRole("button", { name: "component-acceptance" }).click();
   await page.getByLabel("Search components").fill("Field");
   await page.locator(".showcase-card").first().click();
-  await waitForTerminal(page);
-  const showcasePreview = page.locator(".showcase-preview");
-  assert(
-    await showcasePreview.isVisible(),
-    "Selecting a showcase card did not render the selected preview.",
-  );
-  await page.locator(".showcase-preview:focus").waitFor();
-  const showcasePreviewBox = await showcasePreview.boundingBox();
-  assert(
-    showcasePreviewBox !== null &&
-      showcasePreviewBox.y >= 0 &&
-      showcasePreviewBox.y < 140,
-    `Selecting a showcase card did not scroll to its preview: ${JSON.stringify(showcasePreviewBox)}`,
-  );
+  await waitForShowcasePreview(page);
   assert(
     (await page.locator(".ghostty-terminal canvas").count()) === 1,
     "Showcase mounted more than the selected live terminal.",
@@ -493,12 +495,8 @@ try {
     .click();
   await mobilePage.getByLabel("Search components").fill("Field");
   await mobilePage.locator(".showcase-card").first().click();
-  await waitForTerminal(mobilePage);
+  await waitForShowcasePreview(mobilePage);
   const mobileShowcasePreview = mobilePage.locator(".showcase-preview");
-  assert(
-    await mobileShowcasePreview.isVisible(),
-    "The mobile showcase did not render its selected preview.",
-  );
   assert(
     ((await mobileShowcasePreview.boundingBox())?.width ?? 0) <= fit.viewport,
     "The showcase preview overflows the mobile viewport.",
@@ -526,6 +524,11 @@ try {
     .first()
     .waitFor({ timeout: 20_000 });
   await captureBrowserCoverage(failurePage);
+  await healthyPage(failurePage, docsOrigin + "/showcase/");
+  await failurePage.getByLabel("Search components").fill("Field");
+  await failurePage.locator(".showcase-card").first().click();
+  await failurePage.getByText(/Interactive terminal unavailable:/u).waitFor();
+  await failurePage.locator(".showcase-preview:focus").waitFor();
   await failureContext.close();
   await context.close();
   await writeBrowserCoverage();

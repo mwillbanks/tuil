@@ -51,7 +51,7 @@ Additional acceptance found eight related groups.
 
 The workspace build audit found filesystem-dependent discovery, a release environment leak in the scope fixture, and quoted Git paths that skipped files with Unicode names. Workspace discovery now sorts each root, preserves full Git paths, and accepts an explicit environment for isolated tests. The scope fixtures exercise release mode and tracked and untracked filenames. [Baseline CI run](https://github.com/mwillbanks/tuil/actions/runs/44404065981)
 
-The browser audit reproduced incorrect showcase scrolling on x64 Chromium. Selection now focuses the preview and uses its CSS scroll margin in a single immediate scroll. Acceptance checks the focused preview and its viewport position. Browser failures retain their original error and close all owned resources. [Browser CI run](https://github.com/mwillbanks/tuil/actions/runs/44407647829)
+The browser audit reproduced incorrect showcase scrolling after Ghostty took focus while mounting. The preview now reveals itself after Ghostty settles and keeps focus within the selected story. Desktop and mobile acceptance check the viewport position. A terminal startup failure focuses the static fallback. Browser failures retain their original error and close all owned resources. [Browser CI run](https://github.com/mwillbanks/tuil/actions/runs/44407647829)
 
 TanStack Form starts a reconnect timer in terminal processes with no browser devtools. The workspace and generated form starters resolve the compatible event client 0.5.1. The client keeps development connections and skips production retries. The packed starters must finish a redirected run after rendering the form. [TanStack Form dependency fix](https://github.com/TanStack/form/pull/2410)
 
