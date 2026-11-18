@@ -2,7 +2,7 @@ import { mkdir } from "node:fs/promises";
 import { dirname, extname, isAbsolute, resolve } from "node:path";
 import { buildBrowserShowcase } from "../../apps/showcase/src/build-browser.ts";
 import { coverageVariable } from "../../tests/helpers/coverage-instrument.ts";
-import { chromium, type Page } from "playwright";
+import { chromium, type Locator, type Page } from "playwright";
 import { normalizeBasePath } from "../../apps/docs/src/lib/base-path.ts";
 
 const workspace = resolve(import.meta.dir, "../..");
@@ -177,6 +177,19 @@ async function waitForTerminal(page: Page): Promise<void> {
   ]);
 }
 
+async function resetLiveTerminal(
+  page: Page,
+  control: Locator,
+  canvas: Locator,
+): Promise<void> {
+  await waitForTerminal(page);
+  const originalCanvas = await canvas.elementHandle();
+  assert(originalCanvas, "No terminal canvas was mounted before reset.");
+  await control.click();
+  await originalCanvas.waitForElementState("hidden");
+  await waitForTerminal(page);
+}
+
 async function waitForShowcasePreview(page: Page): Promise<void> {
   await waitForTerminal(page);
   try {
@@ -299,11 +312,13 @@ try {
   await page.getByRole("button", { name: "Save" }).click();
   await page.reload({ waitUntil: "networkidle" });
   await page.getByText("Saved document restored.").waitFor();
-  await page
-    .locator(".visual-preview")
-    .getByRole("button", { name: "Reset session" })
-    .click();
-  await waitForTerminal(page);
+  await resetLiveTerminal(
+    page,
+    page
+      .locator(".visual-preview")
+      .getByRole("button", { name: "Reset session" }),
+    page.locator(".visual-preview .ghostty-terminal canvas"),
+  );
   assert(
     (await page.locator(".visual-preview .ghostty-terminal canvas").count()) ===
       1,
@@ -370,13 +385,11 @@ try {
     ),
     "Keyboard focus did not reach the selected showcase terminal.",
   );
-  const originalCanvas = await page
-    .locator(".showcase-preview canvas")
-    .elementHandle();
-  assert(originalCanvas, "The selected showcase terminal did not mount.");
-  await resetShowcase.click();
-  await originalCanvas.waitForElementState("hidden");
-  await waitForTerminal(page);
+  await resetLiveTerminal(
+    page,
+    resetShowcase,
+    page.locator(".showcase-preview canvas"),
+  );
   assert(
     await resetShowcase.evaluate((button) => button === document.activeElement),
     "Resetting the selected showcase terminal moved focus away from its control.",
@@ -443,8 +456,11 @@ try {
     (await input.inputValue()) === "",
     "Showcase did not submit terminal input.",
   );
-  await storyPage.getByRole("button", { name: "Reset session" }).click();
-  await waitForTerminal(storyPage);
+  await resetLiveTerminal(
+    storyPage,
+    storyPage.getByRole("button", { name: "Reset session" }),
+    storyPage.locator("canvas"),
+  );
   assert(
     (await storyPage.locator("canvas").count()) === 1,
     "Showcase reset leaked a terminal canvas.",
@@ -458,6 +474,7 @@ try {
   });
   const mobilePage = await mobile.newPage();
   await healthyPage(mobilePage, `${docsOrigin}/playground/`);
+  await waitForTerminal(mobilePage);
   const fit = await mobilePage.evaluate(() => {
     const pageDocument = (
       globalThis as unknown as {
