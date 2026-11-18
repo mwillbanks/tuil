@@ -6,7 +6,7 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["tabs"],
-  "version": "1.0.1",
+  "version": "1.0.2",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -19,5 +19,5 @@
     "license": "MIT",
     "mode": "replace"
   },
-  "integrity": "sha256-49bf6501407820cdd88451e6bb31548b5f3f8abdc956ea36d7b8d859bfe67427"
+  "integrity": "sha256-7b4986db3bfaef677d0705d79532aab1d7c17a45816ee68f3b58a18392f9e340"
 }

@@ -1,1 +1,157 @@
-{}
+{
+  "packages/cell": {
+    "component": "tuil-cell",
+    "version": "1.0.3",
+    "path": "apps/docs/content/docs/releases/tuil-cell-1.0.3.mdx"
+  },
+  "packages/cli": {
+    "component": "tuil-cli",
+    "version": "1.0.3",
+    "path": "apps/docs/content/docs/releases/tuil-cli-1.0.3.mdx"
+  },
+  "packages/code": {
+    "component": "tuil-code",
+    "version": "1.0.1",
+    "path": "apps/docs/content/docs/releases/tuil-code-1.0.1.mdx"
+  },
+  "packages/content": {
+    "component": "tuil-content",
+    "version": "1.0.2",
+    "path": "apps/docs/content/docs/releases/tuil-content-1.0.2.mdx"
+  },
+  "packages/core": {
+    "component": "tuil-core",
+    "version": "1.0.1",
+    "path": "apps/docs/content/docs/releases/tuil-core-1.0.1.mdx"
+  },
+  "packages/devtools": {
+    "component": "tuil-devtools",
+    "version": "1.0.3",
+    "path": "apps/docs/content/docs/releases/tuil-devtools-1.0.3.mdx"
+  },
+  "packages/editor": {
+    "component": "tuil-editor",
+    "version": "1.0.1",
+    "path": "apps/docs/content/docs/releases/tuil-editor-1.0.1.mdx"
+  },
+  "packages/events": {
+    "component": "tuil-events",
+    "version": "0.2.1",
+    "path": "apps/docs/content/docs/releases/tuil-events-0.2.1.mdx"
+  },
+  "packages/focus": {
+    "component": "tuil-focus",
+    "version": "0.2.2",
+    "path": "apps/docs/content/docs/releases/tuil-focus-0.2.2.mdx"
+  },
+  "packages/form": {
+    "component": "tuil-form",
+    "version": "0.2.1",
+    "path": "apps/docs/content/docs/releases/tuil-form-0.2.1.mdx"
+  },
+  "packages/ghostty-web": {
+    "component": "tuil-ghostty-web",
+    "version": "1.0.3",
+    "path": "apps/docs/content/docs/releases/tuil-ghostty-web-1.0.3.mdx"
+  },
+  "packages/hotkeys": {
+    "component": "tuil-hotkeys",
+    "version": "1.0.1",
+    "path": "apps/docs/content/docs/releases/tuil-hotkeys-1.0.1.mdx"
+  },
+  "packages/ink": {
+    "component": "tuil-ink",
+    "version": "1.0.3",
+    "path": "apps/docs/content/docs/releases/tuil-ink-1.0.3.mdx"
+  },
+  "packages/log-viewer": {
+    "component": "tuil-log-viewer",
+    "version": "1.0.3",
+    "path": "apps/docs/content/docs/releases/tuil-log-viewer-1.0.3.mdx"
+  },
+  "packages/logging": {
+    "component": "tuil-logging",
+    "version": "1.0.1",
+    "path": "apps/docs/content/docs/releases/tuil-logging-1.0.1.mdx"
+  },
+  "packages/operations": {
+    "component": "tuil-operations",
+    "version": "0.2.1",
+    "path": "apps/docs/content/docs/releases/tuil-operations-0.2.1.mdx"
+  },
+  "packages/plugin": {
+    "component": "tuil-plugin",
+    "version": "1.0.1",
+    "path": "apps/docs/content/docs/releases/tuil-plugin-1.0.1.mdx"
+  },
+  "packages/pointer": {
+    "component": "tuil-pointer",
+    "version": "1.0.3",
+    "path": "apps/docs/content/docs/releases/tuil-pointer-1.0.3.mdx"
+  },
+  "packages/protocol": {
+    "component": "tuil-protocol",
+    "version": "1.0.1",
+    "path": "apps/docs/content/docs/releases/tuil-protocol-1.0.1.mdx"
+  },
+  "packages/registry": {
+    "component": "tuil-registry",
+    "version": "1.0.2",
+    "path": "apps/docs/content/docs/releases/tuil-registry-1.0.2.mdx"
+  },
+  "packages/renderer": {
+    "component": "tuil-renderer",
+    "version": "1.0.3",
+    "path": "apps/docs/content/docs/releases/tuil-renderer-1.0.3.mdx"
+  },
+  "packages/router": {
+    "component": "tuil-router",
+    "version": "0.2.1",
+    "path": "apps/docs/content/docs/releases/tuil-router-0.2.1.mdx"
+  },
+  "packages/scroll": {
+    "component": "tuil-scroll",
+    "version": "1.0.1",
+    "path": "apps/docs/content/docs/releases/tuil-scroll-1.0.1.mdx"
+  },
+  "packages/story": {
+    "component": "tuil-story",
+    "version": "1.0.3",
+    "path": "apps/docs/content/docs/releases/tuil-story-1.0.3.mdx"
+  },
+  "packages/streaming": {
+    "component": "tuil-streaming",
+    "version": "1.0.2",
+    "path": "apps/docs/content/docs/releases/tuil-streaming-1.0.2.mdx"
+  },
+  "packages/testing": {
+    "component": "tuil-testing",
+    "version": "0.2.2",
+    "path": "apps/docs/content/docs/releases/tuil-testing-0.2.2.mdx"
+  },
+  "packages/testing-ink": {
+    "component": "tuil-testing-ink",
+    "version": "1.0.3",
+    "path": "apps/docs/content/docs/releases/tuil-testing-ink-1.0.3.mdx"
+  },
+  "packages/theme": {
+    "component": "tuil-theme",
+    "version": "0.2.2",
+    "path": "apps/docs/content/docs/releases/tuil-theme-0.2.2.mdx"
+  },
+  "packages/tuil": {
+    "component": "tuil",
+    "version": "1.0.3",
+    "path": "apps/docs/content/docs/releases/tuil-1.0.3.mdx"
+  },
+  "packages/virtual": {
+    "component": "tuil-virtual",
+    "version": "0.2.1",
+    "path": "apps/docs/content/docs/releases/tuil-virtual-0.2.1.mdx"
+  },
+  "packages/workflow": {
+    "component": "tuil-workflow",
+    "version": "0.2.1",
+    "path": "apps/docs/content/docs/releases/tuil-workflow-0.2.1.mdx"
+  }
+}

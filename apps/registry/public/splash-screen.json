@@ -16,7 +16,7 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["workflow"],
-  "version": "1.0.1",
+  "version": "1.0.2",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -24,5 +24,5 @@
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-d7bc683d24a159d956654814c9ed3e675737846d5d64621d087185f5b74bf79c"
+  "integrity": "sha256-c9cc2e2556350bf78c34b7075f88e3d933f77efe0daaff9b68d2dac39d0c7423"
 }

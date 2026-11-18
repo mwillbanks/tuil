@@ -16,7 +16,7 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["field"],
-  "version": "1.0.1",
+  "version": "1.0.2",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -24,5 +24,5 @@
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-e5f95219ce39d8bb2b4499c874d16c0a776f4175f8c63c97176d32c3e0d7aaff"
+  "integrity": "sha256-e69de2f1d722eb322f4821317dc2654284fb55bad396537232131ccf22fafabc"
 }

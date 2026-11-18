@@ -31,7 +31,7 @@
     "react"
   ],
   "registryDependencies": [],
-  "version": "1.0.1",
+  "version": "1.0.2",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -39,5 +39,5 @@
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-139c62ddb051d29572039cff4a14840cdf8f0c5e6c010ba5f874eb12eacc5662"
+  "integrity": "sha256-6e13aa44a1947205bd55f619397760690093119e1fabb688ff788920a6030927"
 }

@@ -28,7 +28,7 @@ export const generatedRegistryItems = [
       },
     ],
     registryDependencies: ["box", "text"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -37,7 +37,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-0032c6756ff675529ed5f6b7c778ccb55c1cc7e18b1dd9eeb167c3293883c78c",
+      "sha256-e1c341eb46b6fad30f91db860f29b87729e29cd6462f20427478451b6f5aacc0",
   },
   {
     name: "app-bar",
@@ -64,7 +64,7 @@ export const generatedRegistryItems = [
       },
     ],
     registryDependencies: ["box"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -73,7 +73,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-2405ad1044247a11ce93057f3b2a7a6009d35ab32fd74a94e34f9253351d1ff5",
+      "sha256-1fb9bb66eef718e4276f7070ccb1d386e5a3ab6151a0f42d6fc7945dc1083fc3",
   },
   {
     name: "app-shell",
@@ -101,7 +101,7 @@ export const generatedRegistryItems = [
       },
     ],
     registryDependencies: ["box", "app-bar", "status-bar"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -110,7 +110,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-1b63d6337bd6b5eb7c969060a54d66674ffb68cbfca5dc34bbea92801dc7f965",
+      "sha256-fec70c1f8cb15202be683375bbcf0af3873897cc8fddbfc8c43bde4e882b3c41",
   },
   {
     name: "autocomplete",
@@ -131,7 +131,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -140,7 +140,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-4f58f82deeca08a261645b2ff250c41c8b639552872d305df6367d2e2a3cc2f9",
+      "sha256-d99580ca13bd310d08b61777c84f5a3c7abecfef231d7ebebdfb0400aa6ed5d7",
   },
   {
     name: "badge",
@@ -167,7 +167,7 @@ export const generatedRegistryItems = [
       },
     ],
     registryDependencies: ["text"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -176,7 +176,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-8c15822defa17f86e59146058b06de06770f7cb638cd70f38d82ffddca335654",
+      "sha256-1a0109c6203b2f574b6bb3f795a472e3cf5ff28b22e6183e50f8491a47a43537",
   },
   {
     name: "bar-chart",
@@ -186,7 +186,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["markdown-viewer"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -200,7 +200,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-9f388a8988f3268165a00e31fc83580e19f8f150caeb60fd7f2862d80489a4bb",
+      "sha256-1588047a6fa488a709710316021b9bf5699190e4a856e6e8a96415c1e3c1fc5f",
   },
   {
     name: "box",
@@ -233,7 +233,7 @@ export const generatedRegistryItems = [
       },
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -242,7 +242,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-26e9484561c1257f29a9d0efa531abe255860d9d09a15c75ebbaca8bf46a9540",
+      "sha256-6ba9a774f2a443f7b0600d32535af0007d531a5ef06b10c4a5d493407571370b",
   },
   {
     name: "breadcrumbs",
@@ -263,7 +263,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["tabs"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -272,7 +272,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-c82df0f1ccd9e66e84c3803d06a9081d08139ec69eb34454b2bd815c6e877ef9",
+      "sha256-b3eeebbd25c3c4a5e2c26d3a6ee56e5594064b1f7db5511a6a4048f6ba65b511",
   },
   {
     name: "button",
@@ -308,7 +308,7 @@ export const generatedRegistryItems = [
       },
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -317,7 +317,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-908929df30ce35e3c4017e8091fd3710f883fb26ec49b3e271aa100889e6e2fc",
+      "sha256-c72dc2a53ad6d1d43f7bc4a3c99f2c09c137ae2a74be7e1c084ceb1ccdd952f7",
   },
   {
     name: "checkbox",
@@ -337,7 +337,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -346,7 +346,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-0dddad4230fda69c119eb67c6d4d09f2b1425788881b0282b56a8d1d0960411b",
+      "sha256-b5315551fa06303a980c81417a9ae0f02eed947cb169a81f8db57289851941ed",
   },
   {
     name: "code-editor",
@@ -356,7 +356,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -370,7 +370,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-f31d0ea127b9b767b92a500172682045b646ebb8e30d777f29f082951475fd3d",
+      "sha256-fa1cfc9630f3dc04c81291d1227675093e469c72e5338bec67a4ac03186772d6",
   },
   {
     name: "code-viewer",
@@ -380,7 +380,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["markdown-viewer"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -394,7 +394,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-8e05f3b1fc1632921ee2adab2344aec24f219e46a52932bd5f4dcfefc0fdc443",
+      "sha256-297ce8f5278f812b2e0f1961e34a46a1cb941e12dea47160ecbf7f534d90412c",
   },
   {
     name: "command-line",
@@ -404,7 +404,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -418,7 +418,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-60a45d97427203a1dde00039aa147a8576169340a5e5c84274f779e1bcb45eaa",
+      "sha256-c9d8d8ab0453cd5f2400b2082a7aa4a3adbf418d08c9b82f96bd7e2a6f64f7db",
   },
   {
     name: "command-palette",
@@ -438,7 +438,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["dialog"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -447,7 +447,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-47ca179272036626f534557cf3df18c836e8f64a5b2d746c44877d887ae0f98f",
+      "sha256-e2136d1359a5132fec45ce40a7e31a9ae74800ad317d19ee270cb24d0bb21ef6",
   },
   {
     name: "confirm-dialog",
@@ -468,7 +468,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["dialog"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -477,7 +477,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-eb5bbdb2b56e61e6feaa2072002d0707602858709949e8bbeeecdebaf1f58f0b",
+      "sha256-bdbef52fb754430f0a27c6d4cd08cc12c4c4bb52d2b12838fdb1aa48e9448f58",
   },
   {
     name: "container",
@@ -504,7 +504,7 @@ export const generatedRegistryItems = [
       },
     ],
     registryDependencies: ["box"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -513,7 +513,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-f12d1bb61b4c2e8eb143f539b3f607b4dfa6a5b5d56782076bb4b21865e97e2c",
+      "sha256-f2ac70bab5dccd73f4ceac055d8193ee4d6c1f6415c7416479810d3893c3dbdf",
   },
   {
     name: "data-table",
@@ -543,7 +543,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["table"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -552,7 +552,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-611f03b34ec6570e19d3c56f3fc38d5d89cf8a24ed8773cb62c2c5670225d7df",
+      "sha256-147953c074df8195acdf095bf5597cd797479bd20eb074b04059110f486df18e",
   },
   {
     name: "date-time-input",
@@ -562,7 +562,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -576,7 +576,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-32c0d5bede5d6a91f332950c9767ca5988af5573e719f2963a5ce5cb6119a24d",
+      "sha256-6852d917e1b32974859fae2b6d4f5e20da6c1c044430e2b30b14915da8731401",
   },
   {
     name: "default",
@@ -602,7 +602,7 @@ export const generatedRegistryItems = [
       },
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -611,7 +611,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-37e6b1b4f541f34f01c2d335ffbe7e4866c8b7622ffa41dbc0e4f48898e76966",
+      "sha256-54229eef87f69475da639c4454dfc6df16dcfc5c3a1f25675c713071a02acea0",
   },
   {
     name: "dialog",
@@ -648,7 +648,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: ["button", "text-input"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -657,7 +657,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-81f06fdcf76627f001378a7ae0dba6a1e5651ebc0ae76c1feb8243c90d78255a",
+      "sha256-8e1ed25ccd6d7600b2ec2c1c226513903d98d38f29fbdcf6d37ef39d5e7764c6",
   },
   {
     name: "diff-viewer",
@@ -695,7 +695,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -704,7 +704,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-797d4890968bba3519d4dc3de3a1340abf02bc52b25dee8776fbe0037ef873ac",
+      "sha256-013c93faa355cc3957648f3c76f6294a6b38938b6ead8f07430ad64b53f5c6ab",
   },
   {
     name: "divider",
@@ -731,7 +731,7 @@ export const generatedRegistryItems = [
         source: "registry/data-display/divider.tsx",
       },
     ],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -740,7 +740,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-68869393796ce09d3422e1428ed32e2715a999f1be55c83c1e6fe21ca3086acf",
+      "sha256-903d8704105118a7f2530eb04659a1f1d16e45eace6e2c77ea6cb7f4ef61805d",
   },
   {
     name: "drawer",
@@ -750,7 +750,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["dialog"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -764,7 +764,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-0472ef7b115b455478c80367ea8a8fca7ca898875931c17bdec02a394d129614",
+      "sha256-034c0a37ea99c2ebcc70e32a2825f6f771fef410e354e331afb09b4f3b56449c",
   },
   {
     name: "editable-table-cell",
@@ -774,7 +774,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -788,7 +788,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-4e34928a8a2cc5bde1d05d826d24749864e8f36ec4a1ca27c0c3a062c1667916",
+      "sha256-39f599f464c1bda3f36e7ffec782a3cb3f66840da3a3480eb6c17812a6cbdbba",
   },
   {
     name: "editable-tree-node",
@@ -798,7 +798,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -812,7 +812,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-2673aeb97f816104521f40a23cea3bcafd846e1c6943842c8f46453f095710d9",
+      "sha256-7d823927489f21c2953165a50198462c24f86a63bdb5595af07b3b4cce06d482",
   },
   {
     name: "error-boundary",
@@ -822,7 +822,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["dialog"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -836,7 +836,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-91425e83dfa3fe63b2fa08eceee8e84d7bc47837f720158de57afbde2e40a78a",
+      "sha256-47f39415de0afccefa16cb44f71980e0d1a5958e2fed3eb53473eb2347f64cb8",
   },
   {
     name: "field",
@@ -874,7 +874,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -883,7 +883,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-2aed27f1f73453a78017974b0b9e7698b5c02ed13868fb7a167ce59fc9adff2f",
+      "sha256-0e19b3ad1d7f8fde1af265f6740d719f74be0c04144613583c3818e107dd260e",
   },
   {
     name: "footer",
@@ -893,7 +893,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["split-pane"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -907,7 +907,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-18bee0bbb29c9304b5b37d4c2d229943f2a769f5d18b73d66a8f18e3ee5134c4",
+      "sha256-a92931d1efcde8234f1dc861300b252352422eea42aefb1715352a047b063129",
   },
   {
     name: "form-field-editor",
@@ -917,7 +917,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -931,7 +931,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-7d8c6899f505ce53c7b290873d0c30dafee6c8b0249e48decd070a631b6a34d4",
+      "sha256-94ab12783682b31b7e305501c92ed2d43a083305c060b7afe39e32d45872ee1a",
   },
   {
     name: "header",
@@ -941,7 +941,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["split-pane"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -955,7 +955,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-2de0b7f205a98c2ec2e980fed5ff53027d2ded45996cc815986923f2fa3d3ff4",
+      "sha256-b389a260e8f70e60fea9bda06c34906d0642fc67d41f76b1dee8ea206f21963b",
   },
   {
     name: "heading",
@@ -983,7 +983,7 @@ export const generatedRegistryItems = [
         source: "registry/data-display/heading.tsx",
       },
     ],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -992,7 +992,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-30293afe7161271406a17c41adeba5e922239c0487ae3331f4168c46e0929d0c",
+      "sha256-d41bea54029de3bb5411daeec954b378db913d655d939b4dab4123b4e1c2d0fc",
   },
   {
     name: "help-overlay",
@@ -1013,7 +1013,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["workflow"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1022,7 +1022,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-c7431aa0e301bf80222dd45596b5592262bce58d8f500ad9f29039bd78078792",
+      "sha256-442d566eb4af756804d646e160b7498faca2cf65f5a534fbbfa21c1bf935fe80",
   },
   {
     name: "init-wizard",
@@ -1064,7 +1064,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: ["field", "workflow"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1073,7 +1073,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-ed248f722e646b3d1114dd9a6a960e409d01a97b07db9b02ff7f02de0436b397",
+      "sha256-128fb867bb6d57e91e44e2bba22de5128b6a61db920211f0aa9002275f765514",
   },
   {
     name: "inline-editor",
@@ -1083,7 +1083,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1097,7 +1097,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-5c38aa1c07d3abbbe5a13e31cd905f7ee55905d39c2c882b4ac59568d144fb71",
+      "sha256-7ab5700d6e9bf0fc77d48537d2ccf6242bef6b62ec56ecf81b663824310a6d79",
   },
   {
     name: "json-viewer",
@@ -1134,7 +1134,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1143,7 +1143,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-139c62ddb051d29572039cff4a14840cdf8f0c5e6c010ba5f874eb12eacc5662",
+      "sha256-6e13aa44a1947205bd55f619397760690093119e1fabb688ff788920a6030927",
   },
   {
     name: "log-viewer",
@@ -1182,7 +1182,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "package",
     packageName: "@mwillbanks/tuil-log-viewer",
     compatibility: {
@@ -1192,7 +1192,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-2f820f7327c11f20e1a66eac7b238d298e82efe7361692a14736843e22557786",
+      "sha256-300221e37f0a8c5b6a766709e9fd049c2bc1f079131f75011d90fe7bbf24856f",
   },
   {
     name: "markdown-viewer",
@@ -1220,7 +1220,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1234,7 +1234,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-80bfeaa2d0669983671d449d4ca82892f9df598176f279ad5947cc60b9a44857",
+      "sha256-bfd53cdd682868d06f9ca879fd38689d001606e64b167457b03b23a2d5335c4c",
   },
   {
     name: "menu",
@@ -1254,7 +1254,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["tabs"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1263,7 +1263,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-ec066aa578907e2eaa426ba01a147e625ae59387ca786e869fa74f8bfa7db2e9",
+      "sha256-d65ed0e2546a9cd922852394b38bbe4ff28daf8d7f84c594fa8de63efa2cb6d7",
   },
   {
     name: "menubar",
@@ -1284,7 +1284,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["tabs"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1293,7 +1293,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-31c448070144c15d34eba59b69c71448d62250401382127a8e6a5e8a52b7dc24",
+      "sha256-2ccd12901e6983bd3a10473885c0b7ba1b6f3812a528e9a66693c9f82be9c332",
   },
   {
     name: "multi-select",
@@ -1313,7 +1313,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1322,7 +1322,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-aeb4a421533f9ea599c7a5e97e931e60fbd9eea33d6312dfb7afab13727e48b3",
+      "sha256-ab62f55e7e6e4f317e5df20db70ee427cda0c63691a63148818eb48254ae4156",
   },
   {
     name: "number-input",
@@ -1342,7 +1342,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1351,7 +1351,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-82e30f785270c32ab221a8be1d7a701cd0230c9c2a5d511550b41d8b2ab3f1fc",
+      "sha256-560e4375a6b6b484625a2784386210dfc85acb9c418360fa65a397cefda5c344",
   },
   {
     name: "operation-list",
@@ -1372,7 +1372,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["workflow"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1381,7 +1381,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-8bf016b9f4ff426ff116f83a61a0b289b5f99605ad0ce50fb610bdf169ec9d62",
+      "sha256-cce3bef78c98e62711be78e450d6aef4199c31c2a46fc0d56d98b420aa5a3e9b",
   },
   {
     name: "operation-tree",
@@ -1401,7 +1401,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["workflow"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1410,7 +1410,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-eebdc7ea72bddb2564e0ef907b1d7425e88218588c8f931dac6397f9a0111622",
+      "sha256-c30147bece21235def1c8df52b1d47a9e894471b9d07863d0e0f88ed789f7cf4",
   },
   {
     name: "outline",
@@ -1420,7 +1420,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["tabs"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1434,7 +1434,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-74c97d0ba313c2a8499732bbe90c47a6fb3820f094e121de36a4bc994b92a67a",
+      "sha256-df79b05ac3f69058bebcd53c5c274c73341292366187878a2d6ea62aeaa83d50",
   },
   {
     name: "pagination",
@@ -1444,7 +1444,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["tabs"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1458,7 +1458,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-49bf6501407820cdd88451e6bb31548b5f3f8abdc956ea36d7b8d859bfe67427",
+      "sha256-7b4986db3bfaef677d0705d79532aab1d7c17a45816ee68f3b58a18392f9e340",
   },
   {
     name: "pane-tabs",
@@ -1468,7 +1468,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["split-pane"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1482,7 +1482,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-ca1a624706cd641768eafa3479bd23bd9ee11e4feabbe1248f26769002d3b0c8",
+      "sha256-d9fb188e7b0d1853e49fb838ee4e07dbd75f285456590485078e1f3e4dbe34b3",
   },
   {
     name: "password-input",
@@ -1492,7 +1492,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1506,7 +1506,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-4347379114bcd587bbc87abfaa7b999408d81864be2ccdf2a685bfaadb02cf73",
+      "sha256-40a5fd431b570e2bd706ea272179ae2300910e635cb99a69b895849a6f926226",
   },
   {
     name: "popover",
@@ -1516,7 +1516,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["dialog"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1530,7 +1530,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-872019fed37fb1b531c2b3cd190b8ca76eba3373d2ff0f4a4aef005d714c26f1",
+      "sha256-46456d4f6847b9d9e1f66856bed70d14ab196600a5de3ec78095d9a8d6584d34",
   },
   {
     name: "progress",
@@ -1558,7 +1558,7 @@ export const generatedRegistryItems = [
       },
     ],
     registryDependencies: ["text"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1567,7 +1567,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-4198ffeb970d8b6fd00e4ff5ab8089be67676cd99ca4385c0dfca808674aa9b9",
+      "sha256-107f579d18b94aba3120b124e8aea10dbd1e9752e2e0a39a0730a020482206b8",
   },
   {
     name: "radio-group",
@@ -1588,7 +1588,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1597,7 +1597,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-e5f95219ce39d8bb2b4499c874d16c0a776f4175f8c63c97176d32c3e0d7aaff",
+      "sha256-e69de2f1d722eb322f4821317dc2654284fb55bad396537232131ccf22fafabc",
   },
   {
     name: "resizable-pane",
@@ -1633,7 +1633,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1642,7 +1642,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-318804810faf2dfbc361314b455d2b00168b68ccb3ec320c5a881604eb7d98d8",
+      "sha256-21f293db5032edf2dec4658cab94babde4cabeb0d8cefe541ea900da4e105ff8",
   },
   {
     name: "rich-diff-viewer",
@@ -1652,7 +1652,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["markdown-viewer"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1666,7 +1666,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-4f91d3ccda386218dbc16f7391249a46cf3214f8dc0fb685c57b6b9a722f1590",
+      "sha256-9698ef8a9a442749d5eb33c6074721aa7be555cf52a55df686119aef01080245",
   },
   {
     name: "scroll-area",
@@ -1676,7 +1676,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["split-pane"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1690,7 +1690,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-8ace5f4f8c3c74c3b52a9593617d0f0066839bf11f8ebc5e0c57161f8a8940bb",
+      "sha256-d4e67b8276daa42d8a5f2e9eec5994a1dbb669d5ca890c9b244da6baffcdbd9e",
   },
   {
     name: "search-input",
@@ -1700,7 +1700,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1714,7 +1714,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-4f690f05f9a5719e97d34292bdef31089f6fdbe34fbae662ff0717e1cac1e781",
+      "sha256-031e2fe52fcb1e2f2095410f4e22e276556389a59d2d70f5e6c36117f6f4e84d",
   },
   {
     name: "select",
@@ -1734,7 +1734,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1743,7 +1743,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-11315c76774d4c73a7b0eb66401f5429d019703dbb489878f4a7d7c4bff099e8",
+      "sha256-a833475a00a8aafd6688e6f2b5cb91df5b097f20be28b79563da47a40043989c",
   },
   {
     name: "sidebar",
@@ -1753,7 +1753,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["split-pane"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1767,7 +1767,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-49e127dec07b9857074686c88cc4a8045c1b7b6b20b36625c7befecb9f178f57",
+      "sha256-9eaa1628fa733fe5dabeac6251436d69711893ffb489bdcde16b19f428dccd8e",
   },
   {
     name: "skeleton",
@@ -1777,7 +1777,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["dialog"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1791,7 +1791,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-e0d373a5df16f5a29ab75c9d1fe4400281a8ffaa3b2f7f95583b19f71318074c",
+      "sha256-cd16b8b3870dad61aabfec263fab22b6493f8aaf1a7645aca5771e93be77506a",
   },
   {
     name: "slider",
@@ -1811,7 +1811,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1820,7 +1820,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-57a2b4834942aa74449361565d538eb24928aa62f3eef0e6e559d54ae9b87867",
+      "sha256-bac570c0185c60fe5da038b7db3edd58170b04bab1131d58c73b0b0e73c5f4de",
   },
   {
     name: "spinner",
@@ -1848,7 +1848,7 @@ export const generatedRegistryItems = [
       },
     ],
     registryDependencies: ["text"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1857,7 +1857,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-cb1729c05390f3c4e2da05b2813580e3acc333f550ed93f6b14d2e6075143f2f",
+      "sha256-88eb650413200087cf193d5ea7ffb9d12c7354cecd3bd56f9713f5d20ea38101",
   },
   {
     name: "splash-screen",
@@ -1878,7 +1878,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["workflow"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1887,7 +1887,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-d7bc683d24a159d956654814c9ed3e675737846d5d64621d087185f5b74bf79c",
+      "sha256-c9cc2e2556350bf78c34b7075f88e3d933f77efe0daaff9b68d2dac39d0c7423",
   },
   {
     name: "split-pane",
@@ -1923,7 +1923,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1932,7 +1932,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-7f3e4c0aca5611e9babbe14167433cd65fa432a67e983b66ed10f7d8231eaa4e",
+      "sha256-e6cefb36abb89f9491758e64d0c5ea5addf6aeafd3c4e77efe73c13451d5a0d5",
   },
   {
     name: "stack",
@@ -1959,7 +1959,7 @@ export const generatedRegistryItems = [
       },
     ],
     registryDependencies: ["box"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -1968,7 +1968,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-c02276cc9a92f0b2e8b25582d7f76ad5f6adfefcba97ff6db28e201196208f4d",
+      "sha256-c133f41f4ce71b98b5736888824d1b893f0d571084752fc8b3fa11eb3665c820",
   },
   {
     name: "status-bar",
@@ -1996,7 +1996,7 @@ export const generatedRegistryItems = [
       },
     ],
     registryDependencies: ["box"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2005,7 +2005,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-638c165be9c62ee8b48a9a52dad5ab8b10d9c64a60fc3769546fdf6d82384355",
+      "sha256-c10e7149cffaabaa5e6321ff181eda5e405552ed7813c759350098c339e05bbf",
   },
   {
     name: "stepper",
@@ -2026,7 +2026,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["tabs"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2035,7 +2035,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-b22e4c75da62a683ba3555fc2a803b137499521164aca9871200d86d6409e037",
+      "sha256-53ee11ec362c7d6264f75f9637eaf0e603d99da3c08d2651e64057dd0a1aa151",
   },
   {
     name: "structured-content",
@@ -2045,7 +2045,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["markdown-viewer"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2059,7 +2059,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-f3244b03560d8744e50861c27ff6386a2cb7e4112e3606efe892d406c2ac858e",
+      "sha256-f9b2ae9765cc2cb7db162104d7b6c9a34285898d1844d3a04c3e7652e9caf6a1",
   },
   {
     name: "switch",
@@ -2079,7 +2079,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2088,7 +2088,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-f647bbcb7c7576efcec3c8ac0fccc7a4425f85a0d9c5e8de9684b04b71d4f018",
+      "sha256-b1f855e247c3b233b65d44884fc869c2b348d779026feb58cf2dbeba06cccabb",
   },
   {
     name: "tab-select",
@@ -2098,7 +2098,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["tabs"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2112,7 +2112,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-6b6fc48f0908e2c7bba1cdc9d387bbc06212879c81fd2e940120a335c35043bc",
+      "sha256-4061c887405ca4a284ba3148854ed5f72b3cdb03d1aec915b1c539084e319cac",
   },
   {
     name: "table",
@@ -2159,7 +2159,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2168,7 +2168,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-faab8f49440a690b633f261d200a9a62a8f15f739da5dc942f9fb14cd7c4b26e",
+      "sha256-354db24b863f4667797301e8a52f4e2088199259b04106692bb7e9b0bf6dedca",
   },
   {
     name: "tabs",
@@ -2204,7 +2204,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2213,7 +2213,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-ffd0b94cde9144ebba109b66b430758f2e7a7e7b704e68baf8beb7e7da07a05e",
+      "sha256-73868aa8c21118ac56baf4913c1b5f6e6874fbac26653906780aec1c9301d84b",
   },
   {
     name: "terminal-platform-plugin",
@@ -2233,7 +2233,7 @@ export const generatedRegistryItems = [
       mode: "use",
     },
     files: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "plugin",
     packageName: "@mwillbanks/tuil-plugin",
     compatibility: {
@@ -2243,7 +2243,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-e1dd6f0651cff46c12e45c035dc428f7ec6e51773cfb99f104070a3372935291",
+      "sha256-7bcfdd2679d19667119036f1a2a82184f1359ca3ef645e9cd632676d418f8b16",
   },
   {
     name: "text-area",
@@ -2264,7 +2264,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2273,7 +2273,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-96160578754190b00c6aedccaf7ce38a6b97d5460944e7fa0b9234e14668359d",
+      "sha256-c7ec6edb58ca71e8266954ba9993db656d067e1bb54ad75fd117b93deb0d3ca9",
   },
   {
     name: "text-input",
@@ -2294,7 +2294,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["field"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2303,7 +2303,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-fddcfc9de94cad09b3d86f3d78ab7af5e5adaeb19b845d3e919fcad58a0216ae",
+      "sha256-b26ad990f3bca09102be36384fe0e93ec853e78c4383b39001eafc6035782860",
   },
   {
     name: "text",
@@ -2336,7 +2336,7 @@ export const generatedRegistryItems = [
       },
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2345,7 +2345,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-38900407fddffd25bd47c85b65020e6560b418823f6d636404cdf41313af5c68",
+      "sha256-172ee6dc1d3da117ddde21dd6304e852ecb93975bb855d06307bda02e4a5f537",
   },
   {
     name: "timeline",
@@ -2355,7 +2355,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["markdown-viewer"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2369,7 +2369,7 @@ export const generatedRegistryItems = [
       mode: "replace",
     },
     integrity:
-      "sha256-1eb21b8cc58d9b87995d2b95dadf6f4974b5e7fa21f6229c80803da94a3bcb3b",
+      "sha256-57ed428093addd38b8439e299936bb4cc200debe9407e73e11bbc8bdeb71a095",
   },
   {
     name: "toast",
@@ -2390,7 +2390,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["dialog"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2399,7 +2399,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-79f8d2f5d8ffa625e189f5d5f8efa5e29179191cdad57a01d879c1a2b1df241d",
+      "sha256-5327f1ca5bd28880a5af1e96afbf15e55122de53a58ac0152cfc4c648e5eafab",
   },
   {
     name: "tooltip",
@@ -2420,7 +2420,7 @@ export const generatedRegistryItems = [
     files: [],
     dependencies: [],
     registryDependencies: ["dialog"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2429,7 +2429,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-ef505663c6cb55047b9ed1d7e64716959b10e90086d28a43ce5816c89d379f4e",
+      "sha256-e0361e7716fbdec9baaeb836d8c10f2052f657044f3de9efc31e941aec599610",
   },
   {
     name: "transfer-list",
@@ -2465,7 +2465,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2474,7 +2474,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-b11dc7453628f062cf1b32aced67418f5fb3bbf9e1bfeaa1fc19daa57a37d6dd",
+      "sha256-4bd944a526bc9288ecbcba8ef76e202498a6c8ab70cdbf1ecd7bbebf99e5391b",
   },
   {
     name: "tree",
@@ -2511,7 +2511,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2520,7 +2520,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-7902902fe32c0ef32ee813c372b6cc5e6c6d281edcb758d9bbb140b6cd48d599",
+      "sha256-59b782bfa8d5838052bd44dff249d42769126bc7fdbc228aef62f7bbc1038a2c",
   },
   {
     name: "virtual-list",
@@ -2557,7 +2557,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: [],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2566,7 +2566,7 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-14e62592fd521a8c0af91a3bb11e79d564adb8158c89c4274a0fc9ac10212313",
+      "sha256-c76dc878e30be7bd9293c0190a0f332ad63edffea023c047c62f43c5c867fa54",
   },
   {
     name: "workflow",
@@ -2605,7 +2605,7 @@ export const generatedRegistryItems = [
       "react",
     ],
     registryDependencies: ["button", "dialog", "text-input", "tabs"],
-    version: "1.0.1",
+    version: "1.0.2",
     ownership: "source",
     compatibility: {
       tuil: "^1.0.0",
@@ -2614,6 +2614,6 @@ export const generatedRegistryItems = [
     },
     codemods: [],
     integrity:
-      "sha256-4216dca0458a09248f08a0a93b2e6c0d11df6bedf39e794954ee01ef891f6289",
+      "sha256-b4501d3ae8df6964ea8c1940a348df67b9a1aa550ea91fefffe2912f166d70c9",
   },
 ] as const satisfies readonly RegistryItem[];
