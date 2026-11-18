@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-editor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Renderer-neutral editor contracts and tree-shakeable terminal editor implementations for tuil.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",
