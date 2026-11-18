@@ -16,7 +16,7 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["tabs"],
-  "version": "1.0.1",
+  "version": "1.0.2",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -24,5 +24,5 @@
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-ec066aa578907e2eaa426ba01a147e625ae59387ca786e869fa74f8bfa7db2e9"
+  "integrity": "sha256-d65ed0e2546a9cd922852394b38bbe4ff28daf8d7f84c594fa8de63efa2cb6d7"
 }

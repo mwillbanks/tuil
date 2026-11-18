@@ -31,7 +31,7 @@
     "react"
   ],
   "registryDependencies": ["button", "text-input"],
-  "version": "1.0.1",
+  "version": "1.0.2",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -39,5 +39,5 @@
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-81f06fdcf76627f001378a7ae0dba6a1e5651ebc0ae76c1feb8243c90d78255a"
+  "integrity": "sha256-8e1ed25ccd6d7600b2ec2c1c226513903d98d38f29fbdcf6d37ef39d5e7764c6"
 }

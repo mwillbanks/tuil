@@ -16,7 +16,7 @@
   "files": [],
   "dependencies": [],
   "registryDependencies": ["dialog"],
-  "version": "1.0.1",
+  "version": "1.0.2",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -24,5 +24,5 @@
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-47ca179272036626f534557cf3df18c836e8f64a5b2d746c44877d887ae0f98f"
+  "integrity": "sha256-e2136d1359a5132fec45ce40a7e31a9ae74800ad317d19ee270cb24d0bb21ef6"
 }

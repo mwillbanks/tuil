@@ -37,7 +37,7 @@
     "react"
   ],
   "registryDependencies": ["field", "workflow"],
-  "version": "1.0.1",
+  "version": "1.0.2",
   "ownership": "source",
   "compatibility": {
     "tuil": "^1.0.0",
@@ -45,5 +45,5 @@
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-ed248f722e646b3d1114dd9a6a960e409d01a97b07db9b02ff7f02de0436b397"
+  "integrity": "sha256-128fb867bb6d57e91e44e2bba22de5128b6a61db920211f0aa9002275f765514"
 }

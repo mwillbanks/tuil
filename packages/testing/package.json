@@ -1,6 +1,6 @@
 {
   "name": "@mwillbanks/tuil-testing",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Semantic assertions, screens, and portable story contracts for testing tuil applications.",
   "license": "MIT",
   "homepage": "https://mwillbanks.github.io/tuil/",
