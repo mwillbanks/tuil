@@ -40,7 +40,7 @@ export interface TuilAppOptions<
 | Member | Type | Required | Description | Related types |
 | --- | --- | --- | --- | --- |
 | `id` | `string \| undefined` | No | The `id` member uses the `string \| undefined` contract. | — |
-| `component` | `ComponentType \| RendererApplication` | Yes | The `component` member uses the `ComponentType \| RendererApplication` contract. | — |
+| `component` | `ComponentType \| RendererApplication` | Yes | The `component` member uses the `ComponentType \| RendererApplication` contract. | [`RendererApplication`](/docs/reference/packages/renderer/api/renderer-application) |
 | `theme` | `Theme \| ThemeFactory \| undefined` | No | The `theme` member uses the `Theme \| ThemeFactory \| undefined` contract. | [`Theme`](/docs/reference/packages/tuil/api/theme), [`ThemeFactory`](/docs/reference/packages/tuil/api/theme-factory) |
 | `plugins` | `readonly Plugin<AppEventMap<TEvents>, TExtensions>[] \| undefined` | No | The `plugins` member uses the `readonly Plugin<AppEventMap<TEvents>, TExtensions>[] \| undefined` contract. | [`AppEventMap`](/docs/reference/packages/tuil/api/app-event-map), [`Plugin`](/docs/reference/packages/tuil/api/plugin) |
 | `capabilities` | `readonly PluginCapability[] \| undefined` | No | The `capabilities` member uses the `readonly PluginCapability[] \| undefined` contract. | [`PluginCapability`](/docs/reference/packages/tuil/api/plugin-capability) |
@@ -48,7 +48,7 @@ export interface TuilAppOptions<
 | `events` | `EventDefinitions<TEvents> \| undefined` | No | The `events` member uses the `EventDefinitions<TEvents> \| undefined` contract. | [`EventDefinitions`](/docs/reference/packages/tuil/api/event-definitions) |
 | `errorHandler` | `ErrorHandler \| undefined` | No | The `errorHandler` member uses the `ErrorHandler \| undefined` contract. | [`ErrorHandler`](/docs/reference/packages/tuil/api/error-handler) |
 | `terminal` | `TerminalOptions \| undefined` | No | The `terminal` member uses the `TerminalOptions \| undefined` contract. | [`TerminalOptions`](/docs/reference/packages/tuil/api/terminal-options) |
-| `renderers` | `readonly RendererBackend<unknown>[] \| undefined` | No | Backends available to the application. The selected id must be registered. | — |
+| `renderers` | `readonly RendererBackend<unknown>[] \| undefined` | No | Backends available to the application. The selected id must be registered. | [`RendererBackend`](/docs/reference/packages/renderer/api/renderer-backend) |
 | `renderer` | `string \| undefined` | No | The `renderer` member uses the `string \| undefined` contract. | — |
 
 ## Parameters

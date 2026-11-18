@@ -301,7 +301,7 @@ export class TextBufferSession implements EditorSession {
 | `#type` | `string` | Yes | The `#type` member uses the `string` contract. | — |
 | `#readOnly` | `boolean` | Yes | The `#readOnly` member uses the `boolean` contract. | — |
 | `#masked` | `boolean` | Yes | The `#masked` member uses the `boolean` contract. | — |
-| `#clipboard` | `import("./index").EditorClipboardAdapter \| undefined` | No | The `#clipboard` member uses the `import("./index").EditorClipboardAdapter \| undefined` contract. | — |
+| `#clipboard` | `import("./index").EditorClipboardAdapter \| undefined` | No | The `#clipboard` member uses the `import("./index").EditorClipboardAdapter \| undefined` contract. | [`EditorClipboardAdapter`](/docs/reference/packages/editor/api/editor-clipboard-adapter) |
 | `#onDocumentChange` | `((value: string) => void) \| undefined` | No | The `#onDocumentChange` member uses the `((value: string) => void) \| undefined` contract. | — |
 | `#observers` | `Set<(snapshot: EditorSnapshot) => void>` | Yes | The `#observers` member uses the `Set<(snapshot: EditorSnapshot) => void>` contract. | [`EditorSnapshot`](/docs/reference/packages/editor/api/editor-snapshot) |
 | `#undo` | `HistoryEntry[]` | Yes | The `#undo` member uses the `HistoryEntry[]` contract. | — |

@@ -179,13 +179,31 @@ async function waitForTerminal(page: Page): Promise<void> {
 
 async function waitForShowcasePreview(page: Page): Promise<void> {
   await waitForTerminal(page);
-  await page.waitForFunction(() => {
-    const preview = document.querySelector(".showcase-preview:focus-within");
-    if (!preview) return false;
-    const visibleTop =
-      preview.getBoundingClientRect().top - (visualViewport?.offsetTop ?? 0);
-    return visibleTop >= 0 && visibleTop < 140;
-  });
+  try {
+    await page.waitForFunction(() => {
+      const preview = document.querySelector(".showcase-preview:focus");
+      if (!preview) return false;
+      const visibleTop =
+        preview.getBoundingClientRect().top - (visualViewport?.offsetTop ?? 0);
+      return visibleTop >= 0 && visibleTop < 140;
+    });
+  } catch (cause) {
+    const state = await page
+      .evaluate(() => ({
+        previewTop: document
+          .querySelector(".showcase-preview")
+          ?.getBoundingClientRect().top,
+        activeClass: document.activeElement?.className,
+        visualOffset: visualViewport?.offsetTop,
+        scrollY,
+      }))
+      .catch(() => undefined);
+    throw new Error(
+      "Showcase preview did not receive focus at the top of the viewport: " +
+        JSON.stringify({ viewport: page.viewportSize(), state }),
+      { cause },
+    );
+  }
 }
 
 const docsBasePath = normalizeBasePath(
@@ -332,7 +350,44 @@ try {
     path: resolve(artifactDirectory, "showcase-selected.png"),
     fullPage: false,
   });
+  const selectedStory = new URL(page.url()).searchParams.get("story");
+  assert(selectedStory, "Showcase selection did not write its direct link.");
+  const resetShowcase = page
+    .locator(".showcase-preview")
+    .getByRole("button", { name: "Reset session" });
+  const showcaseTerminal = page.locator(".showcase-preview .ghostty-terminal");
+  await page.keyboard.press("Tab");
+  assert(
+    await resetShowcase.evaluate(
+      (control) => control === document.activeElement,
+    ),
+    "Keyboard focus did not enter the selected showcase controls.",
+  );
+  await page.keyboard.press("Tab");
+  assert(
+    await showcaseTerminal.evaluate(
+      (terminal) => terminal === document.activeElement,
+    ),
+    "Keyboard focus did not reach the selected showcase terminal.",
+  );
+  const originalCanvas = await page
+    .locator(".showcase-preview canvas")
+    .elementHandle();
+  assert(originalCanvas, "The selected showcase terminal did not mount.");
+  await resetShowcase.click();
+  await originalCanvas.waitForElementState("hidden");
+  await waitForTerminal(page);
+  assert(
+    await resetShowcase.evaluate((button) => button === document.activeElement),
+    "Resetting the selected showcase terminal moved focus away from its control.",
+  );
   await captureBrowserCoverage(page);
+  await page.reload({ waitUntil: "networkidle" });
+  await waitForShowcasePreview(page);
+  assert(
+    new URL(page.url()).searchParams.get("story") === selectedStory,
+    "Reload lost the selected showcase story.",
+  );
 
   const storyPage = await context.newPage();
   const requests: string[] = [];

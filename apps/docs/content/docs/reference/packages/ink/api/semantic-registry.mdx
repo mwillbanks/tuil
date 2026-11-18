@@ -71,7 +71,7 @@ export class SemanticRegistry {
 | --- | --- | --- | --- | --- |
 | `#nodes` | `Map<string, SemanticNode>` | Yes | The `#nodes` member uses the `Map<string, SemanticNode>` contract. | [`SemanticNode`](/docs/reference/packages/ink/api/semantic-node) |
 | `#observers` | `Set<() => void>` | Yes | The `#observers` member uses the `Set<() => void>` contract. | — |
-| `#layout` | `LayoutProjection \| undefined` | No | The `#layout` member uses the `LayoutProjection \| undefined` contract. | — |
+| `#layout` | `LayoutProjection \| undefined` | No | The `#layout` member uses the `LayoutProjection \| undefined` contract. | [`LayoutProjection`](/docs/reference/packages/renderer/api/layout-projection) |
 | `__constructor` | `any` | Yes | The `__constructor` member uses the `any` contract. | — |
 | `register` | `(node: SemanticNode) => () => void` | Yes | The `register` member uses the `(node: SemanticNode) => () => void` contract. | [`SemanticNode`](/docs/reference/packages/ink/api/semantic-node) |
 | `update` | `(node: SemanticNode) => void` | Yes | The `update` member uses the `(node: SemanticNode) => void` contract. | [`SemanticNode`](/docs/reference/packages/ink/api/semantic-node) |

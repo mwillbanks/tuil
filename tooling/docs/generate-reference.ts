@@ -969,10 +969,10 @@ function maskLineComment(state: MaskState, index: number): number {
 }
 
 function maskBlockComment(state: MaskState, index: number): number {
+  const closesComment =
+    state.chars[index] === "*" && state.chars[index + 1] === "/";
   hideCharacter(state, index);
-  if (state.chars[index] !== "*" || state.chars[index + 1] !== "/") {
-    return index + 1;
-  }
+  if (!closesComment) return index + 1;
   hideCharacter(state, index + 1);
   state.stack.pop();
   return index + 2;
@@ -1177,7 +1177,7 @@ function starExportSpecifiers(content: string, masked: string): string[] {
   return specifiers;
 }
 
-async function scanPublicExports(
+export async function scanPublicExports(
   content: string,
   file: string,
 ): Promise<{

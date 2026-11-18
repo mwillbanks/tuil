@@ -37,6 +37,7 @@ export function GhosttyStory(props: {
       const instance = await adapter.mountTuilGhostty({
         app,
         element: host.current,
+        autoFocus: false,
         accessibility: {
           label: `${props.frame.storyTitle} ${props.frame.variant} interactive terminal`,
           instructions:

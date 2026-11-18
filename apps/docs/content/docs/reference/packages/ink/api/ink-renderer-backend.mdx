@@ -96,8 +96,8 @@ export class InkRendererBackend implements RendererBackend<InkRendererTree> {
 | `capabilities` | `Set<"static" \| "ink" \| "renderer-application" \| "react-ink-components" \| "pointer" \| "scroll" \| "clipboard" \| "alternate-screen" \| "inline" \| "json" \| "silent" \| "embedded">` | Yes | The `capabilities` member uses the `Set<"static" \| "ink" \| "renderer-application" \| "react-ink-components" \| "pointer" \| "scroll" \| "clipboard" \| "alternate-screen" \| "inline" \| "json" \| "silent" \| "embedded">` contract. | — |
 | `#sequence` | `number` | Yes | The `#sequence` member uses the `number` contract. | — |
 | `__constructor` | `any` | Yes | The `__constructor` member uses the `any` contract. | — |
-| `render` | `(tree: InkRendererTree, context: RendererContext) => RendererFrame` | Yes | The `render` member uses the `(tree: InkRendererTree, context: RendererContext) => RendererFrame` contract. | [`InkRendererTree`](/docs/reference/packages/ink/api/ink-renderer-tree) |
-| `diff` | `(previous: RendererFrame \| undefined, current: RendererFrame) => RendererOutput` | Yes | The `diff` member uses the `(previous: RendererFrame \| undefined, current: RendererFrame) => RendererOutput` contract. | — |
+| `render` | `(tree: InkRendererTree, context: RendererContext) => RendererFrame` | Yes | The `render` member uses the `(tree: InkRendererTree, context: RendererContext) => RendererFrame` contract. | [`InkRendererTree`](/docs/reference/packages/ink/api/ink-renderer-tree), [`RendererContext`](/docs/reference/packages/renderer/api/renderer-context), [`RendererFrame`](/docs/reference/packages/renderer/api/renderer-frame) |
+| `diff` | `(previous: RendererFrame \| undefined, current: RendererFrame) => RendererOutput` | Yes | The `diff` member uses the `(previous: RendererFrame \| undefined, current: RendererFrame) => RendererOutput` contract. | [`RendererFrame`](/docs/reference/packages/renderer/api/renderer-frame), [`RendererOutput`](/docs/reference/packages/renderer/api/renderer-output) |
 
 ## Parameters
 

@@ -2,12 +2,16 @@
   "title": "API",
   "icon": "BracketsCurly",
   "pages": [
+    "create-plugin",
     "default-extension-points",
     "extension-point-map",
     "extension-registry",
     "plugin",
     "plugin-capability",
     "plugin-context",
+    "plugin-health",
+    "plugin-manager",
+    "plugin-registry",
     "plugin-registry-entry",
     "plugin-registry-query"
   ]

@@ -81,6 +81,8 @@ export interface TuilGhosttyAccessibilityOptions {
 export interface TuilGhosttyMountOptions {
   readonly app: TuilRuntime;
   readonly element: HTMLElement;
+  /** Focus the terminal during mounting. Defaults to true. */
+  readonly autoFocus?: boolean;
   readonly terminal?: TuilGhosttyTerminalOptions;
   readonly accessibility?: TuilGhosttyAccessibilityOptions;
 }
@@ -224,8 +226,23 @@ export async function mountTuilGhostty(
     maxOutputBytes = 1_048_576,
     ...terminalOptions
   } = options.terminal ?? {};
-  const terminal = new ghostty.Terminal(terminalOptions);
-  terminal.open(options.element);
+  let opening = true;
+  class MountedTerminal extends ghostty.Terminal {
+    override focus(): void {
+      // Ghostty's open calls focus, which also schedules a delayed focus retry.
+      if (opening) return;
+      super.focus();
+    }
+  }
+  const terminal =
+    options.autoFocus === false
+      ? new MountedTerminal(terminalOptions)
+      : new ghostty.Terminal(terminalOptions);
+  try {
+    terminal.open(options.element);
+  } finally {
+    opening = false;
+  }
   const fitAddon = new ghostty.FitAddon();
   terminal.loadAddon(fitAddon);
   fitAddon.observeResize();

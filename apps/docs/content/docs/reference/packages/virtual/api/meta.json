@@ -2,8 +2,11 @@
   "title": "API",
   "icon": "BracketsCurly",
   "pages": [
+    "fit-terminal-text",
     "get-visible-terminal-indexes",
+    "terminal-virtualizer-adapter",
     "terminal-virtualizer-options",
-    "terminal-virtual-range"
+    "terminal-virtual-range",
+    "use-terminal-virtualizer"
   ]
 }
