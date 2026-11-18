@@ -87,11 +87,6 @@ interface ShowcaseBrowser {
   readonly history: {
     replaceState(data: null, unused: string, url: string): void;
   };
-  readonly scrollY: number;
-  readonly document: {
-    readonly scrollingElement: { scrollTop: number } | null;
-  };
-  scrollTo(options: { readonly top: number; readonly behavior: "auto" }): void;
 }
 
 function showcaseBrowser(): ShowcaseBrowser {
@@ -167,29 +162,17 @@ function filterShowcaseFrames(
   );
 }
 
-function scrollSelectedPreview(
-  browser: ShowcaseBrowser,
-  preview: HTMLElement | null,
-): void {
+function scrollSelectedPreview(preview: HTMLElement | null): void {
   if (!preview) return;
   const target = preview as unknown as {
-    focus(): void;
+    focus(options: { readonly preventScroll: boolean }): void;
     scrollIntoView(options: {
-      readonly behavior: "auto";
+      readonly behavior: "instant";
       readonly block: "start";
     }): void;
-    getBoundingClientRect(): { readonly top: number };
   };
-  target.focus();
-  target.scrollIntoView({ behavior: "auto", block: "start" });
-  const top = Math.max(
-    0,
-    browser.scrollY + target.getBoundingClientRect().top - 72,
-  );
-  browser.scrollTo({ top, behavior: "auto" });
-  if (browser.document.scrollingElement) {
-    browser.document.scrollingElement.scrollTop = top;
-  }
+  target.focus({ preventScroll: true });
+  target.scrollIntoView({ behavior: "instant", block: "start" });
 }
 
 function ShowcaseFilters(props: {
@@ -454,8 +437,8 @@ export function ShowcaseGallery(props: {
 
   useEffect(() => {
     if (!selectedId || !selected) return;
-    scrollSelectedPreview(browser, selectedPreviewRef.current);
-  }, [browser, selected, selectedId]);
+    scrollSelectedPreview(selectedPreviewRef.current);
+  }, [selected, selectedId]);
 
   return (
     <div className="showcase-gallery">

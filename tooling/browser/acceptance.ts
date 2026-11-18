@@ -185,8 +185,10 @@ const showcase = staticServer(
       : "apps/showcase/dist/browser",
   ),
 );
-const browser = await chromium.launch({ headless: true });
+let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
+let acceptanceFailed = false;
 try {
+  browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
     permissions: ["clipboard-read", "clipboard-write"],
@@ -305,10 +307,12 @@ try {
     await showcasePreview.isVisible(),
     "Selecting a showcase card did not render the selected preview.",
   );
-  await page.waitForTimeout(1_000);
+  await page.locator(".showcase-preview:focus").waitFor();
   const showcasePreviewBox = await showcasePreview.boundingBox();
   assert(
-    showcasePreviewBox !== null && showcasePreviewBox.y < 140,
+    showcasePreviewBox !== null &&
+      showcasePreviewBox.y >= 0 &&
+      showcasePreviewBox.y < 140,
     `Selecting a showcase card did not scroll to its preview: ${JSON.stringify(showcasePreviewBox)}`,
   );
   assert(
@@ -522,11 +526,28 @@ try {
   await captureBrowserCoverage(failurePage);
   await failureContext.close();
   await context.close();
-} finally {
   await writeBrowserCoverage();
-  await browser.close();
-  docs.stop(true);
-  showcase.stop(true);
+} catch (error) {
+  acceptanceFailed = true;
+  throw error;
+} finally {
+  const cleanupErrors: unknown[] = [];
+  for (const cleanup of [
+    () => browser?.close(),
+    () => docs.stop(true),
+    () => showcase.stop(true),
+  ]) {
+    try {
+      await cleanup();
+    } catch (error) {
+      cleanupErrors.push(error);
+    }
+  }
+  if (!acceptanceFailed && cleanupErrors.length > 0)
+    throw new AggregateError(
+      cleanupErrors,
+      "Browser acceptance cleanup failed",
+    );
 }
 
 console.log(`Browser acceptance passed. Artifacts: ${artifactDirectory}`);
