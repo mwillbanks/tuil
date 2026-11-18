@@ -96,15 +96,15 @@ async function createWorkspace(): Promise<string> {
 }
 
 test("selects changed workspaces, dependents, and required dependencies", () => {
-  expect([
-    ...selectImpactedWorkspaces(manifests, ["packages/feature/src/index.ts"]),
-  ]).toEqual(["feature", "application", "core"]);
+  expect(
+    selectImpactedWorkspaces(manifests, ["packages/feature/src/index.ts"]),
+  ).toEqual(new Set(["feature", "application", "core"]));
 });
 
 test("does not build unrelated workspaces", () => {
-  expect([
-    ...selectImpactedWorkspaces(manifests, ["packages/unrelated/src/index.ts"]),
-  ]).toEqual(["unrelated"]);
+  expect(
+    selectImpactedWorkspaces(manifests, ["packages/unrelated/src/index.ts"]),
+  ).toEqual(new Set(["unrelated"]));
 });
 
 test("selects explicit full builds and special shared inputs", () => {
@@ -133,67 +133,57 @@ test("selects explicit full builds and special shared inputs", () => {
   expect([
     ...selectImpactedWorkspaces(specialManifests, [], true),
   ]).toHaveLength(specialManifests.length);
-  expect([
-    ...selectImpactedWorkspaces(specialManifests, ["skills/example.md"]),
-  ]).toEqual(["@mwillbanks/tuil", "@mwillbanks/tuil-cli"]);
-  expect([
-    ...selectImpactedWorkspaces(specialManifests, ["examples/_shared.tsx"]),
-  ]).toEqual(["example"]);
-  expect([
-    ...selectImpactedWorkspaces(specialManifests, ["examples/assets/demo.txt"]),
-  ]).toEqual(["example"]);
-  expect([
-    ...selectImpactedWorkspaces(specialManifests, ["registry/button.tsx"]),
-  ]).toEqual(["@mwillbanks/tuil-cli"]);
-  expect([
-    ...selectImpactedWorkspaces(specialManifests, [
-      "tooling/registry/build.ts",
-    ]),
-  ]).toEqual(["@mwillbanks/tuil-cli"]);
+  expect(
+    selectImpactedWorkspaces(specialManifests, ["skills/example.md"]),
+  ).toEqual(new Set(["@mwillbanks/tuil", "@mwillbanks/tuil-cli"]));
+  expect(
+    selectImpactedWorkspaces(specialManifests, ["examples/_shared.tsx"]),
+  ).toEqual(new Set(["example"]));
+  expect(
+    selectImpactedWorkspaces(specialManifests, ["examples/assets/demo.txt"]),
+  ).toEqual(new Set(["example"]));
+  expect(
+    selectImpactedWorkspaces(specialManifests, ["registry/button.tsx"]),
+  ).toEqual(new Set(["@mwillbanks/tuil-cli"]));
+  expect(
+    selectImpactedWorkspaces(specialManifests, ["tooling/registry/build.ts"]),
+  ).toEqual(new Set(["@mwillbanks/tuil-cli"]));
 });
 
 test("builds every workspace for shared build infrastructure changes", () => {
-  expect([
-    ...selectImpactedWorkspaces(manifests, ["tooling/build/package.ts"]),
-  ]).toEqual(["core", "feature", "application", "unrelated"]);
+  expect(
+    selectImpactedWorkspaces(manifests, ["tooling/build/package.ts"]),
+  ).toEqual(new Set(["core", "feature", "application", "unrelated"]));
 });
 
 test("builds every remaining workspace when a workspace manifest is deleted", () => {
-  expect([
-    ...selectImpactedWorkspaces(manifests, ["packages/removed/package.json"]),
-  ]).toEqual(["core", "feature", "application", "unrelated"]);
+  expect(
+    selectImpactedWorkspaces(manifests, ["packages/removed/package.json"]),
+  ).toEqual(new Set(["core", "feature", "application", "unrelated"]));
 });
 
 test("rejects a missing explicit base instead of using the environment", async () => {
-  const environmentBase = process.env["TUIL_BUILD_BASE"];
-  process.env["TUIL_BUILD_BASE"] = "HEAD";
-  try {
-    for (const args of [
-      ["--all", "--base"],
-      ["--base", "--all"],
-    ]) {
-      await expect(
-        resolveBuildScope(
-          resolve(
-            decodeURIComponent(
-              new URL("../../../../tooling/build/", import.meta.url).pathname,
-            ),
-            "../..",
-          ),
-          args,
-        ),
-      ).rejects.toThrow("--base requires a Git reference");
-    }
-  } finally {
-    if (environmentBase === undefined) delete process.env["TUIL_BUILD_BASE"];
-    else process.env["TUIL_BUILD_BASE"] = environmentBase;
+  for (const args of [
+    ["--all", "--base"],
+    ["--base", "--all"],
+  ]) {
+    await expect(
+      resolveBuildScope(resolve(import.meta.dir, "../../../.."), args, {
+        TUIL_BUILD_BASE: "HEAD",
+        TUIL_BUILD_ALL: "true",
+      }),
+    ).rejects.toThrow("--base requires a Git reference");
   }
 });
 
 test("discovers manifests and resolves tracked and untracked changes", async () => {
   const workspace = await createWorkspace();
   try {
-    const all = await resolveBuildScope(workspace, ["--all", "--base", "HEAD"]);
+    const all = await resolveBuildScope(
+      workspace,
+      ["--all", "--base", "HEAD"],
+      {},
+    );
     expect(all).toMatchObject({
       all: true,
       base: "HEAD",
@@ -206,53 +196,144 @@ test("discovers manifests and resolves tracked and untracked changes", async () 
       join(workspace, "packages/core/untracked.ts"),
       "untracked\n",
     );
-    const changed = await resolveBuildScope(workspace, ["--base", "HEAD"]);
+    const changed = await resolveBuildScope(workspace, ["--base", "HEAD"], {});
     expect(changed.buildRegistry).toBeFalse();
-    expect([...changed.workspaceNames]).toEqual(["core", "feature", "demo"]);
+    expect(changed.workspaceNames).toEqual(
+      new Set(["core", "feature", "demo"]),
+    );
 
     await mkdir(join(workspace, "registry"));
     await writeFile(join(workspace, "registry/button.tsx"), "untracked\n");
-    const registryChanged = await resolveBuildScope(workspace, [
-      "--base",
-      "HEAD",
-    ]);
+    const registryChanged = await resolveBuildScope(
+      workspace,
+      ["--base", "HEAD"],
+      {},
+    );
     expect(registryChanged.buildRegistry).toBeTrue();
-    expect([...registryChanged.workspaceNames]).toEqual([
-      "core",
-      "@mwillbanks/tuil-cli",
-      "feature",
-      "demo",
-    ]);
+    expect(registryChanged.workspaceNames).toEqual(
+      new Set(["core", "@mwillbanks/tuil-cli", "feature", "demo"]),
+    );
 
     await rm(join(workspace, "registry/button.tsx"));
     await writeFile(join(workspace, "package.json"), '{"private":false}\n');
-    const packageChanged = await resolveBuildScope(workspace, [
-      "--base",
-      "HEAD",
-    ]);
+    const packageChanged = await resolveBuildScope(
+      workspace,
+      ["--base", "HEAD"],
+      {},
+    );
     expect(packageChanged.buildRegistry).toBeTrue();
-    expect([...packageChanged.workspaceNames]).toEqual([
-      "core",
-      "feature",
-      "demo",
-    ]);
+    expect(packageChanged.workspaceNames).toEqual(
+      new Set(["core", "feature", "demo"]),
+    );
 
     await writeFile(join(workspace, "package.json"), '{"private":true}\n');
     await writeFile(join(workspace, "bun.lock"), "changed\n");
-    const lockfileChanged = await resolveBuildScope(workspace, [
-      "--base",
-      "HEAD",
-    ]);
+    const lockfileChanged = await resolveBuildScope(
+      workspace,
+      ["--base", "HEAD"],
+      {},
+    );
     expect(lockfileChanged.buildRegistry).toBeTrue();
-    expect([...lockfileChanged.workspaceNames]).toEqual([
-      "core",
-      "feature",
-      "demo",
-    ]);
+    expect(lockfileChanged.workspaceNames).toEqual(
+      new Set(["core", "feature", "demo"]),
+    );
 
     await expect(
-      resolveBuildScope(workspace, ["--base", "missing-reference"]),
+      resolveBuildScope(workspace, ["--base", "missing-reference"], {}),
     ).rejects.toThrow("Failed to resolve changed workspaces");
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test("full discovery orders directories ordinally within package, app, and example roots", async () => {
+  const workspace = await createWorkspace();
+  try {
+    for (const [directory, name] of [
+      ["packages/zeta", "zeta"],
+      ["packages/alpha", "alpha"],
+      ["apps/buildable", "app"],
+    ] as const) {
+      await mkdir(join(workspace, directory), { recursive: true });
+      await writeFile(
+        join(workspace, directory, "package.json"),
+        JSON.stringify({ name, scripts: { build: "build" } }),
+      );
+    }
+    const all = await resolveBuildScope(workspace, ["--all"], {});
+    expect([...all.workspaceNames]).toEqual([
+      "alpha",
+      "core",
+      "feature",
+      "zeta",
+      "app",
+      "demo",
+    ]);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test("explicit environments control full builds and base selection without mutating process state", async () => {
+  const workspace = await createWorkspace();
+  try {
+    const unchanged = await resolveBuildScope(workspace, [], {
+      TUIL_BUILD_BASE: "HEAD",
+    });
+    expect(unchanged).toMatchObject({
+      all: false,
+      base: "HEAD",
+      buildRegistry: false,
+    });
+    expect(unchanged.workspaceNames.size).toBe(0);
+    const all = await resolveBuildScope(workspace, [], {
+      TUIL_BUILD_ALL: "true",
+      TUIL_BUILD_BASE: "environment-base",
+    });
+    expect(all).toMatchObject({
+      all: true,
+      base: "environment-base",
+      buildRegistry: true,
+    });
+    expect([...all.workspaceNames]).toEqual(["core", "feature", "demo"]);
+    const argumentBase = await resolveBuildScope(
+      workspace,
+      ["--base", "HEAD"],
+      { TUIL_BUILD_BASE: "missing-reference" },
+    );
+    expect(argumentBase.base).toBe("HEAD");
+    expect(argumentBase.workspaceNames.size).toBe(0);
+    await expect(
+      resolveBuildScope(workspace, [], {
+        TUIL_BUILD_BASE: "missing-reference",
+      }),
+    ).rejects.toThrow("Failed to resolve changed workspaces");
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test("tracked and untracked Unicode and whitespace filenames retain their workspace identity", async () => {
+  const workspace = await createWorkspace();
+  try {
+    const path = join(workspace, "packages/core/café\nwith space.ts");
+    await writeFile(path, "initial\n");
+    const untracked = await resolveBuildScope(
+      workspace,
+      ["--base", "HEAD"],
+      {},
+    );
+    expect(untracked.workspaceNames).toEqual(
+      new Set(["core", "feature", "demo"]),
+    );
+    await runGit(workspace, "add", ".");
+    await runGit(workspace, "commit", "--quiet", "-m", "unicode");
+    await writeFile(path, "changed\n");
+    const tracked = await resolveBuildScope(workspace, ["--base", "HEAD"], {});
+    expect(tracked.workspaceNames).toEqual(
+      new Set(["core", "feature", "demo"]),
+    );
+    expect(tracked.buildRegistry).toBeFalse();
   } finally {
     await rm(workspace, { recursive: true, force: true });
   }
