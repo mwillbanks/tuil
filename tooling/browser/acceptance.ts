@@ -186,8 +186,14 @@ async function resetLiveTerminal(
   const originalCanvas = await canvas.elementHandle();
   assert(originalCanvas, "No terminal canvas was mounted before reset.");
   await control.click();
-  await originalCanvas.waitForElementState("hidden");
+  await page.waitForFunction((element) => !element.isConnected, originalCanvas);
+  await originalCanvas.dispose();
   await waitForTerminal(page);
+  const liveCanvases = await canvas.count();
+  assert(
+    liveCanvases === 1,
+    "Reset left " + liveCanvases + " live terminal canvases.",
+  );
 }
 
 async function waitForShowcasePreview(page: Page): Promise<void> {
@@ -318,11 +324,6 @@ try {
       .locator(".visual-preview")
       .getByRole("button", { name: "Reset session" }),
     page.locator(".visual-preview .ghostty-terminal canvas"),
-  );
-  assert(
-    (await page.locator(".visual-preview .ghostty-terminal canvas").count()) ===
-      1,
-    "Reset leaked a terminal canvas.",
   );
   const semanticCompanions = await page
     .locator(".visual-preview [data-tuil-semantic-companion]")
@@ -460,10 +461,6 @@ try {
     storyPage,
     storyPage.getByRole("button", { name: "Reset session" }),
     storyPage.locator("canvas"),
-  );
-  assert(
-    (await storyPage.locator("canvas").count()) === 1,
-    "Showcase reset leaked a terminal canvas.",
   );
   await captureBrowserCoverage(storyPage);
 
