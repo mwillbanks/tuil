@@ -5,9 +5,9 @@ import { join, resolve } from "node:path";
 
 const workspace = resolve(import.meta.dir, "../..");
 
-for (const failure of ["launch", "context"] as const) {
+for (const failure of ["showcase", "launch", "context"] as const) {
   test(
-    "browser " +
+    "browser acceptance " +
       failure +
       " failure survives cleanup errors and does not publish coverage",
     async () => {
@@ -21,6 +21,7 @@ const cleanup = [];
 let servers = 0;
 Bun.serve = () => {
   const name = servers++ === 0 ? "docs" : "showcase";
+  if (name === "showcase" && failure === name) throw primary;
   return {
     port: 1234,
     stop() {
@@ -75,9 +76,11 @@ try {
           sameError: true,
           message: "Primary " + failure + " failure",
           cleanup:
-            failure === "launch"
-              ? ["docs", "showcase"]
-              : ["browser", "docs", "showcase"],
+            failure === "showcase"
+              ? ["docs"]
+              : failure === "launch"
+                ? ["docs", "showcase"]
+                : ["browser", "docs", "showcase"],
         });
         expect(await Bun.file(report).exists()).toBeFalse();
       } finally {

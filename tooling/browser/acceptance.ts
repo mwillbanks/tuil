@@ -176,18 +176,20 @@ async function waitForTerminal(page: Page): Promise<void> {
 const docsBasePath = normalizeBasePath(
   Bun.env["TUIL_DOCS_BASE_PATH"] ?? "/tuil",
 );
-const docs = staticServer(resolve(workspace, "apps/docs/out"), docsBasePath);
-const showcase = staticServer(
-  resolve(
-    workspace,
-    coverageEnabled
-      ? "apps/showcase/dist/browser-coverage"
-      : "apps/showcase/dist/browser",
-  ),
-);
+let docs: ReturnType<typeof staticServer> | undefined;
+let showcase: ReturnType<typeof staticServer> | undefined;
 let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
-let acceptanceFailed = false;
+let acceptanceFailure: { readonly error: unknown } | undefined;
 try {
+  docs = staticServer(resolve(workspace, "apps/docs/out"), docsBasePath);
+  showcase = staticServer(
+    resolve(
+      workspace,
+      coverageEnabled
+        ? "apps/showcase/dist/browser-coverage"
+        : "apps/showcase/dist/browser",
+    ),
+  );
   browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
@@ -528,26 +530,23 @@ try {
   await context.close();
   await writeBrowserCoverage();
 } catch (error) {
-  acceptanceFailed = true;
-  throw error;
-} finally {
-  const cleanupErrors: unknown[] = [];
-  for (const cleanup of [
-    () => browser?.close(),
-    () => docs.stop(true),
-    () => showcase.stop(true),
-  ]) {
-    try {
-      await cleanup();
-    } catch (error) {
-      cleanupErrors.push(error);
-    }
-  }
-  if (!acceptanceFailed && cleanupErrors.length > 0)
-    throw new AggregateError(
-      cleanupErrors,
-      "Browser acceptance cleanup failed",
-    );
+  acceptanceFailure = { error };
 }
+
+const cleanupErrors: unknown[] = [];
+for (const cleanup of [
+  () => browser?.close(),
+  () => docs?.stop(true),
+  () => showcase?.stop(true),
+]) {
+  try {
+    await cleanup();
+  } catch (error) {
+    cleanupErrors.push(error);
+  }
+}
+if (acceptanceFailure) throw acceptanceFailure.error;
+if (cleanupErrors.length > 0)
+  throw new AggregateError(cleanupErrors, "Browser acceptance cleanup failed");
 
 console.log(`Browser acceptance passed. Artifacts: ${artifactDirectory}`);
