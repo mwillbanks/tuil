@@ -67,8 +67,7 @@ export class ServiceContainer implements Disposable {
             definition: {
               create: definitionOrId.create,
               dispose: definitionOrId.dispose as
-                | ((created: unknown) => void | Promise<void>)
-                | undefined,
+                ((created: unknown) => void | Promise<void>) | undefined,
             },
             status: "registered",
           },

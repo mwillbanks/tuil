@@ -4,7 +4,6 @@ import {
   parseRegistryItem,
   registryIntegrity,
 } from "../../packages/registry/src/index.ts";
-import { registryExportName } from "./names.ts";
 
 interface RegistryManifest {
   name: string;
@@ -167,6 +166,7 @@ const metadata: Record<
     target: "src/components/tuil/forms/controls.tsx",
     dependencies: [
       "@mwillbanks/tuil",
+      "@mwillbanks/tuil-editor",
       "@mwillbanks/tuil-form",
       "@mwillbanks/tuil-focus",
       "@mwillbanks/tuil-ink",
@@ -391,6 +391,7 @@ const metadata: Record<
     target: "src/components/tuil/workflows/workflow.tsx",
     dependencies: [
       "@mwillbanks/tuil",
+      "@mwillbanks/tuil-focus",
       "@mwillbanks/tuil-hotkeys",
       "@mwillbanks/tuil-ink",
       "@mwillbanks/tuil-operations",
@@ -447,7 +448,15 @@ const metadata: Record<
   },
   tree: {
     target: "src/components/tuil/data-display/tree.tsx",
-    dependencies: ["@mwillbanks/tuil", "@mwillbanks/tuil-ink", "react"],
+    dependencies: [
+      "@mwillbanks/tuil",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
+      "@mwillbanks/tuil-theme",
+      "@mwillbanks/tuil-virtual",
+      "ink",
+      "react",
+    ],
   },
   "log-viewer": {
     target: "src/components/tuil/data-display/log-viewer.tsx",
@@ -536,8 +545,12 @@ const metadata: Record<
   "markdown-viewer": {
     target: "src/components/tuil/data-display/rich-content.tsx",
     dependencies: [
+      "@mwillbanks/tuil",
       "@mwillbanks/tuil-code",
       "@mwillbanks/tuil-content",
+      "@mwillbanks/tuil-core",
+      "@mwillbanks/tuil-focus",
+      "@mwillbanks/tuil-ink",
       "@mwillbanks/tuil-streaming",
       "ink",
       "react",
@@ -785,53 +798,6 @@ const acceptanceEntries = new Map(
   componentAcceptanceInventory.map((entry) => [entry.name, entry]),
 );
 
-const acceptanceStoryPath = resolve(
-  import.meta.dir,
-  "../../apps/showcase/src/component-acceptance.stories.tsx",
-);
-const acceptanceStories = `import type { Meta, StoryObj } from "@storybook/react";
-import {
-  createShowcaseStorybookAdapter,
-  showcaseStory,
-} from "./storybook-adapter.ts";
-
-const browserStorySet = {
-  id: "component-acceptance",
-  title: "Components/Acceptance",
-  stories: {
-${generatedItems
-  .map(
-    (item) =>
-      `    ${JSON.stringify(registryExportName(item.name))}: { args: { name: ${JSON.stringify(item.name)} } },`,
-  )
-  .join("\n")}
-  },
-} as const;
-
-const adapter = createShowcaseStorybookAdapter(browserStorySet);
-
-const meta = {
-  title: "Components/Acceptance",
-  argTypes: adapter.meta.argTypes,
-} satisfies Meta<Record<string, unknown>>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-${generatedItems
-  .map(
-    (item) =>
-      `export const ${registryExportName(item.name)}: Story = showcaseStory(
-  adapter,
-  ${JSON.stringify(registryExportName(item.name))},
-  "component acceptance",
-);`,
-  )
-  .join("\n\n")}
-`;
-await Bun.write(acceptanceStoryPath, acceptanceStories);
-generatedPaths.push(acceptanceStoryPath);
-
 const acceptanceDocsPath = resolve(
   import.meta.dir,
   "../../apps/docs/content/docs/reference/components/acceptance-catalog.mdx",
@@ -844,7 +810,7 @@ icon: BookOpenText
 
 # Component acceptance catalog
 
-Every public registry item below is backed by its own Storybook export and executable terminal fixture. The acceptance suite validates real component semantics, live theme updates, and committed deterministic output for every entry, plus callback state, keyboard input, focus, and measured pointer routing for each component that exposes those capabilities.
+Every public registry item below is backed by its portable showcase story and executable terminal fixture. The acceptance suite validates real component semantics, live theme updates, and committed deterministic output for every entry, plus callback state, keyboard input, focus, and measured pointer routing for each component that exposes those capabilities.
 
 ${generatedItems
   .map((item) => {
@@ -893,7 +859,6 @@ const selfHostedSources = [
   "registry/workflows/workflow.tsx",
 ] as const;
 for (const sourcePath of selfHostedSources) {
-  generatedPaths.push(resolve(repositoryRoot, sourcePath));
   const generatedPath = resolve(
     repositoryRoot,
     "packages/cli/src/generated-ui",
@@ -908,7 +873,12 @@ for (const sourcePath of selfHostedSources) {
 }
 
 const formatter = Bun.spawn(
-  [process.execPath, "biome", "format", "--write", ...generatedPaths],
+  [
+    process.execPath,
+    "--config=tooling/registry/bunfig.toml",
+    "fmt",
+    ...generatedPaths,
+  ],
   {
     cwd: repositoryRoot,
     stdout: "pipe",

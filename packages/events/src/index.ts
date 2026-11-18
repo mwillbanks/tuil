@@ -1,9 +1,6 @@
 export type EventMap = Record<string, unknown>;
 export type EventPriority =
-  | "immediate"
-  | "interaction"
-  | "normal"
-  | "background";
+  "immediate" | "interaction" | "normal" | "background";
 export type EventPhase = "capture" | "target" | "bubble" | "direct";
 
 export interface EventSource {
@@ -93,9 +90,10 @@ interface Subscription {
   dispose?: () => void;
 }
 
-class MutableTuilEvent<TType extends string, TPayload>
-  implements TuilEvent<TType, TPayload>
-{
+class MutableTuilEvent<TType extends string, TPayload> implements TuilEvent<
+  TType,
+  TPayload
+> {
   phase: EventPhase = "direct";
   currentTarget?: string;
   defaultPrevented = false;

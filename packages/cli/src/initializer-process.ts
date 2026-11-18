@@ -52,7 +52,7 @@ export async function runInitializerSetup(
       ...options,
       failureMessage: "Dependency installation failed",
     });
-    await runInitializerProcess(["bun", "run", "typecheck"], {
+    await runInitializerProcess(["bun", "check", "--no-script"], {
       ...options,
       failureMessage: "Generated project validation failed",
     });

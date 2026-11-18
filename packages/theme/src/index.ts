@@ -310,8 +310,7 @@ export type SlotPropFactory<TProps extends object, TState> = (
 ) => Partial<TProps>;
 export type SlotProps<TSlots extends SlotMap, TState = object> = {
   [TSlot in keyof TSlots]:
-    | Partial<TSlots[TSlot]>
-    | SlotPropFactory<TSlots[TSlot], TState>;
+    Partial<TSlots[TSlot]> | SlotPropFactory<TSlots[TSlot], TState>;
 };
 export interface SlottedComponentProps<
   TSlots extends SlotMap,

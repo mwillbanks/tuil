@@ -8,6 +8,8 @@ Events are declared before emission. This keeps plugin and application event
 maps type-safe and gives observers a single redaction boundary.
 
 ```tsx
+import { defineEvents, event } from "@mwillbanks/tuil-events";
+
 const events = defineEvents({
   "task:started": event<{ taskId: string }>(),
   "credential:used": event<{ token: string }>({
@@ -18,15 +20,15 @@ const events = defineEvents({
 
 ## Core application events
 
-| Event | Meaning |
-| --- | --- |
-| `app:configure` | The application boundary and definitions exist. |
-| `app:initialize` | Services and plugins are initializing. |
-| `app:mount` | The renderer is attaching. |
-| `app:ready` | The application accepts normal interaction. |
-| `app:error` | A runtime phase reported an error. |
-| `app:stop` | Teardown has started. |
-| `app:dispose` | Owned resources are disposed. |
+| Event            | Meaning                                         |
+| ---------------- | ----------------------------------------------- |
+| `app:configure`  | The application boundary and definitions exist. |
+| `app:initialize` | Services and plugins are initializing.          |
+| `app:mount`      | The renderer is attaching.                      |
+| `app:ready`      | The application accepts normal interaction.     |
+| `app:error`      | A runtime phase reported an error.              |
+| `app:stop`       | Teardown has started.                           |
+| `app:dispose`    | Owned resources are disposed.                   |
 
 ## Dispatch flow
 

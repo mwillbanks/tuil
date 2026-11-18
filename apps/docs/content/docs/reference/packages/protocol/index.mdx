@@ -56,7 +56,7 @@ runtime that disposes them in reverse order.
 import { InProcessProtocolTransport, redactProtocolValue } from "@mwillbanks/tuil-protocol";
 
 const transport = new InProcessProtocolTransport();
-const safeSnapshot = redactProtocolValue(runtimeSnapshot);
+const safeSnapshot = redactProtocolValue({ token: "private", state: "ready" });
 ```
 
 ## Related

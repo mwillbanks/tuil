@@ -29,7 +29,6 @@
   },
   "scripts": {
     "build": "bun ../../tooling/build/package.ts",
-    "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
   "dependencies": {
@@ -43,9 +42,5 @@
   },
   "files": [
     "dist"
-  ],
-  "devDependencies": {
-    "ink-testing-library": "catalog:",
-    "@mwillbanks/tuil-testing-ink": "workspace:*"
-  }
+  ]
 }

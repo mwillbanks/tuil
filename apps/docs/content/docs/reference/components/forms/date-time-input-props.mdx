@@ -9,8 +9,10 @@ icon: BracketsCurly
 ## Type
 
 ```ts
-export interface DateTimeInputProps
-  extends Omit<TextInputProps, "onValueChange"> {
+export interface DateTimeInputProps extends Omit<
+  TextInputProps,
+  "onValueChange"
+> {
   readonly onValueChange?: (
     value: string,
     date: Date | undefined,
@@ -57,6 +59,7 @@ export interface DateTimeInputProps
 | `onArrowUp` | `(() => void \| Promise<void>) \| undefined` | No | The `onArrowUp` member uses the `(() => void \| Promise<void>) \| undefined` contract. | — |
 | `onArrowDown` | `(() => void \| Promise<void>) \| undefined` | No | The `onArrowDown` member uses the `(() => void \| Promise<void>) \| undefined` contract. | — |
 | `registerWithForm` | `boolean \| undefined` | No | The `registerWithForm` member uses the `boolean \| undefined` contract. | — |
+| `allowControlCharacters` | `boolean \| undefined` | No | The `allowControlCharacters` member uses the `boolean \| undefined` contract. | — |
 
 ## Source
 

@@ -14,7 +14,8 @@ Public interface exported by `@mwillbanks/tuil-ink`.
 
 ```ts
 export interface AlertProps
-  extends PropsWithChildren<CommonComponentProps>,
+  extends
+    PropsWithChildren<CommonComponentProps>,
     SlottedComponentProps<
       {
         root: BoxProps;

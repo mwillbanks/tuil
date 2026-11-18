@@ -1,3 +1,7 @@
+import {
+  captureRejection,
+  useTestClock,
+} from "../../../tests/helpers/clock.ts";
 import { expect, test } from "bun:test";
 import { defineOperation } from "@mwillbanks/tuil-operations";
 import {
@@ -8,6 +12,8 @@ import {
   type PersistedWorkflow,
   transition,
 } from "./index.ts";
+
+const clock = useTestClock();
 
 test("workflow validates, branches, operates, persists, resumes, navigates back, and rolls back", async () => {
   const storage = new Map<string, PersistedWorkflow<{ cloud: boolean }>>();
@@ -113,7 +119,7 @@ test("workflow skips conditions, nests, runs parallel work, times out, and migra
         parallel: defineStep<{ include: boolean }>({
           parallel: [
             async () => {
-              await Bun.sleep(1);
+              await clock.delay(1);
               branches.push("a");
             },
             () => {
@@ -136,7 +142,9 @@ test("workflow skips conditions, nests, runs parallel work, times out, and migra
   await outer.next();
   expect(outer.snapshot.nestedWorkflow?.currentStep).toBe("two");
   expect(outer.snapshot.currentStep).toBe("nested");
-  await outer.next();
+  const advancing = outer.next();
+  await clock.advance(1);
+  await advancing;
   expect(outer.snapshot.currentStep).toBe("parallel");
   expect(branches.sort()).toEqual(["a", "b"]);
   await outer.next();
@@ -167,7 +175,11 @@ test("workflow skips conditions, nests, runs parallel work, times out, and migra
       transitions: [],
     }),
   );
-  await expect(timed.start()).rejects.toThrow("timed out");
+  const timedResult = captureRejection(timed.start());
+  await clock.advance(2);
+  expect(await timedResult).toMatchObject({
+    message: expect.stringContaining("timed out"),
+  });
   expect(timed.snapshot.status).toBe("failed");
 
   const persisted: PersistedWorkflow<unknown> = {
@@ -216,7 +228,7 @@ test("workflow does not overlap retry with non-cooperative timed-out steps", asy
             attempts += 1;
             active += 1;
             maximumActive = Math.max(maximumActive, active);
-            if (attempts === 1) await Bun.sleep(25);
+            if (attempts === 1) await clock.delay(25);
             active -= 1;
           },
         }),
@@ -224,10 +236,14 @@ test("workflow does not overlap retry with non-cooperative timed-out steps", asy
       transitions: [],
     }),
   );
-  await expect(runner.start()).rejects.toThrow("timed out");
+  const timedResult = captureRejection(runner.start());
+  await clock.advance(2);
+  expect(await timedResult).toMatchObject({
+    message: expect.stringContaining("timed out"),
+  });
   expect(await runner.retry()).toBeFalse();
   expect(maximumActive).toBe(1);
-  await Bun.sleep(30);
+  await clock.advance(30);
   expect(await runner.retry()).toBeTrue();
   expect(attempts).toBe(2);
   expect(maximumActive).toBe(1);
@@ -291,7 +307,7 @@ test("workflow serializes repeated transitions", async () => {
         first: defineStep({
           leave: async () => {
             leaves += 1;
-            await Bun.sleep(5);
+            await clock.delay(5);
           },
         }),
         second: defineStep({
@@ -304,7 +320,9 @@ test("workflow serializes repeated transitions", async () => {
     }),
   );
   await runner.start();
-  const results = await Promise.all([runner.next(), runner.next()]);
+  const transitions = Promise.all([runner.next(), runner.next()]);
+  await clock.advance(5);
+  const results = await transitions;
   expect(results.sort()).toEqual([false, true]);
   expect(leaves).toBe(1);
   expect(enters).toBe(1);
@@ -338,7 +356,7 @@ test("workflow cancellation interrupts an active transition", async () => {
     }),
   );
   const starting = runner.start();
-  await Bun.sleep(1);
+  await clock.advance(1);
   expect(runner.snapshot.transitioning).toBeTrue();
   expect(await runner.cancel()).toBeTrue();
   await expect(starting).rejects.toThrow("Cancelled");
@@ -394,7 +412,7 @@ test("workflow cancellation arbitrates asynchronous transition conditions", asyn
   const cancelling = runner.cancel();
   await guardReady;
   releaseCondition(true);
-  await Bun.sleep(1);
+  await clock.advance(1);
   expect(runner.snapshot.currentStep).toBe("first");
   expect(runner.snapshot.status).toBe("running");
   releaseGuard(true);
@@ -682,7 +700,7 @@ test("workflow persistence serializes snapshots in mutation order", async () => 
       persistence: {
         load: () => undefined,
         save: async (_id, value) => {
-          if (value.state.value === 1) await Bun.sleep(20);
+          if (value.state.value === 1) await clock.delay(20);
           stored = value.state.value;
           completions.push(value.state.value);
         },
@@ -693,6 +711,7 @@ test("workflow persistence serializes snapshots in mutation order", async () => 
   completions.length = 0;
   const first = runner.updateState({ value: 1 });
   const second = runner.updateState({ value: 2 });
+  await clock.advance(20);
   await Promise.all([first, second]);
   expect(completions).toEqual([1, 2]);
   expect(stored).toBe(2);
@@ -896,7 +915,7 @@ test("workflow converts persisted in-flight work into a retryable interruption",
         title: "Interrupted operation",
         status: "running",
         attempt: 1,
-        startedAt: Date.now(),
+        startedAt: clock.now(),
         children: [],
         metadata: {},
         logs: [],
@@ -1022,11 +1041,11 @@ test("disposing a workflow aborts work and isolates observer failures", async ()
     throw new Error("observer failed");
   });
   const starting = runner.start();
-  await Bun.sleep(1);
+  await clock.advance(1);
   const snapshot = runner.snapshot;
   runner.dispose();
   await expect(starting).rejects.toThrow();
-  await Bun.sleep(35);
+  await clock.advance(35);
   expect(lateEnter).toBeFalse();
   expect(runner.snapshot).toBe(snapshot);
   expect(observerErrors.length).toBeGreaterThan(0);

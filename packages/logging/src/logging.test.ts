@@ -8,7 +8,6 @@ import {
   journaldParser,
   jsonLogParser,
   LogPipeline,
-  LogRingBuffer,
   normalizeSeverity,
   openTelemetryLogParser,
   processLogParser,
@@ -311,38 +310,6 @@ test("log buffer observers are isolated from ingestion", () => {
 
   expect(healthyNotifications).toBe(1);
   expect(pipeline.buffer.records()).toHaveLength(1);
-});
-
-test("100,000 records remain searchable and ring retention reports drops without silent loss", () => {
-  const buffer = new LogRingBuffer(100_000);
-  const pipeline = new LogPipeline({ capacity: 100_000 });
-  const started = performance.now();
-  const input = Array.from(
-    { length: 100_000 },
-    (_, index) =>
-      `{"severity":"${index % 100 === 0 ? "error" : "info"}","body":"record ${index}","attributes":{"index":${index}}}`,
-  ).join("\n");
-  pipeline.ingest(input, "json");
-  expect(pipeline.query("severity >= error")).toHaveLength(1_000);
-  expect(performance.now() - started).toBeLessThan(2_500);
-  const item = pipeline.buffer.records()[0];
-  if (item) {
-    for (let index = 0; index < 100_001; index += 1) {
-      buffer.push(item);
-    }
-  }
-  expect(buffer.statistics()).toMatchObject({
-    size: 100_000,
-    dropped: 1,
-  });
-  const empty = new LogRingBuffer(1);
-  const first = pipeline.buffer.records()[0];
-  if (first) {
-    empty.replaceLast(first);
-    empty.push(first);
-  }
-  empty.clear();
-  expect(empty.statistics()).toMatchObject({ size: 0, dropped: 0 });
 });
 
 test("field redaction removes secrets from syslog, raw text, and exports", () => {

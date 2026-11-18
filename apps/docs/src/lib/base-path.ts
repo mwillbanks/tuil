@@ -1,7 +1,14 @@
 export function getBasePath(): string {
-  const configured = process.env["NEXT_PUBLIC_BASE_PATH"] ?? "";
-  if (configured === "/") return "";
-  return configured.replace(/\/+$/, "").replace(/^([^/])/, "/$1");
+  const configured =
+    process.env["TUIL_DOCS_BASE_PATH"] ??
+    process.env["NEXT_PUBLIC_BASE_PATH"] ??
+    "";
+  return normalizeBasePath(configured);
+}
+
+export function normalizeBasePath(value: string): string {
+  if (value === "/") return "";
+  return value.replace(/\/+$/, "").replace(/^([^/])/, "/$1");
 }
 
 function alreadyUsesBasePath(path: string, basePath: string): boolean {
@@ -11,7 +18,7 @@ function alreadyUsesBasePath(path: string, basePath: string): boolean {
 export function withBasePath(path: string): string {
   const basePath = getBasePath();
   if (!basePath) return path;
-  if (!path.startsWith("/")) return path;
+  if (!path.startsWith("/") || path.startsWith("//")) return path;
   if (alreadyUsesBasePath(path, basePath)) return path;
   return `${basePath}${path}`;
 }

@@ -57,7 +57,8 @@ function selectionColor(
 }
 
 export interface FieldProps
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<{
       root: BoxProps;
       label: TextProps;
@@ -1121,8 +1122,10 @@ export const EditableTreeNode = TextInput;
 export type FormFieldEditorProps = TextAreaProps;
 export const FormFieldEditor = TextArea;
 
-export interface DateTimeInputProps
-  extends Omit<TextInputProps, "onValueChange"> {
+export interface DateTimeInputProps extends Omit<
+  TextInputProps,
+  "onValueChange"
+> {
   readonly onValueChange?: (
     value: string,
     date: Date | undefined,
@@ -1148,16 +1151,15 @@ export function DateTimeInput({
   );
 }
 
-export interface NumberInputProps
-  extends Omit<
-    TextInputProps,
-    | "value"
-    | "defaultValue"
-    | "onValueChange"
-    | "validators"
-    | "field"
-    | "registerWithForm"
-  > {
+export interface NumberInputProps extends Omit<
+  TextInputProps,
+  | "value"
+  | "defaultValue"
+  | "onValueChange"
+  | "validators"
+  | "field"
+  | "registerWithForm"
+> {
   readonly field?: AdaptedTanStackField<number>;
   readonly validators?: FieldValidators<number>;
   readonly value?: number;
@@ -1568,8 +1570,9 @@ export interface SelectOption<T extends string = string> {
   readonly disabled?: boolean;
 }
 
-export interface RadioGroupProps<T extends string = string>
-  extends CommonComponentProps {
+export interface RadioGroupProps<
+  T extends string = string,
+> extends CommonComponentProps {
   readonly options: readonly SelectOption<T>[];
   readonly value?: T;
   readonly defaultValue?: T;
@@ -1800,7 +1803,8 @@ export function RadioGroup<T extends string>({
 }
 
 interface SelectionProps<T extends string = string>
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<{
       root: BoxProps;
       indicator: TextProps;
@@ -1814,8 +1818,9 @@ interface SelectionProps<T extends string = string>
   readonly autoFocus?: boolean;
 }
 
-export interface SelectProps<T extends string = string>
-  extends SelectionProps<T> {
+export interface SelectProps<
+  T extends string = string,
+> extends SelectionProps<T> {
   readonly value?: T;
   readonly defaultValue?: T;
   readonly onValueChange?: (value: T) => void | Promise<void>;
@@ -2078,8 +2083,9 @@ export function Select<T extends string>({
   );
 }
 
-export interface MultiSelectProps<T extends string = string>
-  extends SelectionProps<T> {
+export interface MultiSelectProps<
+  T extends string = string,
+> extends SelectionProps<T> {
   readonly value?: readonly T[];
   readonly defaultValue?: readonly T[];
   readonly onValueChange?: (value: readonly T[]) => void | Promise<void>;
@@ -2252,8 +2258,10 @@ export function MultiSelect<T extends string>({
   );
 }
 
-export interface AutocompleteProps<T extends string = string>
-  extends Omit<SelectionProps<T>, "searchable"> {
+export interface AutocompleteProps<T extends string = string> extends Omit<
+  SelectionProps<T>,
+  "searchable"
+> {
   readonly field?: AdaptedTanStackField<string>;
   readonly validators?: FieldValidators<string>;
   readonly onBlur?: () => void | Promise<void>;

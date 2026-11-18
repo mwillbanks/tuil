@@ -9,8 +9,10 @@ export interface TerminalImageSource {
   readonly height: number;
 }
 
-export interface TerminalImageProps
-  extends Omit<TextProps, "children" | "width" | "height"> {
+export interface TerminalImageProps extends Omit<
+  TextProps,
+  "children" | "width" | "height"
+> {
   readonly source: TerminalImageSource;
   readonly alt: string;
   readonly columns?: number;

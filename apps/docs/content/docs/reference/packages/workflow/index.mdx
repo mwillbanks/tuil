@@ -63,9 +63,9 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
-import { createWorkflow, defineWorkflow } from "@mwillbanks/tuil-workflow";
+import { defineWorkflow } from "@mwillbanks/tuil-workflow";
 
-const runner = createWorkflow(defineWorkflow({ id: "setup", version: 1, initialState: {}, steps, transitions }));
+const workflow = defineWorkflow({ id: "setup", version: 1, initialState: {}, steps: {}, transitions: [] });
 ```
 
 ## Related

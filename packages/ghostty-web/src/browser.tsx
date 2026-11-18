@@ -17,7 +17,7 @@ const browserGlobal = globalThis as unknown as {
   Buffer?: typeof Buffer;
   clearImmediate?: (handle: ReturnType<typeof setTimeout>) => void;
   console: { Console?: typeof BrowserConsole };
-  process?: Partial<typeof processShim>;
+  process?: Partial<typeof processShim> & { versions?: { node?: string } };
   setImmediate?: (
     callback: (...arguments_: unknown[]) => void,
     ...arguments_: unknown[]
@@ -28,13 +28,16 @@ browserGlobal.setImmediate ??= (callback, ...arguments_) =>
   setTimeout(callback, 0, ...arguments_);
 browserGlobal.clearImmediate ??= (handle) => clearTimeout(handle);
 browserGlobal.console.Console ??= BrowserConsole;
-browserGlobal.process = {
-  ...processShim,
-  ...browserGlobal.process,
-  stderr: browserGlobal.process?.stderr ?? processShim.stderr,
-  stdin: browserGlobal.process?.stdin ?? processShim.stdin,
-  stdout: browserGlobal.process?.stdout ?? processShim.stdout,
-};
+const hostProcess = browserGlobal.process;
+if (!hostProcess?.versions?.node) {
+  browserGlobal.process = {
+    ...processShim,
+    ...hostProcess,
+    stderr: hostProcess?.stderr ?? processShim.stderr,
+    stdin: hostProcess?.stdin ?? processShim.stdin,
+    stdout: hostProcess?.stdout ?? processShim.stdout,
+  };
+}
 
 export type { PlaygroundDocumentV1, PlaygroundNodeV1 } from "./document";
 export {
@@ -61,8 +64,10 @@ export function createTuilGhosttyStoryApp(
   return createStoryApp(options);
 }
 
-export interface TuilGhosttyTerminalOptions
-  extends Omit<ITerminalOptions, "ghostty"> {
+export interface TuilGhosttyTerminalOptions extends Omit<
+  ITerminalOptions,
+  "ghostty"
+> {
   readonly maxInputBytes?: number;
   readonly maxOutputBytes?: number;
 }

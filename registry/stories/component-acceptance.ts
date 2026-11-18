@@ -429,7 +429,7 @@ export const componentAcceptanceInventory: readonly ComponentAcceptanceEntry[] =
       return Object.freeze({
         ...item,
         storyId: `component-acceptance--${item.name}`,
-        storySource: "apps/showcase/src/component-acceptance.stories.tsx",
+        storySource: "registry/stories/component-fixtures.tsx",
         storyExport: registryExportName(item.name),
         docsPath: `/docs/reference/components/acceptance-catalog#${item.title
           .toLowerCase()
@@ -437,7 +437,7 @@ export const componentAcceptanceInventory: readonly ComponentAcceptanceEntry[] =
           .replaceAll(/^-|-$/g, "")}`,
         docsSource:
           "apps/docs/content/docs/reference/components/acceptance-catalog.mdx",
-        testSource: "tests/component-acceptance.test.ts",
+        testSource: "tests/regression/component-acceptance.test.ts",
         fixtureId,
         snapshotId: `component-acceptance:${item.name}:static`,
         expectedRole: capabilities.semanticRole,

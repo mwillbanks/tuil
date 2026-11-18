@@ -22,6 +22,10 @@ export interface TerminalScrollAreaOptions {
     Record<"top" | "bottom" | "left" | "right", boolean>
   >;
   readonly followFocus?: boolean;
+  readonly onWheel?: (
+    event: TuilPointerEvent,
+    snapshot: ScrollSnapshot,
+  ) => void | Promise<void>;
   readonly enabled?: boolean;
   readonly initialPosition?: {
     readonly x?: number;
@@ -40,6 +44,7 @@ export interface TerminalScrollAreaOptions {
 | `parentId` | `string \| undefined` | No | The `parentId` member uses the `string \| undefined` contract. | — |
 | `sticky` | `Partial<Record<"top" \| "right" \| "bottom" \| "left", boolean>> \| undefined` | No | The `sticky` member uses the `Partial<Record<"top" \| "right" \| "bottom" \| "left", boolean>> \| undefined` contract. | — |
 | `followFocus` | `boolean \| undefined` | No | The `followFocus` member uses the `boolean \| undefined` contract. | — |
+| `onWheel` | `((event: TuilPointerEvent, snapshot: ScrollSnapshot) => void \| Promise<void>) \| undefined` | No | The `onWheel` member uses the `((event: TuilPointerEvent, snapshot: ScrollSnapshot) => void \| Promise<void>) \| undefined` contract. | [`ScrollSnapshot`](/docs/reference/packages/scroll/api/scroll-snapshot) |
 | `enabled` | `boolean \| undefined` | No | The `enabled` member uses the `boolean \| undefined` contract. | — |
 | `initialPosition` | `&#123; readonly x?: number; readonly y?: number; &#125; \| undefined` | No | The `initialPosition` member uses the `&#123; readonly x?: number; readonly y?: number; &#125; \| undefined` contract. | — |
 

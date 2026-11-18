@@ -29,19 +29,28 @@ jobs:
       id-token: write
       pull-requests: read
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: oven-sh/setup-bun@v2.2.0
+      - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.14
+          bun-version-file: package.json
       - name: Install dependencies
         run: bun ci
+      - name: Install Chromium for acceptance
+        run: bun run --bun playwright install --with-deps chromium
       - name: Verify workspace
         env:
-          TUIL_BUILD_ALL: ${{ github.event_name == 'workflow_dispatch' }}
+          TUIL_BUILD_ALL: ${{ github.event_name == 'workflow_dispatch' || startsWith(github.head_ref, 'release-please--branches--main') }}
           TUIL_BUILD_BASE: ${{ github.event.pull_request.base.sha || (github.event.before != '0000000000000000000000000000000000000000' && github.event.before) || 'HEAD' }}
-        run: bun run check
+        run: bun run validate
+      - name: Verify authored release notes
+        if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'release-please--branches--main')
+        env:
+          RELEASE_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          bun tooling/release/notes.ts check --base "$RELEASE_BASE_SHA"
+          bun run publication:verify
       - name: Publish coverage
         uses: codecov/codecov-action@v7
         with:
@@ -57,17 +66,13 @@ jobs:
 
   dependencies:
     name: Dependency security
-    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.5.0
+    uses: ./.github/workflows/security.yml
     permissions:
       actions: read
       contents: read
       security-events: write
     with:
-      scan-args: |-
-        --config=./osv-scanner.toml
-        --lockfile=./bun.lock
-      upload-sarif: false
-      fail-on-vuln: true
+      upload-sarif: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
 
   release:
     name: Release

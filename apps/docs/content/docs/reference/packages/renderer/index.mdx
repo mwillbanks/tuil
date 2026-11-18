@@ -48,8 +48,12 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { RendererRegistry } from "@mwillbanks/tuil-renderer";
+import { CellRendererBackend } from "@mwillbanks/tuil-cell";
+
 const registry = new RendererRegistry();
-registry.register("cell", backend);
+const unregister = registry.register(new CellRendererBackend());
+unregister();
 ```
 
 ## Related

@@ -868,7 +868,10 @@ function literal(value: string): unknown {
     return BigInt(Date.now()) * 1_000_000n - milliseconds * 1_000_000n;
   }
   if (/^-?\d+(?:\.\d+)?$/.test(stripped)) {
-    return Number(stripped);
+    const number = Number(stripped);
+    return !stripped.includes(".") && !Number.isSafeInteger(number)
+      ? BigInt(stripped)
+      : number;
   }
   const severity =
     severityNumbers[stripped.toLowerCase() as keyof typeof severityNumbers];

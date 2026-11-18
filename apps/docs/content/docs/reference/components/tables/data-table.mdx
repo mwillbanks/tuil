@@ -15,7 +15,7 @@ import { PublishedStory } from '@/components/published-story';
 Render typed rows and columns with terminal-width fitting, virtualization, sorting, selection, and cell activation.
 
 ```tsx
-export function DataTable<TData>({
+export function DataTable<TData extends RowData>({
   table,
   height = 10,
   width = 80,
@@ -33,7 +33,7 @@ export function DataTable<TData>({
 
 | Member | Type | Required | Description | Related types |
 | --- | --- | --- | --- | --- |
-| `table` | `TanStackTable<TData>` | Yes | The `table` member uses the `TanStackTable<TData>` contract. | — |
+| `table` | `TanStackTable<&#123; columnPinningFeature: import("@tanstack/table-core").TableFeature; columnSizingFeature: import("@tanstack/table-core").TableFeature; rowSelectionFeature: import("@tanstack/table-core").TableFeature; rowSortingFeature: import("@tanstack/table-core").TableFeature; sortedRowModel: (table: TanStackTable<any, any>) => () => import("@tanstack/table-core").RowModel<any, any>; &#125;, TData>` | Yes | The `table` member uses the `TanStackTable<&#123; columnPinningFeature: import("@tanstack/table-core").TableFeature; columnSizingFeature: import("@tanstack/table-core").TableFeature; rowSelectionFeature: import("@tanstack/table-core").TableFeature; rowSortingFeature: import("@tanstack/table-core").TableFeature; sortedRowModel: (table: TanStackTable<any, any>) => () => import("@tanstack/table-core").RowModel<any, any>; &#125;, TData>` contract. | — |
 | `height` | `number \| undefined` | No | The `height` member uses the `number \| undefined` contract. | — |
 | `width` | `number \| undefined` | No | The `width` member uses the `number \| undefined` contract. | — |
 | `focusMode` | `"row" \| "cell" \| undefined` | No | The `focusMode` member uses the `"row" \| "cell" \| undefined` contract. | — |
@@ -68,6 +68,41 @@ Callback props run after the documented input is accepted. Callbacks are not can
 ## Interaction and capabilities
 
 Arrow keys navigate cells or rows; Space toggles selection; Enter activates; configured keys sort columns.
+
+## TanStack Table v9 setup
+
+`DataTable` accepts a TanStack Table v9 instance configured with the exported
+`dataTableFeatures` feature set.
+
+```tsx
+import { createColumnHelper, useTable } from "@tanstack/react-table";
+import {
+  DataTable,
+  dataTableFeatures,
+} from "@/components/tuil/data-display/complex-data";
+
+interface Person {
+  id: string;
+  name: string;
+}
+
+const columnHelper = createColumnHelper<typeof dataTableFeatures, Person>();
+const columns = columnHelper.columns([
+  columnHelper.accessor("name", { header: "Name" }),
+]);
+
+export function PeopleTable({ people }: { people: Person[] }) {
+  const table = useTable({
+    features: dataTableFeatures,
+    data: people,
+    columns,
+    getRowId: (person) => person.id,
+  });
+
+  return <DataTable table={table} />;
+}
+```
+
 
 The published manifest records keyboard, focus, pointer, theme, terminal, semantic, event, and dependency requirements.
 

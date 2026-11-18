@@ -25,25 +25,30 @@ import {
 } from "@mwillbanks/tuil-editor/rich";
 
 const provider = createRichEditorProvider({
-  nodes: [{
-    type: "callout",
-    validate: (node) => {
-      if (!node.attributes?.tone) throw new Error("callout tone is required");
+  nodes: [
+    {
+      type: "callout",
+      validate: (node) => {
+        if (!node.attributes?.["tone"])
+          throw new Error("callout tone is required");
+      },
+      markdown: (node, children) =>
+        `> [!${String(node.attributes?.["tone"]).toUpperCase()}] ${children}\n`,
     },
-    markdown: (node, children) =>
-      `> [!${String(node.attributes?.tone).toUpperCase()}] ${children}\n`,
-  }],
+  ],
 });
 
 const editor = provider.create({
   value: JSON.stringify({
     type: "document",
-    children: [{
-      type: "callout",
-      attributes: { tone: "warning" },
-      pluginData: { revision: 2 },
-      children: [{ type: "text", text: "Caution" }],
-    }],
+    children: [
+      {
+        type: "callout",
+        attributes: { tone: "warning" },
+        pluginData: { revision: 2 },
+        children: [{ type: "text", text: "Caution" }],
+      },
+    ],
   }),
 }) as RichEditorSession;
 

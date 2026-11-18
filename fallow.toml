@@ -5,7 +5,12 @@ publicPackages = ["@mwillbanks/tuil*"]
 # Registry items, generated CLI mirrors, shared examples, and programmatic build
 # scripts are runtime roots reached through catalogs or package scripts.
 entry = [
+  "apps/docs/src/app/globals.css",
+  "apps/docs/src/client.tsx",
+  "apps/showcase/src/browser.tsx",
+  "apps/showcase/src/showcase.css",
   "apps/showcase/src/story-server.ts",
+  "packages/ghostty-web/src/shims/url.ts",
   "examples/_shared.tsx",
   "packages/cli/src/generated-registry.ts",
   "packages/cli/src/generated-ui/**/*.tsx",
@@ -17,36 +22,51 @@ entry = [
   "tooling/docs/validate-static.ts",
   "tooling/release/verify-recovery.ts",
   "tuil.workspace.ts",
+  "tests/helpers/coverage-preload.ts",
 ]
 
 # Registry source is authoritative. The CLI mirror is generated and validated
 # byte-for-byte by the CLI test suite.
 ignorePatterns = [
-  "apps/docs/.next/**",
-  "apps/docs/.source/**",
   "apps/docs/out/**",
   "apps/registry/**",
+  "!tooling/coverage/**",
+  "!tests/functional/coverage/**",
 ]
 
-# Fumadocs generates these aliases during documentation builds.
-ignoreUnresolvedImports = ["collections/browser", "collections/server"]
+# Bun provides the docs collections and generated showcase catalog at bundle time.
+ignoreUnresolvedImports = [
+  "collections/browser",
+  "collections/server",
+  "./catalog.json",
+]
+# The security workflow installs and verifies the official OSV binary.
+ignoreBinaries = ["osv-scanner"]
 
 # Source generation and package scripts use these dependencies indirectly.
 ignoreDependencies = [
   "@fallow-cli/fallow-cov",
-  "@mwillbanks/tuil-ghostty-web",
   "ansi-to-html",
-  "collections",
+  "tuil:docs-content",
   "ts-morph",
 ]
 ignoreDependencyOverrides = [
   { package = "brace-expansion", source = "package.json" },
   { package = "fast-uri", source = "package.json" },
   { package = "js-yaml", source = "package.json" },
-  { package = "nanoid", source = "package.json" },
-  { package = "postcss", source = "package.json" },
+  { package = "minimatch", source = "package.json" },
+  { package = "source-map-js", source = "package.json" },
 ]
 ignoreExports = [
+  # Keep both Node-compatible import styles in browser shims.
+  { file = "packages/ghostty-web/src/shims/events.ts", exports = [
+    "EventEmitter",
+    "default",
+  ] },
+  { file = "packages/ghostty-web/src/shims/stream.ts", exports = [
+    "Stream",
+    "default",
+  ] },
   { file = "packages/ghostty-web/src/shims/os.ts", exports = ["*"] },
   { file = "packages/ghostty-web/src/shims/process.ts", exports = ["*"] },
 ]

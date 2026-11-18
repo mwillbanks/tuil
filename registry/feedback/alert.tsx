@@ -9,16 +9,15 @@ import { Box, type BoxProps } from "../primitives/box";
 
 type Tone = "info" | "success" | "warning" | "danger";
 
-export interface AlertProps
-  extends SlottedComponentProps<
-    {
-      root: BoxProps;
-      icon: TextProps;
-      title: TextProps;
-      content: TextProps;
-    },
-    { readonly tone: Tone }
-  > {
+export interface AlertProps extends SlottedComponentProps<
+  {
+    root: BoxProps;
+    icon: TextProps;
+    title: TextProps;
+    content: TextProps;
+  },
+  { readonly tone: Tone }
+> {
   readonly id?: string;
   readonly testId?: string;
   readonly label?: string;

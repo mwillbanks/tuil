@@ -1,6 +1,7 @@
+import { getBasePath } from "@/lib/base-path";
 import type { ReactNode } from "react";
 
-const basePath = process.env["NEXT_PUBLIC_BASE_PATH"] ?? "";
+const basePath = getBasePath();
 
 export default function RetiredSpanishDocumentation(): ReactNode {
   const destination = `${basePath}/docs`;

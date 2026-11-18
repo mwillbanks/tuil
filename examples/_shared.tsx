@@ -520,6 +520,17 @@ function positiveInteger(value: number | undefined, fallback: number): number {
   return resolved;
 }
 
+async function closeProductionIterator(
+  iterator: AsyncIterator<readonly string[]>,
+  ignoreFailure: boolean,
+): Promise<void> {
+  try {
+    await iterator.return?.(undefined);
+  } catch (error) {
+    if (!ignoreFailure) throw error;
+  }
+}
+
 export async function* readProductionRecordBatches(
   source: ProductionRecordSource,
   signal: AbortSignal,
@@ -543,14 +554,7 @@ export async function* readProductionRecordBatches(
       failure = error;
     }
   } finally {
-    try {
-      await iterator.return?.(undefined);
-    } catch (cleanupError) {
-      if (!failed && !signal.aborted) {
-        failed = true;
-        failure = cleanupError;
-      }
-    }
+    await closeProductionIterator(iterator, failed || signal.aborted);
   }
   if (failed) throw failure;
 }
@@ -798,7 +802,9 @@ export class ProductionApplicationAdapter {
   }
 
   async execute(action: string, input?: unknown): Promise<void> {
-    const execute = this.#actions[action];
+    const execute = Object.hasOwn(this.#actions, action)
+      ? this.#actions[action]
+      : undefined;
     if (!execute && !this.#execute)
       throw new Error(`${this.id} action "${action}" is unavailable`);
     if (execute) await execute(input);

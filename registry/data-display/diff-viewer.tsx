@@ -71,7 +71,8 @@ type DiffViewerSlots = {
 };
 
 export interface DiffViewerProps
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<
       DiffViewerSlots,
       { readonly focused: boolean; readonly activeLine: number }

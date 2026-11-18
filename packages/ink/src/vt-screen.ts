@@ -325,8 +325,10 @@ export class VirtualTerminalScreen {
   #print(grapheme: string): void {
     const width = terminalTextWidth(grapheme);
     if (width === 0) {
-      const column = Math.max(0, this.#x - 1);
       const row = this.#rows[this.#y];
+      let column = this.#wrapPending ? this.#x : Math.max(0, this.#x - 1);
+      // Wide glyph continuation cells contain no text. Extend their leading cell.
+      while (column > 0 && row?.[column] === "") column -= 1;
       if (row) row[column] = `${row[column] ?? ""}${grapheme}`;
       return;
     }

@@ -8,7 +8,6 @@
     "stack",
     "hstack",
     "vstack",
-    "pane",
     "split-pane",
     "header",
     "footer",

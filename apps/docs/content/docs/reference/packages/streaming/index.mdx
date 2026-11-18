@@ -64,8 +64,10 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { StreamingPipeline } from "@mwillbanks/tuil-streaming";
+
 const pipeline = new StreamingPipeline({ format: "jsonl" });
-await pipeline.write(chunk);
+await pipeline.write('{"ready":true}\n');
 ```
 
 ## Related

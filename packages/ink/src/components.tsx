@@ -250,7 +250,8 @@ type BoxSlots = {
 };
 
 export interface BoxProps
-  extends Omit<InkBoxProps, "padding" | "margin">,
+  extends
+    Omit<InkBoxProps, "padding" | "margin">,
     CommonComponentProps,
     SlottedComponentProps<BoxSlots> {
   readonly padding?: number | SpacingToken;
@@ -362,23 +363,28 @@ export interface TerminalSize {
 export function useTerminalSize(): TerminalSize {
   const app = useApp();
   const { stdout } = useStdout();
+  const terminal: typeof stdout &
+    Partial<Pick<NodeJS.WriteStream, "columns" | "rows">> = stdout;
   const [size, setSize] = useState<TerminalSize>(() => ({
-    width: stdout.columns ?? app.capabilities.width,
-    height: stdout.rows ?? app.capabilities.height,
+    width: terminal.columns ?? app.capabilities.width,
+    height: terminal.rows ?? app.capabilities.height,
   }));
   useEffect(() => {
     const updateSize = () => {
-      setSize({
-        width: stdout.columns ?? app.capabilities.width,
-        height: stdout.rows ?? app.capabilities.height,
-      });
+      const width = terminal.columns ?? app.capabilities.width;
+      const height = terminal.rows ?? app.capabilities.height;
+      setSize((previous) =>
+        previous.width === width && previous.height === height
+          ? previous
+          : { width, height },
+      );
     };
     updateSize();
     stdout.on("resize", updateSize);
     return () => {
       stdout.off("resize", updateSize);
     };
-  }, [app.capabilities.height, app.capabilities.width, stdout]);
+  }, [app.capabilities.height, app.capabilities.width, stdout, terminal]);
   return size;
 }
 
@@ -409,7 +415,8 @@ type TextSlots = {
 };
 
 export interface TextProps
-  extends InkTextProps,
+  extends
+    InkTextProps,
     CommonComponentProps,
     SlottedComponentProps<TextSlots> {}
 
@@ -504,8 +511,7 @@ export function Heading({
 type DividerSlots = { root: TextProps };
 
 export interface DividerProps
-  extends CommonComponentProps,
-    SlottedComponentProps<DividerSlots> {
+  extends CommonComponentProps, SlottedComponentProps<DividerSlots> {
   readonly width?: number;
   readonly orientation?: "horizontal" | "vertical";
   readonly title?: string;
@@ -547,7 +553,8 @@ type ButtonSlots = {
 };
 
 export interface ButtonProps
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<
       ButtonSlots,
       { readonly focused: boolean; readonly disabled: boolean }
@@ -725,8 +732,7 @@ export function Badge({
 type SpinnerSlots = { root: TextProps };
 
 export interface SpinnerProps
-  extends CommonComponentProps,
-    SlottedComponentProps<SpinnerSlots> {
+  extends CommonComponentProps, SlottedComponentProps<SpinnerSlots> {
   readonly label?: string;
 }
 
@@ -768,7 +774,8 @@ export function Spinner({
 type ProgressSlots = { root: TextProps };
 
 export interface ProgressProps
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<
       ProgressSlots,
       { readonly percent: number; readonly complete: boolean }
@@ -818,7 +825,8 @@ export function Progress({
 }
 
 export interface AlertProps
-  extends PropsWithChildren<CommonComponentProps>,
+  extends
+    PropsWithChildren<CommonComponentProps>,
     SlottedComponentProps<
       {
         root: BoxProps;

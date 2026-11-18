@@ -1,12 +1,4 @@
-import {
-  mkdir,
-  mkdtemp,
-  readdir,
-  readFile,
-  rm,
-  stat,
-  symlink,
-} from "node:fs/promises";
+import { mkdir, mkdtemp, readdir, readFile, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, isAbsolute, join, resolve } from "node:path";
 import {
@@ -161,9 +153,13 @@ assertPublication(
   (await cli.exited) === 0,
   `Published tuil CLI failed: ${cliError.trim()}`,
 );
+const cliInfo = JSON.parse(cliOutput) as { name?: string; version?: string };
+const standaloneManifest = (await Bun.file(
+  join(packageRoot, "tuil/dist/package.json"),
+).json()) as { version: string };
 assertPublication(
-  (JSON.parse(cliOutput) as { readonly name?: string }).name ===
-    "@mwillbanks/tuil",
+  cliInfo.name === "@mwillbanks/tuil" &&
+    cliInfo.version === standaloneManifest.version,
   "Published tuil CLI returned invalid package information",
 );
 
@@ -257,43 +253,51 @@ try {
   }
   const consumer = join(destination, "consumer");
   await mkdir(consumer, { recursive: true });
+  const rootManifest = await Bun.file(join(workspace, "package.json")).json();
+  const dependencies: Record<string, string> = {};
+  const overrides: Record<string, string> = { ...rootManifest.overrides };
+  for (const [name, archive] of archiveByPackage) {
+    dependencies[name] = archive;
+    overrides[name] = archive;
+  }
+  // Optional peers are exercised too, including the published Storybook adapter.
+  for (const directory of packageDirectories) {
+    const manifest = await Bun.file(
+      join(directory, "dist/package.json"),
+    ).json();
+    for (const [name, version] of Object.entries(
+      manifest.peerDependencies ?? {},
+    )) {
+      if (archiveByPackage.has(name)) continue;
+      const preferred =
+        rootManifest.workspaces.catalog[name] ??
+        rootManifest.dependencies[name] ??
+        rootManifest.devDependencies[name];
+      dependencies[name] =
+        preferred && preferred !== "catalog:" ? preferred : String(version);
+    }
+  }
+  for (const name of [
+    "@types/bun",
+    "@types/react",
+    "@types/react-dom",
+    "@types/node",
+  ]) {
+    dependencies[name] = rootManifest.devDependencies[name];
+  }
   await Bun.write(
     join(consumer, "package.json"),
-    `${JSON.stringify(
+    JSON.stringify(
       {
         name: "tuil-publication-consumer",
         private: true,
         type: "module",
-        dependencies: {
-          "@tanstack/react-form": "^1.33.2",
-          "@tanstack/react-table": "^9.1.2",
-          "@tanstack/react-virtual": "^3.14.8",
-          "@tanstack/pacer": "^0.21.1",
-          diff: "^9.0.0",
-          "fast-xml-parser": "^5.10.1",
-          ink: "^7.1.1",
-          "ink-testing-library": "^4.0.0",
-          "mdast-util-from-markdown": "^2.0.3",
-          "mdast-util-gfm": "^3.1.0",
-          "micromark-extension-gfm": "^3.0.0",
-          react: "^19.2.8",
-          "react-devtools-core": "^7.0.1",
-          "react-dom": "^19.2.8",
-          "slice-ansi": "^9.0.0",
-          "smol-toml": "^1.7.1",
-          semver: "^7.7.2",
-          "string-width": "^8.2.2",
-          nusm: "^1.1.0",
-          "@types/bun": "latest",
-          "@types/react": "^19.2.17",
-          "@vscode/tree-sitter-wasm": "^0.3.1",
-          typescript: "^7.0.2",
-          yaml: "^2.9.0",
-        },
+        dependencies,
+        overrides,
       },
       null,
       2,
-    )}\n`,
+    ) + "\n",
   );
   const install = Bun.spawn(["bun", "install", "--ignore-scripts"], {
     cwd: consumer,
@@ -305,19 +309,82 @@ try {
     (await install.exited) === 0,
     `Packed package consumer installation failed: ${installError.trim()}`,
   );
-  for (const [name, archive] of archiveByPackage) {
-    const packageDirectory = join(consumer, "node_modules", ...name.split("/"));
-    await mkdir(packageDirectory, { recursive: true });
-    const extract = Bun.spawn(
-      ["tar", "-xzf", archive, "-C", packageDirectory, "--strip-components=1"],
-      { stdout: "pipe", stderr: "pipe" },
-    );
-    const extractError = await new Response(extract.stderr).text();
-    assertPublication(
-      (await extract.exited) === 0,
-      `Could not extract packed package ${name}: ${extractError.trim()}`,
-    );
+  const typeImports: string[] = [];
+  for (const name of archiveByPackage.keys()) {
+    const manifest = await Bun.file(
+      join(consumer, "node_modules", name, "package.json"),
+    ).json();
+    for (const [subpath, target] of Object.entries(manifest.exports ?? {})) {
+      if (!target || typeof target !== "object" || !("types" in target))
+        continue;
+      const specifier = subpath === "." ? name : name + subpath.slice(1);
+      const index = typeImports.length;
+      typeImports.push(
+        `import type * as Export${index} from ${JSON.stringify(specifier)};\nexport type Checked${index} = typeof Export${index};`,
+      );
+    }
   }
+  assertPublication(
+    typeImports.length > 0,
+    "Packed exports have no declarations",
+  );
+  await Bun.write(join(consumer, "exports.ts"), typeImports.join("\n") + "\n");
+  await Bun.write(
+    join(consumer, "tsconfig.json"),
+    JSON.stringify({
+      compilerOptions: {
+        lib: ["ESNext", "DOM", "DOM.Iterable"],
+        target: "ESNext",
+        module: "ESNext",
+        moduleResolution: "bundler",
+        jsx: "react-jsx",
+        strict: true,
+        noEmit: true,
+        skipLibCheck: true,
+        types: ["bun", "react"],
+      },
+      include: ["exports.ts", "storybook-consumer.ts"],
+    }),
+  );
+  await Bun.write(
+    join(consumer, "storybook-consumer.ts"),
+    `import {createStorybookAdapter} from "@mwillbanks/tuil-story/storybook";
+import type {Meta} from "@storybook/react";
+const adapter = createStorybookAdapter({
+  id: "packed-adapter",
+  title: "Packed adapter",
+  stories: {Default: {args: {label: "Published"}}},
+});
+const meta: Meta<Record<string, unknown>> = adapter.meta;
+const story = adapter.stories["Default"];
+if (meta.title !== "Packed adapter" || !story || typeof story.render !== "function") {
+  throw new Error("Packed Storybook adapter is unusable");
+}
+const element = story.render(story.args ?? {}, {} as never);
+if (!element) throw new Error("Packed Storybook adapter did not render");
+`,
+  );
+  const declarations = Bun.spawn(["bun", "check", "--no-script"], {
+    cwd: consumer,
+    stdout: "pipe",
+    stderr: "pipe",
+  });
+  const declarationOutput = await new Response(declarations.stdout).text();
+  const declarationError = await new Response(declarations.stderr).text();
+  assertPublication(
+    (await declarations.exited) === 0,
+    `Packed declaration exports failed: ${declarationOutput}${declarationError}`,
+  );
+  const storybook = Bun.spawn(["bun", "storybook-consumer.ts"], {
+    cwd: consumer,
+    stdout: "pipe",
+    stderr: "pipe",
+  });
+  const storybookError = await new Response(storybook.stderr).text();
+  assertPublication(
+    (await storybook.exited) === 0,
+    `Packed Storybook adapter failed: ${storybookError}`,
+  );
   await Bun.write(
     join(consumer, "smoke.ts"),
     `import {Lifecycle} from "@mwillbanks/tuil-core";
@@ -499,7 +566,7 @@ if (workflow.snapshot.status !== "completed") {
     "component-library",
   ];
   for (const template of generatedTemplates) {
-    const generatedProject = join(consumer, `generated-${template}`);
+    const generatedProject = join(destination, `generated-${template}`);
     const initialize = Bun.spawn(
       [
         "bun",
@@ -521,15 +588,61 @@ if (workflow.snapshot.status !== "completed") {
       (await initialize.exited) === 0,
       `Packed CLI could not initialize the ${template} template: ${initializeError.trim()}`,
     );
-    await symlink(
-      join(consumer, "node_modules"),
-      join(generatedProject, "node_modules"),
-      "dir",
+    const generatedManifest = await Bun.file(
+      join(generatedProject, "package.json"),
+    ).json();
+    assertPublication(
+      generatedManifest.packageManager === "bun@1.4.4" &&
+        generatedManifest.scripts?.dev === "bun --watch src/index.tsx" &&
+        generatedManifest.scripts?.start === "bun src/index.tsx" &&
+        generatedManifest.scripts?.test === "bun test" &&
+        !generatedManifest.scripts?.typecheck &&
+        !generatedManifest.scripts?.check &&
+        !generatedManifest.devDependencies?.typescript,
+      `Generated ${template} must publish the documented native Bun command contract`,
     );
-    const generatedTypecheck = Bun.spawn(
-      ["bun", join(consumer, "node_modules/typescript/bin/tsc"), "--noEmit"],
-      { cwd: generatedProject, stdout: "pipe", stderr: "pipe" },
+    assertPublication(
+      generatedManifest.overrides?.["@tanstack/devtools-event-client"] ===
+        "0.5.1",
+      `Generated ${template} must prevent optional form devtools from retaining terminal processes`,
     );
+    for (const [name, version] of Object.entries(
+      generatedManifest.dependencies ?? {},
+    )) {
+      if (!name.startsWith("@mwillbanks/")) continue;
+      assertPublication(
+        sourceVersions.has(name) && version === `^${sourceVersions.get(name)}`,
+        `Generated ${template} dependency ${name} must match its current package version`,
+      );
+    }
+    await Bun.write(
+      join(generatedProject, "package.json"),
+      JSON.stringify(
+        {
+          ...generatedManifest,
+          overrides: { ...generatedManifest.overrides, ...overrides },
+        },
+        null,
+        2,
+      ) + "\n",
+    );
+    const generatedInstall = Bun.spawn(["bun", "install", "--ignore-scripts"], {
+      cwd: generatedProject,
+      stdout: "pipe",
+      stderr: "pipe",
+    });
+    const generatedInstallError = await new Response(
+      generatedInstall.stderr,
+    ).text();
+    assertPublication(
+      (await generatedInstall.exited) === 0,
+      `Generated ${template} installation failed: ${generatedInstallError}`,
+    );
+    const generatedTypecheck = Bun.spawn(["bun", "check", "--no-script"], {
+      cwd: generatedProject,
+      stdout: "pipe",
+      stderr: "pipe",
+    });
     const generatedTypecheckOutput = await new Response(
       generatedTypecheck.stdout,
     ).text();
@@ -539,6 +652,25 @@ if (workflow.snapshot.status !== "completed") {
     assertPublication(
       (await generatedTypecheck.exited) === 0,
       `Generated ${template} typecheck failed: ${generatedTypecheckOutput}${generatedTypecheckError}`,
+    );
+    const generatedStart = Bun.spawn(["bun", "run", "start"], {
+      cwd: generatedProject,
+      stdin: "ignore",
+      stdout: "pipe",
+      stderr: "pipe",
+      timeout: 5_000,
+    });
+    const generatedStartOutput = await new Response(
+      generatedStart.stdout,
+    ).text();
+    const generatedStartError = await new Response(
+      generatedStart.stderr,
+    ).text();
+    const generatedStartExit = await generatedStart.exited;
+    assertPublication(
+      generatedStartExit === 0 &&
+        generatedStartOutput.includes("Project setup"),
+      `Generated ${template} start failed (exit ${generatedStartExit}, signal ${generatedStart.signalCode}): ${generatedStartOutput}${generatedStartError}`,
     );
     if (template === "component-library") {
       await Bun.write(

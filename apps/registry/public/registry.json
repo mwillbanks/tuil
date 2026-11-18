@@ -26,7 +26,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-18e334a164fc745a727600ec407bd889d824eb7d2b614a781880b7df0245d044",
+      "integrity": "sha256-0032c6756ff675529ed5f6b7c778ccb55c1cc7e18b1dd9eeb167c3293883c78c",
       "files": [
         {
           "path": "src/components/tuil/feedback/alert.tsx",
@@ -649,7 +649,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-64d5170018fcbacc20a3ba575af462c941afd1e25d4684d24262de3caf0a20fa",
+      "integrity": "sha256-797d4890968bba3519d4dc3de3a1340abf02bc52b25dee8776fbe0037ef873ac",
       "files": [
         {
           "path": "src/components/tuil/data-display/diff-viewer.tsx",
@@ -682,7 +682,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-f8d6ee0a1b817fc005c125d5a8b88e95c6ba1eaee10e0bd04c732d3587387835",
+      "integrity": "sha256-68869393796ce09d3422e1428ed32e2715a999f1be55c83c1e6fe21ca3086acf",
       "files": [
         {
           "path": "src/components/tuil/data-display/divider.tsx",
@@ -800,6 +800,7 @@
       },
       "dependencies": [
         "@mwillbanks/tuil",
+        "@mwillbanks/tuil-editor",
         "@mwillbanks/tuil-form",
         "@mwillbanks/tuil-focus",
         "@mwillbanks/tuil-ink",
@@ -816,7 +817,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-add94d57831f0af95b59d3f716761a89f9492e5f5ef06d89db661eaba28af4cd",
+      "integrity": "sha256-2aed27f1f73453a78017974b0b9e7698b5c02ed13868fb7a167ce59fc9adff2f",
       "files": [
         {
           "path": "src/components/tuil/forms/controls.tsx",
@@ -1060,7 +1061,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-5b4ee638ae5a03edf13aa9a333b2251abede8c03861ef6d14a4ea1df0c8a1d73",
+      "integrity": "sha256-139c62ddb051d29572039cff4a14840cdf8f0c5e6c010ba5f874eb12eacc5662",
       "files": [
         {
           "path": "src/components/tuil/data-display/json-viewer.tsx",
@@ -1120,8 +1121,12 @@
       "title": "Markdown Viewer",
       "description": "Rendered Markdown projection.",
       "dependencies": [
+        "@mwillbanks/tuil",
         "@mwillbanks/tuil-code",
         "@mwillbanks/tuil-content",
+        "@mwillbanks/tuil-core",
+        "@mwillbanks/tuil-focus",
+        "@mwillbanks/tuil-ink",
         "@mwillbanks/tuil-streaming",
         "ink",
         "react"
@@ -1140,7 +1145,7 @@
         "license": "MIT",
         "mode": "replace"
       },
-      "integrity": "sha256-2a12e37dd2880c914e91035c84e0bc9872e76716838f550557185a84e78ebee8",
+      "integrity": "sha256-80bfeaa2d0669983671d449d4ca82892f9df598176f279ad5947cc60b9a44857",
       "files": [
         {
           "path": "src/components/tuil/data-display/rich-content.tsx",
@@ -1457,7 +1462,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-4ac5d231f4f3a6a19ec16656e343c11b857e1e7d916854763055df09b35b3ee2",
+      "integrity": "sha256-4198ffeb970d8b6fd00e4ff5ab8089be67676cd99ca4385c0dfca808674aa9b9",
       "files": [
         {
           "path": "src/components/tuil/feedback/progress.tsx",
@@ -1526,7 +1531,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-604a357a2fa7905731b3dbe6b32b93dc5425ff0db8703abffd09ba3b2a69417a",
+      "integrity": "sha256-318804810faf2dfbc361314b455d2b00168b68ccb3ec320c5a881604eb7d98d8",
       "files": [
         {
           "path": "src/components/tuil/layout/resizable-pane.tsx",
@@ -1731,7 +1736,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-c5fb324956acb045d392590fb075a78e891b9fd3b91c3ee82b661518af2a6c4f",
+      "integrity": "sha256-cb1729c05390f3c4e2da05b2813580e3acc333f550ed93f6b14d2e6075143f2f",
       "files": [
         {
           "path": "src/components/tuil/feedback/spinner.tsx",
@@ -1800,7 +1805,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-d2745143140aec668e4adf05e9d1b3ef75021a2eb698582620751bd96fc5b01b",
+      "integrity": "sha256-7f3e4c0aca5611e9babbe14167433cd65fa432a67e983b66ed10f7d8231eaa4e",
       "files": [
         {
           "path": "src/components/tuil/layout/panes.tsx",
@@ -2021,7 +2026,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-a5def57940a1e5ff867afadd2745335b0dea86a29caef93e6f38db7fc4adfc22",
+      "integrity": "sha256-faab8f49440a690b633f261d200a9a62a8f15f739da5dc942f9fb14cd7c4b26e",
       "files": [
         {
           "path": "src/components/tuil/data-display/complex-data.tsx",
@@ -2062,7 +2067,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-7007ef99b8ee39641b242418408977406b84743c0c89f6aa4251c9d8278b3a27",
+      "integrity": "sha256-ffd0b94cde9144ebba109b66b430758f2e7a7e7b704e68baf8beb7e7da07a05e",
       "files": [
         {
           "path": "src/components/tuil/navigation/navigation.tsx",
@@ -2313,7 +2318,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-f6e2ab08464b74ab4636c14eb9f75d3510c9f09f7b0731d364594f83e8018c2f",
+      "integrity": "sha256-b11dc7453628f062cf1b32aced67418f5fb3bbf9e1bfeaa1fc19daa57a37d6dd",
       "files": [
         {
           "path": "src/components/tuil/forms/transfer-list.tsx",
@@ -2337,7 +2342,15 @@
         "license": "MIT",
         "mode": "replace"
       },
-      "dependencies": ["@mwillbanks/tuil", "@mwillbanks/tuil-ink", "react"],
+      "dependencies": [
+        "@mwillbanks/tuil",
+        "@mwillbanks/tuil-focus",
+        "@mwillbanks/tuil-ink",
+        "@mwillbanks/tuil-theme",
+        "@mwillbanks/tuil-virtual",
+        "ink",
+        "react"
+      ],
       "registryDependencies": [],
       "version": "1.0.1",
       "ownership": "source",
@@ -2347,7 +2360,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-9d3a662c34b3047e8186cc477617f6d7491e250e8fe65f848f6b156dd46d7df3",
+      "integrity": "sha256-7902902fe32c0ef32ee813c372b6cc5e6c6d281edcb758d9bbb140b6cd48d599",
       "files": [
         {
           "path": "src/components/tuil/data-display/tree.tsx",
@@ -2389,7 +2402,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-0937ac4c20f6f2fa11054f46806d4f518d3bd4fe370395ea50cf32f9e84e4e9c",
+      "integrity": "sha256-14e62592fd521a8c0af91a3bb11e79d564adb8158c89c4274a0fc9ac10212313",
       "files": [
         {
           "path": "src/components/tuil/data-display/virtual-list.tsx",
@@ -2415,6 +2428,7 @@
       },
       "dependencies": [
         "@mwillbanks/tuil",
+        "@mwillbanks/tuil-focus",
         "@mwillbanks/tuil-hotkeys",
         "@mwillbanks/tuil-ink",
         "@mwillbanks/tuil-operations",
@@ -2432,7 +2446,7 @@
         "capabilities": []
       },
       "codemods": [],
-      "integrity": "sha256-90d5dd0b6198487cf4de161746244f3db881d69b00c103ed88591660519458c6",
+      "integrity": "sha256-4216dca0458a09248f08a0a93b2e6c0d11df6bedf39e794954ee01ef891f6289",
       "files": [
         {
           "path": "src/components/tuil/workflows/workflow.tsx",

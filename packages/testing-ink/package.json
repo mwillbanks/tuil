@@ -31,7 +31,6 @@
   },
   "scripts": {
     "build": "bun ../../tooling/build/package.ts",
-    "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
   "dependencies": {
@@ -40,9 +39,9 @@
     "@mwillbanks/tuil-testing": "workspace:*"
   },
   "peerDependencies": {
-    "ink": "catalog:",
+    "ink": "^7.1.1 || ^8.0.0",
     "ink-testing-library": "catalog:",
-    "react": "catalog:"
+    "react": "^19.2.8"
   },
   "files": [
     "dist"

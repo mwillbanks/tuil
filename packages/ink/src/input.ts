@@ -6,7 +6,7 @@ import {
   type ReactNode,
   useContext,
   useEffect,
-  useRef,
+  useEffectEvent,
 } from "react";
 
 export type TerminalInputHandler = (
@@ -107,8 +107,7 @@ export function useTerminalInput(
 ): void {
   const router = useContext(TerminalInputContext);
   const inheritedLayerId = useContext(TerminalInputLayerContext);
-  const handlerRef = useRef(handler);
-  handlerRef.current = handler;
+  const handleInput = useEffectEvent(handler);
   const enabled = options.enabled ?? true;
   const priority = options.priority ?? 0;
   const layerId = options.layerId ?? inheritedLayerId;
@@ -116,7 +115,7 @@ export function useTerminalInput(
   useEffect(() => {
     if (!router || !enabled) return;
     return router.register(
-      (input, key) => handlerRef.current(input, key),
+      (input, key) => handleInput(input, key),
       priority,
       layerId,
       allowControlCharacters,
@@ -134,21 +133,21 @@ export function hasTerminalControlCharacters(input: string): boolean {
 function isSemanticKey(key: Key): boolean {
   return Boolean(
     key.backspace ||
-      key.ctrl ||
-      key.delete ||
-      key.downArrow ||
-      key.end ||
-      key.escape ||
-      key.home ||
-      key.leftArrow ||
-      key.meta ||
-      key.pageDown ||
-      key.pageUp ||
-      key.return ||
-      key.rightArrow ||
-      key.shift ||
-      key.tab ||
-      key.upArrow,
+    key.ctrl ||
+    key.delete ||
+    key.downArrow ||
+    key.end ||
+    key.escape ||
+    key.home ||
+    key.leftArrow ||
+    key.meta ||
+    key.pageDown ||
+    key.pageUp ||
+    key.return ||
+    key.rightArrow ||
+    key.shift ||
+    key.tab ||
+    key.upArrow,
   );
 }
 

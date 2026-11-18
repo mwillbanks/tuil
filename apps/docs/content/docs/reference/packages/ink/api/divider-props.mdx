@@ -14,8 +14,7 @@ Public interface exported by `@mwillbanks/tuil-ink`.
 
 ```ts
 export interface DividerProps
-  extends CommonComponentProps,
-    SlottedComponentProps<DividerSlots> {
+  extends CommonComponentProps, SlottedComponentProps<DividerSlots> {
   readonly width?: number;
   readonly orientation?: "horizontal" | "vertical";
   readonly title?: string;

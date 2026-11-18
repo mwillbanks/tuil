@@ -14,9 +14,9 @@ Public type exported by `@mwillbanks/tuil`.
 
 ```ts
 export type AppEventMap<TEvents extends EventMap> = {
-  [TKey in
-    | keyof TEvents
-    | keyof AppLifecycleEvents]: TKey extends keyof AppLifecycleEvents
+  [
+    TKey in keyof TEvents | keyof AppLifecycleEvents
+  ]: TKey extends keyof AppLifecycleEvents
     ? AppLifecycleEvents[TKey]
     : TKey extends keyof TEvents
       ? TEvents[TKey]

@@ -1,5 +1,9 @@
 {
   "title": "Project initializer",
   "icon": "RocketLaunch",
-  "pages": ["index", "init-wizard", "init-wizard-props"]
+  "pages": [
+    "index",
+    "init-wizard",
+    "init-wizard-props"
+  ]
 }

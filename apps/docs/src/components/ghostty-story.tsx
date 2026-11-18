@@ -7,19 +7,26 @@ export function GhosttyStory(props: {
   readonly frame: PublishedStoryFrame;
 }): ReactNode {
   const host = useRef<HTMLDivElement>(null);
-  const [ready, setReady] = useState(false);
-  const [error, setError] = useState<string>();
   const [revision, setRevision] = useState(0);
+  const [result, setResult] = useState<{
+    frame: PublishedStoryFrame;
+    revision: number;
+    error?: string;
+  }>();
+  const current =
+    result?.frame === props.frame && result.revision === revision
+      ? result
+      : undefined;
+  const ready = !!current && !current.error;
+  const error = current?.error;
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Revision intentionally remounts the terminal session.
   useEffect(() => {
     let active = true;
     let dispose: (() => Promise<void>) | undefined;
-    setReady(false);
-    setError(undefined);
     const mount = async () => {
       if (!host.current) return;
       const adapter = await import("@mwillbanks/tuil-ghostty-web");
+      if (!active || !host.current) return;
       const app = adapter.createTuilGhosttyStoryApp({
         storyId: props.frame.storyId,
         variant: props.frame.variant,
@@ -46,11 +53,15 @@ export function GhosttyStory(props: {
       });
       if (!active) return instance.unmount();
       dispose = instance.unmount;
-      setReady(true);
+      setResult({ frame: props.frame, revision });
     };
     void mount().catch((cause: unknown) => {
       if (active)
-        setError(cause instanceof Error ? cause.message : String(cause));
+        setResult({
+          frame: props.frame,
+          revision,
+          error: cause instanceof Error ? cause.message : String(cause),
+        });
     });
     return () => {
       active = false;
@@ -61,7 +72,7 @@ export function GhosttyStory(props: {
   return (
     <section className="ghostty-story-live ghostty-workspace">
       <div className="ghostty-toolbar">
-        <strong>Live Ink 7 session</strong>
+        <strong>Live Ink session</strong>
         <button type="button" onClick={() => setRevision((value) => value + 1)}>
           Reset session
         </button>

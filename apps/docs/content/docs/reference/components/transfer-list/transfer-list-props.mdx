@@ -10,7 +10,8 @@ icon: BracketsCurly
 
 ```ts
 export interface TransferListProps<TData = unknown>
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<
       TransferListSlots,
       {

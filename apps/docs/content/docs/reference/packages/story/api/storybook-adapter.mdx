@@ -23,8 +23,8 @@ export interface StorybookAdapter {
 
 | Member | Type | Required | Description | Related types |
 | --- | --- | --- | --- | --- |
-| `meta` | `import(".bun/storybook@10.5.4+56076a621b8b6765/node_modules/storybook/internal/csf").ComponentAnnotations<import("@storybook/react").ReactRenderer, Record<string, unknown>>` | Yes | The `meta` member uses the `import(".bun/storybook@10.5.4+56076a621b8b6765/node_modules/storybook/internal/csf").ComponentAnnotations<import("@storybook/react").ReactRenderer, Record<string, unknown>>` contract. | — |
-| `stories` | `Readonly<Record<string, import(".bun/storybook@10.5.4+56076a621b8b6765/node_modules/storybook/internal/csf").StoryAnnotations<import("@storybook/react").ReactRenderer, &#123;&#125;, &#123;&#125;>>>` | Yes | The `stories` member uses the `Readonly<Record<string, import(".bun/storybook@10.5.4+56076a621b8b6765/node_modules/storybook/internal/csf").StoryAnnotations<import("@storybook/react").ReactRenderer, &#123;&#125;, &#123;&#125;>>>` contract. | — |
+| `meta` | `import("storybook/internal/csf").ComponentAnnotations<import("@storybook/react").ReactRenderer, Record<string, unknown>>` | Yes | The `meta` member uses the `import("storybook/internal/csf").ComponentAnnotations<import("@storybook/react").ReactRenderer, Record<string, unknown>>` contract. | — |
+| `stories` | `Readonly<Record<string, import("storybook/internal/csf").StoryAnnotations<import("@storybook/react").ReactRenderer, &#123;&#125;, &#123;&#125;>>>` | Yes | The `stories` member uses the `Readonly<Record<string, import("storybook/internal/csf").StoryAnnotations<import("@storybook/react").ReactRenderer, &#123;&#125;, &#123;&#125;>>>` contract. | — |
 
 ## Parameters
 

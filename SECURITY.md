@@ -12,16 +12,14 @@ Use the private
 
 ## Supported versions
 
-Before 1.0, tuil is alpha software. Security fixes are provided on a
-best-effort basis for the latest published 0.x minor line only. Users should
-expect to upgrade to receive a fix; older 0.x minors and unreleased development
-commits are not supported release lines.
+Maintainers provide security fixes on a best-effort basis for the latest
+published minor release line. Upgrade to that line to receive fixes.
 
-| Version | Support |
-| --- | :---: |
-| Latest published 0.x minor | Best effort |
-| Older 0.x minors | ❌ |
-| Development commits | ❌ |
+| Version                |   Support   |
+| ---------------------- | :---------: |
+| Latest published minor | Best effort |
+| Older releases         |     ❌      |
+| Development commits    |     ❌      |
 
 ## Reporting a vulnerability
 

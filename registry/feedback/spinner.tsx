@@ -7,8 +7,9 @@ import {
 import { type ReactNode, useEffect, useState } from "react";
 import { Text, type TextProps } from "../data-display/text";
 
-export interface SpinnerProps
-  extends SlottedComponentProps<{ root: TextProps }> {
+export interface SpinnerProps extends SlottedComponentProps<{
+  root: TextProps;
+}> {
   readonly id?: string;
   readonly testId?: string;
   readonly label?: string;

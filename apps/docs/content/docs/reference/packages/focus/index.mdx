@@ -66,8 +66,9 @@ runtime that disposes them in reverse order.
 import { FocusManager } from "@mwillbanks/tuil-focus";
 
 const focus = new FocusManager();
-focus.register({ id: "save", scopeId: "dialog" });
+const unregister = focus.registerNode({ id: "save", disabled: false, hidden: false });
 focus.focus("save");
+unregister();
 ```
 
 ## Related

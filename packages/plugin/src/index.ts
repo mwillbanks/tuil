@@ -205,11 +205,7 @@ export interface PluginHealth {
   readonly id: string;
   readonly version: string;
   readonly status:
-    | "registered"
-    | "initializing"
-    | "healthy"
-    | "failed"
-    | "disposed";
+    "registered" | "initializing" | "healthy" | "failed" | "disposed";
   readonly error?: unknown;
 }
 

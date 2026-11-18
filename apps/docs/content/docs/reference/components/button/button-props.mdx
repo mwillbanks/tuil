@@ -10,7 +10,8 @@ icon: BracketsCurly
 
 ```ts
 export interface ButtonProps
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<
       ButtonSlots,
       { readonly focused: boolean; readonly disabled: boolean }
@@ -56,8 +57,8 @@ export interface ButtonProps
 | `checked` | `boolean \| undefined` | No | The `checked` member uses the `boolean \| undefined` contract. | — |
 | `expanded` | `boolean \| undefined` | No | The `expanded` member uses the `boolean \| undefined` contract. | — |
 | `valueText` | `string \| undefined` | No | The `valueText` member uses the `string \| undefined` contract. | — |
-| `slots` | `Partial<SlotComponents<&#123; root: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").BoxProps; label: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").TextProps; prefix: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").TextProps; suffix: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").TextProps; &#125;>> \| undefined` | No | The `slots` member uses the `Partial<SlotComponents<&#123; root: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").BoxProps; label: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").TextProps; prefix: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").TextProps; suffix: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").TextProps; &#125;>> \| undefined` contract. | [`BoxProps`](/docs/reference/packages/ink/api/box-props), [`SlotComponents`](/docs/reference/packages/theme/api/slot-components), [`TextProps`](/docs/reference/packages/ink/api/text-props) |
-| `slotProps` | `Partial<SlotProps<&#123; root: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").BoxProps; label: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").TextProps; prefix: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").TextProps; suffix: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").TextProps; &#125;, &#123; readonly focused: boolean; readonly disabled: boolean; &#125;>> \| undefined` | No | The `slotProps` member uses the `Partial<SlotProps<&#123; root: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").BoxProps; label: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").TextProps; prefix: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").TextProps; suffix: import(".bun/ink@7.1.1+fb5bfe3da9a88d96/node_modules/ink").TextProps; &#125;, &#123; readonly focused: boolean; readonly disabled: boolean; &#125;>> \| undefined` contract. | [`BoxProps`](/docs/reference/packages/ink/api/box-props), [`SlotProps`](/docs/reference/packages/theme/api/slot-props), [`TextProps`](/docs/reference/packages/ink/api/text-props) |
+| `slots` | `Partial<SlotComponents<&#123; root: import("ink").BoxProps; label: import("ink").TextProps; prefix: import("ink").TextProps; suffix: import("ink").TextProps; &#125;>> \| undefined` | No | The `slots` member uses the `Partial<SlotComponents<&#123; root: import("ink").BoxProps; label: import("ink").TextProps; prefix: import("ink").TextProps; suffix: import("ink").TextProps; &#125;>> \| undefined` contract. | [`BoxProps`](/docs/reference/packages/ink/api/box-props), [`SlotComponents`](/docs/reference/packages/theme/api/slot-components), [`TextProps`](/docs/reference/packages/ink/api/text-props) |
+| `slotProps` | `Partial<SlotProps<&#123; root: import("ink").BoxProps; label: import("ink").TextProps; prefix: import("ink").TextProps; suffix: import("ink").TextProps; &#125;, &#123; readonly focused: boolean; readonly disabled: boolean; &#125;>> \| undefined` | No | The `slotProps` member uses the `Partial<SlotProps<&#123; root: import("ink").BoxProps; label: import("ink").TextProps; prefix: import("ink").TextProps; suffix: import("ink").TextProps; &#125;, &#123; readonly focused: boolean; readonly disabled: boolean; &#125;>> \| undefined` contract. | [`BoxProps`](/docs/reference/packages/ink/api/box-props), [`SlotProps`](/docs/reference/packages/theme/api/slot-props), [`TextProps`](/docs/reference/packages/ink/api/text-props) |
 
 ## Source
 

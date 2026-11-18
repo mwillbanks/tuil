@@ -1,11 +1,7 @@
 import { createNusmStore } from "nusm";
 
 export type NavigationSurface =
-  | "screen"
-  | "pane"
-  | "overlay"
-  | "dialog"
-  | "workflow";
+  "screen" | "pane" | "overlay" | "dialog" | "workflow";
 
 export interface FocusSnapshot {
   readonly scopeId?: string;

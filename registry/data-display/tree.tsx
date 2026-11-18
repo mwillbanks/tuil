@@ -68,7 +68,8 @@ type TreeSlots = {
 };
 
 export interface TreeProps<TData = unknown>
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<
       TreeSlots,
       {

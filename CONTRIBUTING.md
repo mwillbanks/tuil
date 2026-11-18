@@ -6,14 +6,14 @@ redirected output, tests, stories, and documentation.
 
 ## Prerequisites
 
-- Bun 1.3.14 or newer
+- Bun 1.4.4
 - OSV-Scanner 2.x
 - a checkout without unrelated edits in the files you plan to change
 
 Install dependencies from the repository root:
 
 ```npm
-bun install --frozen-lockfile
+bun ci
 ```
 
 ## Development workflow
@@ -30,7 +30,9 @@ bun install --frozen-lockfile
 Useful commands:
 
 ```npm
-bun run typecheck
+bun fmt
+bun check
+bun run lint
 bun run test
 bun run build
 bun run docs
@@ -48,14 +50,13 @@ bun run playground
 Before submitting a pull request, run:
 
 ```npm
-bun run check
+bun run validate
 bun run security
 ```
 
-Together the gates run Biome, TypeScript, coverage-gated Bun tests, all package
-builds, Fallow code-quality analysis, and OSV dependency scanning. Do not
-suppress a finding merely to make a gate green. Every suppression must
-document why the reported path is intentional and safe.
+The gates run Bun formatting, checking, tests, and bundles, plus Oxlint, Fallow,
+coverage checks, and OSV. Revisit Bun lint when it becomes available. Document
+why a suppression is intentional and safe.
 
 Validate the statically exported documentation separately:
 
@@ -64,6 +65,15 @@ bun run docs:check
 ```
 
 ## Tests
+
+Keep deterministic unit tests beside their owners. Put process, browser, and
+cross-package checks in `tests/functional`. Put parity baselines and defect
+regressions in `tests/regression`.
+
+Start one local coordinator with
+`bun run checks:watch -- packages registry apps examples tooling`.
+Read the current cycle with `bun run checks:status`. Run
+`bun run test:acceptance` after building the docs and showcase.
 
 Tests should assert semantic behavior rather than ANSI coordinates whenever
 possible. Cover the interaction paths affected by the change, including:
@@ -85,9 +95,8 @@ Documentation lives in `apps/docs`. Package-manager commands in MDX must use
 the `npm` code-fence language so Fumadocs can translate them for npm, Bun,
 pnpm, and Yarn.
 
-The site is exported with the `/tuil/` base path used by GitHub Pages. Keep
-links base-path-safe and verify both the home page and representative docs
-routes after a production build.
+The site supports `/` and the `/tuil/` base path used by GitHub Pages. Keep
+links base-path-safe. Validate both deployments and their interactive routes.
 
 ## Commits and pull requests
 
@@ -104,10 +113,15 @@ describe compatibility impact, link the relevant issue, and include the exact
 validation performed. Visual changes should include desktop and mobile
 evidence.
 
-Release Please turns conventional commits on `main` into one coordinated
-release pull request for the public package suite. Merging that pull request
-creates GitHub releases and publishes unpublished package versions to npm with
-provenance.
+Release Please derives independent package versions and creates a release pull
+request. Author the root [changelog](CHANGELOG.md) entry and the
+[release notes](apps/docs/content/docs/releases/index.mdx) before merging the
+baseline. The workflow stamps the versioned notes and verifies their package
+mapping on the release candidate.
+
+Verify the clean main-branch OSV analysis before merging the release candidate.
+After the merge, verify release tags, npm provenance, published notes, and the
+deployed documentation.
 
 Repository automation requires a `RELEASE_PLEASE_TOKEN` Actions secret. The
 release token must belong to a dedicated maintainer or automation account and

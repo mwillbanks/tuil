@@ -239,7 +239,8 @@ interface TerminalRow {
 }
 
 interface TerminalTableViewProps
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<
       TableSlots,
       {
@@ -782,8 +783,7 @@ function TerminalTableView({
 }
 
 export interface TableProps<TData>
-  extends CommonComponentProps,
-    SlottedComponentProps<TableSlots> {
+  extends CommonComponentProps, SlottedComponentProps<TableSlots> {
   readonly columns: readonly TableColumn<TData>[];
   readonly rows: readonly TData[];
   readonly getRowKey: (row: TData, index: number) => string;
@@ -901,8 +901,7 @@ export function Table<TData>({
 }
 
 export interface DataTableProps<TData extends RowData>
-  extends CommonComponentProps,
-    SlottedComponentProps<TableSlots> {
+  extends CommonComponentProps, SlottedComponentProps<TableSlots> {
   readonly table: TanStackTable<typeof dataTableFeatures, TData>;
   readonly height?: number;
   readonly width?: number;
@@ -960,8 +959,7 @@ export function DataTable<TData extends RowData>({
       align:
         (
           column.columnDef.meta as
-            | { align?: TerminalColumn["align"] }
-            | undefined
+            { align?: TerminalColumn["align"] } | undefined
         )?.align ?? "left",
     };
   });

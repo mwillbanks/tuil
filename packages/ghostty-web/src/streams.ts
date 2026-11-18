@@ -101,7 +101,7 @@ export class BrowserWritableStream extends BrowserStream {
   readonly isTTY = true;
   writable = true;
   #queuedBytes = 0;
-  #writing = false;
+  #active?: PendingWrite;
   readonly #queue: PendingWrite[] = [];
   readonly #idleWaiters = new Set<() => void>();
 
@@ -165,7 +165,7 @@ export class BrowserWritableStream extends BrowserStream {
   }
 
   whenIdle(): Promise<void> {
-    if (!this.#writing && this.#queue.length === 0) return Promise.resolve();
+    if (!this.#active && this.#queue.length === 0) return Promise.resolve();
     return new Promise((resolve) => this.#idleWaiters.add(resolve));
   }
 
@@ -179,16 +179,19 @@ export class BrowserWritableStream extends BrowserStream {
   destroy(): void {
     this.writable = false;
     const error = new Error("Browser terminal output was disposed");
-    for (const write of this.#queue.splice(0)) write.callback?.(error);
+    const active = this.#active;
+    const queued = this.#queue.splice(0);
+    this.#active = undefined;
     this.#queuedBytes = 0;
-    this.#writing = false;
     for (const resolve of this.#idleWaiters) resolve();
     this.#idleWaiters.clear();
     this.removeAllListeners();
+    active?.callback?.(error);
+    for (const write of queued) write.callback?.(error);
   }
 
   #flush(): void {
-    if (this.#writing || !this.writable) return;
+    if (this.#active || !this.writable) return;
     const next = this.#queue.shift();
     if (!next) {
       for (const resolve of this.#idleWaiters) resolve();
@@ -196,17 +199,22 @@ export class BrowserWritableStream extends BrowserStream {
       this.emit("drain");
       return;
     }
-    this.#writing = true;
+    this.#active = next;
     try {
       this.terminal.write(next.data, () => {
+        if (this.#active !== next) return;
         this.#queuedBytes -= next.bytes;
-        this.#writing = false;
-        next.callback?.(null);
-        this.#flush();
+        this.#active = undefined;
+        try {
+          next.callback?.(null);
+        } finally {
+          this.#flush();
+        }
       });
     } catch (cause) {
+      if (this.#active !== next) throw cause;
       this.#queuedBytes -= next.bytes;
-      this.#writing = false;
+      this.#active = undefined;
       const error = cause instanceof Error ? cause : new Error(String(cause));
       next.callback?.(error);
       this.emit("error", error);

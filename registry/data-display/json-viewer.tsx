@@ -201,7 +201,8 @@ type JsonViewerSlots = {
 };
 
 export interface JsonViewerProps
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<
       JsonViewerSlots,
       {

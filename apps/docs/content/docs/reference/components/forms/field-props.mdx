@@ -10,7 +10,8 @@ icon: BracketsCurly
 
 ```ts
 export interface FieldProps
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<{
       root: BoxProps;
       label: TextProps;

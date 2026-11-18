@@ -419,7 +419,7 @@ class InlineCursorEmulator {
     const value =
       typeof data === "string" ? data : new TextDecoder().decode(data);
     const tokens =
-      // biome-ignore lint/suspicious/noControlCharactersInRegex: ANSI output is the emulator input grammar.
+      // oxlint-disable-next-line no-control-regex -- ANSI output is the emulator input grammar.
       /\u001b7|\u001b8|\u001b\[(\d+)([ABCD])|\u001b\[\d+;\d+[Hf]|\u001b\[[0-9;? ]*[A-Za-z]|\u001b\][^\u0007]*(?:\u0007|\u001b\\)|[^\u001b]+/gu;
     for (const match of value.matchAll(tokens)) this.#apply(match);
     return true;

@@ -9,8 +9,9 @@ icon: BracketsCurly
 ## Type
 
 ```ts
-export interface RadioGroupProps<T extends string = string>
-  extends CommonComponentProps {
+export interface RadioGroupProps<
+  T extends string = string,
+> extends CommonComponentProps {
   readonly options: readonly SelectOption<T>[];
   readonly value?: T;
   readonly defaultValue?: T;

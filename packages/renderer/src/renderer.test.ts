@@ -1,3 +1,4 @@
+import { useTestClock } from "../../../tests/helpers/clock.ts";
 import { expect, test } from "bun:test";
 import {
   bracketedPaste,
@@ -46,6 +47,8 @@ function node(id: string, x: number, zIndex = 0, parentId?: string) {
     semantics: { role: "button" as const, label: id },
   };
 }
+
+const clock = useTestClock();
 
 test("layout projection owns hierarchy, hit testing, semantics, and snapshots", () => {
   const layout = new LayoutProjection();
@@ -132,9 +135,9 @@ test("frame scheduler coalesces demand and exposes deterministic statistics", as
   scheduler.request();
   scheduler.request();
   callbacks.shift()?.();
-  await Bun.sleep(0);
+  await clock.advance(0);
   callbacks.shift()?.();
-  await Bun.sleep(0);
+  await clock.advance(0);
   expect(renders).toBeGreaterThanOrEqual(1);
   expect(scheduler.statistics().requested).toBeGreaterThanOrEqual(2);
 });
@@ -153,7 +156,7 @@ test("frame scheduler contains render failures and reports them through its owne
     },
   );
   scheduler.request();
-  await Bun.sleep(10);
+  await clock.advance(10);
   expect(errors).toHaveLength(1);
   expect(errors[0]).toBeInstanceOf(Error);
   expect(scheduler.statistics().idle).toBeTrue();
@@ -182,7 +185,7 @@ test("frame scheduler honors target FPS when maximum FPS permits faster bursts",
   const first = scheduled.shift();
   expect(first?.delay).toBe(0);
   first?.callback();
-  await Bun.sleep(0);
+  await clock.advance(0);
   scheduler.request();
   expect(scheduled.at(-1)?.delay).toBeCloseTo(50, 0);
 });
@@ -730,7 +733,7 @@ test("renderer edge contracts cover validation, replacement, cancellation, and o
     systemRenders += 1;
   });
   systemScheduler.request();
-  await Bun.sleep(20);
+  await clock.advance(20);
   expect(systemRenders).toBe(1);
 
   const writes: string[] = [];

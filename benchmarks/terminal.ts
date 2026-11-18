@@ -15,7 +15,7 @@ import {
 } from "@mwillbanks/tuil-renderer";
 import { ScrollAreaState } from "@mwillbanks/tuil-scroll";
 import { StreamingPipeline } from "@mwillbanks/tuil-streaming";
-import { OptimizedBuffer, RGBA } from "@opentui/core";
+import { OptimizedBuffer, ResourceContext, RGBA } from "@opentui/core";
 import { renderToString, Text } from "ink";
 import { createElement } from "react";
 
@@ -305,21 +305,34 @@ results.push(
 
 const openTuiForeground = RGBA.fromInts(255, 255, 255, 255);
 const openTuiBackground = RGBA.fromInts(0, 0, 0, 255);
-results.push(
-  await measure(
-    "comparison.full-frame.opentui",
-    "OpenTUI public buffer pipeline, 80x24 frame",
-    100,
-    () => {
-      const buffer = OptimizedBuffer.create(80, 24, "unicode");
-      for (const [row, line] of comparisonLines.entries()) {
-        buffer.drawText(line, 0, row, openTuiForeground, openTuiBackground);
-      }
-      comparisonOutputBytes = buffer.getRealCharBytes(true).byteLength;
-      buffer.destroy();
-    },
-  ),
-);
+const openTuiOwner = new ResourceContext({
+  objectCapacity: 64,
+  renderCellsMax: 80 * 24,
+});
+try {
+  results.push(
+    await measure(
+      "comparison.full-frame.opentui",
+      "OpenTUI public buffer pipeline, 80x24 frame",
+      100,
+      () => {
+        const buffer = OptimizedBuffer.create(80, 24, "unicode", {
+          owner: openTuiOwner,
+        });
+        try {
+          for (const [row, line] of comparisonLines.entries()) {
+            buffer.drawText(line, 0, row, openTuiForeground, openTuiBackground);
+          }
+          comparisonOutputBytes = buffer.getRealCharBytes(true).byteLength;
+        } finally {
+          buffer.destroy();
+        }
+      },
+    ),
+  );
+} finally {
+  openTuiOwner.destroy();
+}
 
 const rendererContext: RendererContext = {
   capabilities: {
@@ -379,8 +392,7 @@ interface NormalizedBaselineResult {
 }
 
 type BaselineBenchmarkResult =
-  | CapturedBaselineResult
-  | NormalizedBaselineResult;
+  CapturedBaselineResult | NormalizedBaselineResult;
 
 interface BenchmarkBaseline {
   readonly environment?: {

@@ -73,7 +73,11 @@ runtime that disposes them in reverse order.
 
 ```tsx
 import { LogViewerModel } from "@mwillbanks/tuil-log-viewer";
+import { LogPipeline } from "@mwillbanks/tuil-logging";
+import { createApp } from "@mwillbanks/tuil";
 
+const app = createApp({ component: () => null });
+const pipeline = new LogPipeline();
 const viewer = new LogViewerModel(pipeline, { queryEditor: app.createEditorSession({ id: "log-query" }), queryEditorOwnership: "owned" });
 ```
 

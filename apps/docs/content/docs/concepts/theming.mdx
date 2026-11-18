@@ -9,12 +9,14 @@ color and spacing tokens, component defaults, variants, slots, and capability
 requirements.
 
 ```tsx
+import { createTheme } from "@mwillbanks/tuil-theme";
+
 const ocean = createTheme({
   id: "ocean",
   colors: {
     foreground: "#eafcff",
     background: "#071014",
-    primary: "#16e0e6",
+    primary: { foreground: "#16e0e6", background: "#071014" },
   },
 });
 ```

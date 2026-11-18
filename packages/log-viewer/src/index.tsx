@@ -28,10 +28,7 @@ import {
 
 export type LogDensity = "dense" | "comfortable";
 export type LogThemeVariant =
-  | LogDensity
-  | "monochrome"
-  | "high-contrast"
-  | "color-blind-safe";
+  LogDensity | "monochrome" | "high-contrast" | "color-blind-safe";
 
 export interface LogTheme {
   readonly variant: LogThemeVariant;

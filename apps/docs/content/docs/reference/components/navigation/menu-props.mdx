@@ -10,8 +10,7 @@ icon: BracketsCurly
 
 ```ts
 export interface MenuProps
-  extends CommonComponentProps,
-    SlottedComponentProps<NavigationListSlots> {
+  extends CommonComponentProps, SlottedComponentProps<NavigationListSlots> {
   readonly items: readonly NavigationItem[];
   readonly open?: boolean;
   readonly defaultOpen?: boolean;

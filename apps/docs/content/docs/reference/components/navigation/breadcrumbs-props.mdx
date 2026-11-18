@@ -10,8 +10,7 @@ icon: BracketsCurly
 
 ```ts
 export interface BreadcrumbsProps
-  extends CommonComponentProps,
-    SlottedComponentProps<NavigationListSlots> {
+  extends CommonComponentProps, SlottedComponentProps<NavigationListSlots> {
   readonly items: readonly BreadcrumbItem[];
   readonly separator?: string;
   readonly onSelect?: (item: BreadcrumbItem) => void | Promise<void>;

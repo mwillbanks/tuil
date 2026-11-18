@@ -9,8 +9,9 @@ icon: BracketsCurly
 ## Type
 
 ```ts
-export interface MultiSelectProps<T extends string = string>
-  extends SelectionProps<T> {
+export interface MultiSelectProps<
+  T extends string = string,
+> extends SelectionProps<T> {
   readonly value?: readonly T[];
   readonly defaultValue?: readonly T[];
   readonly onValueChange?: (value: readonly T[]) => void | Promise<void>;

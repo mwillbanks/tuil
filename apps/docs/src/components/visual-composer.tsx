@@ -746,10 +746,7 @@ export function VisualComposer(): ReactNode {
                       terminal: {
                         ...current.terminal,
                         colorDepth: Number(controlValue(event)) as
-                          | 1
-                          | 4
-                          | 8
-                          | 24,
+                          1 | 4 | 8 | 24,
                       },
                     }))
                   }
@@ -801,7 +798,7 @@ export function VisualComposer(): ReactNode {
               <p className="composer-eyebrow">Live preview</p>
               <h2>Terminal canvas</h2>
             </div>
-            <span>Ghostty Web · Ink 7</span>
+            <span>Ghostty Web · Ink 8</span>
           </div>
           <GhosttyPlayground document={document} />
         </div>

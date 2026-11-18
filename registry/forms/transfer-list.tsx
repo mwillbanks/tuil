@@ -53,7 +53,8 @@ type TransferListSlots = {
 type TransferSide = "available" | "selected";
 
 export interface TransferListProps<TData = unknown>
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<
       TransferListSlots,
       {

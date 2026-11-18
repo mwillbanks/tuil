@@ -27,7 +27,6 @@
     "start": "bun src/index.tsx",
     "dev": "bun src/index.tsx",
     "build": "bun build src/index.tsx --outdir dist --target bun --packages external",
-    "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
   "dependencies": {

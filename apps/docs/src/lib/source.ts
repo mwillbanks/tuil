@@ -1,3 +1,4 @@
+import { getBasePath } from "@/lib/base-path";
 import {
   Aperture,
   AppWindow,
@@ -46,7 +47,7 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import { loader } from "fumadocs-core/source";
 import { createElement, type ReactNode } from "react";
-import { docs } from "@/.source";
+import { docs } from "./content.server";
 import { i18n } from "@/lib/i18n";
 
 const icons = {
@@ -123,10 +124,7 @@ export function getPageImageUrl(page: (typeof source)["$inferPage"]): {
   readonly segments: string[];
   readonly url: string;
 } {
-  const basePath = (process.env["NEXT_PUBLIC_BASE_PATH"] ?? "").replace(
-    /\/+$/,
-    "",
-  );
+  const basePath = getBasePath();
   const segments = [
     page.locale ?? i18n.defaultLanguage,
     ...page.slugs,

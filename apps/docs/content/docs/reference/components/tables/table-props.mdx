@@ -10,8 +10,7 @@ icon: BracketsCurly
 
 ```ts
 export interface TableProps<TData>
-  extends CommonComponentProps,
-    SlottedComponentProps<TableSlots> {
+  extends CommonComponentProps, SlottedComponentProps<TableSlots> {
   readonly columns: readonly TableColumn<TData>[];
   readonly rows: readonly TData[];
   readonly getRowKey: (row: TData, index: number) => string;

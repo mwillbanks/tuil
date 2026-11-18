@@ -9,8 +9,10 @@ icon: BracketsCurly
 ## Type
 
 ```ts
-export interface AutocompleteProps<T extends string = string>
-  extends Omit<SelectionProps<T>, "searchable"> {
+export interface AutocompleteProps<T extends string = string> extends Omit<
+  SelectionProps<T>,
+  "searchable"
+> {
   readonly field?: AdaptedTanStackField<string>;
   readonly validators?: FieldValidators<string>;
   readonly onBlur?: () => void | Promise<void>;

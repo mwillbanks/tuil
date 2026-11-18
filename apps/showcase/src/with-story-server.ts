@@ -27,11 +27,11 @@ const showcaseRoot = new URL("..", import.meta.url).pathname;
 const commands = {
   storybook: {
     cwd: showcaseRoot,
-    command: ["storybook", "dev", "--no-open", "--port", "6006"],
+    command: ["bun", "run", "browser"],
   },
   docs: {
     cwd: new URL("../../docs", import.meta.url).pathname,
-    command: ["next", "dev"],
+    command: ["bun", "run", "dev"],
   },
 } as const;
 

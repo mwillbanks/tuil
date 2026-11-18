@@ -1,3 +1,4 @@
+import hostProcess from "node:process";
 import { describe, expect, test } from "bun:test";
 import {
   createTuilGhosttyDocumentSession,
@@ -22,6 +23,12 @@ import processShim from "./shims/process";
 import { FileManagerApplication } from "./shims/production-examples";
 import Stream, { Readable, Writable } from "./shims/stream";
 import { BrowserReadableStream, BrowserWritableStream } from "./streams";
+
+test("browser entry preserves the native process in server consumers", async () => {
+  await import("./browser");
+  expect(globalThis.process).toBe(hostProcess);
+  expect(globalThis.process.listenerCount).toBe(hostProcess.listenerCount);
+});
 
 describe("browser terminal streams", () => {
   test("forwards input and bounds queued bytes", () => {

@@ -1,10 +1,12 @@
 "use client";
 
+import { getBasePath } from "@/lib/base-path";
+
 import { type ReactNode, useEffect, useState } from "react";
 import { GhosttyStory } from "./ghostty-story";
 import type { PublishedStoryFrame } from "./story-explorer";
 
-const basePath = process.env["NEXT_PUBLIC_BASE_PATH"] ?? "";
+const basePath = getBasePath();
 
 export function PublishedStory(props: {
   readonly storyId?: string;

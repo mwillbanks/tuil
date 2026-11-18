@@ -222,12 +222,12 @@ function editRichLeaf(
   index: number,
   transaction: RichTransaction,
 ): void {
+  if (!children[index]) throw invalidRichPath(transaction.path);
   if (transaction.remove) {
     children.splice(index, 1);
     return;
   }
-  if (!children[index] || !transaction.node)
-    throw invalidRichPath(transaction.path);
+  if (!transaction.node) throw invalidRichPath(transaction.path);
   children[index] = transaction.node;
 }
 
@@ -272,6 +272,14 @@ export class RichDocumentSession {
   }
 
   dispatch(transaction: RichTransaction): RichDocument {
+    if (
+      Array.from(transaction.path).some(
+        (index) => !Number.isSafeInteger(index) || index < 0,
+      ) ||
+      (transaction.path.length === 0 && transaction.remove)
+    ) {
+      throw invalidRichPath(transaction.path);
+    }
     const node = transaction.node
       ? freezeNode(validateRichNode(transaction.node, this.#providers))
       : undefined;
@@ -288,11 +296,12 @@ export class RichDocumentSession {
       });
       return this.#document;
     }
+    const root = editRichNode(this.#document.root, validated, 0);
     this.#history.push(this.#document);
     this.#redo.length = 0;
     this.#document = Object.freeze({
       version: this.#document.version + 1,
-      root: editRichNode(this.#document.root, validated, 0),
+      root,
     });
     return this.#document;
   }
@@ -495,6 +504,18 @@ function applyRichTextOutsideLeaf(
   end: number,
 ): RichNode {
   if (projection.spans.length === 0 && start === 0 && end === 0) {
+    const first = root.children?.[0];
+    if (
+      first &&
+      richBlockNodeTypes.has(first.type) &&
+      first.text === undefined &&
+      !first.children?.length
+    ) {
+      return replaceRichNodeAtPath(root, [0], {
+        ...first,
+        children: [{ type: "text", text: change.insert }],
+      });
+    }
     return freezeNode({
       ...root,
       children: [
@@ -662,7 +683,11 @@ export class RichEditorSession implements EditorSession {
       root = applyRichTextChange(root, current, change);
     }
     const projected = projectRichText(root, this.#providers).text;
-    if (projected !== candidate.document.text) {
+    const initialParagraph = before.text === "" && before.spans.length === 0;
+    if (
+      projected !== candidate.document.text &&
+      !(initialParagraph && projected === candidate.document.text + "\n")
+    ) {
       throw new Error("Rich text edit changed document structure");
     }
     if (transaction.addToHistory !== false) this.#recordHistory();

@@ -18,7 +18,7 @@
     {
       "path": "src/components/tuil/data-display/divider.tsx",
       "target": "src/components/tuil/data-display/divider.tsx",
-      "content": "import {\n  resolveSlotProps,\n  type SlottedComponentProps,\n  useTheme,\n} from \"@mwillbanks/tuil-theme\";\nimport type { ReactNode } from \"react\";\nimport { Text, type TextProps } from \"./text\";\n\nexport interface DividerProps\n  extends SlottedComponentProps<{ root: TextProps }> {\n  readonly id?: string;\n  readonly testId?: string;\n  readonly label?: string;\n  readonly width?: number;\n  readonly orientation?: \"horizontal\" | \"vertical\";\n  readonly title?: string;\n}\n\nexport function Divider({\n  width = 40,\n  orientation = \"horizontal\",\n  title,\n  slots,\n  slotProps,\n  ...props\n}: DividerProps): ReactNode {\n  const theme = useTheme();\n  const Root = slots?.root ?? Text;\n  const line = theme.borders.single[0];\n  const content =\n    orientation === \"vertical\"\n      ? theme.borders.single[1]\n      : title\n        ? `${line.repeat(2)} ${title} ${line.repeat(Math.max(0, width - title.length - 4))}`\n        : line.repeat(width);\n  return (\n    <Root\n      {...props}\n      {...resolveSlotProps(slotProps?.root, {}, theme)}\n      label={props.label ?? title ?? \"separator\"}\n    >\n      {content}\n    </Root>\n  );\n}\n",
+      "content": "import {\n  resolveSlotProps,\n  type SlottedComponentProps,\n  useTheme,\n} from \"@mwillbanks/tuil-theme\";\nimport type { ReactNode } from \"react\";\nimport { Text, type TextProps } from \"./text\";\n\nexport interface DividerProps extends SlottedComponentProps<{\n  root: TextProps;\n}> {\n  readonly id?: string;\n  readonly testId?: string;\n  readonly label?: string;\n  readonly width?: number;\n  readonly orientation?: \"horizontal\" | \"vertical\";\n  readonly title?: string;\n}\n\nexport function Divider({\n  width = 40,\n  orientation = \"horizontal\",\n  title,\n  slots,\n  slotProps,\n  ...props\n}: DividerProps): ReactNode {\n  const theme = useTheme();\n  const Root = slots?.root ?? Text;\n  const line = theme.borders.single[0];\n  const content =\n    orientation === \"vertical\"\n      ? theme.borders.single[1]\n      : title\n        ? `${line.repeat(2)} ${title} ${line.repeat(Math.max(0, width - title.length - 4))}`\n        : line.repeat(width);\n  return (\n    <Root\n      {...props}\n      {...resolveSlotProps(slotProps?.root, {}, theme)}\n      label={props.label ?? title ?? \"separator\"}\n    >\n      {content}\n    </Root>\n  );\n}\n",
       "source": "registry/data-display/divider.tsx"
     }
   ],
@@ -30,5 +30,5 @@
     "capabilities": []
   },
   "codemods": [],
-  "integrity": "sha256-f8d6ee0a1b817fc005c125d5a8b88e95c6ba1eaee10e0bd04c732d3587387835"
+  "integrity": "sha256-68869393796ce09d3422e1428ed32e2715a999f1be55c83c1e6fe21ca3086acf"
 }

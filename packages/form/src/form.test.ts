@@ -1,9 +1,12 @@
+import { useTestClock } from "../../../tests/helpers/clock.ts";
 import { expect, test } from "bun:test";
 import {
   adaptTanStackField,
   TerminalFieldController,
   TerminalFormController,
 } from "./index.tsx";
+
+const clock = useTestClock();
 
 test("terminal fields validate, cancel stale work, track state, and redact secrets", async () => {
   const changes: string[] = [];
@@ -16,7 +19,7 @@ test("terminal fields validate, cancel stale work, track state, and redact secre
     },
     validators: {
       change: async (value, { signal }) => {
-        await Bun.sleep(value === "slow" ? 20 : 1);
+        await clock.delay(value === "slow" ? 20 : 1);
         signal.throwIfAborted();
         return value.length < 3 ? "Too short" : undefined;
       },
@@ -25,12 +28,15 @@ test("terminal fields validate, cancel stale work, track state, and redact secre
   });
   const slow = field.setValue("slow");
   const fast = field.setValue("ok");
+  await clock.advance(20);
   await Promise.all([slow, fast]);
   expect(field.state.errors).toEqual(["Too short"]);
   expect(field.state.dirty).toBeTrue();
   expect(changes).toEqual(["slow", "ok"]);
   expect(field.serialize()).toBe("[REDACTED]");
-  await field.setValue("valid");
+  const valid = field.setValue("valid");
+  await clock.advance(1);
+  await valid;
   expect(field.state.valid).toBeTrue();
   field.reset();
   expect(field.state.value).toBe("");
@@ -43,7 +49,7 @@ test("aborted validation clears pending state without applying stale errors", as
     initialValue: "value",
     validators: {
       command: async () => {
-        await Bun.sleep(20);
+        await clock.delay(20);
         return "Unavailable";
       },
     },
@@ -51,6 +57,7 @@ test("aborted validation clears pending state without applying stale errors", as
   const cancellation = new AbortController();
   const validation = field.validate("command", cancellation.signal);
   cancellation.abort();
+  await clock.advance(20);
   await validation;
   expect(field.state.validating).toBeFalse();
   expect(field.state.errors).toEqual([]);
@@ -95,7 +102,9 @@ test("forms validate in registration order, focus first invalid, submit, and res
   });
   const focused: string[] = [];
   expect(
-    await form.validate("submit", { focus: (field) => focused.push(field) }),
+    await form.validate("submit", {
+      focus: (field) => focused.push(field),
+    }),
   ).toBeFalse();
   expect(focused).toEqual(["name"]);
   expect(runtime.state.errors).toEqual(["Unsupported"]);

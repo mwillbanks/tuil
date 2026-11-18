@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
@@ -21,7 +21,6 @@
     "noPropertyAccessFromIndexSignature": true,
     "paths": {
       "@/*": ["./apps/docs/src/*"],
-      "@/.source": ["./apps/docs/.source/server.ts"],
       "@mwillbanks/tuil": ["./packages/tuil/src/index.ts"],
       "@mwillbanks/tuil-core": ["./packages/core/src/index.ts"],
       "@mwillbanks/tuil-events": ["./packages/events/src/index.ts"],

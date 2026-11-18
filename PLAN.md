@@ -88,20 +88,20 @@ The Ink backend remains the compatibility and migration path. The cell backend b
 
 Proposed new or expanded packages:
 
-| Package | Responsibility |
-| --- | --- |
-| `@mwillbanks/tuil-renderer` | Renderer contracts, frames, scheduling, capabilities, and backend registration |
-| `@mwillbanks/tuil-cell` | Bun-native cell buffer, layout projection, composition, and output |
-| `@mwillbanks/tuil-pointer` | Mouse parsing, hit testing, pointer events, capture, hover, drag, and drop |
-| `@mwillbanks/tuil-scroll` | Scroll areas, scrollbars, culling, sticky scroll, and viewport state |
-| `@mwillbanks/tuil-editor` | Editor contracts, optional built-in buffer/Vim/rich modules, provider registration, and editor testing |
-| `@mwillbanks/tuil-code` | Tree-sitter code parsing, highlighting, folds, and diagnostics |
-| `@mwillbanks/tuil-streaming` | Extensible streaming parse, transform, and render pipeline |
-| `@mwillbanks/tuil-content` | Shared code, Markdown, diff, JSON, and selectable-content primitives |
-| `@mwillbanks/tuil-logging` | Normalized log records, parsers, enrichment, and pipelines |
-| `@mwillbanks/tuil-log-viewer` | Virtualized log search, filtering, detail, tailing, and theming |
-| `@mwillbanks/tuil-devtools` | Pluggable runtime inspection, actions, panels, and diagnostics |
-| `@mwillbanks/tuil-protocol` | Optional remote/embedded transport and devtools protocol |
+| Package                       | Responsibility                                                                                         |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `@mwillbanks/tuil-renderer`   | Renderer contracts, frames, scheduling, capabilities, and backend registration                         |
+| `@mwillbanks/tuil-cell`       | Bun-native cell buffer, layout projection, composition, and output                                     |
+| `@mwillbanks/tuil-pointer`    | Mouse parsing, hit testing, pointer events, capture, hover, drag, and drop                             |
+| `@mwillbanks/tuil-scroll`     | Scroll areas, scrollbars, culling, sticky scroll, and viewport state                                   |
+| `@mwillbanks/tuil-editor`     | Editor contracts, optional built-in buffer/Vim/rich modules, provider registration, and editor testing |
+| `@mwillbanks/tuil-code`       | Tree-sitter code parsing, highlighting, folds, and diagnostics                                         |
+| `@mwillbanks/tuil-streaming`  | Extensible streaming parse, transform, and render pipeline                                             |
+| `@mwillbanks/tuil-content`    | Shared code, Markdown, diff, JSON, and selectable-content primitives                                   |
+| `@mwillbanks/tuil-logging`    | Normalized log records, parsers, enrichment, and pipelines                                             |
+| `@mwillbanks/tuil-log-viewer` | Virtualized log search, filtering, detail, tailing, and theming                                        |
+| `@mwillbanks/tuil-devtools`   | Pluggable runtime inspection, actions, panels, and diagnostics                                         |
+| `@mwillbanks/tuil-protocol`   | Optional remote/embedded transport and devtools protocol                                               |
 
 Some packages may begin as modules within existing packages. They should be split only when the public boundary and test surface are stable.
 

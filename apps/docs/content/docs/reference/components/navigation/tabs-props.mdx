@@ -10,8 +10,7 @@ icon: BracketsCurly
 
 ```ts
 export interface TabsProps
-  extends CommonComponentProps,
-    SlottedComponentProps<NavigationSlots> {
+  extends CommonComponentProps, SlottedComponentProps<NavigationSlots> {
   readonly items: readonly NavigationItem[];
   readonly value?: string;
   readonly defaultValue?: string;

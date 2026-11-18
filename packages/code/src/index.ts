@@ -261,7 +261,9 @@ class TreeSitterWorkerClient {
       ? "./worker.ts"
       : "./worker.js";
     this.#worker = new Worker(new URL(workerEntry, import.meta.url));
-    this.#worker.unref();
+    if ("unref" in this.#worker && typeof this.#worker.unref === "function") {
+      this.#worker.unref();
+    }
     this.#worker.onmessage = (event: MessageEvent<WorkerParseResponse>) => {
       const pending = this.#pending.get(event.data.id);
       if (!pending) return;
@@ -579,7 +581,13 @@ export class CodeDocument {
   }
 
   update(start: number, end: number, insert: string): void {
-    if (start < 0 || end < start || end > this.#source.length) {
+    if (
+      !Number.isInteger(start) ||
+      !Number.isInteger(end) ||
+      start < 0 ||
+      end < start ||
+      end > this.#source.length
+    ) {
       throw new Error("Code update range is invalid");
     }
     this.#source =
@@ -608,7 +616,13 @@ export class CodeDocument {
   }
 
   select(start: number, end: number): void {
-    if (start < 0 || end < start || end > this.#source.length) {
+    if (
+      !Number.isInteger(start) ||
+      !Number.isInteger(end) ||
+      start < 0 ||
+      end < start ||
+      end > this.#source.length
+    ) {
       throw new Error("Code selection range is invalid");
     }
     this.#selection = Object.freeze({ start, end });

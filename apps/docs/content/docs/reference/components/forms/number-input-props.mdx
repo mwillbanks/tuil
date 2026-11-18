@@ -9,16 +9,15 @@ icon: BracketsCurly
 ## Type
 
 ```ts
-export interface NumberInputProps
-  extends Omit<
-    TextInputProps,
-    | "value"
-    | "defaultValue"
-    | "onValueChange"
-    | "validators"
-    | "field"
-    | "registerWithForm"
-  > {
+export interface NumberInputProps extends Omit<
+  TextInputProps,
+  | "value"
+  | "defaultValue"
+  | "onValueChange"
+  | "validators"
+  | "field"
+  | "registerWithForm"
+> {
   readonly field?: AdaptedTanStackField<number>;
   readonly validators?: FieldValidators<number>;
   readonly value?: number;
@@ -71,6 +70,7 @@ export interface NumberInputProps
 | `maxLength` | `number \| undefined` | No | The `maxLength` member uses the `number \| undefined` contract. | — |
 | `onArrowUp` | `(() => void \| Promise<void>) \| undefined` | No | The `onArrowUp` member uses the `(() => void \| Promise<void>) \| undefined` contract. | — |
 | `onArrowDown` | `(() => void \| Promise<void>) \| undefined` | No | The `onArrowDown` member uses the `(() => void \| Promise<void>) \| undefined` contract. | — |
+| `allowControlCharacters` | `boolean \| undefined` | No | The `allowControlCharacters` member uses the `boolean \| undefined` contract. | — |
 
 ## Source
 

@@ -14,7 +14,8 @@ Public interface exported by `@mwillbanks/tuil-ink`.
 
 ```ts
 export interface ProgressProps
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<
       ProgressSlots,
       { readonly percent: number; readonly complete: boolean }

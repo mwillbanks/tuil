@@ -59,7 +59,10 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
-expect(screen.getByRole("button", { name: "Run" })).toBeEnabled();
+import { SemanticScreen } from "@mwillbanks/tuil-testing";
+
+const screen = new SemanticScreen(() => ({ nodes: [{ key: "run", role: "button", label: "Run" }], frame: "Run" }));
+console.log(screen.getByRole("button", { name: "Run" }));
 ```
 
 ## Related

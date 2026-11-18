@@ -1,3 +1,4 @@
+import { getBasePath } from "@/lib/base-path";
 import { HomeLayout } from "fumadocs-ui/layouts/home";
 import {
   ArrowRight,
@@ -15,14 +16,14 @@ import {
   Workflow,
   Zap,
 } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { Image } from "fumadocs-core/framework";
+import { Link } from "fumadocs-core/framework";
 import type { ReactNode } from "react";
 import { Brand } from "@/components/brand";
 import { type DocsLocale, localizeDocsHref } from "@/lib/i18n";
 import { baseOptions } from "@/lib/layout.shared";
 
-const basePath = process.env["NEXT_PUBLIC_BASE_PATH"] ?? "";
+const basePath = getBasePath();
 
 const features = [
   {

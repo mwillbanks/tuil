@@ -57,6 +57,7 @@ flowchart LR
 | [`DividerProps`](/docs/reference/packages/ink/api/divider-props) | `interface DividerProps` | Public interface DividerProps. |
 | [`escapeTerminalControlCharacters`](/docs/reference/packages/ink/api/escape-terminal-control-characters) | `export escapeTerminalControlCharacters` | Public export escapeTerminalControlCharacters. |
 | [`ExternalSnapshotStore`](/docs/reference/packages/ink/api/external-snapshot-store) | `interface ExternalSnapshotStore` | Public interface ExternalSnapshotStore. |
+| [`hasTerminalControlCharacters`](/docs/reference/packages/ink/api/has-terminal-control-characters) | `export hasTerminalControlCharacters` | Public export hasTerminalControlCharacters. |
 | [`Heading`](/docs/reference/packages/ink/api/heading) | `function Heading` | Public function Heading. |
 | [`HeadingProps`](/docs/reference/packages/ink/api/heading-props) | `interface HeadingProps` | Public interface HeadingProps. |
 | [`HStack`](/docs/reference/packages/ink/api/hstack) | `function HStack` | Public function HStack. |
@@ -119,9 +120,11 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
-import { render } from "@mwillbanks/tuil-ink";
+import { createApp } from "@mwillbanks/tuil";
+import { Text, render } from "@mwillbanks/tuil-ink";
 
-const instance = render(<App />, { app });
+const app = createApp({ component: () => <Text>Ready</Text> });
+const instance = await render(app);
 await instance.waitUntilExit();
 ```
 

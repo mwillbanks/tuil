@@ -1,0 +1,3 @@
+[fmt]
+# Explicit generated paths must bypass the repository formatter exclusions.
+ignorePatterns = []

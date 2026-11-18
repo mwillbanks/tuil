@@ -44,6 +44,17 @@ test("SGR parser handles buttons, modifiers, motion, and wheel axes", () => {
     button: "wheel",
     wheelY: 1,
   });
+  expect(parseSgrPointer("\u001b[<66;2;2M")).toMatchObject({
+    button: "wheel",
+    wheelX: -1,
+    wheelY: 0,
+  });
+  expect(parseSgrPointer("\u001b[<83;2;2M")).toMatchObject({
+    button: "wheel",
+    wheelX: 1,
+    wheelY: 0,
+    modifiers: { ctrl: true },
+  });
   expect(parseSgrPointer("not-mouse")).toBeUndefined();
   expect(parseSgrPointer("\u001b[<0;2;3Mtail")).toBeUndefined();
 });
@@ -68,6 +79,25 @@ test("streaming pointer decoding preserves batched non-pointer bytes and partial
   decoder.push("\u001b[<0;1");
   expect(decoder.flush()).toBe("\u001b[<0;1");
   expect(decoder.push("\u001b[A").passthrough).toBe("\u001b[A");
+});
+
+test("pointer decoder holds each possible SGR prefix across chunks", () => {
+  const report = "\u001b[<0;2;3M";
+  for (let split = 1; split < report.length; split += 1) {
+    const decoder = new SgrPointerDecoder();
+    expect(decoder.push(report.slice(0, split))).toEqual({
+      events: [],
+      passthrough: "",
+    });
+    const { events } = decoder.push(report.slice(split));
+    expect(events).toHaveLength(1);
+    expect(events[0]).toEqual(parseSgrPointer(report)!);
+  }
+  for (const suffix of ["\u001b", "\u001b["]) {
+    const decoder = new SgrPointerDecoder();
+    expect(decoder.push(suffix).passthrough).toBe("");
+    expect(decoder.push("A").passthrough).toBe(suffix + "A");
+  }
 });
 
 test("pointer router dispatches capture/bubble, focus, clicks, hover, and drag", () => {

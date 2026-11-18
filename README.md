@@ -27,28 +27,28 @@ output, tests, documentation, and Storybook.
 
 ## Why tuil
 
-| Capability | What it provides |
-| --- | --- |
-| Application runtime | Explicit services, lifecycle, capabilities, typed events, and teardown |
-| Terminal-native UX | Focus scopes, hotkey sequences, overlays, forms, routing, and responsive layouts |
-| Deterministic output | Interactive, static, text, silent, and JSON modes from the same application |
-| Portable stories | One catalog for live previews, Storybook, snapshots, and generated documentation |
-| Semantic testing | Query roles and labels instead of brittle terminal coordinates |
-| Source ownership | Install inspectable components and blocks through the registry CLI |
-| Live composition | Observable plugin extensions and capability-normalized theme switching |
+| Capability           | What it provides                                                                 |
+| -------------------- | -------------------------------------------------------------------------------- |
+| Application runtime  | Explicit services, lifecycle, capabilities, typed events, and teardown           |
+| Terminal-native UX   | Focus scopes, hotkey sequences, overlays, forms, routing, and responsive layouts |
+| Deterministic output | Interactive, static, text, silent, and JSON modes from the same application      |
+| Portable stories     | One catalog for live previews, Storybook, snapshots, and generated documentation |
+| Semantic testing     | Query roles and labels instead of brittle terminal coordinates                   |
+| Source ownership     | Install inspectable components and blocks through the registry CLI               |
+| Live composition     | Observable plugin extensions and capability-normalized theme switching           |
 
 ## Install
 
 Install the framework, Ink adapter, renderer, and React:
 
 ```npm
-npm install @mwillbanks/tuil @mwillbanks/tuil-ink ink react
+bun add @mwillbanks/tuil @mwillbanks/tuil-ink ink react
 ```
 
 Create a project with the self-hosted initializer:
 
 ```npm
-npx @mwillbanks/tuil init
+bunx @mwillbanks/tuil init
 ```
 
 The initializer validates the destination before writing and can install
@@ -75,16 +75,16 @@ and migration guidance live in the
 
 ## Development
 
-Bun 1.3.14 or newer is required.
+Bun 1.4.4 is required.
 
 ```npm
-bun install --frozen-lockfile
-bun run check
+bun ci
+bun run validate
 bun run docs
 ```
 
-`bun run check` validates formatting and types, runs coverage-gated tests,
-builds every publication artifact, and audits the project with Fallow. Run the
+`bun run validate` validates formatting and types, runs coverage-gated tests,
+builds affected publication artifacts, and checks the Bun showcase and Fumadocs site. Use `bun run validate:all` for every publication artifact. Run the
 dependency security gate separately:
 
 ```npm

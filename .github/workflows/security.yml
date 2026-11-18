@@ -4,20 +4,57 @@ on:
   schedule:
     - cron: "19 8 * * 1"
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      upload-sarif:
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 jobs:
-  scan:
-    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.5.0
+  osv-scan:
+    runs-on: ubuntu-latest
     permissions:
-      actions: read
       contents: read
       security-events: write
-    with:
-      scan-args: |-
-        --config=./osv-scanner.toml
-        --lockfile=./bun.lock
-      upload-sarif: true
-      fail-on-vuln: true
+      actions: read
+    env:
+      OSV_VERSION: v2.7.1
+      OSV_SHA256: fb7dab19a8bd9bbe5c3189f09d4b7ee1820c9553a23bac202648a56efd2f6ee8
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install OSV Scanner
+        run: |
+          set -euo pipefail
+          binary="$RUNNER_TEMP/osv-scanner"
+          curl --fail --silent --show-error --location --retry 3 \
+            "https://github.com/google/osv-scanner/releases/download/$OSV_VERSION/osv-scanner_linux_amd64" \
+            --output "$binary"
+          printf '%s  %s\n' "$OSV_SHA256" "$binary" | sha256sum --check
+          chmod +x "$binary"
+      - name: Scan Bun lockfile
+        id: scan
+        shell: bash
+        run: |
+          set -euo pipefail
+          sarif="$RUNNER_TEMP/tuil-osv.sarif"
+          status=0
+          "$RUNNER_TEMP/osv-scanner" scan source \
+            --config=./osv-scanner.toml --lockfile=./bun.lock \
+            --format=sarif --output="$sarif" || status=$?
+          if jq -e '.version == "2.1.0" and (.runs | length > 0)' "$sarif" >/dev/null; then
+            printf 'sarif=true\n' >> "$GITHUB_OUTPUT"
+          else
+            exit 1
+          fi
+          exit "$status"
+      - name: Upload OSV findings
+        if: ${{ !cancelled() && steps.scan.outputs.sarif == 'true' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || inputs.upload-sarif) }}
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: ${{ runner.temp }}/tuil-osv.sarif
+          category: .github/workflows/security.yml:osv-scan

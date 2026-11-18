@@ -69,6 +69,7 @@ export function NumberInput({
 | `maxLength` | `number \| undefined` | No | The `maxLength` member uses the `number \| undefined` contract. | — |
 | `onArrowUp` | `(() => void \| Promise<void>) \| undefined` | No | The `onArrowUp` member uses the `(() => void \| Promise<void>) \| undefined` contract. | — |
 | `onArrowDown` | `(() => void \| Promise<void>) \| undefined` | No | The `onArrowDown` member uses the `(() => void \| Promise<void>) \| undefined` contract. | — |
+| `allowControlCharacters` | `boolean \| undefined` | No | The `allowControlCharacters` member uses the `boolean \| undefined` contract. | — |
 
 Controls expose `onValueChange`, `onSubmit`, focus, selection, and validation callbacks.
 
@@ -77,6 +78,8 @@ Callback props run after the documented input is accepted. Callbacks are not can
 ## Interaction and capabilities
 
 Text controls edit directly; choice controls use arrows and Space or Enter; `Form` coordinates validation and submission.
+
+
 
 The published manifest records keyboard, focus, pointer, theme, terminal, semantic, event, and dependency requirements.
 

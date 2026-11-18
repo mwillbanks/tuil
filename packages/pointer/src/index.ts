@@ -1,11 +1,7 @@
 import type { LayoutNode, LayoutProjection } from "@mwillbanks/tuil-renderer";
 
 export type PointerButton =
-  | "none"
-  | "primary"
-  | "middle"
-  | "secondary"
-  | "wheel";
+  "none" | "primary" | "middle" | "secondary" | "wheel";
 export type PointerEventType =
   | "move"
   | "enter"
@@ -56,7 +52,9 @@ function pointerModifiers(code: number): PointerModifiers {
 function wheelOffset(code: number): readonly [number, number] {
   if ((code & 64) === 0) return [0, 0];
   const direction = (code & 1) === 0 ? -1 : 1;
-  return (code & 128) !== 0 ? [direction, 0] : [0, direction];
+  // SGR uses button bits 2 and 3 for horizontal wheel motion. Preserve the legacy extended encoding.
+  const horizontal = (code & (2 | 128)) !== 0;
+  return horizontal ? [direction, 0] : [0, direction];
 }
 
 export function parseSgrPointer(input: string): ParsedPointerInput | undefined {
@@ -87,12 +85,10 @@ export interface DecodedPointerInput {
 }
 
 function incompleteSgrStart(value: string): number {
-  const start = value.lastIndexOf("\u001b[<");
+  const start = value.lastIndexOf("\u001b");
   if (start < 0) return -1;
   const suffix = value.slice(start);
-  return suffix.startsWith("\u001b") && /^\[<[0-9;]*$/u.test(suffix.slice(1))
-    ? start
-    : -1;
+  return /^(?:\[(?:<[0-9;]*)?)?$/u.test(suffix.slice(1)) ? start : -1;
 }
 
 /**
@@ -103,6 +99,13 @@ function incompleteSgrStart(value: string): number {
 export class SgrPointerDecoder {
   #pending = "";
 
+  #splitIncomplete(value: string): string {
+    const incomplete = incompleteSgrStart(value);
+    if (incomplete < 0) return value;
+    this.#pending = value.slice(incomplete);
+    return value.slice(0, incomplete);
+  }
+
   push(chunk: string): DecodedPointerInput {
     const input = this.#pending + chunk;
     this.#pending = "";
@@ -112,7 +115,7 @@ export class SgrPointerDecoder {
     while (offset < input.length) {
       const markerIndex = input.indexOf("\u001b[<", offset);
       if (markerIndex < 0) {
-        passthrough += input.slice(offset);
+        passthrough += this.#splitIncomplete(input.slice(offset));
         break;
       }
       passthrough += input.slice(offset, markerIndex);

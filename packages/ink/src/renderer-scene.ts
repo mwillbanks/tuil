@@ -133,7 +133,7 @@ export function parseInkRendererScene(
   let link: string | undefined;
   const bell = "\u0007";
   const pattern =
-    // biome-ignore lint/suspicious/noControlCharactersInRegex: ANSI CSI and OSC 8 are the input grammar.
+    // oxlint-disable-next-line no-control-regex -- ANSI CSI and OSC 8 are the input grammar.
     /\u001b\[[0-?]*[ -/]*[@-~]|\u001b\]8;;[^\u0007\u001b]*(?:\u0007|\u001b\\)|\r?\n/g;
   let offset = 0;
   const append = (text: string) => {

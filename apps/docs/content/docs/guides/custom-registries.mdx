@@ -22,7 +22,17 @@ Configure sources in `tuil.config.ts`, using HTTPS outside explicit loopback
 development:
 
 ```tsx
+import { defineConfig } from "@mwillbanks/tuil";
+
 export default defineConfig({
+  renderer: "ink",
+  paths: {
+    components: "src/components/tuil",
+    utilities: "src/lib",
+    hooks: "src/hooks",
+  },
+  theme: { preset: "default-dark" },
+  packageManager: "bun",
   registry: {
     sources: [
       "https://registry.example.com/tuil/index.json",

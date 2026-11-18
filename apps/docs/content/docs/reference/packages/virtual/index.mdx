@@ -50,7 +50,12 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
-const range = useTerminalVirtualizer({ count: 10_000, viewportSize: 20, scrollOffset });
+import { useTerminalVirtualizer } from "@mwillbanks/tuil-virtual";
+
+export function List() {
+  const range = useTerminalVirtualizer({ count: 10_000, viewportSize: 20, scrollOffset: 0 });
+  return <>{JSON.stringify(range)}</>;
+}
 ```
 
 ## Related

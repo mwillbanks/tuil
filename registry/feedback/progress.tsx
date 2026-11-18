@@ -12,8 +12,10 @@ interface ProgressState {
   readonly complete: boolean;
 }
 
-export interface ProgressProps
-  extends SlottedComponentProps<{ root: TextProps }, ProgressState> {
+export interface ProgressProps extends SlottedComponentProps<
+  { root: TextProps },
+  ProgressState
+> {
   readonly id?: string;
   readonly testId?: string;
   readonly label?: string;

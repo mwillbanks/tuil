@@ -77,10 +77,12 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
-import { createDefaultThemeRegistry } from "@mwillbanks/tuil-theme";
+import { createDefaultThemeRegistry, ThemeController } from "@mwillbanks/tuil-theme";
+import { detectTerminalCapabilities } from "@mwillbanks/tuil-core";
 
 const themes = createDefaultThemeRegistry();
-app.themeController.set(themes.resolve("default-light"));
+const controller = new ThemeController(themes.resolve("default-dark"), detectTerminalCapabilities());
+controller.set(themes.resolve("default-light"));
 ```
 
 ## Related

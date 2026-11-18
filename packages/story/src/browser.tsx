@@ -115,15 +115,16 @@ export function createTerminalStoryFrameEffect({
     })
       .then(async (response) => {
         const result = (await response.json()) as
-          | StoryFrame
-          | { readonly error: string };
+          StoryFrame | { readonly error: string };
         if (!response.ok || "error" in result) {
           throw new Error(
             "error" in result ? result.error : `HTTP ${response.status}`,
           );
         }
-        setFrame(result);
-        setStatus("");
+        if (!controller.signal.aborted) {
+          setFrame(result);
+          setStatus("");
+        }
       })
       .catch((error: unknown) => {
         if (!controller.signal.aborted) {
@@ -158,23 +159,21 @@ export function TerminalStoryFrameView({
       className,
       "data-tuil-story": `${request.storyId}/${request.variant}`,
     },
-    createElement(
-      "pre",
-      {
-        "data-tuil-frame": true,
-        dangerouslySetInnerHTML: frameHtml ? { __html: frameHtml } : undefined,
-        style: {
-          background:
-            frame?.controls.theme === "default-light" ? "#fafafa" : "#09090b",
-          color:
-            frame?.controls.theme === "default-light" ? "#09090b" : "#fafafa",
-          overflow: "auto",
-          padding: "1rem",
-          whiteSpace: "pre",
-        },
+    createElement("pre", {
+      "data-tuil-frame": true,
+      ...(frameHtml
+        ? { dangerouslySetInnerHTML: { __html: frameHtml } }
+        : { children: status }),
+      style: {
+        background:
+          frame?.controls.theme === "default-light" ? "#fafafa" : "#09090b",
+        color:
+          frame?.controls.theme === "default-light" ? "#09090b" : "#fafafa",
+        overflow: "auto",
+        padding: "1rem",
+        whiteSpace: "pre",
       },
-      frameHtml ? undefined : status,
-    ),
+    }),
     inspector && frame
       ? createElement(
           "details",

@@ -10,7 +10,6 @@ import {
 const repositoryRoot = resolve(import.meta.dir, "../..");
 const generatedPatterns = [
   "apps/registry/public/**/*.json",
-  "apps/showcase/src/component-acceptance.stories.tsx",
   "apps/docs/content/docs/reference/components/acceptance-catalog.mdx",
   "packages/cli/src/generated-registry.ts",
   "packages/cli/src/generated-ui/**/*.tsx",
@@ -146,9 +145,12 @@ async function checkPublishedMetadata(publicDirectory: string): Promise<void> {
   }
 }
 
-export async function checkRegistryArtifacts(): Promise<void> {
+export async function checkRegistryArtifacts(
+  options: { readonly snapshot?: boolean } = {},
+): Promise<void> {
   const expectedPaths = await generatedFiles();
   const temporaryRoot = await mkdtemp(join(tmpdir(), "tuil-registry-check-"));
+  let retainedSnapshot = false;
   try {
     await symlink(
       resolve(repositoryRoot, "node_modules"),
@@ -156,7 +158,6 @@ export async function checkRegistryArtifacts(): Promise<void> {
       "junction",
     );
     for (const path of [
-      "biome.json",
       ".gitignore",
       "package.json",
       "apps/registry/public",
@@ -169,9 +170,6 @@ export async function checkRegistryArtifacts(): Promise<void> {
         recursive: true,
       });
     }
-    await mkdir(resolve(temporaryRoot, "apps/showcase/src"), {
-      recursive: true,
-    });
     await mkdir(
       resolve(temporaryRoot, "apps/docs/content/docs/reference/components"),
       { recursive: true },
@@ -197,6 +195,11 @@ export async function checkRegistryArtifacts(): Promise<void> {
     await checkPublishedMetadata(
       resolve(temporaryRoot, "apps/registry/public"),
     );
+    if (options.snapshot) {
+      retainedSnapshot = true;
+      console.log(temporaryRoot);
+      return;
+    }
     const generatedPaths = await generatedFiles(temporaryRoot);
     const expectedRelativePaths = expectedPaths.map((path) =>
       relative(repositoryRoot, path),
@@ -227,8 +230,12 @@ export async function checkRegistryArtifacts(): Promise<void> {
       );
     }
   } finally {
-    await rm(temporaryRoot, { recursive: true, force: true });
+    if (!retainedSnapshot) {
+      await rm(temporaryRoot, { recursive: true, force: true });
+    }
   }
 }
 
-await (import.meta.main ? checkRegistryArtifacts() : undefined);
+await (import.meta.main
+  ? checkRegistryArtifacts({ snapshot: process.argv.includes("--snapshot") })
+  : undefined);

@@ -10,8 +10,16 @@ tuil uses Ink, so begin by wrapping the existing root without rewriting its
 children:
 
 ```tsx
+import { createApp } from "@mwillbanks/tuil";
+import { render, Text } from "@mwillbanks/tuil-ink";
+
+function ExistingApp() {
+  return <Text>Existing application</Text>;
+}
+
 const app = createApp({ id: "existing-cli", component: ExistingApp });
-render(<ExistingApp />, { app });
+const instance = await render(app);
+await instance.waitUntilExit();
 ```
 
 ## 2. Replace global input

@@ -59,7 +59,9 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
-const plugin = createPlugin({ id: "analytics", activate(context) { return context.events.observe(track); } });
+import { createPlugin } from "@mwillbanks/tuil-plugin";
+
+const plugin = createPlugin({ id: "analytics", version: "1.0.0", setup(context) { return context.events.observe(event => console.log(event.type)); } });
 ```
 
 ## Related

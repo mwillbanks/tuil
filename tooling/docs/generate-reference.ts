@@ -27,7 +27,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
       "arguments → validation → plan → conflict check → write → receipt",
     events:
       "The CLI does not publish runtime events. It reports deterministic command results and actionable errors to the invoking process.",
-    example: "npx @mwillbanks/tuil create my-terminal-app",
+    example: "bunx @mwillbanks/tuil create my-terminal-app",
   },
   core: {
     operation:
@@ -46,7 +46,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Parsing and projection are explicit async operations with cancellation rather than global events.",
     example:
-      'const document = new CodeDocument("const ready = true");\nawait document.parse(signal);',
+      'import { CodeDocument } from "@mwillbanks/tuil-code";\n\nconst document = new CodeDocument("const ready = true");\nawait document.parse();',
   },
   content: {
     operation:
@@ -63,7 +63,8 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     lifecycle: "mount inspector → subscribe → render snapshots → unsubscribe",
     events:
       "Reads the runtime event history and observer stream. It does not emit application events.",
-    example: "render(<TuilDevtools />);",
+    example:
+      'import { TuilDevtools } from "@mwillbanks/tuil-devtools";\n\nexport function Inspector() { return <TuilDevtools />; }',
   },
   editor: {
     operation:
@@ -92,7 +93,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Focus changes are exposed through subscriptions; components use them with `useSyncExternalStore` rather than a separate event name.",
     example:
-      'const focus = new FocusManager();\nfocus.register({ id: "save", scopeId: "dialog" });\nfocus.focus("save");',
+      'import { FocusManager } from "@mwillbanks/tuil-focus";\n\nconst focus = new FocusManager();\nconst unregister = focus.registerNode({ id: "save", disabled: false, hidden: false });\nfocus.focus("save");\nunregister();',
   },
   form: {
     operation:
@@ -102,7 +103,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "State changes are subscription-based. UI controls expose `onValueChange`, `onSubmit`, and field-level callbacks.",
     example:
-      'const form = createForm({ initialValues: { name: "" }, onSubmit: async (values) => save(values) });',
+      'import { TerminalFormController } from "@mwillbanks/tuil-form";\n\nconst form = new TerminalFormController();\nform.dispose();',
   },
   "ghostty-web": {
     operation:
@@ -112,7 +113,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Ghostty input enters the existing Ink input pipeline. Output and lifecycle failures reach the owning TUIL error boundary.",
     example:
-      "const terminal = await mountTuilGhostty({ app, element });\nawait terminal.unmount();",
+      'import { mountTuilGhostty } from "@mwillbanks/tuil-ghostty-web";\nimport { createApp } from "@mwillbanks/tuil";\nimport { Text } from "@mwillbanks/tuil-ink";\n\nconst element = document.getElementById("terminal");\nif (!element) throw new Error("Provide a terminal host element");\nconst app = createApp({ component: () => <Text>Ready</Text> });\nconst terminal = await mountTuilGhostty({ app, element });\nawait terminal.unmount();',
   },
   hotkeys: {
     operation:
@@ -121,7 +122,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Bindings invoke handlers directly. Dispatch failures are routed to the caller-supplied error handler.",
     example:
-      'hotkeys.register({ keys: "ctrl+s", scope: "application", handler: save });',
+      'import { HotkeyManager } from "@mwillbanks/tuil-hotkeys";\n\nconst hotkeys = new HotkeyManager();\nconst unregister = hotkeys.register({ keys: "ctrl+s", scope: "application", handler: () => console.log("Saved") });\nunregister();',
   },
   ink: {
     operation:
@@ -131,7 +132,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Input first flows through overlay handlers, scoped terminal handlers, hotkeys, then focus traversal. Application events remain on the runtime event bus.",
     example:
-      "const instance = render(<App />, { app });\nawait instance.waitUntilExit();",
+      'import { createApp } from "@mwillbanks/tuil";\nimport { Text, render } from "@mwillbanks/tuil-ink";\n\nconst app = createApp({ component: () => <Text>Ready</Text> });\nconst instance = await render(app);\nawait instance.waitUntilExit();',
   },
   logging: {
     operation:
@@ -141,7 +142,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Pipelines return normalized records and observable snapshots; original payloads are never exposed before redaction.",
     example:
-      "const pipeline = new LogPipeline({ capacity: 100_000 });\npipeline.ingest(line);",
+      'import { LogPipeline } from "@mwillbanks/tuil-logging";\n\nconst pipeline = new LogPipeline({ capacity: 100_000 });\npipeline.ingest("Application ready");',
   },
   "log-viewer": {
     operation:
@@ -150,7 +151,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Viewer state changes are subscriptions over logging, editor, and scroll models.",
     example:
-      'const viewer = new LogViewerModel(pipeline, { queryEditor: app.createEditorSession({ id: "log-query" }), queryEditorOwnership: "owned" });',
+      'import { LogViewerModel } from "@mwillbanks/tuil-log-viewer";\nimport { LogPipeline } from "@mwillbanks/tuil-logging";\nimport { createApp } from "@mwillbanks/tuil";\n\nconst app = createApp({ component: () => null });\nconst pipeline = new LogPipeline();\nconst viewer = new LogViewerModel(pipeline, { queryEditor: app.createEditorSession({ id: "log-query" }), queryEditorOwnership: "owned" });',
   },
   operations: {
     operation:
@@ -160,7 +161,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Executors expose snapshot subscriptions and operation progress rather than stringly typed global events.",
     example:
-      'const operation = defineOperation({ id: "build", run: async ({ progress }) => progress(1) });',
+      'import { defineOperation } from "@mwillbanks/tuil-operations";\n\nconst operation = defineOperation({ id: "build", title: "Build", run: async () => "complete" });',
   },
   plugin: {
     operation:
@@ -170,7 +171,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Plugins may declare or subscribe to the host application event map. Plugin health is exposed as an observable runtime surface.",
     example:
-      'const plugin = createPlugin({ id: "analytics", activate(context) { return context.events.observe(track); } });',
+      'import { createPlugin } from "@mwillbanks/tuil-plugin";\n\nconst plugin = createPlugin({ id: "analytics", version: "1.0.0", setup(context) { return context.events.observe(event => console.log(event.type)); } });',
   },
   pointer: {
     operation:
@@ -178,7 +179,8 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     lifecycle: "enable tracking → decode → hit test → route → disable tracking",
     events:
       "Normalized pointer events carry coordinates, buttons, modifiers, phase, and propagation state.",
-    example: "const event = parseSgrPointer(sequence);",
+    example:
+      'import { parseSgrPointer } from "@mwillbanks/tuil-pointer";\n\nconst event = parseSgrPointer("\\u001b[<0;1;1M");',
   },
   protocol: {
     operation:
@@ -187,7 +189,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Versioned envelopes distinguish requests, responses, notifications, and protocol errors. Validation fails closed on envelope fields, ids, timestamps, payload JSON shape, nesting, message count, and byte limits. Sensitive keys, credentials, JWTs, and URL userinfo are removed recursively; use `redactProtocolValue` for non-envelope devtools data and `sanitizeProtocolMessage` for complete messages.",
     example:
-      'import { InProcessProtocolTransport, redactProtocolValue } from "@mwillbanks/tuil-protocol";\n\nconst transport = new InProcessProtocolTransport();\nconst safeSnapshot = redactProtocolValue(runtimeSnapshot);',
+      'import { InProcessProtocolTransport, redactProtocolValue } from "@mwillbanks/tuil-protocol";\n\nconst transport = new InProcessProtocolTransport();\nconst safeSnapshot = redactProtocolValue({ token: "private", state: "ready" });',
   },
   renderer: {
     operation:
@@ -196,7 +198,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Backends consume normalized input and expose deterministic frame and lifecycle results.",
     example:
-      'const registry = new RendererRegistry();\nregistry.register("cell", backend);',
+      'import { RendererRegistry } from "@mwillbanks/tuil-renderer";\nimport { CellRendererBackend } from "@mwillbanks/tuil-cell";\n\nconst registry = new RendererRegistry();\nconst unregister = registry.register(new CellRendererBackend());\nunregister();',
   },
   registry: {
     operation:
@@ -216,7 +218,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "`router:navigation-start`, `router:navigation-complete`, `router:navigation-cancel`, and `router:navigation-error` describe transition outcomes.",
     example:
-      'const router = createRouter(defineRoutes({ home: route({ path: "/" }) }));\nawait router.navigate("home");',
+      'import { createRouter, defineRoutes, route } from "@mwillbanks/tuil-router";\n\nconst router = createRouter(defineRoutes({ home: route({}) }));\nawait router.navigate({ to: "home" });',
   },
   scroll: {
     operation:
@@ -225,7 +227,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
       "register area → measure → move/anchor → project → restore/dispose",
     events: "Each area exposes immutable snapshots through a subscription.",
     example:
-      'const area = new ScrollAreaState({ id: "logs", viewport, extent });',
+      'import { ScrollAreaState } from "@mwillbanks/tuil-scroll";\n\nconst area = new ScrollAreaState({ id: "logs", viewport: { width: 80, height: 24 }, extent: { width: 80, height: 1000 } });',
   },
   story: {
     operation:
@@ -235,7 +237,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Every rendered frame captures the runtime's observed event history and story action timeline. HTTP request failures return 400, client disconnects return 499, and render timeouts return 504.",
     example:
-      'export const stories = defineTuilStories({ component: Button, stories: { Default: { args: { children: "Run" } } } });',
+      'import { defineTuilStories } from "@mwillbanks/tuil-story";\nimport { Button } from "@mwillbanks/tuil-ink";\n\nexport const stories = defineTuilStories({ component: Button, stories: { Default: { args: { children: "Run" } } } });',
   },
   streaming: {
     operation:
@@ -245,7 +247,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Typed start, document, diagnostic, and end events carry monotonically increasing sequence numbers.",
     example:
-      'const pipeline = new StreamingPipeline({ format: "jsonl" });\nawait pipeline.write(chunk);',
+      'import { StreamingPipeline } from "@mwillbanks/tuil-streaming";\n\nconst pipeline = new StreamingPipeline({ format: "jsonl" });\nawait pipeline.write(\'{"ready":true}\\n\');',
   },
   testing: {
     operation:
@@ -254,7 +256,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Story and test results expose captured runtime events for deterministic assertions.",
     example:
-      'expect(screen.getByRole("button", { name: "Run" })).toBeEnabled();',
+      'import { SemanticScreen } from "@mwillbanks/tuil-testing";\n\nconst screen = new SemanticScreen(() => ({ nodes: [{ key: "run", role: "button", label: "Run" }], frame: "Run" }));\nconsole.log(screen.getByRole("button", { name: "Run" }));',
   },
   "testing-ink": {
     operation:
@@ -263,7 +265,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Tests can inspect event history and wait on rendered state after input settles.",
     example:
-      'const view = renderTuil(<Button id="run">Run</Button>);\nawait view.press("enter");',
+      'import { renderTuil } from "@mwillbanks/tuil-testing-ink";\nimport { Button } from "@mwillbanks/tuil-ink";\n\nconst view = renderTuil(<Button id="run">Run</Button>);\nawait view.ready;\nawait view.user.press("enter");\nawait view.cleanup();',
   },
   theme: {
     operation:
@@ -272,7 +274,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Theme changes use `ThemeController.subscribe()` so React consumers remain consistent with `useSyncExternalStore`.",
     example:
-      'const themes = createDefaultThemeRegistry();\napp.themeController.set(themes.resolve("default-light"));',
+      'import { createDefaultThemeRegistry, ThemeController } from "@mwillbanks/tuil-theme";\nimport { detectTerminalCapabilities } from "@mwillbanks/tuil-core";\n\nconst themes = createDefaultThemeRegistry();\nconst controller = new ThemeController(themes.resolve("default-dark"), detectTerminalCapabilities());\ncontroller.set(themes.resolve("default-light"));',
   },
   tuil: {
     operation:
@@ -282,7 +284,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "`app:configure`, `app:initialize`, `app:mount`, `app:ready`, `app:error`, `app:stop`, and `app:dispose` are always declared.",
     example:
-      'const app = createApp({ id: "demo", component: App });\nrender(<App />, { app });',
+      'import { createApp } from "@mwillbanks/tuil";\nimport { Text } from "@mwillbanks/tuil-ink";\n\nconst app = createApp({ id: "demo", component: () => <Text>Ready</Text> });',
   },
   virtual: {
     operation:
@@ -292,7 +294,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "Virtualization is pure or subscription-driven at the component layer; no global events are emitted.",
     example:
-      "const range = useTerminalVirtualizer({ count: 10_000, viewportSize: 20, scrollOffset });",
+      'import { useTerminalVirtualizer } from "@mwillbanks/tuil-virtual";\n\nexport function List() {\n  const range = useTerminalVirtualizer({ count: 10_000, viewportSize: 20, scrollOffset: 0 });\n  return <>{JSON.stringify(range)}</>;\n}',
   },
   workflow: {
     operation:
@@ -302,7 +304,7 @@ const packageGuidance: Readonly<Record<string, PackageGuidance>> = {
     events:
       "`workflow:start`, `workflow:step-enter`, `workflow:step-leave`, `workflow:validate`, `workflow:skip`, `workflow:back`, `workflow:resume`, `workflow:retry`, `workflow:rollback`, `workflow:cancel`, `workflow:complete`, and `workflow:error`.",
     example:
-      'const runner = createWorkflow(defineWorkflow({ id: "setup", version: 1, initialState: {}, steps, transitions }));',
+      'import { defineWorkflow } from "@mwillbanks/tuil-workflow";\n\nconst workflow = defineWorkflow({ id: "setup", version: 1, initialState: {}, steps: {}, transitions: [] });',
   },
 };
 
@@ -371,7 +373,6 @@ const componentGroups: readonly ComponentGroup[] = [
       "Stack",
       "HStack",
       "VStack",
-      "Pane",
       "SplitPane",
       "Header",
       "Footer",
@@ -1507,9 +1508,13 @@ async function packagePage(
   const exampleSymbols = symbols
     .map((symbol) => symbol.name)
     .filter((name) => new RegExp(`\\b${name}\\b`, "u").test(guidance.example));
-  const exampleLanguage = guidance.example.startsWith("npx ") ? "npm" : "tsx";
+  const exampleLanguage = /^(?:npx|bunx) /.test(guidance.example)
+    ? "npm"
+    : "tsx";
   const example =
-    exampleLanguage === "tsx" && exampleSymbols.length
+    exampleLanguage === "tsx" &&
+    exampleSymbols.length &&
+    !/^import\s/m.test(guidance.example)
       ? `import { ${exampleSymbols.join(", ")} } from ${JSON.stringify(manifest.name)};\n\n${guidance.example}`
       : guidance.example;
   const content = `---
@@ -1572,15 +1577,10 @@ ${example}
   return { slug: directory, title: manifest.name };
 }
 
-async function componentPage(
-  workspace: string,
+function componentGroupSymbols(
+  discovered: readonly ApiSymbol[],
   group: ComponentGroup,
-  referenceRoot: string,
-): Promise<void> {
-  const discovered = await exportedSymbols(
-    workspace,
-    group.files.map((file) => resolve(workspace, file)),
-  );
+) {
   const byName = new Map(discovered.map((symbol) => [symbol.name, symbol]));
   const symbols = group.components.map((name): ApiSymbol => {
     const direct = byName.get(name);
@@ -1603,6 +1603,73 @@ async function componentPage(
         .map((symbol) => [symbol.name, symbol]),
     ).values(),
   ];
+  return { symbols, componentTypes };
+}
+
+function renderIndividualComponent(
+  symbol: ApiSymbol,
+  group: ComponentGroup,
+  componentApiSymbols: ReadonlyMap<string, ApiSymbol>,
+  componentApiBase: string,
+): string {
+  const importName = symbol.name.split(".")[0] as string;
+  const symbolImport = symbol.file.startsWith("registry/")
+    ? `@/components/tuil/${symbol.file.replace(/^registry\//, "").replace(/\.tsx$/, "")}`
+    : "@mwillbanks/tuil-ink";
+  return `---
+title: ${JSON.stringify(symbol.name)}
+description: ${JSON.stringify(symbol.summary ?? `${symbol.name} component API, behavior, and executable example.`)}
+icon: Cube
+---
+
+import { PublishedStory } from '@/components/published-story';
+
+{/* Generated by tooling/docs/generate-reference.ts. */}
+
+<PublishedStory storyId=${JSON.stringify(group.storyId ?? "component-acceptance")} variant=${JSON.stringify(group.story)} />
+
+## API and events
+
+${symbol.summary ?? group.summary}
+
+\`\`\`tsx
+${symbol.signature ?? (symbol.name.includes(".") ? `${symbol.name};` : `export { ${symbol.name} };`)}
+\`\`\`
+
+### Props, functions, and events
+
+${memberTable(symbol.members, componentApiSymbols, componentApiBase)}
+
+${group.events}
+
+Callback props run after the documented input is accepted. Callbacks are not cancellable unless their return type or description states otherwise.
+
+## Interaction and capabilities
+
+${group.interaction}
+
+${group.guidance ?? ""}
+
+The published manifest records keyboard, focus, pointer, theme, terminal, semantic, event, and dependency requirements.
+
+## Complete import
+
+\`\`\`tsx
+import { ${importName} } from "${symbolImport}";
+\`\`\`
+`;
+}
+
+async function componentPage(
+  workspace: string,
+  group: ComponentGroup,
+  referenceRoot: string,
+): Promise<void> {
+  const discovered = await exportedSymbols(
+    workspace,
+    group.files.map((file) => resolve(workspace, file)),
+  );
+  const { symbols, componentTypes } = componentGroupSymbols(discovered, group);
   const componentApiSymbols = new Map(
     [...symbols, ...componentTypes].map((symbol) => [symbol.name, symbol]),
   );
@@ -1677,53 +1744,22 @@ your application, and use the package reference for the shared runtime contracts
   const output = resolve(referenceRoot, "components", group.slug, "index.mdx");
   await mkdir(resolve(output, ".."), { recursive: true });
   await writeFile(output, content, "utf8");
+  if (group.slug === "layout") {
+    await writeFile(
+      resolve(output, "..", "pane.mdx"),
+      "---\ntitle: Pane\ndescription: Find the supported split pane layout API.\nicon: Cube\n---\n\n{/* Generated by tooling/docs/generate-reference.ts. */}\n\nThe historical Pane reference described an export that is not available.\nUse [SplitPane](/docs/reference/components/layout/split-pane) for bounded pane\nlayouts and [ResizablePane](/docs/reference/components/layout/resizable-pane)\nfor a keyboard-resizable region.\n",
+      "utf8",
+    );
+  }
   for (const symbol of symbols) {
-    const importName = symbol.name.split(".")[0] as string;
-    const componentContent = `---
-title: ${JSON.stringify(symbol.name)}
-description: ${JSON.stringify(symbol.summary ?? `${symbol.name} component API, behavior, and executable example.`)}
-icon: Cube
----
-
-import { PublishedStory } from '@/components/published-story';
-
-{/* Generated by tooling/docs/generate-reference.ts. */}
-
-<PublishedStory storyId=${JSON.stringify(group.storyId ?? "component-acceptance")} variant=${JSON.stringify(group.story)} />
-
-## API and events
-
-${symbol.summary ?? group.summary}
-
-\`\`\`tsx
-${symbol.signature ?? `export { ${symbol.name} };`}
-\`\`\`
-
-### Props, functions, and events
-
-${memberTable(symbol.members, componentApiSymbols, componentApiBase)}
-
-${group.events}
-
-Callback props run after the documented input is accepted. Callbacks are not cancellable unless their return type or description states otherwise.
-
-## Interaction and capabilities
-
-${group.interaction}
-
-${group.guidance ?? ""}
-
-The published manifest records keyboard, focus, pointer, theme, terminal, semantic, event, and dependency requirements.
-
-## Complete import
-
-\`\`\`tsx
-import { ${importName} } from "${exampleImport}";
-\`\`\`
-`;
     await writeFile(
       resolve(output, "..", `${symbolSlug(symbol.name)}.mdx`),
-      componentContent,
+      renderIndividualComponent(
+        symbol,
+        group,
+        componentApiSymbols,
+        componentApiBase,
+      ),
       "utf8",
     );
   }
@@ -1863,18 +1899,11 @@ export async function generateReferenceDocs(
     )}\n`,
     "utf8",
   );
-  const formatter = Bun.spawn(
-    [
-      "bun",
-      "biome",
-      "format",
-      "--write",
-      referenceRoot,
-      "--reporter",
-      "concise",
-    ],
-    { cwd: workspace, stdout: "ignore", stderr: "pipe" },
-  );
+  const formatter = Bun.spawn(["bun", "fmt", referenceRoot], {
+    cwd: workspace,
+    stdout: "ignore",
+    stderr: "pipe",
+  });
   if ((await formatter.exited) !== 0) {
     throw new Error(await new Response(formatter.stderr).text());
   }

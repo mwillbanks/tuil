@@ -60,9 +60,12 @@ runtime that disposes them in reverse order.
 
 ```tsx
 import { renderTuil } from "@mwillbanks/tuil-testing-ink";
+import { Button } from "@mwillbanks/tuil-ink";
 
 const view = renderTuil(<Button id="run">Run</Button>);
-await view.press("enter");
+await view.ready;
+await view.user.press("enter");
+await view.cleanup();
 ```
 
 ## Related

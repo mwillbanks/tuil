@@ -133,7 +133,8 @@ function resolvePaneSizes(
 }
 
 export interface SplitPaneProps
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<
       SplitPaneSlots,
       {
@@ -460,22 +461,6 @@ export function ScrollArea({
   sticky,
 }: ScrollAreaProps): ReactNode {
   const safeHeight = Math.max(1, Math.floor(height));
-  const { state, snapshot } = useTerminalScrollArea({
-    id,
-    viewport: { width: 1, height: safeHeight },
-    extent: { width: 1, height: lines.length },
-    sticky: sticky ? { [sticky]: true } : undefined,
-  });
-  useEffect(() => {
-    state.scrollTo({ y: offset });
-  }, [offset, state]);
-  const move = useCallback(
-    async (delta: number) => {
-      const next = state.wheel(0, delta);
-      await onOffsetChange?.(next.position.y);
-    },
-    [onOffsetChange, state],
-  );
   const { focused, focus } = useFocusable(
     useMemo(
       () => ({
@@ -488,6 +473,26 @@ export function ScrollArea({
       [id, label],
     ),
   );
+  const { state, snapshot } = useTerminalScrollArea({
+    id,
+    viewport: { width: 1, height: safeHeight },
+    extent: { width: 1, height: lines.length },
+    sticky: sticky ? { [sticky]: true } : undefined,
+    async onWheel(event, next) {
+      focus();
+      if (event.wheelY !== 0) await onOffsetChange?.(next.position.y);
+    },
+  });
+  useEffect(() => {
+    state.scrollTo({ y: offset });
+  }, [offset, state]);
+  const move = useCallback(
+    async (delta: number) => {
+      const next = state.wheel(0, delta);
+      await onOffsetChange?.(next.position.y);
+    },
+    [onOffsetChange, state],
+  );
   usePointerEvents(
     useMemo(
       () => [
@@ -496,16 +501,8 @@ export function ScrollArea({
           type: "click" as const,
           listener: focus,
         },
-        {
-          id,
-          type: "wheel" as const,
-          listener: async (event: { readonly wheelY: number }) => {
-            focus();
-            await move(event.wheelY);
-          },
-        },
       ],
-      [focus, id, move],
+      [focus, id],
     ),
   );
   useTerminalInput(

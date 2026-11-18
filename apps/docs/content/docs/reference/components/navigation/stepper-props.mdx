@@ -10,8 +10,7 @@ icon: BracketsCurly
 
 ```ts
 export interface StepperProps
-  extends CommonComponentProps,
-    SlottedComponentProps<NavigationListSlots> {
+  extends CommonComponentProps, SlottedComponentProps<NavigationListSlots> {
   readonly steps: readonly StepperItem[];
   readonly current?: string;
   readonly orientation?: "horizontal" | "vertical";

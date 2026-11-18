@@ -65,7 +65,11 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
-hotkeys.register({ keys: "ctrl+s", scope: "application", handler: save });
+import { HotkeyManager } from "@mwillbanks/tuil-hotkeys";
+
+const hotkeys = new HotkeyManager();
+const unregister = hotkeys.register({ keys: "ctrl+s", scope: "application", handler: () => console.log("Saved") });
+unregister();
 ```
 
 ## Related

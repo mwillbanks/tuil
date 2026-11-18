@@ -190,7 +190,7 @@ function validatePlaygroundNode(
     throw new RangeError("A playground document can be at most 32 nodes deep.");
   }
   validateNodeId(node, ids);
-  if (!(node.component in browserComponents)) {
+  if (!Object.hasOwn(browserComponents, node.component)) {
     throw new TypeError(`Unknown browser component: ${node.component}`);
   }
   validateNodeProps(node);
@@ -213,6 +213,9 @@ function assertJsonValue(
   depth = 0,
 ): void {
   if (depth > 32) throw new TypeError(`${path} exceeds the maximum depth.`);
+  if (typeof value === "number" && !Number.isFinite(value)) {
+    throw new TypeError(`${path} must contain finite numbers.`);
+  }
   if (value === null || ["string", "boolean", "number"].includes(typeof value))
     return;
   if (Array.isArray(value)) {

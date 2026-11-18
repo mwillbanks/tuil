@@ -153,8 +153,10 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
-const app = createApp({ id: "demo", component: App });
-render(<App />, { app });
+import { createApp } from "@mwillbanks/tuil";
+import { Text } from "@mwillbanks/tuil-ink";
+
+const app = createApp({ id: "demo", component: () => <Text>Ready</Text> });
 ```
 
 ## Related

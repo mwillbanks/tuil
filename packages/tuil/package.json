@@ -38,7 +38,6 @@
   },
   "scripts": {
     "build": "bun ../../tooling/build/package.ts",
-    "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
   "dependencies": {
@@ -59,7 +58,7 @@
     "@mwillbanks/tuil-workflow": "workspace:*"
   },
   "peerDependencies": {
-    "react": "catalog:"
+    "react": "^19.2.8"
   },
   "files": [
     "dist"

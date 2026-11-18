@@ -73,7 +73,10 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
-const form = createForm({ initialValues: { name: "" }, onSubmit: async (values) => save(values) });
+import { TerminalFormController } from "@mwillbanks/tuil-form";
+
+const form = new TerminalFormController();
+form.dispose();
 ```
 
 ## Related
