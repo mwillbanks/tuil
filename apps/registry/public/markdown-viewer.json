@@ -12,8 +12,12 @@
     }
   ],
   "dependencies": [
+    "@mwillbanks/tuil",
     "@mwillbanks/tuil-code",
     "@mwillbanks/tuil-content",
+    "@mwillbanks/tuil-core",
+    "@mwillbanks/tuil-focus",
+    "@mwillbanks/tuil-ink",
     "@mwillbanks/tuil-streaming",
     "ink",
     "react"
@@ -32,5 +36,5 @@
     "license": "MIT",
     "mode": "replace"
   },
-  "integrity": "sha256-2a12e37dd2880c914e91035c84e0bc9872e76716838f550557185a84e78ebee8"
+  "integrity": "sha256-80bfeaa2d0669983671d449d4ca82892f9df598176f279ad5947cc60b9a44857"
 }

@@ -1,5 +1,5 @@
 import { Virtualizer } from "@tanstack/react-virtual";
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import sliceAnsi from "slice-ansi";
 import stringWidth from "string-width";
 
@@ -163,17 +163,44 @@ export class TerminalVirtualizerAdapter {
 export function useTerminalVirtualizer(
   options: TerminalVirtualizerOptions,
 ): TerminalVirtualRange {
-  const adapter = useRef<TerminalVirtualizerAdapter>(undefined);
-  if (!adapter.current) {
-    adapter.current = new TerminalVirtualizerAdapter(options);
-  }
-  useEffect(
+  const { count, viewportSize, scrollOffset, itemSize, overscan } = options;
+  const measurement = useMemo(
+    () => ({
+      count,
+      viewportSize,
+      scrollOffset,
+      ...(itemSize === undefined ? {} : { itemSize }),
+      ...(overscan === undefined ? {} : { overscan }),
+    }),
+    [count, viewportSize, scrollOffset, itemSize, overscan],
+  );
+  const [range, setRange] = useState(() => {
+    const initialAdapter = new TerminalVirtualizerAdapter(measurement);
+    try {
+      return initialAdapter.measure(measurement);
+    } finally {
+      initialAdapter.dispose();
+    }
+  });
+  const active = useRef<TerminalVirtualizerAdapter | undefined>(undefined);
+  const measured = useRef(measurement);
+  useLayoutEffect(
     () => () => {
-      adapter.current?.dispose();
+      active.current?.dispose();
+      active.current = undefined;
     },
     [],
   );
-  return adapter.current.measure(options);
+  useLayoutEffect(() => {
+    const adapter =
+      active.current ?? new TerminalVirtualizerAdapter(measurement);
+    active.current = adapter;
+    if (measured.current !== measurement) {
+      measured.current = measurement;
+      setRange(adapter.measure(measurement));
+    }
+  }, [measurement]);
+  return range;
 }
 
 export function fitTerminalText(

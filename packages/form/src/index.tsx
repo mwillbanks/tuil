@@ -13,6 +13,7 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
+  useState,
   useSyncExternalStore,
 } from "react";
 
@@ -274,13 +275,7 @@ export interface TerminalFieldBinding<T> extends TerminalFieldState<T> {
 export function useTerminalField<T>(
   options: TerminalFieldOptions<T>,
 ): TerminalFieldBinding<T> {
-  const controllerRef = useRef<TerminalFieldController<T> | undefined>(
-    undefined,
-  );
-  if (!controllerRef.current) {
-    controllerRef.current = new TerminalFieldController(options);
-  }
-  const controller = controllerRef.current;
+  const [controller] = useState(() => new TerminalFieldController(options));
   useLayoutEffect(() => controller.configure(options), [controller, options]);
   useEffect(() => () => controller.dispose(), [controller]);
   const state = useSyncExternalStore(
@@ -358,8 +353,10 @@ export function useRegisterTerminalField<T>(
   const controller = useContext(TerminalFormContext);
   const fieldRef = useRef(field);
   const externalFieldRef = useRef(externalField);
-  fieldRef.current = field;
-  externalFieldRef.current = externalField;
+  useLayoutEffect(() => {
+    fieldRef.current = field;
+    externalFieldRef.current = externalField;
+  }, [externalField, field]);
   useEffect(() => {
     if (!controller || !enabled) return;
     return controller.register({

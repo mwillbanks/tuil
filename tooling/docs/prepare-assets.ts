@@ -166,13 +166,9 @@ export async function prepareDocsAssets(
   const formatter = Bun.spawn(
     [
       "bun",
-      "biome",
-      "format",
-      "--write",
+      "fmt",
       storyFramesPath,
       resolve(publicDirectory, "integrations/story-manifest.json"),
-      "--reporter",
-      "concise",
     ],
     {
       cwd: workspace,

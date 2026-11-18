@@ -1,5 +1,7 @@
 "use client";
 
+import { getBasePath } from "@/lib/base-path";
+
 import { Copy, GithubLogo, MarkdownLogo } from "@phosphor-icons/react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
@@ -16,7 +18,7 @@ export function PageActions(props: {
   const resetTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
-  const basePath = process.env["NEXT_PUBLIC_BASE_PATH"] ?? "";
+  const basePath = getBasePath();
   const rawUrl = `${basePath}${props.markdownUrl}`;
 
   useEffect(

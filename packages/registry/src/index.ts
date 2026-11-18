@@ -331,12 +331,7 @@ function parseProvenance(value: unknown): RegistryItem["provenance"] {
     source: requiredString(candidate["source"], "provenance.source"),
     license: optionalString(candidate["license"], "provenance.license"),
     mode: mode as
-      | "use"
-      | "wrap"
-      | "adapt"
-      | "replace"
-      | "reference"
-      | undefined,
+      "use" | "wrap" | "adapt" | "replace" | "reference" | undefined,
   });
 }
 

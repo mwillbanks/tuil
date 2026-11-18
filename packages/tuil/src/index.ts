@@ -158,9 +158,9 @@ export type AppLifecycleEvents = {
 };
 
 export type AppEventMap<TEvents extends EventMap> = {
-  [TKey in
-    | keyof TEvents
-    | keyof AppLifecycleEvents]: TKey extends keyof AppLifecycleEvents
+  [
+    TKey in keyof TEvents | keyof AppLifecycleEvents
+  ]: TKey extends keyof AppLifecycleEvents
     ? AppLifecycleEvents[TKey]
     : TKey extends keyof TEvents
       ? TEvents[TKey]
@@ -454,8 +454,7 @@ export interface TerminalOptions extends TerminalCapabilityInput {
 }
 
 export type ServiceInput<TValue = unknown> =
-  | TValue
-  | ServiceDefinition<string, TValue>;
+  TValue | ServiceDefinition<string, TValue>;
 
 export interface TuilAppOptions<
   TServices extends Record<string, unknown> = Record<string, unknown>,
@@ -487,8 +486,7 @@ export interface TuilConfig {
   };
   readonly registry: {
     readonly sources: readonly (
-      | string
-      | { readonly id: string; readonly url: string }
+      string | { readonly id: string; readonly url: string }
     )[];
   };
   readonly theme: {
@@ -1026,8 +1024,7 @@ export class TuilApp<
   #syncPluginTheme(): void {
     const contributions =
       this.extensions.themes.values() as unknown as readonly (
-        | Theme
-        | ThemeFactory
+        Theme | ThemeFactory
       )[];
     const theme = contributions.reduce<Theme>(
       (current, contribution) =>

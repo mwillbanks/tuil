@@ -1,5 +1,10 @@
 {
   "title": "Application shell",
   "icon": "SquaresFour",
-  "pages": ["index", "app-shell", "app-bar", "status-bar"]
+  "pages": [
+    "index",
+    "app-shell",
+    "app-bar",
+    "status-bar"
+  ]
 }

@@ -1,11 +1,10 @@
 import { HomeLayout } from "fumadocs-ui/layouts/home";
-import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "fumadocs-core/framework";
 import type { ReactNode } from "react";
 import { VisualComposer } from "@/components/visual-composer";
 import { baseOptions } from "@/lib/layout.shared";
 
-export const metadata: Metadata = {
+export const playgroundMetadata = {
   title: "Playground",
   description:
     "Explore every portable tuil story with terminal, semantics, focus, and event output.",

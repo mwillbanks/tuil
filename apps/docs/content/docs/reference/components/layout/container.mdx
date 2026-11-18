@@ -61,7 +61,7 @@ export function Container({
 | `justifyContent` | `"flex-start" \| "center" \| "flex-end" \| "space-between" \| "space-around" \| "space-evenly" \| undefined` | No | It defines the alignment along the main axis.     See [justify-content](https://css-tricks.com/almanac/properties/j/justify-content/). | — |
 | `width` | `string \| number \| undefined` | No | Width of the element in spaces. You can also set it as a percentage, which will calculate the width based on the width of the parent element. | — |
 | `height` | `string \| number \| undefined` | No | Height of the element in lines (rows). You can also set it as a percentage, which will calculate the height based on the height of the parent element. | — |
-| `minWidth` | `string \| number \| undefined` | No | Sets a minimum width of the element.     Percentages aren't supported yet; see https://github.com/facebook/yoga/issues/872. | — |
+| `minWidth` | `number \| undefined` | No | Sets a minimum width of the element.     Percentages aren't supported yet; see https://github.com/facebook/yoga/issues/872. | — |
 | `minHeight` | `string \| number \| undefined` | No | Sets a minimum height of the element in lines (rows). You can also set it as a percentage, which will calculate the minimum height based on the height of the parent element. | — |
 | `maxHeight` | `string \| number \| undefined` | No | Sets a maximum height of the element in lines (rows). You can also set it as a percentage, which will calculate the maximum height based on the height of the parent element. | — |
 | `aspectRatio` | `number \| undefined` | No | Defines the aspect ratio (width/height) for the element.      Use it with at least one size constraint (`width`, `height`, `minHeight`, or `maxHeight`) so Ink can derive the missing dimension. | — |
@@ -89,6 +89,8 @@ export function Container({
 | `overflow` | `"visible" \| "hidden" \| undefined` | No | Behavior for an element's overflow in both directions. | — |
 | `overflowX` | `"visible" \| "hidden" \| undefined` | No | Behavior for an element's overflow in the horizontal direction. | — |
 | `overflowY` | `"visible" \| "hidden" \| undefined` | No | Behavior for an element's overflow in the vertical direction. | — |
+| `contentOffsetX` | `number \| undefined` | No | Horizontal offset applied to the element's children, in columns. Children are shifted left by this amount. Combine with `overflow="hidden"` to build scrollable views.      Offsets are terminal cell coordinates, so fractional values are truncated toward zero and non-finite values are treated as `0`. | — |
+| `contentOffsetY` | `number \| undefined` | No | Vertical offset applied to the element's children, in rows. Children are shifted up by this amount. Combine with `overflow="hidden"` to build scrollable views.      Offsets are terminal cell coordinates, so fractional values are truncated toward zero and non-finite values are treated as `0`. | — |
 | `backgroundColor` | `LiteralUnion<keyof import("ansi-styles").ForegroundColor, string> \| undefined` | No | Background color for the element.      Accepts the same values as `color` in the `<Text>` component. | — |
 | `aria-label` | `string \| undefined` | No | A label for the element for screen readers. | — |
 | `aria-hidden` | `boolean \| undefined` | No | Hide the element from screen readers. | — |
@@ -98,7 +100,7 @@ export function Container({
 | `size` | `"sm" \| "md" \| "lg" \| undefined` | No | The `size` member uses the `"sm" \| "md" \| "lg" \| undefined` contract. | — |
 | `unstyled` | `boolean \| undefined` | No | The `unstyled` member uses the `boolean \| undefined` contract. | — |
 | `className` | `string \| undefined` | No | The `className` member uses the `string \| undefined` contract. | — |
-| `layout` | `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` | No | The `layout` member uses the `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` contract. | — |
+| `layout` | `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` | No | The `layout` member uses the `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` contract. | [`LayoutNodeInput`](/docs/reference/packages/renderer/api/layout-node-input) |
 | `id` | `string \| undefined` | No | The `id` member uses the `string \| undefined` contract. | — |
 | `testId` | `string \| undefined` | No | The `testId` member uses the `string \| undefined` contract. | — |
 | `role` | `SemanticRole \| undefined` | No | The `role` member uses the `SemanticRole \| undefined` contract. | [`SemanticRole`](/docs/reference/packages/core/api/semantic-role) |
@@ -121,10 +123,12 @@ Callback props run after the documented input is accepted. Callbacks are not can
 
 Resizable panes consume scoped arrow-key input while passive layout primitives only project Ink layout props.
 
+
+
 The published manifest records keyboard, focus, pointer, theme, terminal, semantic, event, and dependency requirements.
 
 ## Complete import
 
 ```tsx
-import { Container } from "@/components/tuil/primitives/box";
+import { Container } from "@/components/tuil/primitives/container";
 ```

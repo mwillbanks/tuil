@@ -13,8 +13,10 @@ Public interface exported by `@mwillbanks/tuil-ghostty-web`.
 
 
 ```ts
-export interface TuilGhosttyTerminalOptions
-  extends Omit<ITerminalOptions, "ghostty"> {
+export interface TuilGhosttyTerminalOptions extends Omit<
+  ITerminalOptions,
+  "ghostty"
+> {
   readonly maxInputBytes?: number;
   readonly maxOutputBytes?: number;
 }

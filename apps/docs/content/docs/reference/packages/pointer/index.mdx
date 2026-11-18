@@ -42,8 +42,16 @@ flowchart LR
 | [`ParsedPointerInput`](/docs/reference/packages/pointer/api/parsed-pointer-input) | `interface ParsedPointerInput` | Public interface ParsedPointerInput. |
 | [`parseSgrPointer`](/docs/reference/packages/pointer/api/parse-sgr-pointer) | `function parseSgrPointer` | Public function parseSgrPointer. |
 | [`PointerButton`](/docs/reference/packages/pointer/api/pointer-button) | `type PointerButton` | Public type PointerButton. |
+| [`PointerEventInit`](/docs/reference/packages/pointer/api/pointer-event-init) | `interface PointerEventInit` | Public interface PointerEventInit. |
 | [`PointerEventType`](/docs/reference/packages/pointer/api/pointer-event-type) | `type PointerEventType` | Public type PointerEventType. |
+| [`PointerListener`](/docs/reference/packages/pointer/api/pointer-listener) | `type PointerListener` | Public type PointerListener. |
 | [`PointerModifiers`](/docs/reference/packages/pointer/api/pointer-modifiers) | `interface PointerModifiers` | Public interface PointerModifiers. |
+| [`PointerRouter`](/docs/reference/packages/pointer/api/pointer-router) | `class PointerRouter` | Public class PointerRouter. |
+| [`PointerRouterOptions`](/docs/reference/packages/pointer/api/pointer-router-options) | `interface PointerRouterOptions` | Public interface PointerRouterOptions. |
+| [`pointerTracking`](/docs/reference/packages/pointer/api/pointer-tracking) | `function pointerTracking` | Public function pointerTracking. |
+| [`semanticPointerFixture`](/docs/reference/packages/pointer/api/semantic-pointer-fixture) | `function semanticPointerFixture` | Public function semanticPointerFixture. |
+| [`SgrPointerDecoder`](/docs/reference/packages/pointer/api/sgr-pointer-decoder) | `class SgrPointerDecoder` | Stateful decoder for terminal input streams. It extracts every complete SGR pointer sequence while returning all keyboard/text bytes unchanged and retaining only a genuinely incomplete pointer suffix for the next chunk. |
+| [`TuilPointerEvent`](/docs/reference/packages/pointer/api/tuil-pointer-event) | `class TuilPointerEvent` | Public class TuilPointerEvent. |
 
 ## Events and lifecycle
 
@@ -57,7 +65,7 @@ runtime that disposes them in reverse order.
 ```tsx
 import { parseSgrPointer } from "@mwillbanks/tuil-pointer";
 
-const event = parseSgrPointer(sequence);
+const event = parseSgrPointer("\u001b[<0;1;1M");
 ```
 
 ## Related

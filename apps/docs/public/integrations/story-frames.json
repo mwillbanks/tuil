@@ -26,7 +26,9 @@
             "x": 0,
             "y": 0,
             "width": 11,
-            "height": 1
+            "height": 1,
+            "clientWidth": 11,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -47,7 +49,9 @@
             "x": 0,
             "y": 0,
             "width": 11,
-            "height": 1
+            "height": 1,
+            "clientWidth": 11,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -68,7 +72,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -92,7 +98,9 @@
             "x": 0,
             "y": 1,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -116,7 +124,9 @@
             "x": 0,
             "y": 3,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -141,7 +151,9 @@
             "x": 0,
             "y": 10,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -162,7 +174,9 @@
             "x": 0,
             "y": 1,
             "width": 46,
-            "height": 10
+            "height": 10,
+            "clientWidth": 46,
+            "clientHeight": 10
           },
           "clip": {
             "x": 0,
@@ -183,7 +197,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 10
+            "height": 10,
+            "clientWidth": 80,
+            "clientHeight": 10
           },
           "clip": {
             "x": 0,
@@ -207,7 +223,9 @@
             "x": 0,
             "y": 11,
             "width": 43,
-            "height": 1
+            "height": 1,
+            "clientWidth": 43,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -229,7 +247,9 @@
             "x": 0,
             "y": 11,
             "width": 43,
-            "height": 1
+            "height": 1,
+            "clientWidth": 43,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -251,7 +271,9 @@
             "x": 0,
             "y": 11,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -273,7 +295,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 12
+            "height": 12,
+            "clientWidth": 80,
+            "clientHeight": 12
           },
           "clip": {
             "x": 0,
@@ -319,7 +343,9 @@
             "x": 0,
             "y": 6,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -351,7 +377,9 @@
             "x": 0,
             "y": 1,
             "width": 8,
-            "height": 1
+            "height": 1,
+            "clientWidth": 8,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -376,7 +404,9 @@
             "x": 9,
             "y": 1,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -401,7 +431,9 @@
             "x": 22,
             "y": 1,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -426,7 +458,9 @@
             "x": 35,
             "y": 1,
             "width": 11,
-            "height": 1
+            "height": 1,
+            "clientWidth": 11,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -483,7 +517,9 @@
             "x": 0,
             "y": 0,
             "width": 11,
-            "height": 1
+            "height": 1,
+            "clientWidth": 11,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -504,7 +540,9 @@
             "x": 0,
             "y": 0,
             "width": 11,
-            "height": 1
+            "height": 1,
+            "clientWidth": 11,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -525,7 +563,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -549,7 +589,9 @@
             "x": 0,
             "y": 1,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -573,7 +615,9 @@
             "x": 0,
             "y": 3,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -600,7 +644,9 @@
             "x": 0,
             "y": 6,
             "width": 15,
-            "height": 1
+            "height": 1,
+            "clientWidth": 15,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -625,7 +671,9 @@
             "x": 0,
             "y": 10,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -646,7 +694,9 @@
             "x": 0,
             "y": 1,
             "width": 46,
-            "height": 10
+            "height": 10,
+            "clientWidth": 46,
+            "clientHeight": 10
           },
           "clip": {
             "x": 0,
@@ -667,7 +717,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 10
+            "height": 10,
+            "clientWidth": 80,
+            "clientHeight": 10
           },
           "clip": {
             "x": 0,
@@ -691,7 +743,9 @@
             "x": 0,
             "y": 11,
             "width": 43,
-            "height": 1
+            "height": 1,
+            "clientWidth": 43,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -713,7 +767,9 @@
             "x": 0,
             "y": 11,
             "width": 43,
-            "height": 1
+            "height": 1,
+            "clientWidth": 43,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -735,7 +791,9 @@
             "x": 0,
             "y": 11,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -757,7 +815,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 12
+            "height": 12,
+            "clientWidth": 80,
+            "clientHeight": 12
           },
           "clip": {
             "x": 0,
@@ -808,7 +868,9 @@
             "x": 0,
             "y": 1,
             "width": 8,
-            "height": 1
+            "height": 1,
+            "clientWidth": 8,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -833,7 +895,9 @@
             "x": 9,
             "y": 1,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -858,7 +922,9 @@
             "x": 22,
             "y": 1,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -883,7 +949,9 @@
             "x": 35,
             "y": 1,
             "width": 11,
-            "height": 1
+            "height": 1,
+            "clientWidth": 11,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -940,7 +1008,9 @@
             "x": 0,
             "y": 0,
             "width": 17,
-            "height": 1
+            "height": 1,
+            "clientWidth": 17,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -965,7 +1035,9 @@
             "x": 17,
             "y": 0,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -989,7 +1061,9 @@
             "x": 43,
             "y": 1,
             "width": 28,
-            "height": 1
+            "height": 1,
+            "clientWidth": 28,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1011,7 +1085,9 @@
             "x": 0,
             "y": 23,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1065,58 +1141,9 @@
             "x": 0,
             "y": 1,
             "width": 1,
-            "height": 22
-          },
-          "clip": {
-            "x": 0,
-            "y": 0,
-            "width": 80,
-            "height": 24
-          },
-          "zIndex": 0,
-          "focusable": true,
-          "pointerEvents": "auto"
-        }
-      },
-      {
-        "key": "_idr_1r_:item:branch-0",
-        "id": "_idr_1r_:item:branch-0",
-        "role": "treeitem",
-        "label": "* main",
-        "selected": false,
-        "layout": {
-          "parentId": "_idr_1r_",
-          "bounds": {
-            "x": 1,
-            "y": 1,
-            "width": 8,
-            "height": 1
-          },
-          "clip": {
-            "x": 0,
-            "y": 0,
-            "width": 80,
-            "height": 24
-          },
-          "zIndex": 1,
-          "focusable": false,
-          "pointerEvents": "auto"
-        }
-      },
-      {
-        "key": "_idr_1r_",
-        "id": "_idr_1r_",
-        "role": "tree",
-        "label": "Repository branches",
-        "disabled": false,
-        "readOnly": false,
-        "valueText": "1 visible items",
-        "layout": {
-          "bounds": {
-            "x": 1,
-            "y": 1,
-            "width": 8,
-            "height": 12
+            "height": 22,
+            "clientWidth": 1,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -1143,7 +1170,9 @@
             "x": 40,
             "y": 1,
             "width": 1,
-            "height": 12
+            "height": 12,
+            "clientWidth": 1,
+            "clientHeight": 12
           },
           "clip": {
             "x": 0,
@@ -1169,7 +1198,64 @@
             "x": 1,
             "y": 1,
             "width": 79,
-            "height": 22
+            "height": 22,
+            "clientWidth": 79,
+            "clientHeight": 22
+          },
+          "clip": {
+            "x": 0,
+            "y": 0,
+            "width": 80,
+            "height": 24
+          },
+          "zIndex": 0,
+          "focusable": true,
+          "pointerEvents": "auto"
+        }
+      },
+      {
+        "key": "_idr_1r_:item:branch-0",
+        "id": "_idr_1r_:item:branch-0",
+        "role": "treeitem",
+        "label": "* main",
+        "selected": false,
+        "layout": {
+          "parentId": "_idr_1r_",
+          "bounds": {
+            "x": 1,
+            "y": 1,
+            "width": 8,
+            "height": 1,
+            "clientWidth": 8,
+            "clientHeight": 1
+          },
+          "clip": {
+            "x": 0,
+            "y": 0,
+            "width": 80,
+            "height": 24
+          },
+          "zIndex": 1,
+          "focusable": false,
+          "pointerEvents": "auto"
+        }
+      },
+      {
+        "key": "_idr_1r_",
+        "id": "_idr_1r_",
+        "role": "tree",
+        "label": "Repository branches",
+        "disabled": false,
+        "readOnly": false,
+        "valueText": "1 visible items",
+        "layout": {
+          "bounds": {
+            "x": 1,
+            "y": 1,
+            "width": 8,
+            "height": 12,
+            "clientWidth": 8,
+            "clientHeight": 12
           },
           "clip": {
             "x": 0,
@@ -1232,7 +1318,9 @@
             "x": 0,
             "y": 0,
             "width": 19,
-            "height": 1
+            "height": 1,
+            "clientWidth": 19,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1257,7 +1345,9 @@
             "x": 19,
             "y": 0,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1279,7 +1369,9 @@
             "x": 7,
             "y": 1,
             "width": 1,
-            "height": 22
+            "height": 22,
+            "clientWidth": 1,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -1301,7 +1393,9 @@
             "x": 8,
             "y": 1,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1323,7 +1417,9 @@
             "x": 0,
             "y": 23,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1377,7 +1473,9 @@
             "x": 0,
             "y": 1,
             "width": 1,
-            "height": 22
+            "height": 22,
+            "clientWidth": 1,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -1399,7 +1497,9 @@
             "x": 2,
             "y": 2,
             "width": 54,
-            "height": 1
+            "height": 1,
+            "clientWidth": 54,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1420,7 +1520,9 @@
             "x": 2,
             "y": 2,
             "width": 54,
-            "height": 1
+            "height": 1,
+            "clientWidth": 54,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1442,7 +1544,9 @@
             "x": 2,
             "y": 4,
             "width": 54,
-            "height": 1
+            "height": 1,
+            "clientWidth": 54,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1463,7 +1567,9 @@
             "x": 2,
             "y": 4,
             "width": 54,
-            "height": 1
+            "height": 1,
+            "clientWidth": 54,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1484,7 +1590,9 @@
             "x": 2,
             "y": 2,
             "width": 54,
-            "height": 3
+            "height": 3,
+            "clientWidth": 54,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -1508,7 +1616,9 @@
             "x": 2,
             "y": 1,
             "width": 54,
-            "height": 22
+            "height": 22,
+            "clientWidth": 54,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -1569,7 +1679,9 @@
             "x": 0,
             "y": 0,
             "width": 28,
-            "height": 1
+            "height": 1,
+            "clientWidth": 28,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1594,7 +1706,9 @@
             "x": 28,
             "y": 0,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1618,7 +1732,9 @@
             "x": 6,
             "y": 1,
             "width": 74,
-            "height": 1
+            "height": 1,
+            "clientWidth": 74,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1640,7 +1756,9 @@
             "x": 6,
             "y": 2,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1664,7 +1782,9 @@
             "x": 6,
             "y": 3,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1688,7 +1808,9 @@
             "x": 6,
             "y": 2,
             "width": 16,
-            "height": 6
+            "height": 6,
+            "clientWidth": 16,
+            "clientHeight": 6
           },
           "clip": {
             "x": 0,
@@ -1712,7 +1834,9 @@
             "x": 56,
             "y": 2,
             "width": 23,
-            "height": 1
+            "height": 1,
+            "clientWidth": 23,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1736,7 +1860,9 @@
             "x": 56,
             "y": 3,
             "width": 23,
-            "height": 1
+            "height": 1,
+            "clientWidth": 23,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1760,7 +1886,9 @@
             "x": 56,
             "y": 4,
             "width": 23,
-            "height": 2
+            "height": 2,
+            "clientWidth": 23,
+            "clientHeight": 2
           },
           "clip": {
             "x": 0,
@@ -1782,7 +1910,9 @@
             "x": 56,
             "y": 6,
             "width": 23,
-            "height": 2
+            "height": 2,
+            "clientWidth": 23,
+            "clientHeight": 2
           },
           "clip": {
             "x": 0,
@@ -1803,7 +1933,9 @@
             "x": 56,
             "y": 2,
             "width": 23,
-            "height": 6
+            "height": 6,
+            "clientWidth": 23,
+            "clientHeight": 6
           },
           "clip": {
             "x": 0,
@@ -1827,7 +1959,9 @@
             "x": 6,
             "y": 8,
             "width": 74,
-            "height": 1
+            "height": 1,
+            "clientWidth": 74,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1849,7 +1983,9 @@
             "x": 6,
             "y": 9,
             "width": 74,
-            "height": 1
+            "height": 1,
+            "clientWidth": 74,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1870,7 +2006,9 @@
             "x": 6,
             "y": 1,
             "width": 74,
-            "height": 22
+            "height": 22,
+            "clientWidth": 74,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -1892,7 +2030,9 @@
             "x": 0,
             "y": 23,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -1946,7 +2086,9 @@
             "x": 0,
             "y": 1,
             "width": 1,
-            "height": 22
+            "height": 22,
+            "clientWidth": 1,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -1973,7 +2115,9 @@
             "x": 54,
             "y": 2,
             "width": 1,
-            "height": 5
+            "height": 5,
+            "clientWidth": 1,
+            "clientHeight": 5
           },
           "clip": {
             "x": 0,
@@ -1999,7 +2143,9 @@
             "x": 1,
             "y": 2,
             "width": 79,
-            "height": 5
+            "height": 5,
+            "clientWidth": 79,
+            "clientHeight": 5
           },
           "clip": {
             "x": 0,
@@ -2061,7 +2207,9 @@
             "x": 0,
             "y": 0,
             "width": 26,
-            "height": 1
+            "height": 1,
+            "clientWidth": 26,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2086,7 +2234,9 @@
             "x": 26,
             "y": 0,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2113,7 +2263,9 @@
             "x": 6,
             "y": 1,
             "width": 27,
-            "height": 1
+            "height": 1,
+            "clientWidth": 27,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2138,7 +2290,9 @@
             "x": 6,
             "y": 2,
             "width": 27,
-            "height": 1
+            "height": 1,
+            "clientWidth": 27,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2160,7 +2314,9 @@
             "x": 6,
             "y": 3,
             "width": 27,
-            "height": 3
+            "height": 3,
+            "clientWidth": 27,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -2181,7 +2337,9 @@
             "x": 6,
             "y": 1,
             "width": 27,
-            "height": 5
+            "height": 5,
+            "clientWidth": 27,
+            "clientHeight": 5
           },
           "clip": {
             "x": 0,
@@ -2205,7 +2363,9 @@
             "x": 43,
             "y": 1,
             "width": 0,
-            "height": 5
+            "height": 5,
+            "clientWidth": 0,
+            "clientHeight": 5
           },
           "clip": {
             "x": 0,
@@ -2227,7 +2387,9 @@
             "x": 0,
             "y": 23,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2281,7 +2443,9 @@
             "x": 0,
             "y": 1,
             "width": 1,
-            "height": 22
+            "height": 22,
+            "clientWidth": 1,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -2308,7 +2472,9 @@
             "x": 40,
             "y": 1,
             "width": 0,
-            "height": 6
+            "height": 6,
+            "clientWidth": 0,
+            "clientHeight": 6
           },
           "clip": {
             "x": 0,
@@ -2334,7 +2500,9 @@
             "x": 1,
             "y": 1,
             "width": 79,
-            "height": 22
+            "height": 22,
+            "clientWidth": 79,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -2376,9 +2544,9 @@
     "storyId": "production-applications",
     "storyTitle": "Applications/Production",
     "variant": "DeploymentDashboard",
-    "frame": "# TUIL deployment dashboard [ Refresh ]\n▌[████████████████████] 100%Service       … Status        … Region        …\n                            API             ready           unknown\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 2 records · revision 1 · ctrl+r refresh",
-    "ansiFrame": "\u001b[1m# TUIL deployment dashboard\u001b[22m \u001b[36m[ Refresh ]\u001b[39m\n\u001b[36m▌[████████████████████] 100%\u001b[39m\u001b[1mService       …\u001b[22m \u001b[1mStatus        …\u001b[22m \u001b[1mRegion        …\u001b[22m\n                            API             ready           unknown\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 2 records · revision 1 · ctrl+r refresh",
-    "htmlFrame": "<b># TUIL deployment dashboard<span style=\"font-weight:normal;text-decoration:none;font-style:normal\"> <span style=\"color:#0AA\">[ Refresh ]<span style=\"color:#FFF\"><br/><span style=\"color:#0AA\">&#x258C;[&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;] 100%<span style=\"color:#FFF\"><b>Service       &#x2026;<span style=\"font-weight:normal;text-decoration:none;font-style:normal\"> <b>Status        &#x2026;<span style=\"font-weight:normal;text-decoration:none;font-style:normal\"> <b>Region        &#x2026;<span style=\"font-weight:normal;text-decoration:none;font-style:normal\"><br/>                            API             ready           unknown<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>LIVE &#xB7; 2 records &#xB7; revision 1 &#xB7; ctrl+r refresh</span></b></span></b></span></b></span></span></span></span></span></b>",
+    "frame": "# TUIL deployment dashboard [ Refresh ]\n▌[████████████████████] 100%Service         Status          Region\n                            API             ready           unknown\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 2 records · revision 1 · ctrl+r refresh",
+    "ansiFrame": "\u001b[1m# TUIL deployment dashboard\u001b[22m \u001b[36m[ Refresh ]\u001b[39m\n\u001b[36m▌[████████████████████] 100%\u001b[39m\u001b[1mService         Status          Region          \u001b[22m\n                            API             ready           unknown\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 2 records · revision 1 · ctrl+r refresh",
+    "htmlFrame": "<b># TUIL deployment dashboard<span style=\"font-weight:normal;text-decoration:none;font-style:normal\"> <span style=\"color:#0AA\">[ Refresh ]<span style=\"color:#FFF\"><br/><span style=\"color:#0AA\">&#x258C;[&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;] 100%<span style=\"color:#FFF\"><b>Service         Status          Region          <span style=\"font-weight:normal;text-decoration:none;font-style:normal\"><br/>                            API             ready           unknown<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>LIVE &#xB7; 2 records &#xB7; revision 1 &#xB7; ctrl+r refresh</span></b></span></span></span></span></span></b>",
     "description": "Applications/Production DeploymentDashboard executable example.",
     "source": "import { createEcosystemStoryCatalog } from \"./registry/stories/ecosystem\";\nimport { renderStoryRequest } from \"@mwillbanks/tuil-story\";\n\nconst frame = await renderStoryRequest(createEcosystemStoryCatalog(), {\n  storyId: \"production-applications\",\n  variant: \"DeploymentDashboard\",\n});",
     "args": {
@@ -2398,7 +2566,9 @@
             "x": 0,
             "y": 0,
             "width": 27,
-            "height": 1
+            "height": 1,
+            "clientWidth": 27,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2423,7 +2593,9 @@
             "x": 27,
             "y": 0,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2445,7 +2617,9 @@
             "x": 0,
             "y": 23,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2499,7 +2673,9 @@
             "x": 0,
             "y": 1,
             "width": 1,
-            "height": 22
+            "height": 22,
+            "clientWidth": 1,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -2523,7 +2699,9 @@
             "x": 1,
             "y": 1,
             "width": 27,
-            "height": 22
+            "height": 22,
+            "clientWidth": 27,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -2548,7 +2726,9 @@
             "x": 28,
             "y": 2,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2573,7 +2753,9 @@
             "x": 44,
             "y": 2,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2598,7 +2780,9 @@
             "x": 60,
             "y": 2,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2623,7 +2807,9 @@
             "x": 28,
             "y": 2,
             "width": 48,
-            "height": 1
+            "height": 1,
+            "clientWidth": 48,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2649,7 +2835,9 @@
             "x": 28,
             "y": 1,
             "width": 48,
-            "height": 22
+            "height": 22,
+            "clientWidth": 48,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -2684,9 +2872,9 @@
     "storyId": "production-applications",
     "storyTitle": "Applications/Production",
     "variant": "FileManager",
-    "frame": "# TUIL file manager [ Refresh ]\n▌  file-manager: ready revision=1       │Preview:       Fixture preview for\n   src                                   README.md      README.md\n   src/app.tsx\n   README.md\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 4 records · revision 1 · ctrl+r refresh",
-    "ansiFrame": "\u001b[1m# TUIL file manager\u001b[22m \u001b[36m[ Refresh ]\u001b[39m\n\u001b[36m▌\u001b[39m  file-manager: ready revision=1       │\u001b[1mPreview: \u001b[22m      Fixture preview for\n   src                                   \u001b[1mREADME.md\u001b[22m      README.md\n   src/app.tsx\n   README.md\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 4 records · revision 1 · ctrl+r refresh",
-    "htmlFrame": "<b># TUIL file manager<span style=\"font-weight:normal;text-decoration:none;font-style:normal\"> <span style=\"color:#0AA\">[ Refresh ]<span style=\"color:#FFF\"><br/><span style=\"color:#0AA\">&#x258C;<span style=\"color:#FFF\">  file-manager: ready revision=1       &#x2502;<b>Preview: <span style=\"font-weight:normal;text-decoration:none;font-style:normal\">      Fixture preview for<br/>   src                                   <b>README.md<span style=\"font-weight:normal;text-decoration:none;font-style:normal\">      README.md<br/>   src/app.tsx<br/>   README.md<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>LIVE &#xB7; 4 records &#xB7; revision 1 &#xB7; ctrl+r refresh</span></b></span></b></span></span></span></span></span></b>",
+    "frame": "# TUIL file manager [ Refresh ]\n▌  file-manager: ready revision=1       │Preview: README.mdLoading preview…\n   src\n   src/app.tsx\n   README.md\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 4 records · revision 1 · ctrl+r refresh",
+    "ansiFrame": "\u001b[1m# TUIL file manager\u001b[22m \u001b[36m[ Refresh ]\u001b[39m\n\u001b[36m▌\u001b[39m  file-manager: ready revision=1       │\u001b[1mPreview: README.md\u001b[22mLoading preview…\n   src\n   src/app.tsx\n   README.md\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLIVE · 4 records · revision 1 · ctrl+r refresh",
+    "htmlFrame": "<b># TUIL file manager<span style=\"font-weight:normal;text-decoration:none;font-style:normal\"> <span style=\"color:#0AA\">[ Refresh ]<span style=\"color:#FFF\"><br/><span style=\"color:#0AA\">&#x258C;<span style=\"color:#FFF\">  file-manager: ready revision=1       &#x2502;<b>Preview: README.md<span style=\"font-weight:normal;text-decoration:none;font-style:normal\">Loading preview&#x2026;<br/>   src<br/>   src/app.tsx<br/>   README.md<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>LIVE &#xB7; 4 records &#xB7; revision 1 &#xB7; ctrl+r refresh</span></b></span></span></span></span></span></b>",
     "description": "Applications/Production FileManager executable example.",
     "source": "import { createEcosystemStoryCatalog } from \"./registry/stories/ecosystem\";\nimport { renderStoryRequest } from \"@mwillbanks/tuil-story\";\n\nconst frame = await renderStoryRequest(createEcosystemStoryCatalog(), {\n  storyId: \"production-applications\",\n  variant: \"FileManager\",\n});",
     "args": {
@@ -2706,7 +2894,9 @@
             "x": 0,
             "y": 0,
             "width": 19,
-            "height": 1
+            "height": 1,
+            "clientWidth": 19,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2731,7 +2921,9 @@
             "x": 19,
             "y": 0,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2753,7 +2945,9 @@
             "x": 43,
             "y": 1,
             "width": 18,
-            "height": 12
+            "height": 12,
+            "clientWidth": 18,
+            "clientHeight": 12
           },
           "clip": {
             "x": 0,
@@ -2775,7 +2969,9 @@
             "x": 0,
             "y": 23,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -2829,133 +3025,9 @@
             "x": 0,
             "y": 1,
             "width": 1,
-            "height": 22
-          },
-          "clip": {
-            "x": 0,
-            "y": 0,
-            "width": 80,
-            "height": 24
-          },
-          "zIndex": 0,
-          "focusable": true,
-          "pointerEvents": "auto"
-        }
-      },
-      {
-        "key": "file-tree:item:entry-0",
-        "id": "file-tree:item:entry-0",
-        "role": "treeitem",
-        "label": "file-manager: ready revision=1",
-        "selected": false,
-        "layout": {
-          "parentId": "file-tree",
-          "bounds": {
-            "x": 1,
-            "y": 1,
-            "width": 32,
-            "height": 1
-          },
-          "clip": {
-            "x": 0,
-            "y": 0,
-            "width": 80,
-            "height": 24
-          },
-          "zIndex": 1,
-          "focusable": false,
-          "pointerEvents": "auto"
-        }
-      },
-      {
-        "key": "file-tree:item:entry-1",
-        "id": "file-tree:item:entry-1",
-        "role": "treeitem",
-        "label": "src",
-        "selected": false,
-        "layout": {
-          "parentId": "file-tree",
-          "bounds": {
-            "x": 1,
-            "y": 2,
-            "width": 32,
-            "height": 1
-          },
-          "clip": {
-            "x": 0,
-            "y": 0,
-            "width": 80,
-            "height": 24
-          },
-          "zIndex": 1,
-          "focusable": false,
-          "pointerEvents": "auto"
-        }
-      },
-      {
-        "key": "file-tree:item:entry-2",
-        "id": "file-tree:item:entry-2",
-        "role": "treeitem",
-        "label": "src/app.tsx",
-        "selected": false,
-        "layout": {
-          "parentId": "file-tree",
-          "bounds": {
-            "x": 1,
-            "y": 3,
-            "width": 32,
-            "height": 1
-          },
-          "clip": {
-            "x": 0,
-            "y": 0,
-            "width": 80,
-            "height": 24
-          },
-          "zIndex": 1,
-          "focusable": false,
-          "pointerEvents": "auto"
-        }
-      },
-      {
-        "key": "file-tree:item:entry-3",
-        "id": "file-tree:item:entry-3",
-        "role": "treeitem",
-        "label": "README.md",
-        "selected": false,
-        "layout": {
-          "parentId": "file-tree",
-          "bounds": {
-            "x": 1,
-            "y": 4,
-            "width": 32,
-            "height": 1
-          },
-          "clip": {
-            "x": 0,
-            "y": 0,
-            "width": 80,
-            "height": 24
-          },
-          "zIndex": 1,
-          "focusable": false,
-          "pointerEvents": "auto"
-        }
-      },
-      {
-        "key": "file-tree",
-        "id": "file-tree",
-        "role": "tree",
-        "label": "Files",
-        "disabled": false,
-        "readOnly": false,
-        "valueText": "4 visible items",
-        "layout": {
-          "bounds": {
-            "x": 1,
-            "y": 1,
-            "width": 32,
-            "height": 12
+            "height": 22,
+            "clientWidth": 1,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -2982,7 +3054,9 @@
             "x": 40,
             "y": 1,
             "width": 1,
-            "height": 12
+            "height": 12,
+            "clientWidth": 1,
+            "clientHeight": 12
           },
           "clip": {
             "x": 0,
@@ -2992,30 +3066,6 @@
           },
           "zIndex": 1,
           "focusable": true,
-          "pointerEvents": "auto"
-        }
-      },
-      {
-        "key": "_idr_5h_",
-        "id": "_idr_5h_",
-        "role": "text",
-        "label": "Fixture preview for README.md",
-        "text": "Fixture preview for README.md",
-        "layout": {
-          "bounds": {
-            "x": 56,
-            "y": 1,
-            "width": 24,
-            "height": 12
-          },
-          "clip": {
-            "x": 0,
-            "y": 0,
-            "width": 80,
-            "height": 24
-          },
-          "zIndex": 0,
-          "focusable": false,
           "pointerEvents": "auto"
         }
       },
@@ -3032,7 +3082,9 @@
             "x": 1,
             "y": 1,
             "width": 79,
-            "height": 22
+            "height": 22,
+            "clientWidth": 79,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -3042,6 +3094,168 @@
           },
           "zIndex": 0,
           "focusable": true,
+          "pointerEvents": "auto"
+        }
+      },
+      {
+        "key": "file-tree:item:entry-0",
+        "id": "file-tree:item:entry-0",
+        "role": "treeitem",
+        "label": "file-manager: ready revision=1",
+        "selected": false,
+        "layout": {
+          "parentId": "file-tree",
+          "bounds": {
+            "x": 1,
+            "y": 1,
+            "width": 32,
+            "height": 1,
+            "clientWidth": 32,
+            "clientHeight": 1
+          },
+          "clip": {
+            "x": 0,
+            "y": 0,
+            "width": 80,
+            "height": 24
+          },
+          "zIndex": 1,
+          "focusable": false,
+          "pointerEvents": "auto"
+        }
+      },
+      {
+        "key": "file-tree:item:entry-1",
+        "id": "file-tree:item:entry-1",
+        "role": "treeitem",
+        "label": "src",
+        "selected": false,
+        "layout": {
+          "parentId": "file-tree",
+          "bounds": {
+            "x": 1,
+            "y": 2,
+            "width": 32,
+            "height": 1,
+            "clientWidth": 32,
+            "clientHeight": 1
+          },
+          "clip": {
+            "x": 0,
+            "y": 0,
+            "width": 80,
+            "height": 24
+          },
+          "zIndex": 1,
+          "focusable": false,
+          "pointerEvents": "auto"
+        }
+      },
+      {
+        "key": "file-tree:item:entry-2",
+        "id": "file-tree:item:entry-2",
+        "role": "treeitem",
+        "label": "src/app.tsx",
+        "selected": false,
+        "layout": {
+          "parentId": "file-tree",
+          "bounds": {
+            "x": 1,
+            "y": 3,
+            "width": 32,
+            "height": 1,
+            "clientWidth": 32,
+            "clientHeight": 1
+          },
+          "clip": {
+            "x": 0,
+            "y": 0,
+            "width": 80,
+            "height": 24
+          },
+          "zIndex": 1,
+          "focusable": false,
+          "pointerEvents": "auto"
+        }
+      },
+      {
+        "key": "file-tree:item:entry-3",
+        "id": "file-tree:item:entry-3",
+        "role": "treeitem",
+        "label": "README.md",
+        "selected": false,
+        "layout": {
+          "parentId": "file-tree",
+          "bounds": {
+            "x": 1,
+            "y": 4,
+            "width": 32,
+            "height": 1,
+            "clientWidth": 32,
+            "clientHeight": 1
+          },
+          "clip": {
+            "x": 0,
+            "y": 0,
+            "width": 80,
+            "height": 24
+          },
+          "zIndex": 1,
+          "focusable": false,
+          "pointerEvents": "auto"
+        }
+      },
+      {
+        "key": "file-tree",
+        "id": "file-tree",
+        "role": "tree",
+        "label": "Files",
+        "disabled": false,
+        "readOnly": false,
+        "valueText": "4 visible items",
+        "layout": {
+          "bounds": {
+            "x": 1,
+            "y": 1,
+            "width": 32,
+            "height": 12,
+            "clientWidth": 32,
+            "clientHeight": 12
+          },
+          "clip": {
+            "x": 0,
+            "y": 0,
+            "width": 80,
+            "height": 24
+          },
+          "zIndex": 0,
+          "focusable": true,
+          "pointerEvents": "auto"
+        }
+      },
+      {
+        "key": "_idr_5h_",
+        "id": "_idr_5h_",
+        "role": "text",
+        "label": "Loading preview…",
+        "text": "Loading preview…",
+        "layout": {
+          "bounds": {
+            "x": 59,
+            "y": 1,
+            "width": 16,
+            "height": 12,
+            "clientWidth": 16,
+            "clientHeight": 12
+          },
+          "clip": {
+            "x": 0,
+            "y": 0,
+            "width": 80,
+            "height": 24
+          },
+          "zIndex": 0,
+          "focusable": false,
           "pointerEvents": "auto"
         }
       }
@@ -3094,7 +3308,9 @@
             "x": 0,
             "y": 0,
             "width": 22,
-            "height": 1
+            "height": 1,
+            "clientWidth": 22,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3119,7 +3335,9 @@
             "x": 22,
             "y": 0,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3144,7 +3362,9 @@
             "x": 6,
             "y": 1,
             "width": 16,
-            "height": 22
+            "height": 22,
+            "clientWidth": 16,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -3166,7 +3386,9 @@
             "x": 0,
             "y": 23,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3220,7 +3442,9 @@
             "x": 0,
             "y": 1,
             "width": 1,
-            "height": 22
+            "height": 22,
+            "clientWidth": 1,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -3244,7 +3468,9 @@
             "x": 17,
             "y": 1,
             "width": 26,
-            "height": 22
+            "height": 22,
+            "clientWidth": 26,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -3301,7 +3527,9 @@
             "x": 0,
             "y": 0,
             "width": 37,
-            "height": 1
+            "height": 1,
+            "clientWidth": 37,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3326,7 +3554,9 @@
             "x": 37,
             "y": 0,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3349,7 +3579,9 @@
             "x": 6,
             "y": 1,
             "width": 0,
-            "height": 1
+            "height": 1,
+            "clientWidth": 0,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3373,7 +3605,9 @@
             "x": 43,
             "y": 1,
             "width": 11,
-            "height": 1
+            "height": 1,
+            "clientWidth": 11,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3395,7 +3629,9 @@
             "x": 0,
             "y": 23,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3449,7 +3685,9 @@
             "x": 0,
             "y": 1,
             "width": 1,
-            "height": 22
+            "height": 22,
+            "clientWidth": 1,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -3476,7 +3714,9 @@
             "x": 40,
             "y": 1,
             "width": 0,
-            "height": 3
+            "height": 3,
+            "clientWidth": 0,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -3502,7 +3742,9 @@
             "x": 1,
             "y": 1,
             "width": 79,
-            "height": 22
+            "height": 22,
+            "clientWidth": 79,
+            "clientHeight": 22
           },
           "clip": {
             "x": 0,
@@ -3563,7 +3805,9 @@
             "x": 0,
             "y": 4,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3648,7 +3892,9 @@
             "x": 0,
             "y": 0,
             "width": 15,
-            "height": 3
+            "height": 3,
+            "clientWidth": 15,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -3670,7 +3916,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3734,7 +3982,9 @@
             "x": 0,
             "y": 0,
             "width": 30,
-            "height": 1
+            "height": 1,
+            "clientWidth": 30,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3756,7 +4006,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3818,7 +4070,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3845,7 +4099,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3901,7 +4157,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -3963,7 +4221,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4021,7 +4281,9 @@
             "x": 0,
             "y": 0,
             "width": 11,
-            "height": 3
+            "height": 3,
+            "clientWidth": 11,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -4043,7 +4305,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4108,7 +4372,9 @@
             "x": 0,
             "y": 0,
             "width": 3,
-            "height": 1
+            "height": 1,
+            "clientWidth": 3,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4133,7 +4399,9 @@
             "x": 3,
             "y": 0,
             "width": 6,
-            "height": 1
+            "height": 1,
+            "clientWidth": 6,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4156,7 +4424,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4178,7 +4448,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4237,7 +4509,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4259,7 +4533,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4319,7 +4595,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4341,7 +4619,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4397,7 +4677,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4425,7 +4707,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4483,7 +4767,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 0
+            "height": 0,
+            "clientWidth": 80,
+            "clientHeight": 0
           },
           "clip": {
             "x": 0,
@@ -4505,7 +4791,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4561,7 +4849,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4588,7 +4878,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4646,7 +4938,9 @@
             "x": 2,
             "y": 3,
             "width": 66,
-            "height": 1
+            "height": 1,
+            "clientWidth": 66,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4668,7 +4962,9 @@
             "x": 0,
             "y": 5,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4702,7 +4998,9 @@
             "x": 2,
             "y": 2,
             "width": 66,
-            "height": 1
+            "height": 1,
+            "clientWidth": 66,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4761,7 +5059,9 @@
             "x": 2,
             "y": 3,
             "width": 11,
-            "height": 1
+            "height": 1,
+            "clientWidth": 11,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4786,7 +5086,9 @@
             "x": 14,
             "y": 3,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4808,7 +5110,9 @@
             "x": 0,
             "y": 5,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4873,7 +5177,9 @@
             "x": 0,
             "y": 0,
             "width": 17,
-            "height": 3
+            "height": 3,
+            "clientWidth": 17,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -4895,7 +5201,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4960,7 +5268,9 @@
             "x": 0,
             "y": 1,
             "width": 40,
-            "height": 1
+            "height": 1,
+            "clientWidth": 40,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -4985,7 +5295,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5011,7 +5323,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 4
+            "height": 4,
+            "clientWidth": 80,
+            "clientHeight": 4
           },
           "clip": {
             "x": 0,
@@ -5033,7 +5347,9 @@
             "x": 0,
             "y": 4,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5089,7 +5405,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5116,7 +5434,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5147,15 +5467,15 @@
     }
   },
   {
-    "id": "component-acceptance:ThemePreview",
+    "id": "component-acceptance:DefaultTheme",
     "storyId": "component-acceptance",
     "storyTitle": "Components/Acceptance",
-    "variant": "ThemePreview",
+    "variant": "DefaultTheme",
     "frame": "tuil-default theme tokens\nacceptance-state:default · events:none · theme:default-dark",
     "ansiFrame": "\u001b[36mtuil-default theme tokens\u001b[39m\n\u001b[36macceptance-state:default · events:none · theme:default-dark\u001b[39m",
     "htmlFrame": "<span style=\"color:#0AA\">tuil-default theme tokens<span style=\"color:#FFF\"><br/><span style=\"color:#0AA\">acceptance-state:default &#xB7; events:none &#xB7; theme:default-dark<span style=\"color:#FFF\"></span></span></span></span>",
-    "description": "Components/Acceptance ThemePreview executable example.",
-    "source": "import { createEcosystemStoryCatalog } from \"./registry/stories/ecosystem\";\nimport { renderStoryRequest } from \"@mwillbanks/tuil-story\";\n\nconst frame = await renderStoryRequest(createEcosystemStoryCatalog(), {\n  storyId: \"component-acceptance\",\n  variant: \"ThemePreview\",\n});",
+    "description": "Components/Acceptance DefaultTheme executable example.",
+    "source": "import { createEcosystemStoryCatalog } from \"./registry/stories/ecosystem\";\nimport { renderStoryRequest } from \"@mwillbanks/tuil-story\";\n\nconst frame = await renderStoryRequest(createEcosystemStoryCatalog(), {\n  storyId: \"component-acceptance\",\n  variant: \"DefaultTheme\",\n});",
     "args": {
       "name": "default"
     },
@@ -5173,7 +5493,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5195,7 +5517,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5251,7 +5575,9 @@
             "x": 0,
             "y": 4,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5314,7 +5640,9 @@
             "x": 0,
             "y": 4,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5378,7 +5706,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5441,7 +5771,9 @@
             "x": 0,
             "y": 4,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5504,7 +5836,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5531,7 +5865,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5587,7 +5923,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5614,7 +5952,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5672,7 +6012,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5694,7 +6036,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5752,7 +6096,9 @@
             "x": 0,
             "y": 1,
             "width": 13,
-            "height": 1
+            "height": 1,
+            "clientWidth": 13,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5774,7 +6120,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5838,7 +6186,9 @@
             "x": 0,
             "y": 0,
             "width": 14,
-            "height": 3
+            "height": 3,
+            "clientWidth": 14,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -5860,7 +6210,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5916,7 +6268,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -5943,7 +6297,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6001,7 +6357,9 @@
             "x": 0,
             "y": 0,
             "width": 14,
-            "height": 3
+            "height": 3,
+            "clientWidth": 14,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -6023,7 +6381,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6079,7 +6439,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6144,7 +6506,9 @@
             "x": 2,
             "y": 5,
             "width": 10,
-            "height": 1
+            "height": 1,
+            "clientWidth": 10,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6166,7 +6530,9 @@
             "x": 0,
             "y": 7,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6200,7 +6566,9 @@
             "x": 2,
             "y": 3,
             "width": 56,
-            "height": 1
+            "height": 1,
+            "clientWidth": 56,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6257,7 +6625,9 @@
             "x": 0,
             "y": 0,
             "width": 11,
-            "height": 1
+            "height": 1,
+            "clientWidth": 11,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6278,7 +6648,9 @@
             "x": 0,
             "y": 0,
             "width": 11,
-            "height": 1
+            "height": 1,
+            "clientWidth": 11,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6299,7 +6671,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6323,7 +6697,9 @@
             "x": 0,
             "y": 1,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6347,7 +6723,9 @@
             "x": 0,
             "y": 3,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6372,7 +6750,9 @@
             "x": 0,
             "y": 10,
             "width": 46,
-            "height": 1
+            "height": 1,
+            "clientWidth": 46,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6393,7 +6773,9 @@
             "x": 0,
             "y": 1,
             "width": 46,
-            "height": 10
+            "height": 10,
+            "clientWidth": 46,
+            "clientHeight": 10
           },
           "clip": {
             "x": 0,
@@ -6414,7 +6796,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 10
+            "height": 10,
+            "clientWidth": 80,
+            "clientHeight": 10
           },
           "clip": {
             "x": 0,
@@ -6438,7 +6822,9 @@
             "x": 0,
             "y": 11,
             "width": 43,
-            "height": 1
+            "height": 1,
+            "clientWidth": 43,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6460,7 +6846,9 @@
             "x": 0,
             "y": 11,
             "width": 43,
-            "height": 1
+            "height": 1,
+            "clientWidth": 43,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6482,7 +6870,9 @@
             "x": 0,
             "y": 11,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6504,7 +6894,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 12
+            "height": 12,
+            "clientWidth": 80,
+            "clientHeight": 12
           },
           "clip": {
             "x": 0,
@@ -6526,7 +6918,9 @@
             "x": 0,
             "y": 12,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6572,7 +6966,9 @@
             "x": 0,
             "y": 6,
             "width": 15,
-            "height": 1
+            "height": 1,
+            "clientWidth": 15,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6604,7 +7000,9 @@
             "x": 0,
             "y": 1,
             "width": 8,
-            "height": 1
+            "height": 1,
+            "clientWidth": 8,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6629,7 +7027,9 @@
             "x": 9,
             "y": 1,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6654,7 +7054,9 @@
             "x": 22,
             "y": 1,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6679,7 +7081,9 @@
             "x": 35,
             "y": 1,
             "width": 11,
-            "height": 1
+            "height": 1,
+            "clientWidth": 11,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6735,7 +7139,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6762,7 +7168,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6818,7 +7226,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6898,7 +7308,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6920,7 +7332,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6942,7 +7356,9 @@
             "x": 0,
             "y": 1,
             "width": 22,
-            "height": 1
+            "height": 1,
+            "clientWidth": 22,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6963,7 +7379,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -6984,7 +7402,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7008,7 +7428,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 2
+            "height": 2,
+            "clientWidth": 80,
+            "clientHeight": 2
           },
           "clip": {
             "x": 0,
@@ -7066,7 +7488,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 2
+            "height": 2,
+            "clientWidth": 80,
+            "clientHeight": 2
           },
           "clip": {
             "x": 0,
@@ -7088,7 +7512,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7146,7 +7572,9 @@
             "x": 0,
             "y": 0,
             "width": 5,
-            "height": 1
+            "height": 1,
+            "clientWidth": 5,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7170,7 +7598,9 @@
             "x": 0,
             "y": 1,
             "width": 5,
-            "height": 1
+            "height": 1,
+            "clientWidth": 5,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7193,7 +7623,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 2
+            "height": 2,
+            "clientWidth": 80,
+            "clientHeight": 2
           },
           "clip": {
             "x": 0,
@@ -7215,7 +7647,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7274,7 +7708,9 @@
             "x": 0,
             "y": 0,
             "width": 3,
-            "height": 1
+            "height": 1,
+            "clientWidth": 3,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7297,7 +7733,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7321,7 +7759,9 @@
             "x": 0,
             "y": 1,
             "width": 5,
-            "height": 1
+            "height": 1,
+            "clientWidth": 5,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7345,7 +7785,9 @@
             "x": 0,
             "y": 2,
             "width": 5,
-            "height": 1
+            "height": 1,
+            "clientWidth": 5,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7368,7 +7810,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 2
+            "height": 2,
+            "clientWidth": 80,
+            "clientHeight": 2
           },
           "clip": {
             "x": 0,
@@ -7390,7 +7834,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7451,7 +7897,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7476,7 +7924,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7501,7 +7951,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7523,7 +7975,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7579,7 +8033,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7606,7 +8062,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7662,7 +8120,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7725,7 +8185,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7804,7 +8266,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 2
+            "height": 2,
+            "clientWidth": 80,
+            "clientHeight": 2
           },
           "clip": {
             "x": 0,
@@ -7826,7 +8290,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7884,7 +8350,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7906,7 +8374,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7964,7 +8434,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -7986,7 +8458,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8042,7 +8516,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8069,7 +8545,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8125,7 +8603,9 @@
             "x": 0,
             "y": 4,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8188,7 +8668,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8254,7 +8736,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8279,7 +8763,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8301,7 +8787,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8359,7 +8847,9 @@
             "x": 0,
             "y": 0,
             "width": 9,
-            "height": 3
+            "height": 3,
+            "clientWidth": 9,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -8381,7 +8871,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8457,7 +8949,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 3
+            "height": 3,
+            "clientWidth": 80,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -8479,7 +8973,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8536,7 +9032,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 3
+            "height": 3,
+            "clientWidth": 80,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -8558,7 +9056,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8614,7 +9114,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8641,7 +9143,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8702,7 +9206,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8724,7 +9230,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8782,7 +9290,9 @@
             "x": 0,
             "y": 0,
             "width": 15,
-            "height": 3
+            "height": 3,
+            "clientWidth": 15,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -8804,7 +9314,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8860,7 +9372,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8920,7 +9434,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8942,7 +9458,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -8998,7 +9516,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9060,7 +9580,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9124,7 +9646,9 @@
             "x": 0,
             "y": 0,
             "width": 8,
-            "height": 1
+            "height": 1,
+            "clientWidth": 8,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9148,7 +9672,9 @@
             "x": 15,
             "y": 0,
             "width": 8,
-            "height": 1
+            "height": 1,
+            "clientWidth": 8,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9170,7 +9696,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9197,7 +9725,9 @@
             "x": 14,
             "y": 0,
             "width": 1,
-            "height": 1
+            "height": 1,
+            "clientWidth": 1,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9223,7 +9753,9 @@
             "x": 0,
             "y": 0,
             "width": 30,
-            "height": 3
+            "height": 3,
+            "clientWidth": 30,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -9281,7 +9813,9 @@
             "x": 0,
             "y": 0,
             "width": 30,
-            "height": 1
+            "height": 1,
+            "clientWidth": 30,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9303,7 +9837,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9367,7 +9903,9 @@
             "x": 0,
             "y": 0,
             "width": 18,
-            "height": 3
+            "height": 3,
+            "clientWidth": 18,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -9389,7 +9927,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9454,7 +9994,9 @@
             "x": 0,
             "y": 0,
             "width": 7,
-            "height": 1
+            "height": 1,
+            "clientWidth": 7,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9478,7 +10020,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9500,7 +10044,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9531,15 +10077,15 @@
     }
   },
   {
-    "id": "component-acceptance:StructuredContentSummary",
+    "id": "component-acceptance:StructuredContent",
     "storyId": "component-acceptance",
     "storyTitle": "Components/Acceptance",
-    "variant": "StructuredContentSummary",
+    "variant": "StructuredContent",
     "frame": "$: undefined\nacceptance-state:structured-content · events:none · theme:default-dark",
     "ansiFrame": "$: undefined\n\u001b[36macceptance-state:structured-content · events:none · theme:default-dark\u001b[39m",
     "htmlFrame": "$: undefined<br/><span style=\"color:#0AA\">acceptance-state:structured-content &#xB7; events:none &#xB7; theme:default-dark<span style=\"color:#FFF\"></span></span>",
-    "description": "Components/Acceptance StructuredContentSummary executable example.",
-    "source": "import { createEcosystemStoryCatalog } from \"./registry/stories/ecosystem\";\nimport { renderStoryRequest } from \"@mwillbanks/tuil-story\";\n\nconst frame = await renderStoryRequest(createEcosystemStoryCatalog(), {\n  storyId: \"component-acceptance\",\n  variant: \"StructuredContentSummary\",\n});",
+    "description": "Components/Acceptance StructuredContent executable example.",
+    "source": "import { createEcosystemStoryCatalog } from \"./registry/stories/ecosystem\";\nimport { renderStoryRequest } from \"@mwillbanks/tuil-story\";\n\nconst frame = await renderStoryRequest(createEcosystemStoryCatalog(), {\n  storyId: \"component-acceptance\",\n  variant: \"StructuredContent\",\n});",
     "args": {
       "name": "structured-content"
     },
@@ -9556,7 +10102,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9616,7 +10164,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9638,7 +10188,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9697,7 +10249,9 @@
             "x": 0,
             "y": 0,
             "width": 3,
-            "height": 1
+            "height": 1,
+            "clientWidth": 3,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9722,7 +10276,9 @@
             "x": 4,
             "y": 0,
             "width": 3,
-            "height": 1
+            "height": 1,
+            "clientWidth": 3,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9745,7 +10301,9 @@
             "x": 0,
             "y": 1,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9768,7 +10326,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 3
+            "height": 3,
+            "clientWidth": 80,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -9790,7 +10350,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9849,7 +10411,9 @@
             "x": 0,
             "y": 1,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9874,7 +10438,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9900,7 +10466,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 4
+            "height": 4,
+            "clientWidth": 80,
+            "clientHeight": 4
           },
           "clip": {
             "x": 0,
@@ -9922,7 +10490,9 @@
             "x": 0,
             "y": 4,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -9981,7 +10551,9 @@
             "x": 0,
             "y": 0,
             "width": 3,
-            "height": 1
+            "height": 1,
+            "clientWidth": 3,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10006,7 +10578,9 @@
             "x": 4,
             "y": 0,
             "width": 3,
-            "height": 1
+            "height": 1,
+            "clientWidth": 3,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10029,7 +10603,9 @@
             "x": 0,
             "y": 1,
             "width": 12,
-            "height": 1
+            "height": 1,
+            "clientWidth": 12,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10052,7 +10628,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 3
+            "height": 3,
+            "clientWidth": 80,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -10074,7 +10652,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10132,7 +10712,9 @@
             "x": 0,
             "y": 0,
             "width": 37,
-            "height": 1
+            "height": 1,
+            "clientWidth": 37,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10155,7 +10737,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10177,7 +10761,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10233,7 +10819,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10260,7 +10848,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10316,7 +10906,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10343,7 +10935,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10399,7 +10993,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10462,7 +11058,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10518,7 +11116,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10582,7 +11182,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10604,7 +11206,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10667,7 +11271,9 @@
             "x": 0,
             "y": 4,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10760,7 +11366,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10786,7 +11394,9 @@
             "x": 0,
             "y": 0,
             "width": 30,
-            "height": 1
+            "height": 1,
+            "clientWidth": 30,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10811,7 +11421,9 @@
             "x": 0,
             "y": 1,
             "width": 30,
-            "height": 1
+            "height": 1,
+            "clientWidth": 30,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10837,7 +11449,9 @@
             "x": 0,
             "y": 0,
             "width": 30,
-            "height": 3
+            "height": 3,
+            "clientWidth": 30,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -10893,7 +11507,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10918,7 +11534,9 @@
             "x": 0,
             "y": 0,
             "width": 30,
-            "height": 1
+            "height": 1,
+            "clientWidth": 30,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10943,7 +11561,9 @@
             "x": 0,
             "y": 1,
             "width": 30,
-            "height": 1
+            "height": 1,
+            "clientWidth": 30,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -10969,7 +11589,9 @@
             "x": 0,
             "y": 0,
             "width": 30,
-            "height": 3
+            "height": 3,
+            "clientWidth": 30,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -11028,7 +11650,9 @@
             "x": 0,
             "y": 0,
             "width": 9,
-            "height": 1
+            "height": 1,
+            "clientWidth": 9,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11052,7 +11676,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11074,7 +11700,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11137,7 +11765,9 @@
             "x": 0,
             "y": 8,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11158,7 +11788,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 10
+            "height": 10,
+            "clientWidth": 80,
+            "clientHeight": 10
           },
           "clip": {
             "x": 0,
@@ -11183,7 +11815,9 @@
             "x": 0,
             "y": 1,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11208,7 +11842,9 @@
             "x": 16,
             "y": 1,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11233,7 +11869,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11258,7 +11896,9 @@
             "x": 0,
             "y": 2,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11283,7 +11923,9 @@
             "x": 16,
             "y": 2,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11308,7 +11950,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11333,7 +11977,9 @@
             "x": 0,
             "y": 3,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11358,7 +12004,9 @@
             "x": 16,
             "y": 3,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11383,7 +12031,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11409,7 +12059,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 4
+            "height": 4,
+            "clientWidth": 80,
+            "clientHeight": 4
           },
           "clip": {
             "x": 0,
@@ -11435,7 +12087,9 @@
             "x": 0,
             "y": 4,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11460,7 +12114,9 @@
             "x": 0,
             "y": 5,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11485,7 +12141,9 @@
             "x": 0,
             "y": 6,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11511,7 +12169,9 @@
             "x": 0,
             "y": 4,
             "width": 80,
-            "height": 4
+            "height": 4,
+            "clientWidth": 80,
+            "clientHeight": 4
           },
           "clip": {
             "x": 0,
@@ -11533,7 +12193,9 @@
             "x": 0,
             "y": 9,
             "width": 23,
-            "height": 1
+            "height": 1,
+            "clientWidth": 23,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11554,7 +12216,9 @@
             "x": 0,
             "y": 9,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11576,7 +12240,9 @@
             "x": 0,
             "y": 11,
             "width": 19,
-            "height": 1
+            "height": 1,
+            "clientWidth": 19,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11597,7 +12263,9 @@
             "x": 0,
             "y": 11,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11619,7 +12287,9 @@
             "x": 0,
             "y": 13,
             "width": 20,
-            "height": 1
+            "height": 1,
+            "clientWidth": 20,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11640,7 +12310,9 @@
             "x": 0,
             "y": 13,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11661,7 +12333,9 @@
             "x": 0,
             "y": 9,
             "width": 80,
-            "height": 5
+            "height": 5,
+            "clientWidth": 80,
+            "clientHeight": 5
           },
           "clip": {
             "x": 0,
@@ -11685,7 +12359,9 @@
             "x": 0,
             "y": 8,
             "width": 80,
-            "height": 6
+            "height": 6,
+            "clientWidth": 80,
+            "clientHeight": 6
           },
           "clip": {
             "x": 0,
@@ -11745,7 +12421,9 @@
             "x": 0,
             "y": 8,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11767,7 +12445,9 @@
             "x": 0,
             "y": 9,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11788,7 +12468,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 11
+            "height": 11,
+            "clientWidth": 80,
+            "clientHeight": 11
           },
           "clip": {
             "x": 0,
@@ -11813,7 +12495,9 @@
             "x": 0,
             "y": 1,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11838,7 +12522,9 @@
             "x": 16,
             "y": 1,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11863,7 +12549,9 @@
             "x": 0,
             "y": 1,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11888,7 +12576,9 @@
             "x": 0,
             "y": 2,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11913,7 +12603,9 @@
             "x": 16,
             "y": 2,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11938,7 +12630,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11963,7 +12657,9 @@
             "x": 0,
             "y": 3,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -11988,7 +12684,9 @@
             "x": 16,
             "y": 3,
             "width": 16,
-            "height": 1
+            "height": 1,
+            "clientWidth": 16,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12013,7 +12711,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12039,7 +12739,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 4
+            "height": 4,
+            "clientWidth": 80,
+            "clientHeight": 4
           },
           "clip": {
             "x": 0,
@@ -12065,7 +12767,9 @@
             "x": 0,
             "y": 4,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12090,7 +12794,9 @@
             "x": 0,
             "y": 5,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12115,7 +12821,9 @@
             "x": 0,
             "y": 6,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12141,7 +12849,9 @@
             "x": 0,
             "y": 4,
             "width": 80,
-            "height": 4
+            "height": 4,
+            "clientWidth": 80,
+            "clientHeight": 4
           },
           "clip": {
             "x": 0,
@@ -12163,7 +12873,9 @@
             "x": 0,
             "y": 10,
             "width": 20,
-            "height": 1
+            "height": 1,
+            "clientWidth": 20,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12184,7 +12896,9 @@
             "x": 0,
             "y": 10,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12205,7 +12919,9 @@
             "x": 0,
             "y": 10,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12229,7 +12945,9 @@
             "x": 0,
             "y": 9,
             "width": 80,
-            "height": 2
+            "height": 2,
+            "clientWidth": 80,
+            "clientHeight": 2
           },
           "clip": {
             "x": 0,
@@ -12295,7 +13013,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12322,7 +13042,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12343,7 +13065,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 4
+            "height": 4,
+            "clientWidth": 80,
+            "clientHeight": 4
           },
           "clip": {
             "x": 0,
@@ -12376,7 +13100,9 @@
             "x": 0,
             "y": 1,
             "width": 7,
-            "height": 1
+            "height": 1,
+            "clientWidth": 7,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12442,7 +13168,9 @@
             "x": 0,
             "y": 2,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12469,7 +13197,9 @@
             "x": 0,
             "y": 3,
             "width": 80,
-            "height": 1
+            "height": 1,
+            "clientWidth": 80,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12490,7 +13220,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 4
+            "height": 4,
+            "clientWidth": 80,
+            "clientHeight": 4
           },
           "clip": {
             "x": 0,
@@ -12523,7 +13255,9 @@
             "x": 0,
             "y": 1,
             "width": 13,
-            "height": 1
+            "height": 1,
+            "clientWidth": 13,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12586,7 +13320,9 @@
             "x": 1,
             "y": 1,
             "width": 78,
-            "height": 1
+            "height": 1,
+            "clientWidth": 78,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12609,7 +13345,9 @@
             "x": 1,
             "y": 2,
             "width": 78,
-            "height": 1
+            "height": 1,
+            "clientWidth": 78,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12633,7 +13371,9 @@
             "x": 1,
             "y": 3,
             "width": 78,
-            "height": 1
+            "height": 1,
+            "clientWidth": 78,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12658,7 +13398,9 @@
             "x": 1,
             "y": 4,
             "width": 78,
-            "height": 1
+            "height": 1,
+            "clientWidth": 78,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12679,7 +13421,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 6
+            "height": 6,
+            "clientWidth": 78,
+            "clientHeight": 4
           },
           "clip": {
             "x": 0,
@@ -12738,7 +13482,9 @@
             "x": 1,
             "y": 1,
             "width": 58,
-            "height": 1
+            "height": 1,
+            "clientWidth": 58,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12761,7 +13507,9 @@
             "x": 1,
             "y": 2,
             "width": 58,
-            "height": 1
+            "height": 1,
+            "clientWidth": 58,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12785,7 +13533,9 @@
             "x": 1,
             "y": 3,
             "width": 58,
-            "height": 1
+            "height": 1,
+            "clientWidth": 58,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12810,7 +13560,9 @@
             "x": 1,
             "y": 4,
             "width": 58,
-            "height": 1
+            "height": 1,
+            "clientWidth": 58,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12831,7 +13583,9 @@
             "x": 0,
             "y": 0,
             "width": 60,
-            "height": 6
+            "height": 6,
+            "clientWidth": 58,
+            "clientHeight": 4
           },
           "clip": {
             "x": 0,
@@ -12890,7 +13644,9 @@
             "x": 0,
             "y": 0,
             "width": 8,
-            "height": 1
+            "height": 1,
+            "clientWidth": 8,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12915,7 +13671,9 @@
             "x": 9,
             "y": 0,
             "width": 8,
-            "height": 1
+            "height": 1,
+            "clientWidth": 8,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12938,7 +13696,9 @@
             "x": 0,
             "y": 1,
             "width": 17,
-            "height": 1
+            "height": 1,
+            "clientWidth": 17,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -12961,7 +13721,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 3
+            "height": 3,
+            "clientWidth": 80,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -13020,7 +13782,9 @@
             "x": 0,
             "y": 0,
             "width": 8,
-            "height": 1
+            "height": 1,
+            "clientWidth": 8,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13045,7 +13809,9 @@
             "x": 9,
             "y": 0,
             "width": 8,
-            "height": 1
+            "height": 1,
+            "clientWidth": 8,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13068,7 +13834,9 @@
             "x": 0,
             "y": 1,
             "width": 17,
-            "height": 1
+            "height": 1,
+            "clientWidth": 17,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13091,7 +13859,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 3
+            "height": 3,
+            "clientWidth": 80,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -13150,7 +13920,9 @@
             "x": 2,
             "y": 1,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13174,7 +13946,9 @@
             "x": 2,
             "y": 2,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13196,7 +13970,9 @@
             "x": 2,
             "y": 3,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13217,7 +13993,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 5
+            "height": 5,
+            "clientWidth": 78,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -13276,7 +14054,9 @@
             "x": 2,
             "y": 1,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13300,7 +14080,9 @@
             "x": 2,
             "y": 2,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13325,7 +14107,9 @@
             "x": 2,
             "y": 3,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13346,7 +14130,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 5
+            "height": 5,
+            "clientWidth": 78,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -13405,7 +14191,9 @@
             "x": 2,
             "y": 1,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13429,7 +14217,9 @@
             "x": 2,
             "y": 2,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13450,7 +14240,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 5
+            "height": 5,
+            "clientWidth": 78,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -13477,7 +14269,9 @@
             "x": 2,
             "y": 3,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13536,7 +14330,9 @@
             "x": 2,
             "y": 1,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13560,7 +14356,9 @@
             "x": 2,
             "y": 2,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13586,7 +14384,9 @@
             "x": 2,
             "y": 3,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13612,7 +14412,9 @@
             "x": 2,
             "y": 4,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13637,7 +14439,9 @@
             "x": 2,
             "y": 5,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13663,7 +14467,9 @@
             "x": 2,
             "y": 3,
             "width": 76,
-            "height": 12
+            "height": 12,
+            "clientWidth": 76,
+            "clientHeight": 12
           },
           "clip": {
             "x": 0,
@@ -13684,7 +14490,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 16
+            "height": 16,
+            "clientWidth": 78,
+            "clientHeight": 14
           },
           "clip": {
             "x": 0,
@@ -13743,7 +14551,9 @@
             "x": 2,
             "y": 1,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13767,7 +14577,9 @@
             "x": 2,
             "y": 2,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13789,7 +14601,9 @@
             "x": 2,
             "y": 3,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13810,7 +14624,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 5
+            "height": 5,
+            "clientWidth": 78,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -13869,7 +14685,9 @@
             "x": 2,
             "y": 1,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13893,7 +14711,9 @@
             "x": 2,
             "y": 2,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13915,7 +14735,9 @@
             "x": 2,
             "y": 3,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13936,7 +14758,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 6
+            "height": 6,
+            "clientWidth": 78,
+            "clientHeight": 4
           },
           "clip": {
             "x": 0,
@@ -13958,7 +14782,9 @@
             "x": 2,
             "y": 4,
             "width": 21,
-            "height": 1
+            "height": 1,
+            "clientWidth": 21,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -13979,7 +14805,9 @@
             "x": 2,
             "y": 4,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14001,7 +14829,9 @@
             "x": 2,
             "y": 6,
             "width": 24,
-            "height": 1
+            "height": 1,
+            "clientWidth": 24,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14022,7 +14852,9 @@
             "x": 2,
             "y": 6,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14044,7 +14876,9 @@
             "x": 2,
             "y": 8,
             "width": 24,
-            "height": 1
+            "height": 1,
+            "clientWidth": 24,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14065,7 +14899,9 @@
             "x": 2,
             "y": 8,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14086,7 +14922,9 @@
             "x": 2,
             "y": 4,
             "width": 76,
-            "height": 5
+            "height": 5,
+            "clientWidth": 76,
+            "clientHeight": 5
           },
           "clip": {
             "x": 0,
@@ -14110,7 +14948,9 @@
             "x": 2,
             "y": 3,
             "width": 76,
-            "height": 6
+            "height": 6,
+            "clientWidth": 76,
+            "clientHeight": 6
           },
           "clip": {
             "x": 0,
@@ -14169,7 +15009,9 @@
             "x": 2,
             "y": 1,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14193,7 +15035,9 @@
             "x": 2,
             "y": 2,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14215,7 +15059,9 @@
             "x": 2,
             "y": 3,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14236,7 +15082,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 5
+            "height": 5,
+            "clientWidth": 78,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -14295,7 +15143,9 @@
             "x": 2,
             "y": 1,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14319,7 +15169,9 @@
             "x": 2,
             "y": 2,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14341,7 +15193,9 @@
             "x": 2,
             "y": 3,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14362,7 +15216,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 5
+            "height": 5,
+            "clientWidth": 78,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -14421,7 +15277,9 @@
             "x": 2,
             "y": 1,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14445,7 +15303,9 @@
             "x": 2,
             "y": 2,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14468,7 +15328,9 @@
             "x": 2,
             "y": 3,
             "width": 7,
-            "height": 1
+            "height": 1,
+            "clientWidth": 7,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14494,7 +15356,9 @@
             "x": 10,
             "y": 3,
             "width": 11,
-            "height": 1
+            "height": 1,
+            "clientWidth": 11,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14515,7 +15379,9 @@
             "x": 2,
             "y": 3,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14536,7 +15402,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 5
+            "height": 5,
+            "clientWidth": 78,
+            "clientHeight": 3
           },
           "clip": {
             "x": 0,
@@ -14595,7 +15463,9 @@
             "x": 2,
             "y": 1,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14619,7 +15489,9 @@
             "x": 2,
             "y": 2,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14640,7 +15512,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 6
+            "height": 6,
+            "clientWidth": 78,
+            "clientHeight": 4
           },
           "clip": {
             "x": 0,
@@ -14705,7 +15579,9 @@
             "x": 2,
             "y": 1,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14729,7 +15605,9 @@
             "x": 2,
             "y": 2,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14754,7 +15632,9 @@
             "x": 2,
             "y": 3,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14779,7 +15659,9 @@
             "x": 2,
             "y": 4,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14804,7 +15686,9 @@
             "x": 2,
             "y": 5,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14829,7 +15713,9 @@
             "x": 2,
             "y": 6,
             "width": 76,
-            "height": 1
+            "height": 1,
+            "clientWidth": 76,
+            "clientHeight": 1
           },
           "clip": {
             "x": 0,
@@ -14855,7 +15741,9 @@
             "x": 2,
             "y": 3,
             "width": 76,
-            "height": 12
+            "height": 12,
+            "clientWidth": 76,
+            "clientHeight": 12
           },
           "clip": {
             "x": 0,
@@ -14876,7 +15764,9 @@
             "x": 0,
             "y": 0,
             "width": 80,
-            "height": 16
+            "height": 16,
+            "clientWidth": 78,
+            "clientHeight": 14
           },
           "clip": {
             "x": 0,

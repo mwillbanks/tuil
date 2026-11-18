@@ -40,12 +40,16 @@ flowchart LR
 
 | API | Signature | Description |
 | --- | --- | --- |
+| [`createPlugin`](/docs/reference/packages/plugin/api/create-plugin) | `function createPlugin` | Public function createPlugin. |
 | [`DefaultExtensionPoints`](/docs/reference/packages/plugin/api/default-extension-points) | `interface DefaultExtensionPoints` | Public interface DefaultExtensionPoints. |
 | [`ExtensionPointMap`](/docs/reference/packages/plugin/api/extension-point-map) | `type ExtensionPointMap` | Public type ExtensionPointMap. |
 | [`ExtensionRegistry`](/docs/reference/packages/plugin/api/extension-registry) | `interface ExtensionRegistry` | Public interface ExtensionRegistry. |
 | [`Plugin`](/docs/reference/packages/plugin/api/plugin) | `interface Plugin` | Public interface Plugin. |
 | [`PluginCapability`](/docs/reference/packages/plugin/api/plugin-capability) | `type PluginCapability` | Public type PluginCapability. |
 | [`PluginContext`](/docs/reference/packages/plugin/api/plugin-context) | `interface PluginContext` | Public interface PluginContext. |
+| [`PluginHealth`](/docs/reference/packages/plugin/api/plugin-health) | `interface PluginHealth` | Public interface PluginHealth. |
+| [`PluginManager`](/docs/reference/packages/plugin/api/plugin-manager) | `class PluginManager` | Public class PluginManager. |
+| [`PluginRegistry`](/docs/reference/packages/plugin/api/plugin-registry) | `class PluginRegistry` | Host-owned catalog for discovering plugins before they enter a PluginManager. Resolution validates and orders the complete dependency graph. |
 | [`PluginRegistryEntry`](/docs/reference/packages/plugin/api/plugin-registry-entry) | `interface PluginRegistryEntry` | Public interface PluginRegistryEntry. |
 | [`PluginRegistryQuery`](/docs/reference/packages/plugin/api/plugin-registry-query) | `interface PluginRegistryQuery` | Public interface PluginRegistryQuery. |
 
@@ -59,7 +63,9 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
-const plugin = createPlugin({ id: "analytics", activate(context) { return context.events.observe(track); } });
+import { createPlugin } from "@mwillbanks/tuil-plugin";
+
+const plugin = createPlugin({ id: "analytics", version: "1.0.0", setup(context) { return context.events.observe(event => console.log(event.type)); } });
 ```
 
 ## Related

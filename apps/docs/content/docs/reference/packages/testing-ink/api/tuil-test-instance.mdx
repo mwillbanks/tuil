@@ -29,7 +29,7 @@ export interface TuilTestInstance {
 
 | Member | Type | Required | Description | Related types |
 | --- | --- | --- | --- | --- |
-| `app` | `TuilApp<Record<string, unknown>, import("@mwillbanks/tuil-events").EventMap, import("@mwillbanks/tuil").TuilExtensionPoints>` | Yes | The `app` member uses the `TuilApp<Record<string, unknown>, import("@mwillbanks/tuil-events").EventMap, import("@mwillbanks/tuil").TuilExtensionPoints>` contract. | [`EventMap`](/docs/reference/packages/events/api/event-map), [`TuilExtensionPoints`](/docs/reference/packages/tuil/api/tuil-extension-points) |
+| `app` | `TuilApp<Record<string, unknown>, import("@mwillbanks/tuil-events").EventMap, import("@mwillbanks/tuil").TuilExtensionPoints>` | Yes | The `app` member uses the `TuilApp<Record<string, unknown>, import("@mwillbanks/tuil-events").EventMap, import("@mwillbanks/tuil").TuilExtensionPoints>` contract. | [`EventMap`](/docs/reference/packages/events/api/event-map), [`TuilApp`](/docs/reference/packages/tuil/api/tuil-app), [`TuilExtensionPoints`](/docs/reference/packages/tuil/api/tuil-extension-points) |
 | `ready` | `Promise<void>` | Yes | The `ready` member uses the `Promise<void>` contract. | — |
 | `screen` | `SemanticScreen` | Yes | The `screen` member uses the `SemanticScreen` contract. | [`SemanticScreen`](/docs/reference/packages/testing-ink/api/semantic-screen) |
 | `user` | `TuilUser` | Yes | The `user` member uses the `TuilUser` contract. | [`TuilUser`](/docs/reference/packages/testing-ink/api/tuil-user) |

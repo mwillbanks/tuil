@@ -9,10 +9,9 @@ icon: BracketsCurly
 ## Type
 
 ```ts
-export interface DataTableProps<TData>
-  extends CommonComponentProps,
-    SlottedComponentProps<TableSlots> {
-  readonly table: TanStackTable<TData>;
+export interface DataTableProps<TData extends RowData>
+  extends CommonComponentProps, SlottedComponentProps<TableSlots> {
+  readonly table: TanStackTable<typeof dataTableFeatures, TData>;
   readonly height?: number;
   readonly width?: number;
   readonly focusMode?: "row" | "cell";
@@ -28,7 +27,7 @@ export interface DataTableProps<TData>
 
 | Member | Type | Required | Description | Related types |
 | --- | --- | --- | --- | --- |
-| `table` | `TanStackTable<TData>` | Yes | The `table` member uses the `TanStackTable<TData>` contract. | — |
+| `table` | `TanStackTable<&#123; columnPinningFeature: import("@tanstack/table-core").TableFeature; columnSizingFeature: import("@tanstack/table-core").TableFeature; rowSelectionFeature: import("@tanstack/table-core").TableFeature; rowSortingFeature: import("@tanstack/table-core").TableFeature; sortedRowModel: (table: TanStackTable<any, any>) => () => import("@tanstack/table-core").RowModel<any, any>; &#125;, TData>` | Yes | The `table` member uses the `TanStackTable<&#123; columnPinningFeature: import("@tanstack/table-core").TableFeature; columnSizingFeature: import("@tanstack/table-core").TableFeature; rowSelectionFeature: import("@tanstack/table-core").TableFeature; rowSortingFeature: import("@tanstack/table-core").TableFeature; sortedRowModel: (table: TanStackTable<any, any>) => () => import("@tanstack/table-core").RowModel<any, any>; &#125;, TData>` contract. | — |
 | `height` | `number \| undefined` | No | The `height` member uses the `number \| undefined` contract. | — |
 | `width` | `number \| undefined` | No | The `width` member uses the `number \| undefined` contract. | — |
 | `focusMode` | `"row" \| "cell" \| undefined` | No | The `focusMode` member uses the `"row" \| "cell" \| undefined` contract. | — |
@@ -41,7 +40,7 @@ export interface DataTableProps<TData>
 | `size` | `"sm" \| "md" \| "lg" \| undefined` | No | The `size` member uses the `"sm" \| "md" \| "lg" \| undefined` contract. | — |
 | `unstyled` | `boolean \| undefined` | No | The `unstyled` member uses the `boolean \| undefined` contract. | — |
 | `className` | `string \| undefined` | No | The `className` member uses the `string \| undefined` contract. | — |
-| `layout` | `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` | No | The `layout` member uses the `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` contract. | — |
+| `layout` | `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` | No | The `layout` member uses the `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` contract. | [`LayoutNodeInput`](/docs/reference/packages/renderer/api/layout-node-input) |
 | `id` | `string \| undefined` | No | The `id` member uses the `string \| undefined` contract. | — |
 | `testId` | `string \| undefined` | No | The `testId` member uses the `string \| undefined` contract. | — |
 | `role` | `SemanticRole \| undefined` | No | The `role` member uses the `SemanticRole \| undefined` contract. | [`SemanticRole`](/docs/reference/packages/core/api/semantic-role) |

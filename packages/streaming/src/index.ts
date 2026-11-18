@@ -921,7 +921,7 @@ export const builtInDocumentTransformers = Object.freeze({
                 ? (node.value as Record<string, unknown>)
                 : {};
             return Object.entries(record).flatMap(([relation, target]) =>
-              typeof target === "object"
+              target !== null && typeof target === "object"
                 ? [
                     {
                       type: "relationship",
@@ -1579,9 +1579,7 @@ export class StreamingPipeline {
   ): PartialDocument {
     if (this.#session) {
       const sessionChunk =
-        !formatBeforeDetection && this.#format
-          ? `${this.#legacySource}${chunk}`
-          : chunk;
+        !formatBeforeDetection && this.#format ? this.#detectionSource : chunk;
       this.#legacySource = "";
       return this.#session.write(sessionChunk, complete);
     }

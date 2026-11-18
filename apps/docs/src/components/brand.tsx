@@ -1,6 +1,7 @@
-import Image from "next/image";
+import { getBasePath } from "@/lib/base-path";
+import { Image } from "fumadocs-core/framework";
 
-const basePath = process.env["NEXT_PUBLIC_BASE_PATH"] ?? "";
+const basePath = getBasePath();
 
 export function Brand({ compact = false }: Readonly<{ compact?: boolean }>) {
   return (

@@ -9,8 +9,9 @@ icon: BracketsCurly
 ## Type
 
 ```ts
-export interface WorkflowProps<TState>
-  extends SlottedComponentProps<WorkflowSlots> {
+export interface WorkflowProps<
+  TState,
+> extends SlottedComponentProps<WorkflowSlots> {
   readonly id?: string;
   readonly workflow: WorkflowRunner<TState>;
   readonly autoStart?: boolean;

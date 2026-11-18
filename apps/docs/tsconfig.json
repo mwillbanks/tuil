@@ -13,26 +13,16 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@/.source": ["./.source/server.ts"]
+      "@/*": ["./src/*"]
     }
   },
   "include": [
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
-    ".source/**/*.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "content/**/*.ts",
-    "content/**/*.tsx",
+    "preload.ts",
     "source.config.ts",
-    ".next/dev/types/**/*.ts"
+    ".source/**/*.ts"
   ],
   "exclude": ["node_modules", "src/**/*.test.ts"]
 }

@@ -32,7 +32,7 @@ test("initializer subprocesses honor output policy and report failures", async (
   ]);
 
   await expect(
-    runInitializerProcess(["bun", "run", "typecheck"], {
+    runInitializerProcess(["bun", "check", "--no-script"], {
       cwd: "/tmp/project",
       quiet: true,
       failureMessage: "validation failed",
@@ -50,7 +50,7 @@ test("initializer subprocesses honor output policy and report failures", async (
   });
   expect(calls.map((call) => call.command)).toEqual([
     ["bun", "install"],
-    ["bun", "run", "typecheck"],
+    ["bun", "check", "--no-script"],
     ["git", "init"],
   ]);
   calls.length = 0;

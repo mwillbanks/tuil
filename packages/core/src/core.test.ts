@@ -1,3 +1,4 @@
+import { useTestClock } from "../../../tests/helpers/clock.ts";
 import { describe, expect, test } from "bun:test";
 import {
   CommandRegistry,
@@ -15,6 +16,8 @@ import {
   terminalViewportBreakpoints,
   toDisposable,
 } from "./index.ts";
+
+const clock = useTestClock();
 
 test("terminal control detection covers C0 and C1 without flagging Unicode", () => {
   expect(hasTerminalControlCharacters("safe界")).toBeFalse();
@@ -169,7 +172,7 @@ describe("service container", () => {
       }),
     );
     const resolving = services.resolve("slow");
-    await Bun.sleep(0);
+    await clock.flush();
     expect(() => registration.dispose()).toThrow("while it initializes");
     release?.();
     expect(await resolving).toBe("ready");

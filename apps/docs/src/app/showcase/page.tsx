@@ -1,6 +1,5 @@
 import { HomeLayout } from "fumadocs-ui/layouts/home";
-import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "fumadocs-core/framework";
 import type { ReactNode } from "react";
 import {
   type PublishedStoryFrame,
@@ -9,7 +8,7 @@ import {
 import { baseOptions } from "@/lib/layout.shared";
 import storyFrames from "../../../public/integrations/story-frames.json";
 
-export const metadata: Metadata = {
+export const showcaseMetadata = {
   title: "Showcase",
   description:
     "A gallery of portable tuil components, states, and application flows.",

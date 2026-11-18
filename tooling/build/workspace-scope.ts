@@ -23,7 +23,11 @@ async function discoverWorkspaces(
   const manifests: WorkspaceManifest[] = [];
   for (const root of workspaceRoots) {
     const rootDirectory = join(workspace, root);
-    for (const entry of await readdir(rootDirectory, { withFileTypes: true })) {
+    const entries = await readdir(rootDirectory, { withFileTypes: true });
+    entries.sort((left, right) =>
+      left.name < right.name ? -1 : left.name > right.name ? 1 : 0,
+    );
+    for (const entry of entries) {
       if (!entry.isDirectory()) continue;
       const directory = join(rootDirectory, entry.name);
       const file = Bun.file(join(directory, "package.json"));
@@ -157,7 +161,7 @@ function directlyChangedWorkspaces(
   return direct;
 }
 
-async function gitLines(
+async function gitPaths(
   workspace: string,
   command: readonly string[],
 ): Promise<readonly string[]> {
@@ -174,10 +178,7 @@ async function gitLines(
   if (exitCode !== 0) {
     throw new Error(`Failed to resolve changed workspaces: ${stderr.trim()}`);
   }
-  return stdout
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
+  return stdout.split("\0").filter(Boolean);
 }
 
 async function changedFiles(
@@ -186,14 +187,21 @@ async function changedFiles(
 ): Promise<readonly string[]> {
   const range = base === "HEAD" ? "HEAD" : `${base}...HEAD`;
   const [tracked, untracked] = await Promise.all([
-    gitLines(workspace, [
+    gitPaths(workspace, [
       "git",
       "diff",
       "--name-only",
+      "-z",
       "--diff-filter=ACMRD",
       range,
     ]),
-    gitLines(workspace, ["git", "ls-files", "--others", "--exclude-standard"]),
+    gitPaths(workspace, [
+      "git",
+      "ls-files",
+      "-z",
+      "--others",
+      "--exclude-standard",
+    ]),
   ]);
   return Object.freeze([...new Set([...tracked, ...untracked])].sort());
 }
@@ -201,11 +209,12 @@ async function changedFiles(
 export async function resolveBuildScope(
   workspace = resolve(import.meta.dir, "../.."),
   args = process.argv.slice(2),
+  environment: Readonly<Record<string, string | undefined>> = process.env,
 ): Promise<BuildScope> {
   const all =
-    args.includes("--all") || process.env["TUIL_BUILD_ALL"] === "true";
+    args.includes("--all") || environment["TUIL_BUILD_ALL"] === "true";
   const baseIndex = args.indexOf("--base");
-  let base = process.env["TUIL_BUILD_BASE"] ?? "HEAD";
+  let base = environment["TUIL_BUILD_BASE"] ?? "HEAD";
   if (baseIndex >= 0) {
     const baseArgument = args[baseIndex + 1];
     if (!baseArgument || baseArgument.startsWith("--")) {

@@ -16,6 +16,8 @@ Public interface exported by `@mwillbanks/tuil-ghostty-web`.
 export interface TuilGhosttyMountOptions {
   readonly app: TuilRuntime;
   readonly element: HTMLElement;
+  /** Focus the terminal during mounting. Defaults to true. */
+  readonly autoFocus?: boolean;
   readonly terminal?: TuilGhosttyTerminalOptions;
   readonly accessibility?: TuilGhosttyAccessibilityOptions;
 }
@@ -27,6 +29,7 @@ export interface TuilGhosttyMountOptions {
 | --- | --- | --- | --- | --- |
 | `app` | `TuilRuntime<import("@mwillbanks/tuil-events").EventMap, import("@mwillbanks/tuil").TuilExtensionPoints>` | Yes | The `app` member uses the `TuilRuntime<import("@mwillbanks/tuil-events").EventMap, import("@mwillbanks/tuil").TuilExtensionPoints>` contract. | [`EventMap`](/docs/reference/packages/events/api/event-map), [`TuilExtensionPoints`](/docs/reference/packages/tuil/api/tuil-extension-points), [`TuilRuntime`](/docs/reference/packages/tuil/api/tuil-runtime) |
 | `element` | `HTMLElement` | Yes | The `element` member uses the `HTMLElement` contract. | — |
+| `autoFocus` | `boolean \| undefined` | No | Focus the terminal during mounting. Defaults to true. | — |
 | `terminal` | `TuilGhosttyTerminalOptions \| undefined` | No | The `terminal` member uses the `TuilGhosttyTerminalOptions \| undefined` contract. | [`TuilGhosttyTerminalOptions`](/docs/reference/packages/ghostty-web/api/tuil-ghostty-terminal-options) |
 | `accessibility` | `TuilGhosttyAccessibilityOptions \| undefined` | No | The `accessibility` member uses the `TuilGhosttyAccessibilityOptions \| undefined` contract. | [`TuilGhosttyAccessibilityOptions`](/docs/reference/packages/ghostty-web/api/tuil-ghostty-accessibility-options) |
 

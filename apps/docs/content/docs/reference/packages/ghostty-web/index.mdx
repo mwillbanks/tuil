@@ -66,7 +66,12 @@ runtime that disposes them in reverse order.
 
 ```tsx
 import { mountTuilGhostty } from "@mwillbanks/tuil-ghostty-web";
+import { createApp } from "@mwillbanks/tuil";
+import { Text } from "@mwillbanks/tuil-ink";
 
+const element = document.getElementById("terminal");
+if (!element) throw new Error("Provide a terminal host element");
+const app = createApp({ component: () => <Text>Ready</Text> });
 const terminal = await mountTuilGhostty({ app, element });
 await terminal.unmount();
 ```

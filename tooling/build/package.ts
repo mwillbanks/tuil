@@ -1,6 +1,8 @@
 import { existsSync } from "node:fs";
 import { cp, rm } from "node:fs/promises";
 import { basename, join, resolve } from "node:path";
+import { Project } from "ts-morph";
+import { optionalInkDevtoolsPlugin } from "./optional-ink-devtools.ts";
 import { normalizePublishedDependencies } from "./publication-manifest.ts";
 
 interface WorkspaceManifest {
@@ -138,17 +140,18 @@ export async function buildPackage(directory = process.cwd()): Promise<void> {
     }
   }
 
-  const types = Bun.spawn(
-    ["bun", "x", "tsc", "--project", "tsconfig.build.json"],
-    {
-      cwd: directory,
-      stdout: "inherit",
-      stderr: "inherit",
-    },
-  );
-
-  if ((await types.exited) !== 0) {
-    throw new Error(`Declaration build failed for ${basename(directory)}`);
+  const declarationProject = new Project({
+    tsConfigFilePath: join(directory, "tsconfig.build.json"),
+  });
+  const declarations = await declarationProject.emit({
+    emitOnlyDtsFiles: true,
+  });
+  const diagnostics = declarations.getDiagnostics();
+  if (declarations.getEmitSkipped() || diagnostics.length > 0) {
+    throw new Error(
+      `Declaration build failed for ${basename(directory)}\n` +
+        declarationProject.formatDiagnosticsWithColorAndContext(diagnostics),
+    );
   }
 
   const workspaceManifest = (await Bun.file(
@@ -225,24 +228,20 @@ export async function buildPackage(directory = process.cwd()): Promise<void> {
       recursive: true,
     });
   } else if (basename(directory) === "tuil") {
-    const cli = Bun.spawn(
-      [
-        "bun",
-        "build",
-        join(directory, "../cli/src/bin.ts"),
-        "--outfile",
-        join(directory, "dist/cli.js"),
-        "--target",
-        "bun",
-        "--format",
-        "esm",
-        "--packages",
-        "bundle",
-      ],
-      { cwd: directory, stdout: "inherit", stderr: "inherit" },
-    );
-    if ((await cli.exited) !== 0) {
-      throw new Error("Standalone tuil CLI build failed");
+    const cli = await Bun.build({
+      entrypoints: [join(directory, "../cli/src/bin.ts")],
+      outdir: join(directory, "dist"),
+      naming: "cli.js",
+      target: "bun",
+      format: "esm",
+      define: {
+        "process.env.DEV": JSON.stringify("false"),
+        TUIL_STANDALONE_VERSION: JSON.stringify(published.version),
+      },
+      plugins: [optionalInkDevtoolsPlugin],
+    });
+    if (!cli.success) {
+      throw new AggregateError(cli.logs, "Standalone tuil CLI build failed");
     }
     const skillsDestination = join(directory, "dist/skills");
     await rm(skillsDestination, { recursive: true, force: true });

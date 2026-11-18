@@ -29,18 +29,17 @@
   },
   "scripts": {
     "build": "bun ../../tooling/build/package.ts",
-    "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "fast-xml-parser": "^5.11.0",
-    "mdast-util-from-markdown": "^2.0.3",
+    "fast-xml-parser": "^5.12.1",
+    "mdast-util-from-markdown": "^2.1.0",
     "mdast-util-gfm": "^3.1.0",
     "micromark-extension-gfm": "^3.0.0",
-    "smol-toml": "^1.8.0",
-    "yaml": "^2.9.0"
+    "smol-toml": "^1.9.1",
+    "yaml": "^2.9.1"
   }
 }

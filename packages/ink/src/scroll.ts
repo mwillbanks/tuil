@@ -1,3 +1,4 @@
+import type { TuilPointerEvent } from "@mwillbanks/tuil-pointer";
 import { useApp } from "@mwillbanks/tuil";
 import {
   ScrollAreaState,
@@ -5,7 +6,7 @@ import {
   type ScrollSnapshot,
   type ScrollViewport,
 } from "@mwillbanks/tuil-scroll";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePointerEvent } from "./pointer.ts";
 
 export interface TerminalScrollAreaOptions {
@@ -17,6 +18,10 @@ export interface TerminalScrollAreaOptions {
     Record<"top" | "bottom" | "left" | "right", boolean>
   >;
   readonly followFocus?: boolean;
+  readonly onWheel?: (
+    event: TuilPointerEvent,
+    snapshot: ScrollSnapshot,
+  ) => void | Promise<void>;
   readonly enabled?: boolean;
   readonly initialPosition?: {
     readonly x?: number;
@@ -83,13 +88,11 @@ export function useTerminalScrollArea(options: TerminalScrollAreaOptions): {
     setSnapshot(state.snapshot());
     return state.subscribe(setSnapshot);
   }, [state]);
-  const onWheel = useCallback(
-    (event: Parameters<Parameters<typeof usePointerEvent>[2]>[0]) => {
-      app.scroll.routeWheel(options.id, event.wheelX, event.wheelY);
-      event.preventDefault();
-    },
-    [app.scroll, options.id],
-  );
+  const onWheel = (event: TuilPointerEvent) => {
+    app.scroll.routeWheel(options.id, event.wheelX, event.wheelY);
+    event.preventDefault();
+    return options.onWheel?.(event, state.snapshot());
+  };
   usePointerEvent(options.id, "wheel", onWheel, { enabled: options.enabled });
   return { state, snapshot };
 }

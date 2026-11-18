@@ -122,8 +122,7 @@ type NavigationSlots = {
 type NavigationListSlots = Omit<NavigationSlots, "panel">;
 
 export interface TabsProps
-  extends CommonComponentProps,
-    SlottedComponentProps<NavigationSlots> {
+  extends CommonComponentProps, SlottedComponentProps<NavigationSlots> {
   readonly items: readonly NavigationItem[];
   readonly value?: string;
   readonly defaultValue?: string;
@@ -306,8 +305,7 @@ export function Tabs({
 }
 
 export interface MenuProps
-  extends CommonComponentProps,
-    SlottedComponentProps<NavigationListSlots> {
+  extends CommonComponentProps, SlottedComponentProps<NavigationListSlots> {
   readonly items: readonly NavigationItem[];
   readonly open?: boolean;
   readonly defaultOpen?: boolean;
@@ -496,8 +494,7 @@ export interface MenubarMenu {
 }
 
 export interface MenubarProps
-  extends CommonComponentProps,
-    SlottedComponentProps<NavigationListSlots> {
+  extends CommonComponentProps, SlottedComponentProps<NavigationListSlots> {
   readonly menus: readonly MenubarMenu[];
   readonly value?: string;
   readonly defaultValue?: string;
@@ -640,8 +637,7 @@ export interface BreadcrumbItem {
 }
 
 export interface BreadcrumbsProps
-  extends CommonComponentProps,
-    SlottedComponentProps<NavigationListSlots> {
+  extends CommonComponentProps, SlottedComponentProps<NavigationListSlots> {
   readonly items: readonly BreadcrumbItem[];
   readonly separator?: string;
   readonly onSelect?: (item: BreadcrumbItem) => void | Promise<void>;
@@ -665,8 +661,7 @@ function BreadcrumbTrail(props: {
   readonly items: readonly BreadcrumbItem[];
   readonly separator?: string;
   readonly slotProps:
-    | NonNullable<BreadcrumbsProps["slotProps"]>["item"]
-    | undefined;
+    NonNullable<BreadcrumbsProps["slotProps"]>["item"] | undefined;
   readonly state: { readonly focused: boolean; readonly disabled: boolean };
   readonly theme: ReturnType<typeof useTheme>;
   readonly unicode: boolean;
@@ -826,11 +821,7 @@ export function Breadcrumbs({
 }
 
 export type StepStatus =
-  | "pending"
-  | "current"
-  | "completed"
-  | "error"
-  | "skipped";
+  "pending" | "current" | "completed" | "error" | "skipped";
 
 export interface StepperItem {
   readonly id: string;
@@ -840,8 +831,7 @@ export interface StepperItem {
 }
 
 export interface StepperProps
-  extends CommonComponentProps,
-    SlottedComponentProps<NavigationListSlots> {
+  extends CommonComponentProps, SlottedComponentProps<NavigationListSlots> {
   readonly steps: readonly StepperItem[];
   readonly current?: string;
   readonly orientation?: "horizontal" | "vertical";

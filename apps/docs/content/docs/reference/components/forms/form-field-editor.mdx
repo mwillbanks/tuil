@@ -28,7 +28,7 @@ export const FormFieldEditor: typeof TextArea;
 | `size` | `"sm" \| "md" \| "lg" \| undefined` | No | The `size` member uses the `"sm" \| "md" \| "lg" \| undefined` contract. | — |
 | `unstyled` | `boolean \| undefined` | No | The `unstyled` member uses the `boolean \| undefined` contract. | — |
 | `className` | `string \| undefined` | No | The `className` member uses the `string \| undefined` contract. | — |
-| `layout` | `Partial<Omit<LayoutNodeInput, "id" \| "children" \| "semantics">> \| undefined` | No | The `layout` member uses the `Partial<Omit<LayoutNodeInput, "id" \| "children" \| "semantics">> \| undefined` contract. | — |
+| `layout` | `Partial<Omit<LayoutNodeInput, "id" \| "children" \| "semantics">> \| undefined` | No | The `layout` member uses the `Partial<Omit<LayoutNodeInput, "id" \| "children" \| "semantics">> \| undefined` contract. | [`LayoutNodeInput`](/docs/reference/packages/renderer/api/layout-node-input) |
 | `id` | `string \| undefined` | No | The `id` member uses the `string \| undefined` contract. | — |
 | `testId` | `string \| undefined` | No | The `testId` member uses the `string \| undefined` contract. | — |
 | `role` | `SemanticRole \| undefined` | No | The `role` member uses the `SemanticRole \| undefined` contract. | [`SemanticRole`](/docs/reference/packages/core/api/semantic-role) |
@@ -42,7 +42,7 @@ export const FormFieldEditor: typeof TextArea;
 | `valueText` | `string \| undefined` | No | The `valueText` member uses the `string \| undefined` contract. | — |
 | `session` | `EditorSession \| undefined` | No | The `session` member uses the `EditorSession \| undefined` contract. | [`EditorSession`](/docs/reference/packages/editor/api/editor-session) |
 | `editorProvider` | `EditorProvider \| undefined` | No | The `editorProvider` member uses the `EditorProvider \| undefined` contract. | [`EditorProvider`](/docs/reference/packages/editor/api/editor-provider) |
-| `clipboard` | `EditorClipboardAdapter \| undefined` | No | The `clipboard` member uses the `EditorClipboardAdapter \| undefined` contract. | — |
+| `clipboard` | `EditorClipboardAdapter \| undefined` | No | The `clipboard` member uses the `EditorClipboardAdapter \| undefined` contract. | [`EditorClipboardAdapter`](/docs/reference/packages/editor/api/editor-clipboard-adapter) |
 | `documentType` | `string \| undefined` | No | The `documentType` member uses the `string \| undefined` contract. | — |
 | `field` | `AdaptedTanStackField<string> \| undefined` | No | The `field` member uses the `AdaptedTanStackField<string> \| undefined` contract. | [`AdaptedTanStackField`](/docs/reference/packages/form/api/adapted-tan-stack-field) |
 | `value` | `string \| undefined` | No | The `value` member uses the `string \| undefined` contract. | — |
@@ -56,6 +56,7 @@ export const FormFieldEditor: typeof TextArea;
 | `onArrowUp` | `(() => void \| Promise<void>) \| undefined` | No | The `onArrowUp` member uses the `(() => void \| Promise<void>) \| undefined` contract. | — |
 | `onArrowDown` | `(() => void \| Promise<void>) \| undefined` | No | The `onArrowDown` member uses the `(() => void \| Promise<void>) \| undefined` contract. | — |
 | `registerWithForm` | `boolean \| undefined` | No | The `registerWithForm` member uses the `boolean \| undefined` contract. | — |
+| `allowControlCharacters` | `boolean \| undefined` | No | The `allowControlCharacters` member uses the `boolean \| undefined` contract. | — |
 
 Controls expose `onValueChange`, `onSubmit`, focus, selection, and validation callbacks.
 
@@ -64,6 +65,8 @@ Callback props run after the documented input is accepted. Callbacks are not can
 ## Interaction and capabilities
 
 Text controls edit directly; choice controls use arrows and Space or Enter; `Form` coordinates validation and submission.
+
+
 
 The published manifest records keyboard, focus, pointer, theme, terminal, semantic, event, and dependency requirements.
 

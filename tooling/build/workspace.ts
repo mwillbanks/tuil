@@ -10,8 +10,8 @@ export async function buildWorkspace(
 ): Promise<void> {
   const scope = await resolveBuildScope(workspace, args);
   if (scope.buildRegistry) {
-    if ((await spawnBuild(["bun", "run", "registry:build"], workspace)) !== 0) {
-      throw new Error("Registry build failed");
+    if ((await spawnBuild(["bun", "run", "registry:check"], workspace)) !== 0) {
+      throw new Error("Registry artifact validation failed");
     }
   }
   await buildAll({ include: scope.workspaceNames });

@@ -5,17 +5,20 @@ icon: Plugs
 ---
 
 ```tsx
+import { createPlugin } from "@mwillbanks/tuil-plugin";
+
 const analytics = createPlugin({
   id: "analytics",
-  capabilities: ["events"],
-  register(context) {
-    const disposeRoute = context.extensions.routes.register({
-      id: "analytics",
-    });
-    return () => disposeRoute();
-  },
-  activate(context) {
-    return context.events.observe((event) => track(event));
+  version: "1.0.0",
+  setup(context) {
+    const contribution = context.routes.register({ id: "analytics" });
+    const stopObserving = context.events.observe((event) =>
+      console.log(event.type),
+    );
+    return () => {
+      stopObserving();
+      contribution.dispose();
+    };
   },
 });
 ```
@@ -24,9 +27,9 @@ const analytics = createPlugin({
 
 - IDs are stable and unique.
 - Dependencies name other plugins; capabilities name host features.
-- Registration creates definitions and extension contributions.
-- Activation starts behavior after all dependencies are registered.
-- Every hook returns or owns its teardown.
+- `setup` creates definitions, extension contributions, and subscriptions.
+- Dependencies initialize before dependent plugins run `setup`.
+- Each setup returns or owns its teardown.
 - Health reporting must not mutate application state.
 
 ```mermaid

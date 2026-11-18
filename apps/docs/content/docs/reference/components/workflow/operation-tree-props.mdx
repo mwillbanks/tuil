@@ -9,8 +9,10 @@ icon: BracketsCurly
 ## Type
 
 ```ts
-export interface OperationTreeProps
-  extends Omit<OperationListProps, "expandable"> {
+export interface OperationTreeProps extends Omit<
+  OperationListProps,
+  "expandable"
+> {
   readonly expanded?: readonly string[];
   readonly defaultExpanded?: readonly string[];
   readonly onExpandedChange?: (

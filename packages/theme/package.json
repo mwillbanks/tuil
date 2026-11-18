@@ -31,7 +31,6 @@
   },
   "scripts": {
     "build": "bun ../../tooling/build/package.ts",
-    "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
   "dependencies": {
@@ -41,7 +40,7 @@
     "ink": "catalog:"
   },
   "peerDependencies": {
-    "react": "catalog:"
+    "react": "^19.2.8"
   },
   "files": [
     "dist"

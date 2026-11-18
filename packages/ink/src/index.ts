@@ -29,6 +29,7 @@ import {
   render as renderInk,
   renderToString,
   useInput,
+  useStdin,
 } from "ink";
 import {
   type ComponentType,
@@ -36,6 +37,7 @@ import {
   Profiler,
   type ReactNode,
   useEffect,
+  useCallback,
   useMemo,
   useReducer,
   useRef,
@@ -93,46 +95,28 @@ function moveFocus(app: TuilRuntime, input: string, key: Key): void {
   if (movement) app.focus.move(movement);
 }
 
-function normalizeInkPointerInput(input: string): string {
-  const complete = /^\[<\d+;\d+;\d+[Mm]/u.test(input);
-  const partial = /^\[<[0-9;]*$/u.test(input);
-  return complete || partial ? `\u001b${input}` : input;
-}
-
-function dispatchPointers(
-  app: TuilRuntime,
-  decoder: SgrPointerDecoder,
-  input: string,
-) {
-  const decoded = decoder.push(normalizeInkPointerInput(input));
-  for (const pointer of decoded.events) app.pointer.dispatch(pointer);
-  return decoded;
-}
-
 async function dispatchTerminalInput(options: {
   readonly app: TuilRuntime;
   readonly input: string;
   readonly key: Key;
   readonly overlay: InputOverlayState;
-  readonly pointerDecoder: SgrPointerDecoder;
   readonly router: TerminalInputRouter;
   readonly onHotkeyError: (error: unknown) => void;
 }): Promise<void> {
-  const decoded = dispatchPointers(
-    options.app,
-    options.pointerDecoder,
-    options.input,
-  );
-  if (decoded.events.length > 0 && !decoded.passthrough) return;
+  // Ink 7 forwards SGR reports to useInput. The raw stream owns those reports.
+  const report = options.input.startsWith("\u001b")
+    ? options.input.slice(1)
+    : options.input;
+  if (/^\[<\d+;\d+;\d+[Mm]$/u.test(report)) return;
   const consumed = await options.router.dispatch(
-    decoded.passthrough,
+    options.input,
     options.key,
     options.overlay.getTopId(),
   );
   if (consumed) return;
-  if (shouldSuppressTerminalInput(decoded.passthrough, options.key)) return;
+  if (shouldSuppressTerminalInput(options.input, options.key)) return;
   const binding = await options.app.hotkeys.dispatch(
-    decoded.passthrough,
+    options.input,
     options.key,
     {
       activeScopes: () => ({
@@ -144,7 +128,7 @@ async function dispatchTerminalInput(options: {
       onError: options.onHotkeyError,
     },
   );
-  if (!binding) moveFocus(options.app, decoded.passthrough, options.key);
+  if (!binding) moveFocus(options.app, options.input, options.key);
 }
 
 function InputDispatcher(props: {
@@ -152,38 +136,37 @@ function InputDispatcher(props: {
 }): ReactNode {
   const app = useTuilApp();
   const overlay = useOverlayStatus();
-  const queue = useRef<Promise<void> | null>(null);
-  queue.current ??= Promise.resolve();
-  const pointerDecoder = useRef<SgrPointerDecoder | null>(null);
-  if (pointerDecoder.current === null) {
-    pointerDecoder.current = new SgrPointerDecoder();
-  }
-  const decoder = pointerDecoder.current;
+  const { stdin } = useStdin();
+  const queue = useRef<Promise<void> | undefined>(undefined);
+  const [decoder] = useState(() => new SgrPointerDecoder());
   const mounted = useRef(true);
   const [dispatchError, setDispatchError] = useReducer(
     (_current: unknown, error: unknown) => error,
     undefined,
   );
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
       mounted.current = false;
-    },
-    [],
-  );
-  const reportInputError = async (error: unknown) => {
-    try {
-      await app.reportError(error, "terminal-input");
-    } catch (reportError) {
-      if (mounted.current) {
-        setDispatchError(
-          new AggregateError(
-            [error, reportError],
-            "Terminal input and error reporting failed",
-          ),
-        );
+    };
+  }, []);
+  const reportInputError = useCallback(
+    async (error: unknown) => {
+      try {
+        await app.reportError(error, "terminal-input");
+      } catch (reportError) {
+        if (mounted.current) {
+          setDispatchError(
+            new AggregateError(
+              [error, reportError],
+              "Terminal input and error reporting failed",
+            ),
+          );
+        }
       }
-    }
-  };
+    },
+    [app],
+  );
   useInput(
     (input, key) => {
       queue.current = (queue.current ?? Promise.resolve())
@@ -193,7 +176,6 @@ function InputDispatcher(props: {
             input,
             key,
             overlay,
-            pointerDecoder: decoder,
             router: props.router,
             onHotkeyError(error) {
               queue.current = (queue.current ?? Promise.resolve()).then(() =>
@@ -206,11 +188,34 @@ function InputDispatcher(props: {
     },
     { isActive: app.mode === "interactive" },
   );
+  useEffect(() => {
+    // Ink 8 discards unmapped CSI sequences before invoking useInput.
+    const onData = (chunk: string | Buffer) => {
+      const { events } = decoder.push(chunk.toString());
+      if (events.length === 0) return;
+      queue.current = (queue.current ?? Promise.resolve())
+        .then(() => {
+          if (!mounted.current) return;
+          for (const event of events) app.pointer.dispatch(event);
+        })
+        .catch(reportInputError);
+    };
+    stdin.on("data", onData);
+    return () => {
+      stdin.off("data", onData);
+    };
+  }, [app, decoder, reportInputError, stdin]);
   if (dispatchError) throw dispatchError;
   return null;
 }
 
-export interface TuilRenderOptions extends RenderOptions {
+export interface TuilRenderOptions extends Omit<
+  RenderOptions,
+  "stdin" | "stdout" | "stderr"
+> {
+  readonly stdin?: NodeJS.ReadStream;
+  readonly stdout?: NodeJS.WriteStream;
+  readonly stderr?: NodeJS.WriteStream;
   readonly semanticRegistry?: SemanticRegistry;
 }
 
@@ -333,7 +338,7 @@ interface ActiveRenderer {
 }
 
 const terminalPresentationSequence =
-  // biome-ignore lint/suspicious/noControlCharactersInRegex: ANSI CSI, OSC, and save/restore are the input grammar.
+  // oxlint-disable-next-line no-control-regex -- ANSI CSI, OSC, and save/restore are the input grammar.
   /\u001b(?:\[[0-?]*[ -/]*[@-IL-WY-~]|\][^\u0007\u001b]*(?:\u0007|\u001b\\)|[78])/gu;
 
 function isPresentationOnlyFrame(frame: string): boolean {
@@ -372,12 +377,19 @@ class InkFrameCapture extends EventEmitter {
     return count <= 16_777_216;
   }
 
-  write = (frame: string | Uint8Array): boolean => {
+  write = (
+    frame: string | Uint8Array,
+    encoding?: BufferEncoding | (() => void),
+    callback?: () => void,
+  ): boolean => {
     const decoded =
       typeof frame === "string" ? frame : new TextDecoder().decode(frame);
-    if (isPresentationOnlyFrame(decoded)) return true;
-    this.#frame = decoded;
-    this.#onFrame?.();
+    if (!isPresentationOnlyFrame(decoded)) {
+      this.#frame = decoded;
+      this.#onFrame?.();
+    }
+    const onWritten = typeof encoding === "function" ? encoding : callback;
+    if (onWritten) queueMicrotask(onWritten);
     return true;
   };
 
@@ -811,7 +823,9 @@ async function createInkRenderer(
   return {
     ink,
     async waitUntilExit() {
-      await ink.waitUntilExit();
+      const completion = ink.waitUntilExit();
+      if (app.mode !== "interactive") ink.unmount();
+      await completion;
     },
     async stop() {
       ink.unmount();

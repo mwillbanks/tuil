@@ -21,6 +21,7 @@
     "divider-props",
     "escape-terminal-control-characters",
     "external-snapshot-store",
+    "has-terminal-control-characters",
     "heading",
     "heading-props",
     "hstack",

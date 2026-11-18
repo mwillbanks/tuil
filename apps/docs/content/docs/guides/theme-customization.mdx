@@ -5,13 +5,14 @@ icon: Palette
 ---
 
 ```tsx
+import { createTheme } from "@mwillbanks/tuil-theme";
+
 const theme = createTheme({
   id: "company-dark",
   colors: {
     foreground: "#eef3ff",
     background: "#070a12",
-    primary: "#16e0e6",
-    accent: "#eb3eba",
+    primary: { foreground: "#16e0e6", background: "#070a12" },
   },
   spacing: {
     sm: 1,
@@ -31,8 +32,16 @@ const theme = createTheme({
 Register themes once and switch the live controller:
 
 ```tsx
+import { createApp } from "@mwillbanks/tuil";
+import {
+  createDefaultThemeRegistry,
+  createTheme,
+} from "@mwillbanks/tuil-theme";
+
+const app = createApp({ component: () => null });
+const theme = createTheme({ id: "company-dark" });
 const themes = createDefaultThemeRegistry();
-themes.register(theme);
+themes.register({ theme });
 app.themeController.set(themes.resolve("company-dark"));
 ```
 

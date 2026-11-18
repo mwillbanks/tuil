@@ -36,8 +36,8 @@ export function TerminalImage({
 | `testId` | `string \| undefined` | No | The `testId` member uses the `string \| undefined` contract. | — |
 | `aria-label` | `string \| undefined` | No | A label for the element for screen readers. | — |
 | `aria-hidden` | `boolean \| undefined` | No | Hide the element from screen readers. | — |
-| `color` | `LiteralUnion<keyof import("../../../../../chalk@5.6.2/node_modules/chalk/source/vendor/ansi-styles/index.js").ForegroundColor, string> \| undefined` | No | Change text color. Ink uses Chalk under the hood, so all its functionality is supported. | — |
-| `backgroundColor` | `LiteralUnion<keyof import("../../../../../chalk@5.6.2/node_modules/chalk/source/vendor/ansi-styles/index.js").ForegroundColor, string> \| undefined` | No | Same as `color`, but for the background. | — |
+| `color` | `LiteralUnion<keyof import("../../../chalk/source/vendor/ansi-styles/index.js").ForegroundColor, string> \| undefined` | No | Change text color. Ink uses Chalk under the hood, so all its functionality is supported. | — |
+| `backgroundColor` | `LiteralUnion<keyof import("../../../chalk/source/vendor/ansi-styles/index.js").ForegroundColor, string> \| undefined` | No | Same as `color`, but for the background. | — |
 | `dimColor` | `boolean \| undefined` | No | Dim the color (make it less bright). | — |
 | `bold` | `boolean \| undefined` | No | Make the text bold. | — |
 | `italic` | `boolean \| undefined` | No | Make the text italic. | — |
@@ -53,6 +53,8 @@ Callback props run after the documented input is accepted. Callbacks are not can
 ## Interaction and capabilities
 
 Image output follows terminal capability detection and explicit dimensions.
+
+
 
 The published manifest records keyboard, focus, pointer, theme, terminal, semantic, event, and dependency requirements.
 

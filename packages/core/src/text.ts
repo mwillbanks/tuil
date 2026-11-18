@@ -3,7 +3,7 @@ import stringWidth from "string-width";
 const graphemeSegmenter = new Intl.Segmenter(undefined, {
   granularity: "grapheme",
 });
-// biome-ignore lint/suspicious/noControlCharactersInRegex: ANSI control sequences are the input grammar.
+// oxlint-disable-next-line no-control-regex -- ANSI control sequences are the input grammar.
 const ansiSequence = /^\x1B(?:\[[0-?]*[ -/]*[@-~]|\][^\x07]*(?:\x07|\x1B\\))/;
 
 export function escapeTerminalControlCharacters(value: string): string {

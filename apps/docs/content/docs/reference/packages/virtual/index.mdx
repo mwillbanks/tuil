@@ -36,9 +36,12 @@ flowchart LR
 
 | API | Signature | Description |
 | --- | --- | --- |
+| [`fitTerminalText`](/docs/reference/packages/virtual/api/fit-terminal-text) | `function fitTerminalText` | Public function fitTerminalText. |
 | [`getVisibleTerminalIndexes`](/docs/reference/packages/virtual/api/get-visible-terminal-indexes) | `function getVisibleTerminalIndexes` | Public function getVisibleTerminalIndexes. |
+| [`TerminalVirtualizerAdapter`](/docs/reference/packages/virtual/api/terminal-virtualizer-adapter) | `class TerminalVirtualizerAdapter` | Adapts TanStack Virtual's measurement engine to terminal cells. The fake scroll element is intentionally opaque: all measurement and scrolling enter through the supplied terminal observers. |
 | [`TerminalVirtualizerOptions`](/docs/reference/packages/virtual/api/terminal-virtualizer-options) | `interface TerminalVirtualizerOptions` | Public interface TerminalVirtualizerOptions. |
 | [`TerminalVirtualRange`](/docs/reference/packages/virtual/api/terminal-virtual-range) | `interface TerminalVirtualRange` | Public interface TerminalVirtualRange. |
+| [`useTerminalVirtualizer`](/docs/reference/packages/virtual/api/use-terminal-virtualizer) | `function useTerminalVirtualizer` | Public function useTerminalVirtualizer. |
 
 ## Events and lifecycle
 
@@ -50,7 +53,12 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
-const range = useTerminalVirtualizer({ count: 10_000, viewportSize: 20, scrollOffset });
+import { useTerminalVirtualizer } from "@mwillbanks/tuil-virtual";
+
+export function List() {
+  const range = useTerminalVirtualizer({ count: 10_000, viewportSize: 20, scrollOffset: 0 });
+  return <>{JSON.stringify(range)}</>;
+}
 ```
 
 ## Related

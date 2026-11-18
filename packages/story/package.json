@@ -43,7 +43,6 @@
   },
   "scripts": {
     "build": "bun ../../tooling/build/package.ts",
-    "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
   "dependencies": {
@@ -53,16 +52,17 @@
     "@mwillbanks/tuil-testing-ink": "workspace:*",
     "@mwillbanks/tuil-theme": "workspace:*",
     "ansi-to-html": "^0.7.2",
-    "chalk": "^6.0.0"
+    "chalk": "^6.0.1"
   },
   "devDependencies": {
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "@storybook/react": "^10.6.7"
   },
   "peerDependencies": {
     "@storybook/react": "^10.5.9",
-    "ink": "catalog:",
+    "ink": "^7.1.1 || ^8.0.0",
     "ink-testing-library": "catalog:",
-    "react": "catalog:"
+    "react": "^19.2.8"
   },
   "peerDependenciesMeta": {
     "@storybook/react": {

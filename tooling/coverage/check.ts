@@ -19,7 +19,7 @@ const sourcePatterns = [
 ] as const;
 const excludedPatterns = [
   "**/*.d.ts",
-  "**/*.test.{ts,tsx}",
+  "**/*.{test,spec}.{ts,tsx}",
   "**/*.stories.tsx",
   "packages/cli/src/generated-registry.ts",
   "packages/cli/src/generated-ui/**",

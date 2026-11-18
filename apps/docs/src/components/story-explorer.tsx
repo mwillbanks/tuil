@@ -10,7 +10,7 @@ import {
 } from "@phosphor-icons/react";
 import {
   type ReactNode,
-  type RefObject,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -87,11 +87,6 @@ interface ShowcaseBrowser {
   readonly history: {
     replaceState(data: null, unused: string, url: string): void;
   };
-  readonly scrollY: number;
-  readonly document: {
-    readonly scrollingElement: { scrollTop: number } | null;
-  };
-  scrollTo(options: { readonly top: number; readonly behavior: "auto" }): void;
 }
 
 function showcaseBrowser(): ShowcaseBrowser {
@@ -167,29 +162,18 @@ function filterShowcaseFrames(
   );
 }
 
-function scrollSelectedPreview(
-  browser: ShowcaseBrowser,
-  preview: HTMLElement | null,
-): void {
+function scrollSelectedPreview(preview: HTMLElement | null): void {
   if (!preview) return;
   const target = preview as unknown as {
-    focus(): void;
+    focus(options: { readonly preventScroll: boolean }): void;
+    matches(selectors: string): boolean;
     scrollIntoView(options: {
-      readonly behavior: "auto";
+      readonly behavior: "instant";
       readonly block: "start";
     }): void;
-    getBoundingClientRect(): { readonly top: number };
   };
-  target.focus();
-  target.scrollIntoView({ behavior: "auto", block: "start" });
-  const top = Math.max(
-    0,
-    browser.scrollY + target.getBoundingClientRect().top - 72,
-  );
-  browser.scrollTo({ top, behavior: "auto" });
-  if (browser.document.scrollingElement) {
-    browser.document.scrollingElement.scrollTop = top;
-  }
+  if (!target.matches(":focus-within")) target.focus({ preventScroll: true });
+  target.scrollIntoView({ behavior: "instant", block: "start" });
 }
 
 function ShowcaseFilters(props: {
@@ -280,13 +264,19 @@ function ShowcaseFilters(props: {
 
 function ShowcasePreview(props: {
   readonly frame: PublishedStoryFrame;
-  readonly previewRef: RefObject<HTMLElement | null>;
 }): ReactNode {
   const frame = props.frame;
+  const previewRef = useRef<HTMLElement | null>(null);
+  const revealed = useRef(false);
+  const revealPreview = useCallback(() => {
+    if (revealed.current) return;
+    revealed.current = true;
+    scrollSelectedPreview(previewRef.current);
+  }, []);
   return (
     <section
       className="story-inspector showcase-preview"
-      ref={props.previewRef}
+      ref={previewRef}
       tabIndex={-1}
       aria-labelledby="showcase-preview-title"
     >
@@ -303,7 +293,7 @@ function ShowcasePreview(props: {
           {frame.controls.theme}
         </span>
       </div>
-      <GhosttyStory frame={frame} />
+      <GhosttyStory frame={frame} onSettled={revealPreview} />
       <div className="showcase-preview-meta">
         <div>
           <strong>Semantic focus order</strong>
@@ -418,7 +408,6 @@ export function ShowcaseGallery(props: {
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string>();
   const [restored, setRestored] = useState(false);
-  const selectedPreviewRef = useRef<HTMLElement | null>(null);
   const storySets = useMemo(
     () => [...new Set(props.frames.map((frame) => frame.storyId))],
     [props.frames],
@@ -452,11 +441,6 @@ export function ShowcaseGallery(props: {
   const visible = filtered.slice(0, 24);
   const selected = props.frames.find((frame) => frame.id === selectedId);
 
-  useEffect(() => {
-    if (!selectedId || !selected) return;
-    scrollSelectedPreview(browser, selectedPreviewRef.current);
-  }, [browser, selected, selectedId]);
-
   return (
     <div className="showcase-gallery">
       <ShowcaseFilters
@@ -489,9 +473,7 @@ export function ShowcaseGallery(props: {
           more.
         </p>
       ) : null}
-      {selected ? (
-        <ShowcasePreview frame={selected} previewRef={selectedPreviewRef} />
-      ) : null}
+      {selected ? <ShowcasePreview frame={selected} key={selected.id} /> : null}
     </div>
   );
 }

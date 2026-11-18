@@ -27,7 +27,8 @@ type ResizablePaneSlots = {
 };
 
 export interface ResizablePaneProps
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<
       ResizablePaneSlots,
       { readonly focused: boolean; readonly size: number }

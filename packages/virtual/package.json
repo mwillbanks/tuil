@@ -31,7 +31,6 @@
   },
   "scripts": {
     "build": "bun ../../tooling/build/package.ts",
-    "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
   "dependencies": {
@@ -40,8 +39,8 @@
     "string-width": "catalog:"
   },
   "peerDependencies": {
-    "react": "catalog:",
-    "react-dom": "catalog:"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "files": [
     "dist"

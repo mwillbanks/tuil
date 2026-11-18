@@ -71,6 +71,7 @@ export class StructuredContentModel {
       )) {
         visit(child, childPath(path, key, Array.isArray(value)));
       }
+      seen.delete(value);
     };
     visit(this.#value, "$");
   }

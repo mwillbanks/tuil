@@ -1,7 +1,21 @@
+[install]
+linker = "hoisted"
+
+[fmt]
+# Generated reference and registry files are checked against their source owners.
+ignorePatterns = [
+  "apps/docs/content/docs/reference/",
+  "packages/*/CHANGELOG.md",
+  "packages/cli/src/generated-ui/",
+  "packages/cli/src/generated-registry.ts",
+]
+
 [test]
 bail = 1
 coverage = true
-coverageThreshold = { line = 0.95, function = 0.95, statement = 0.95 }
+
+# The full-suite gate enforces aggregate coverage with instrumented statements.
+# Bun's native text thresholds apply per file and do not enforce statements.
 coverageReporter = ["text", "lcov"]
 coverageSkipTestFiles = true
 
@@ -20,4 +34,3 @@ coveragePathIgnorePatterns = [
   "tooling/browser/**",
 ]
 onlyFailures = true
-pathIgnorePatterns = ["apps/docs/**"]

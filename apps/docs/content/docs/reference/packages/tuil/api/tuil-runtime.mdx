@@ -76,28 +76,28 @@ export interface TuilRuntime<
 | Member | Type | Required | Description | Related types |
 | --- | --- | --- | --- | --- |
 | `id` | `string` | Yes | The `id` member uses the `string` contract. | — |
-| `component` | `ComponentType \| RendererApplication` | Yes | The `component` member uses the `ComponentType \| RendererApplication` contract. | — |
+| `component` | `ComponentType \| RendererApplication` | Yes | The `component` member uses the `ComponentType \| RendererApplication` contract. | [`RendererApplication`](/docs/reference/packages/renderer/api/renderer-application) |
 | `lifecycle` | `Lifecycle` | Yes | The `lifecycle` member uses the `Lifecycle` contract. | [`Lifecycle`](/docs/reference/packages/tuil/api/lifecycle) |
 | `services` | `ServiceContainer` | Yes | The `services` member uses the `ServiceContainer` contract. | [`ServiceContainer`](/docs/reference/packages/tuil/api/service-container) |
 | `commands` | `CommandRegistry` | Yes | The `commands` member uses the `CommandRegistry` contract. | [`CommandRegistry`](/docs/reference/packages/tuil/api/command-registry) |
 | `events` | `EventBus<AppEventMap<TEvents>>` | Yes | The `events` member uses the `EventBus<AppEventMap<TEvents>>` contract. | [`AppEventMap`](/docs/reference/packages/tuil/api/app-event-map), [`EventBus`](/docs/reference/packages/events/api/event-bus) |
 | `focus` | `FocusManager` | Yes | The `focus` member uses the `FocusManager` contract. | [`FocusManager`](/docs/reference/packages/focus/api/focus-manager) |
 | `hotkeys` | `HotkeyManager` | Yes | The `hotkeys` member uses the `HotkeyManager` contract. | [`HotkeyManager`](/docs/reference/packages/hotkeys/api/hotkey-manager) |
-| `layout` | `LayoutProjection` | Yes | The `layout` member uses the `LayoutProjection` contract. | — |
-| `pointer` | `PointerRouter` | Yes | The `pointer` member uses the `PointerRouter` contract. | — |
+| `layout` | `LayoutProjection` | Yes | The `layout` member uses the `LayoutProjection` contract. | [`LayoutProjection`](/docs/reference/packages/renderer/api/layout-projection) |
+| `pointer` | `PointerRouter` | Yes | The `pointer` member uses the `PointerRouter` contract. | [`PointerRouter`](/docs/reference/packages/pointer/api/pointer-router) |
 | `scroll` | `ScrollManager` | Yes | The `scroll` member uses the `ScrollManager` contract. | [`ScrollManager`](/docs/reference/packages/scroll/api/scroll-manager) |
-| `renderers` | `RendererRegistry` | Yes | The `renderers` member uses the `RendererRegistry` contract. | — |
-| `renderer` | `RendererBackend<unknown> \| undefined` | No | The `renderer` member uses the `RendererBackend<unknown> \| undefined` contract. | — |
-| `rendererApplication` | `RendererApplication \| undefined` | No | The `rendererApplication` member uses the `RendererApplication \| undefined` contract. | — |
-| `editorProviders` | `EditorProviderRegistry` | Yes | The `editorProviders` member uses the `EditorProviderRegistry` contract. | — |
+| `renderers` | `RendererRegistry` | Yes | The `renderers` member uses the `RendererRegistry` contract. | [`RendererRegistry`](/docs/reference/packages/renderer/api/renderer-registry) |
+| `renderer` | `RendererBackend<unknown> \| undefined` | No | The `renderer` member uses the `RendererBackend<unknown> \| undefined` contract. | [`RendererBackend`](/docs/reference/packages/renderer/api/renderer-backend) |
+| `rendererApplication` | `RendererApplication \| undefined` | No | The `rendererApplication` member uses the `RendererApplication \| undefined` contract. | [`RendererApplication`](/docs/reference/packages/renderer/api/renderer-application) |
+| `editorProviders` | `EditorProviderRegistry` | Yes | The `editorProviders` member uses the `EditorProviderRegistry` contract. | [`EditorProviderRegistry`](/docs/reference/packages/editor/api/editor-provider-registry) |
 | `editorSessions` | `RuntimeResourceRegistry<EditorSession>` | Yes | The `editorSessions` member uses the `RuntimeResourceRegistry<EditorSession>` contract. | [`EditorSession`](/docs/reference/packages/editor/api/editor-session), [`RuntimeResourceRegistry`](/docs/reference/packages/tuil/api/runtime-resource-registry) |
 | `logPipelines` | `RuntimeResourceRegistry<LogPipeline>` | Yes | The `logPipelines` member uses the `RuntimeResourceRegistry<LogPipeline>` contract. | [`LogPipeline`](/docs/reference/packages/logging/api/log-pipeline), [`RuntimeResourceRegistry`](/docs/reference/packages/tuil/api/runtime-resource-registry) |
 | `streamingPipelines` | `RuntimeResourceRegistry<StreamingPipeline>` | Yes | The `streamingPipelines` member uses the `RuntimeResourceRegistry<StreamingPipeline>` contract. | [`RuntimeResourceRegistry`](/docs/reference/packages/tuil/api/runtime-resource-registry) |
-| `plugins` | `&#123; health(): readonly import("@mwillbanks/tuil-plugin").PluginHealth[]; &#125;` | Yes | The `plugins` member uses the `&#123; health(): readonly import("@mwillbanks/tuil-plugin").PluginHealth[]; &#125;` contract. | — |
+| `plugins` | `&#123; health(): readonly import("@mwillbanks/tuil-plugin").PluginHealth[]; &#125;` | Yes | The `plugins` member uses the `&#123; health(): readonly import("@mwillbanks/tuil-plugin").PluginHealth[]; &#125;` contract. | [`PluginHealth`](/docs/reference/packages/plugin/api/plugin-health) |
 | `extensions` | `Readonly<ExtensionRegistries<TExtensions>>` | Yes | The `extensions` member uses the `Readonly<ExtensionRegistries<TExtensions>>` contract. | [`ExtensionRegistries`](/docs/reference/packages/tuil/api/extension-registries) |
 | `capabilities` | `TerminalCapabilities` | Yes | The `capabilities` member uses the `TerminalCapabilities` contract. | [`TerminalCapabilities`](/docs/reference/packages/tuil/api/terminal-capabilities) |
 | `mode` | `RenderMode` | Yes | The `mode` member uses the `RenderMode` contract. | [`RenderMode`](/docs/reference/packages/tuil/api/render-mode) |
-| `outputOwnership` | `ScreenOwnership` | Yes | The `outputOwnership` member uses the `ScreenOwnership` contract. | — |
+| `outputOwnership` | `ScreenOwnership` | Yes | The `outputOwnership` member uses the `ScreenOwnership` contract. | [`ScreenOwnership`](/docs/reference/packages/renderer/api/screen-ownership) |
 | `theme` | `Theme` | Yes | The `theme` member uses the `Theme` contract. | [`Theme`](/docs/reference/packages/tuil/api/theme) |
 | `themeController` | `ThemeController` | Yes | The `themeController` member uses the `ThemeController` contract. | [`ThemeController`](/docs/reference/packages/theme/api/theme-controller) |
 | `renderTelemetry` | `RuntimeRenderTelemetry` | Yes | The `renderTelemetry` member uses the `RuntimeRenderTelemetry` contract. | [`RuntimeRenderTelemetry`](/docs/reference/packages/tuil/api/runtime-render-telemetry) |

@@ -1,5 +1,8 @@
+import { useTestClock } from "../../../tests/helpers/clock.ts";
 import { expect, test } from "bun:test";
 import { createRouter, defineRoutes, route } from "./index.ts";
+
+const clock = useTestClock();
 
 test("router loads routes, guards navigation, restores history, and emits lifecycle events", async () => {
   const restored: string[] = [];
@@ -120,7 +123,7 @@ test("router serializes history against pending loads and restores focus both wa
   expect(restored).toEqual(["home-field", "settings-field"]);
 
   const pending = router.navigate({ to: "slow" });
-  await Bun.sleep(1);
+  await clock.flush();
   const restoredHome = await router.back();
   expect(restoredHome?.route).toBe("home");
   release?.();
@@ -142,7 +145,7 @@ test("router clears pending navigation when history traversal has no target", as
     }),
   );
   const loading = router.navigate({ to: "slow" });
-  await Bun.sleep(1);
+  await clock.flush();
   expect(router.state.pending?.to).toBe("slow");
   expect(await router.back()).toBeUndefined();
   expect(router.state.pending).toBeUndefined();

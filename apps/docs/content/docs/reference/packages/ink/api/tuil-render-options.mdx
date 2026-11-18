@@ -13,7 +13,13 @@ Public interface exported by `@mwillbanks/tuil-ink`.
 
 
 ```ts
-export interface TuilRenderOptions extends RenderOptions {
+export interface TuilRenderOptions extends Omit<
+  RenderOptions,
+  "stdin" | "stdout" | "stderr"
+> {
+  readonly stdin?: NodeJS.ReadStream;
+  readonly stdout?: NodeJS.WriteStream;
+  readonly stderr?: NodeJS.WriteStream;
   readonly semanticRegistry?: SemanticRegistry;
 }
 ```
@@ -22,17 +28,17 @@ export interface TuilRenderOptions extends RenderOptions {
 
 | Member | Type | Required | Description | Related types |
 | --- | --- | --- | --- | --- |
+| `stdin` | `NodeJS.ReadStream \| undefined` | No | The `stdin` member uses the `NodeJS.ReadStream \| undefined` contract. | — |
+| `stdout` | `NodeJS.WriteStream \| undefined` | No | The `stdout` member uses the `NodeJS.WriteStream \| undefined` contract. | — |
+| `stderr` | `NodeJS.WriteStream \| undefined` | No | The `stderr` member uses the `NodeJS.WriteStream \| undefined` contract. | — |
 | `semanticRegistry` | `SemanticRegistry \| undefined` | No | The `semanticRegistry` member uses the `SemanticRegistry \| undefined` contract. | [`SemanticRegistry`](/docs/reference/packages/ink/api/semantic-registry) |
-| `stdout` | `NodeJS.WriteStream \| undefined` | No | Output stream where the app will be rendered. | — |
-| `stdin` | `NodeJS.ReadStream \| undefined` | No | Input stream where app will listen for input. | — |
-| `stderr` | `NodeJS.WriteStream \| undefined` | No | Error stream. | — |
 | `debug` | `boolean \| undefined` | No | If true, each update will be rendered as separate output, without replacing the previous one. | — |
 | `exitOnCtrlC` | `boolean \| undefined` | No | Configure whether Ink should listen for Ctrl+C keyboard input and exit the app. This is needed in case `process.stdin` is in raw mode, because then Ctrl+C is ignored by default and the process is expected to handle it manually. | — |
 | `patchConsole` | `boolean \| undefined` | No | Patch console methods to ensure console output doesn't mix with Ink's output.      Note: Once unmount starts, Ink restores the native console before React cleanup runs. Teardown-time `console.*` output then follows the normal console behavior instead of being rerouted through Ink. | — |
 | `onRender` | `((metrics: RenderMetrics) => void) \| undefined` | No | Runs the given callback after each render and re-render with render metrics.      Note: this callback runs after Ink commits a frame, but it does not wait for `stdout`/`stderr` stream callbacks.     To run code after output is flushed, use `waitUntilRenderFlush()`. | — |
 | `isScreenReaderEnabled` | `boolean \| undefined` | No | Enable screen reader support. See https://github.com/vadimdemedes/ink/blob/master/readme.md#screen-reader-support | — |
 | `maxFps` | `number \| undefined` | No | Maximum frames per second for render updates.     This controls how frequently the UI can update to prevent excessive re-rendering.     Higher values allow more frequent updates but may impact performance. | — |
-| `incrementalRendering` | `boolean \| undefined` | No | Enable incremental rendering mode which only updates changed lines instead of redrawing the entire output.     This can reduce flickering and improve performance for frequently updating UIs. | — |
+| `incrementalRendering` | `boolean \| undefined` | No | Enable incremental rendering mode which only updates changed lines instead of redrawing the entire output.     This can reduce flickering and improve performance for frequently updating UIs.     On changed lines, unchanged prefixes are also skipped when safe, preserving styles and grapheme boundaries.     Lines containing unsupported terminal controls fall back to whole-line updates. | — |
 | `concurrent` | `boolean \| undefined` | No | Enable React Concurrent Rendering mode.      When enabled:     - Suspense boundaries work correctly with async data     - `useTransition` and `useDeferredValue` are fully functional     - Updates can be interrupted for higher priority work      Note: Concurrent mode changes the timing of renders. Some tests may need to use `act()` to properly await updates. Reusing the same stdout across multiple `render()` calls without unmounting is unsupported. Call `unmount()` first if you need to change the rendering mode or create a fresh instance. | — |
 | `kittyKeyboard` | `KittyKeyboardOptions \| undefined` | No | Configure kitty keyboard protocol support for enhanced keyboard input.     Enables additional modifiers (super, hyper, capsLock, numLock) and     disambiguated key events in terminals that support the protocol. | — |
 | `interactive` | `boolean \| undefined` | No | Override automatic interactive mode detection.      By default, Ink detects whether the environment is interactive based on CI detection (via [`is-in-ci`](https://github.com/sindresorhus/is-in-ci)) and `stdout.isTTY`. Most users should not need to set this.      When non-interactive, Ink disables ANSI erase sequences, cursor manipulation, synchronized output, resize handling, and kitty keyboard auto-detection, writing only the final frame at unmount.      Set to `false` to force non-interactive mode or `true` to force interactive mode when the automatic detection doesn't suit your use case.      Note: Reusing the same stdout across multiple `render()` calls without unmounting is unsupported. Call `unmount()` first if you need to change this option or create a fresh instance. | — |

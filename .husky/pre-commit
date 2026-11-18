@@ -1,1 +1,1 @@
-bunx --no-install lint-staged --hide-unstaged
+bunx --no-install lint-staged --hide-unstaged --concurrent false

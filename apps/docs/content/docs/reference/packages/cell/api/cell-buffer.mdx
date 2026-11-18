@@ -181,14 +181,13 @@ export class CellBuffer {
     grapheme: string,
     clip: TerminalBounds,
   ): void {
-    const previous = this.get(cursor - 1, y);
-    if (!previous) return;
-    this.set(
-      cursor - 1,
-      y,
-      { ...previous, grapheme: previous.grapheme + grapheme },
-      clip,
-    );
+    const column = this.#wideCellStart(cursor - 1, y);
+    const previous = this.get(column, y);
+    if (!previous || !inRect(column, y, clip)) return;
+    this.#setRaw(column, y, {
+      ...previous,
+      grapheme: previous.grapheme + grapheme,
+    });
   }
 
   #writeGrapheme(
@@ -199,6 +198,7 @@ export class CellBuffer {
     style: Partial<Omit<Cell, "grapheme" | "continuation">>,
     clip: TerminalBounds,
   ): void {
+    if (!this.#contains(x, y) || !inRect(x, y, clip)) return;
     const cell: Cell = {
       grapheme,
       foreground: style.foreground ?? defaultColor,

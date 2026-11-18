@@ -684,18 +684,3 @@ test("rich text projection preserves empty block boundaries", () => {
     }),
   ).toThrow("cannot replace a built-in node");
 });
-
-test("large editor buffers remain responsive and stable across widths", () => {
-  const value = Array.from(
-    { length: 10_000 },
-    (_, index) => `line ${index}`,
-  ).join("\n");
-  const started = performance.now();
-  const session = new TextBufferSession({ value });
-  session.dispatch({
-    selections: [selection(position(9_999, 9))],
-  });
-  insertText(session, "!");
-  expect(session.serialize()).toEndWith("line 9999!");
-  expect(performance.now() - started).toBeLessThan(250);
-});

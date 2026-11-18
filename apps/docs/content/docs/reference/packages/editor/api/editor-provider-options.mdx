@@ -44,7 +44,7 @@ export interface EditorProviderOptions {
 | `masked` | `boolean \| undefined` | No | The `masked` member uses the `boolean \| undefined` contract. | — |
 | `mode` | `EditorMode \| undefined` | No | The `mode` member uses the `EditorMode \| undefined` contract. | [`EditorMode`](/docs/reference/packages/editor/api/editor-mode) |
 | `viewportAnchor` | `EditorPosition \| undefined` | No | The `viewportAnchor` member uses the `EditorPosition \| undefined` contract. | [`EditorPosition`](/docs/reference/packages/editor/api/editor-position) |
-| `clipboard` | `EditorClipboardAdapter \| undefined` | No | The `clipboard` member uses the `EditorClipboardAdapter \| undefined` contract. | — |
+| `clipboard` | `EditorClipboardAdapter \| undefined` | No | The `clipboard` member uses the `EditorClipboardAdapter \| undefined` contract. | [`EditorClipboardAdapter`](/docs/reference/packages/editor/api/editor-clipboard-adapter) |
 | `onDocumentChange` | `((value: string) => void) \| undefined` | No | Receives the unredacted document after a mutation.  Masked sessions redact snapshots, serialization, and clipboard operations. An owning control can use this explicit sink to synchronize its private value without turning a general export API into a secret-recovery path. | — |
 
 ## Parameters
@@ -61,6 +61,7 @@ No thrown errors are documented for this declaration.
 
 ## Related types
 
+- [`EditorClipboardAdapter`](/docs/reference/packages/editor/api/editor-clipboard-adapter)
 - [`EditorMode`](/docs/reference/packages/editor/api/editor-mode)
 - [`EditorPosition`](/docs/reference/packages/editor/api/editor-position)
 

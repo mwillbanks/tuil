@@ -103,9 +103,8 @@ function syntaxNodes(root: Node, source: string) {
   return output;
 }
 
-const runtime = import.meta.resolve(
-  "@vscode/tree-sitter-wasm/wasm/tree-sitter.wasm",
-);
+const runtime = import.meta
+  .resolve("@vscode/tree-sitter-wasm/wasm/tree-sitter.wasm");
 let initialization: Promise<void> | undefined;
 const languages = new Map<string, Promise<Language>>();
 const trees = new Map<

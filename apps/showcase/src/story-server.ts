@@ -36,26 +36,22 @@ export function startStoryServer(
         return Response.json({ error: "Not found" }, { status: 404 });
       }
       const origin = request.headers.get("origin");
-      const corsHeaders =
-        origin && allowedOrigins.has(origin)
-          ? {
-              "access-control-allow-origin": origin,
-              vary: "Origin",
-            }
-          : {};
+      const originAllowed = origin !== null && allowedOrigins.has(origin);
       if (request.method === "OPTIONS") {
-        return new Response(null, {
-          status: 204,
-          headers: {
-            ...corsHeaders,
-            "access-control-allow-headers": "content-type",
-            "access-control-allow-methods": "POST, OPTIONS",
-          },
+        const headers = new Headers({
+          "access-control-allow-headers": "content-type",
+          "access-control-allow-methods": "POST, OPTIONS",
         });
+        if (originAllowed) {
+          headers.set("access-control-allow-origin", origin);
+          headers.set("vary", "Origin");
+        }
+        return new Response(null, { status: 204, headers });
       }
       const response = await handleStory(request);
-      for (const [name, value] of Object.entries(corsHeaders)) {
-        response.headers.set(name, value);
+      if (originAllowed) {
+        response.headers.set("access-control-allow-origin", origin);
+        response.headers.set("vary", "Origin");
       }
       return response;
     },

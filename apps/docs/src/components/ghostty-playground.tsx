@@ -8,17 +8,24 @@ export function GhosttyPlayground(props: {
 }): ReactNode {
   const host = useRef<HTMLDivElement>(null);
   const documentRef = useRef(props.document);
-  documentRef.current = props.document;
   const sessionRef = useRef<{
     update(document: PlaygroundDocumentV1): void;
   }>(undefined);
   const [revision, setRevision] = useState(0);
-  const [status, setStatus] = useState("Loading Ghostty Web…");
+  const [result, setResult] = useState<{
+    generation: string;
+    message: string;
+  }>();
   const terminalKey = props.document
     ? JSON.stringify(props.document.terminal)
     : "feasibility";
+  const generation = `${revision}:${terminalKey}`;
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Both values intentionally remount the terminal session.
+  useEffect(() => {
+    documentRef.current = props.document;
+    if (props.document) sessionRef.current?.update(props.document);
+  }, [props.document]);
+
   useEffect(() => {
     let active = true;
     let dispose: (() => Promise<void>) | undefined;
@@ -57,35 +64,36 @@ export function GhosttyPlayground(props: {
       }
       dispose = instance.unmount;
       instance.focus();
-      setStatus("Interactive terminal ready.");
+      setResult({ generation, message: "Interactive terminal ready." });
     };
     void mount().catch((cause: unknown) => {
       if (active)
-        setStatus(
-          `Browser terminal failed: ${cause instanceof Error ? cause.message : String(cause)}`,
-        );
+        setResult({
+          generation,
+          message: `Browser terminal failed: ${cause instanceof Error ? cause.message : String(cause)}`,
+        });
     });
     return () => {
       active = false;
       sessionRef.current = undefined;
       void dispose?.().catch(() => undefined);
     };
-  }, [revision, terminalKey]);
-
-  useEffect(() => {
-    if (props.document) sessionRef.current?.update(props.document);
-  }, [props.document]);
+  }, [generation]);
 
   return (
     <section className="ghostty-workspace">
       <div className="ghostty-toolbar">
-        <strong>Live Ink 7 session</strong>
+        <strong>Live Ink session</strong>
         <button type="button" onClick={() => setRevision((value) => value + 1)}>
           Reset session
         </button>
       </div>
       <div className="ghostty-terminal" key={revision} ref={host} />
-      <p aria-live="polite">{status}</p>
+      <p aria-live="polite">
+        {result?.generation === generation
+          ? result.message
+          : "Loading Ghostty Web…"}
+      </p>
     </section>
   );
 }

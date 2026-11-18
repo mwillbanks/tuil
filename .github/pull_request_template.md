@@ -17,7 +17,7 @@
 
 <!-- List exact focused tests and repository gates you ran. -->
 
-- [ ] `bun run check`
+- [ ] `bun run validate`
 - [ ] `bun run docs:check` when documentation or public behavior changed
 - [ ] Visual changes include desktop and mobile evidence
 

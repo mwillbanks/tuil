@@ -58,6 +58,7 @@ function flattenValue(
       ),
     );
   }
+  seen.delete(object);
   return rows;
 }
 
@@ -119,6 +120,7 @@ export class StructuredContentModel {
       )) {
         visit(child, childPath(path, key, Array.isArray(value)));
       }
+      seen.delete(value);
     };
     visit(this.#value, "$");
   }
@@ -178,14 +180,14 @@ export function resolveJsonPath(value: unknown, path: string): unknown {
 }
 
 function cycleSafeStringify(value: unknown, space?: number): string {
-  const seen = new WeakSet<object>();
+  const ancestors: object[] = [];
   return JSON.stringify(
     value,
-    (_key, current) => {
-      if (current && typeof current === "object") {
-        if (seen.has(current)) return "[Circular]";
-        seen.add(current);
-      }
+    function replace(this: object, _key, current: unknown) {
+      if (!current || typeof current !== "object") return current;
+      while (ancestors.length && ancestors.at(-1) !== this) ancestors.pop();
+      if (ancestors.includes(current)) return "[Circular]";
+      ancestors.push(current);
       return current;
     },
     space,
@@ -320,26 +322,29 @@ export class DiffModel {
     mode: "unified" | "split" = "unified",
     options: { readonly collapseUnchangedAfter?: number } = {},
   ): readonly string[] {
-    const collapse = (lines: readonly string[]): readonly string[] => {
+    const collapse = (
+      lines: readonly { text: string; context: boolean }[],
+    ): readonly string[] => {
       const threshold = options.collapseUnchangedAfter;
-      if (!threshold || threshold < 1) return lines;
+      if (!threshold || threshold < 1) return lines.map((line) => line.text);
       const output: string[] = [];
       let contextRun: string[] = [];
       const flush = () => {
         if (contextRun.length > threshold) {
+          const tail = Math.floor(threshold / 2);
           output.push(
             ...contextRun.slice(0, Math.ceil(threshold / 2)),
             `… ${contextRun.length - threshold} unchanged lines …`,
-            ...contextRun.slice(-Math.floor(threshold / 2)),
+            ...contextRun.slice(contextRun.length - tail),
           );
         } else output.push(...contextRun);
         contextRun = [];
       };
       for (const line of lines) {
-        if (/^\s*\d*\s+\d*\s+\s/.test(line)) contextRun.push(line);
+        if (line.context) contextRun.push(line.text);
         else {
           flush();
-          output.push(line);
+          output.push(line.text);
         }
       }
       flush();
@@ -347,13 +352,13 @@ export class DiffModel {
     };
     if (mode === "unified") {
       return collapse(
-        this.lines.map(
-          (line) =>
-            `${String(line.oldLine ?? "").padStart(4)} ${String(line.newLine ?? "").padStart(4)} ${line.text}`,
-        ),
+        this.lines.map((line) => ({
+          text: `${String(line.oldLine ?? "").padStart(4)} ${String(line.newLine ?? "").padStart(4)} ${line.text}`,
+          context: line.kind === "context",
+        })),
       );
     }
-    const rows: string[] = [];
+    const rows: { text: string; context: boolean }[] = [];
     for (let index = 0; index < this.lines.length; index += 1) {
       const line = this.lines[index];
       if (!line) continue;
@@ -361,12 +366,16 @@ export class DiffModel {
         line.kind === "deletion" &&
         this.lines[index + 1]?.kind === "addition"
       ) {
-        rows.push(
-          `${line.text.slice(1).padEnd(40)} │ ${this.lines[index + 1]?.text.slice(1) ?? ""}`,
-        );
+        rows.push({
+          text: `${line.text.slice(1).padEnd(40)} │ ${this.lines[index + 1]?.text.slice(1) ?? ""}`,
+          context: false,
+        });
         index += 1;
       } else {
-        rows.push(`${line.text.padEnd(40)} │ ${line.text}`);
+        rows.push({
+          text: `${line.text.padEnd(40)} │ ${line.text}`,
+          context: line.kind === "context",
+        });
       }
     }
     return collapse(rows);

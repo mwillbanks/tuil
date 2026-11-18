@@ -6,7 +6,15 @@
     "parsed-pointer-input",
     "parse-sgr-pointer",
     "pointer-button",
+    "pointer-event-init",
     "pointer-event-type",
-    "pointer-modifiers"
+    "pointer-listener",
+    "pointer-modifiers",
+    "pointer-router",
+    "pointer-router-options",
+    "pointer-tracking",
+    "semantic-pointer-fixture",
+    "sgr-pointer-decoder",
+    "tuil-pointer-event"
   ]
 }

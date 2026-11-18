@@ -36,6 +36,14 @@ export class RichDocumentSession {
   }
 
   dispatch(transaction: RichTransaction): RichDocument {
+    if (
+      Array.from(transaction.path).some(
+        (index) => !Number.isSafeInteger(index) || index < 0,
+      ) ||
+      (transaction.path.length === 0 && transaction.remove)
+    ) {
+      throw invalidRichPath(transaction.path);
+    }
     const node = transaction.node
       ? freezeNode(validateRichNode(transaction.node, this.#providers))
       : undefined;
@@ -52,11 +60,12 @@ export class RichDocumentSession {
       });
       return this.#document;
     }
+    const root = editRichNode(this.#document.root, validated, 0);
     this.#history.push(this.#document);
     this.#redo.length = 0;
     this.#document = Object.freeze({
       version: this.#document.version + 1,
-      root: editRichNode(this.#document.root, validated, 0),
+      root,
     });
     return this.#document;
   }

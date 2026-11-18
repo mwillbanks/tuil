@@ -91,7 +91,13 @@ export class CodeDocument {
   }
 
   select(start: number, end: number): void {
-    if (start < 0 || end < start || end > this.#source.length)
+    if (
+      !Number.isSafeInteger(start) ||
+      !Number.isSafeInteger(end) ||
+      start < 0 ||
+      end < start ||
+      end > this.#source.length
+    )
       throw new RangeError("Code selection range is invalid");
     this.#selection = { start, end };
   }

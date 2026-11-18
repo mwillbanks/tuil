@@ -5,16 +5,33 @@ icon: TestTube
 ---
 
 ```tsx
-const view = renderTuil(
-  <Button id="run" label="Run build" onPress={() => calls.push("run")}>
-    Run
-  </Button>,
-);
+import { expect, test } from "bun:test";
+import { Button } from "@mwillbanks/tuil-ink";
+import { renderTuil } from "@mwillbanks/tuil-testing-ink";
 
-expect(view.screen.getByRole("button", { name: "Run build" })).toBeEnabled();
-await view.press("enter");
-expect(calls).toEqual(["run"]);
-await view.unmount();
+test("Run button dispatches once", async () => {
+  const calls: string[] = [];
+  const view = renderTuil(
+    <Button
+      autoFocus
+      id="run"
+      label="Run build"
+      onPress={() => {
+        calls.push("run");
+      }}
+    >
+      Run
+    </Button>,
+  );
+
+  await view.ready;
+  expect(
+    view.screen.getByRole("button", { name: "Run build" }).disabled,
+  ).not.toBe(true);
+  await view.user.press("enter");
+  expect(calls).toEqual(["run"]);
+  await view.cleanup();
+});
 ```
 
 ## Test layers

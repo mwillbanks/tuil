@@ -9,8 +9,9 @@ icon: BracketsCurly
 ## Type
 
 ```ts
-export interface SpinnerProps
-  extends SlottedComponentProps<{ root: TextProps }> {
+export interface SpinnerProps extends SlottedComponentProps<{
+  root: TextProps;
+}> {
   readonly id?: string;
   readonly testId?: string;
   readonly label?: string;

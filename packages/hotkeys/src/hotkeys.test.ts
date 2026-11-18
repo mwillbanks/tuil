@@ -1,9 +1,12 @@
-import { describe, expect, test } from "bun:test";
+import { useTestClock } from "../../../tests/helpers/clock.ts";
+import { describe, expect, mock, test } from "bun:test";
 import {
   HotkeyManager,
   normalizeHotkeyNotation,
   normalizeTerminalKey,
 } from "./index.ts";
+
+const clock = useTestClock();
 
 describe("hotkeys", () => {
   test("normalizes terminal keys and cross-platform mod notation", () => {
@@ -73,7 +76,7 @@ describe("hotkeys", () => {
     expect(calls).toEqual(["sequence"]);
 
     await manager.dispatch("g");
-    await Bun.sleep(15);
+    await clock.advance(15);
     expect(calls).toEqual(["sequence", "single"]);
   });
 
@@ -105,7 +108,7 @@ describe("hotkeys", () => {
       },
     );
     activeDialog = undefined;
-    await Bun.sleep(15);
+    await clock.advance(15);
     expect(calls).toEqual([]);
 
     activeDialog = "confirm";
@@ -117,7 +120,7 @@ describe("hotkeys", () => {
       },
     );
     unregister();
-    await Bun.sleep(15);
+    await clock.advance(15);
     expect(calls).toEqual([]);
 
     const errors: unknown[] = [];
@@ -141,7 +144,7 @@ describe("hotkeys", () => {
         },
       },
     );
-    await Bun.sleep(10);
+    await clock.advance(10);
     expect(errors).toHaveLength(1);
     expect(failing.drainErrors()).toEqual([]);
   });
@@ -159,7 +162,7 @@ describe("hotkeys", () => {
       },
     });
     await manager.dispatch("g");
-    await Bun.sleep(10);
+    await clock.advance(10);
     expect(calls).toEqual([]);
 
     manager.register({
@@ -178,8 +181,69 @@ describe("hotkeys", () => {
         },
       },
     );
-    await Bun.sleep(10);
+    await clock.advance(10);
     expect(manager.drainErrors()[0]).toBeInstanceOf(AggregateError);
     stopObserving();
   });
+});
+
+test("maps terminal navigation keys and modifier order", () => {
+  expect(normalizeTerminalKey("x", { backspace: true })).toBe("backspace");
+  expect(normalizeTerminalKey("x", { delete: true })).toBe("delete");
+  expect(normalizeTerminalKey("x", { upArrow: true })).toBe("arrowup");
+  expect(normalizeTerminalKey("x", { downArrow: true })).toBe("arrowdown");
+  expect(normalizeTerminalKey("x", { pageUp: true })).toBe("pageup");
+  expect(normalizeTerminalKey("x", { pageDown: true })).toBe("pagedown");
+  expect(normalizeTerminalKey("x", { home: true })).toBe("home");
+  expect(normalizeTerminalKey("x", { end: true })).toBe("end");
+  expect(normalizeTerminalKey("x", { meta: true, shift: true }, "darwin")).toBe(
+    "meta+shift+x",
+  );
+  expect(normalizeTerminalKey("x", { meta: true }, "linux")).toBe("alt+x");
+  expect(normalizeHotkeyNotation("k+shift+ctrl", "linux")).toBe("ctrl+shift+k");
+});
+
+test("replays an unmatched chord and exposes prevention to observers", async () => {
+  const manager = new HotkeyManager();
+  const observe = mock();
+  manager.observe(observe);
+  const record = mock();
+  expect(() => manager.register({ keys: " ", handler: record })).toThrow(
+    "cannot be empty",
+  );
+  manager.register({ keys: "g", handler: record });
+  manager.register({ keys: "g g", handler: record });
+  manager.register({
+    keys: "x",
+    handler(event) {
+      event.preventDefault();
+    },
+  });
+  manager.register({ keys: "m", platforms: ["darwin"], handler: record });
+  manager.register({ keys: "n", enabled: false, handler: record });
+  await manager.dispatch("g");
+  expect((await manager.dispatch("x"))?.keys).toBe("x");
+  expect(record).toHaveBeenCalledTimes(1);
+  expect(observe).toHaveBeenLastCalledWith(
+    expect.objectContaining({ keys: "x", defaultPrevented: true }),
+  );
+  expect(
+    await manager.dispatch("m", {}, { platform: "linux" }),
+  ).toBeUndefined();
+  expect(await manager.dispatch("n")).toBeUndefined();
+});
+
+test("retains unreported deferred handler errors for the caller", async () => {
+  const manager = new HotkeyManager(5);
+  const failure = new Error("deferred");
+  manager.register({
+    keys: "q",
+    handler() {
+      throw failure;
+    },
+  });
+  manager.register({ keys: "q q", handler() {} });
+  await manager.dispatch("q");
+  await clock.advance(5);
+  expect(manager.drainErrors()).toEqual([failure]);
 });

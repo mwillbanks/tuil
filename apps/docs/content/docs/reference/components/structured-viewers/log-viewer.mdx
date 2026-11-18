@@ -37,7 +37,7 @@ export function LogViewer(props: LogViewerProps): ReactNode;
 | `size` | `"sm" \| "md" \| "lg" \| undefined` | No | The `size` member uses the `"sm" \| "md" \| "lg" \| undefined` contract. | — |
 | `unstyled` | `boolean \| undefined` | No | The `unstyled` member uses the `boolean \| undefined` contract. | — |
 | `className` | `string \| undefined` | No | The `className` member uses the `string \| undefined` contract. | — |
-| `layout` | `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` | No | The `layout` member uses the `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` contract. | — |
+| `layout` | `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` | No | The `layout` member uses the `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` contract. | [`LayoutNodeInput`](/docs/reference/packages/renderer/api/layout-node-input) |
 | `id` | `string \| undefined` | No | The `id` member uses the `string \| undefined` contract. | — |
 | `testId` | `string \| undefined` | No | The `testId` member uses the `string \| undefined` contract. | — |
 | `role` | `SemanticRole \| undefined` | No | The `role` member uses the `SemanticRole \| undefined` contract. | [`SemanticRole`](/docs/reference/packages/core/api/semantic-role) |
@@ -57,6 +57,8 @@ Callback props run after the documented input is accepted. Callbacks are not can
 ## Interaction and capabilities
 
 Viewers scroll and filter; JSON nodes expand or collapse; diff output remains deterministic in static mode.
+
+
 
 The published manifest records keyboard, focus, pointer, theme, terminal, semantic, event, and dependency requirements.
 

@@ -26,7 +26,7 @@ export interface SemanticNode extends SemanticMetadata {
 | --- | --- | --- | --- | --- |
 | `key` | `string` | Yes | The `key` member uses the `string` contract. | — |
 | `text` | `string \| undefined` | No | The `text` member uses the `string \| undefined` contract. | — |
-| `layout` | `Omit<LayoutNodeInput, "children" \| "id" \| "semantics"> \| undefined` | No | The `layout` member uses the `Omit<LayoutNodeInput, "children" \| "id" \| "semantics"> \| undefined` contract. | — |
+| `layout` | `Omit<LayoutNodeInput, "children" \| "id" \| "semantics"> \| undefined` | No | The `layout` member uses the `Omit<LayoutNodeInput, "children" \| "id" \| "semantics"> \| undefined` contract. | [`LayoutNodeInput`](/docs/reference/packages/renderer/api/layout-node-input) |
 | `id` | `string \| undefined` | No | The `id` member uses the `string \| undefined` contract. | — |
 | `testId` | `string \| undefined` | No | The `testId` member uses the `string \| undefined` contract. | — |
 | `role` | `SemanticRole \| undefined` | No | The `role` member uses the `SemanticRole \| undefined` contract. | [`SemanticRole`](/docs/reference/packages/core/api/semantic-role) |

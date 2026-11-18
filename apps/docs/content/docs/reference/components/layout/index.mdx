@@ -30,7 +30,6 @@ The CLI writes source-owned components beneath the destination configured in
 | [`Stack`](/docs/reference/components/layout/stack) | `function Stack` | Public function Stack. |
 | [`HStack`](/docs/reference/components/layout/hstack) | `function HStack` | Public function HStack. |
 | [`VStack`](/docs/reference/components/layout/vstack) | `function VStack` | Public function VStack. |
-| [`Pane`](/docs/reference/components/layout/pane) | `component Pane` | Public component Pane. |
 | [`SplitPane`](/docs/reference/components/layout/split-pane) | `function SplitPane` | Public function SplitPane. |
 | [`Header`](/docs/reference/components/layout/header) | `constant Header` | Public constant Header. |
 | [`Footer`](/docs/reference/components/layout/footer) | `constant Footer` | Public constant Footer. |
@@ -46,6 +45,8 @@ Resizable panes consume scoped arrow-key input while passive layout primitives o
 ## API and events
 
 `ResizablePane` reports size changes through `onSizeChange`; other layout components are passive.
+
+
 
 Every interactive component publishes semantic roles, labels, state, and focus
 identity through the renderer's `SemanticRegistry`. Callback failures flow to

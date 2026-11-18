@@ -1,6 +1,5 @@
 [test]
 bail = 1
-coverage = false
 coverageSkipTestFiles = true
 onlyFailures = true
-pathIgnorePatterns = ["apps/docs/**"]
+pathIgnorePatterns = []

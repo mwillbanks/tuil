@@ -17,7 +17,7 @@ const browserGlobal = globalThis as unknown as {
   Buffer?: typeof Buffer;
   clearImmediate?: (handle: ReturnType<typeof setTimeout>) => void;
   console: { Console?: typeof BrowserConsole };
-  process?: Partial<typeof processShim>;
+  process?: Partial<typeof processShim> & { versions?: { node?: string } };
   setImmediate?: (
     callback: (...arguments_: unknown[]) => void,
     ...arguments_: unknown[]
@@ -28,13 +28,16 @@ browserGlobal.setImmediate ??= (callback, ...arguments_) =>
   setTimeout(callback, 0, ...arguments_);
 browserGlobal.clearImmediate ??= (handle) => clearTimeout(handle);
 browserGlobal.console.Console ??= BrowserConsole;
-browserGlobal.process = {
-  ...processShim,
-  ...browserGlobal.process,
-  stderr: browserGlobal.process?.stderr ?? processShim.stderr,
-  stdin: browserGlobal.process?.stdin ?? processShim.stdin,
-  stdout: browserGlobal.process?.stdout ?? processShim.stdout,
-};
+const hostProcess = browserGlobal.process;
+if (!hostProcess?.versions?.node) {
+  browserGlobal.process = {
+    ...processShim,
+    ...hostProcess,
+    stderr: hostProcess?.stderr ?? processShim.stderr,
+    stdin: hostProcess?.stdin ?? processShim.stdin,
+    stdout: hostProcess?.stdout ?? processShim.stdout,
+  };
+}
 
 export type { PlaygroundDocumentV1, PlaygroundNodeV1 } from "./document";
 export {
@@ -61,8 +64,10 @@ export function createTuilGhosttyStoryApp(
   return createStoryApp(options);
 }
 
-export interface TuilGhosttyTerminalOptions
-  extends Omit<ITerminalOptions, "ghostty"> {
+export interface TuilGhosttyTerminalOptions extends Omit<
+  ITerminalOptions,
+  "ghostty"
+> {
   readonly maxInputBytes?: number;
   readonly maxOutputBytes?: number;
 }
@@ -76,6 +81,8 @@ export interface TuilGhosttyAccessibilityOptions {
 export interface TuilGhosttyMountOptions {
   readonly app: TuilRuntime;
   readonly element: HTMLElement;
+  /** Focus the terminal during mounting. Defaults to true. */
+  readonly autoFocus?: boolean;
   readonly terminal?: TuilGhosttyTerminalOptions;
   readonly accessibility?: TuilGhosttyAccessibilityOptions;
 }
@@ -219,8 +226,23 @@ export async function mountTuilGhostty(
     maxOutputBytes = 1_048_576,
     ...terminalOptions
   } = options.terminal ?? {};
-  const terminal = new ghostty.Terminal(terminalOptions);
-  terminal.open(options.element);
+  let opening = true;
+  class MountedTerminal extends ghostty.Terminal {
+    override focus(): void {
+      // Ghostty's open calls focus, which also schedules a delayed focus retry.
+      if (opening) return;
+      super.focus();
+    }
+  }
+  const terminal =
+    options.autoFocus === false
+      ? new MountedTerminal(terminalOptions)
+      : new ghostty.Terminal(terminalOptions);
+  try {
+    terminal.open(options.element);
+  } finally {
+    opening = false;
+  }
   const fitAddon = new ghostty.FitAddon();
   terminal.loadAddon(fitAddon);
   fitAddon.observeResize();

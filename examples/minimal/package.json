@@ -27,8 +27,7 @@
   "scripts": {
     "start": "bun src/index.tsx",
     "build": "bun build src/index.tsx --outdir dist --target bun --packages external",
-    "typecheck": "tsc --noEmit",
-    "test": "bun test ../examples.test.tsx"
+    "test": "bun --cwd ../.. tooling/checks/suites.ts functional tests/functional/examples.test.tsx"
   },
   "dependencies": {
     "react": "catalog:"

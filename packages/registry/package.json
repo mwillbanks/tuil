@@ -31,14 +31,13 @@
   },
   "scripts": {
     "build": "bun ../../tooling/build/package.ts",
-    "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "semver": "^7.7.2"
+    "semver": "^7.8.6"
   },
   "devDependencies": {
     "@types/semver": "^7.8.0"

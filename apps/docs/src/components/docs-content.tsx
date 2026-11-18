@@ -6,11 +6,11 @@ import {
 } from "fumadocs-ui/page";
 import type { ReactNode } from "react";
 import type { DocsLocale } from "@/lib/i18n";
-import type { source } from "@/lib/source";
+import type { StaticPage } from "../lib/static-types";
 import { getMDXComponents } from "./mdx";
 import { PageActions } from "./page-actions";
 
-type SourcePage = NonNullable<ReturnType<typeof source.getPage>>;
+type SourcePage = StaticPage;
 export function DocsContent(props: {
   readonly lang: DocsLocale;
   readonly page: SourcePage;

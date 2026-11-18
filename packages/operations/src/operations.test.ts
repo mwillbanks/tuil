@@ -1,3 +1,7 @@
+import {
+  captureRejection,
+  useTestClock,
+} from "../../../tests/helpers/clock.ts";
 import { expect, test } from "bun:test";
 import {
   createOperation,
@@ -6,6 +10,8 @@ import {
   operationFeedbackDelays,
   resolveOperationFeedback,
 } from "./index.ts";
+
+const clock = useTestClock();
 
 const feedbackSnapshot = {
   id: "feedback",
@@ -110,7 +116,9 @@ test("operation retry delays can resolve or be cancelled", async () => {
       },
     }),
   );
-  expect(await delayed.execute()).toBe("done");
+  const delayedResult = delayed.execute();
+  await clock.advance(1);
+  expect(await delayedResult).toBe("done");
 
   const cancelled = createOperation(
     defineOperation({
@@ -124,7 +132,7 @@ test("operation retry delays can resolve or be cancelled", async () => {
     }),
   );
   const running = cancelled.execute();
-  await Bun.sleep(1);
+  await clock.advance(1);
   cancelled.cancel("cancel delay");
   await expect(running).rejects.toBe("cancel delay");
   expect(cancelled.state.status).toBe("cancelled");
@@ -211,8 +219,12 @@ test("operations report progress, batch bounded logs, retry, nest, cancel, and r
       id: "cancel",
       title: "Cancel",
       run: async ({ signal }) => {
-        await Bun.sleep(20);
         signal.throwIfAborted();
+        await new Promise<void>((_resolve, reject) => {
+          signal.addEventListener("abort", () => reject(signal.reason), {
+            once: true,
+          });
+        });
       },
     }),
   );
@@ -228,11 +240,13 @@ test("operations support waiting, blocking, timeout retries, and reuse after can
     defineOperation({
       id: "wait",
       title: "Wait",
-      run: ({ waitFor }) => waitFor(Bun.sleep(1).then(() => "ready")),
+      run: ({ waitFor }) => waitFor(clock.delay(1).then(() => "ready")),
     }),
   );
   waiting.observe((event) => states.push(event.operation.status));
-  expect(await waiting.execute()).toBe("ready");
+  const waitingResult = waiting.execute();
+  await clock.advance(1);
+  expect(await waitingResult).toBe("ready");
   expect(states).toContain("waiting");
   expect(waiting.state.status).toBe("succeeded");
 
@@ -277,7 +291,12 @@ test("operations support waiting, blocking, timeout retries, and reuse after can
         }),
     }),
   );
-  await expect(timed.execute()).rejects.toThrow("timed out");
+  const timedResult = captureRejection(timed.execute());
+  await clock.advance(5);
+  await clock.advance(5);
+  expect(await timedResult).toMatchObject({
+    message: expect.stringContaining("timed out"),
+  });
   expect(timedAttempts).toBe(2);
   expect(maximumActive).toBe(1);
   expect(timed.state.status).toBe("failed");
@@ -307,17 +326,23 @@ test("non-cooperative work is fenced after timeout or cancellation", async () =>
       retries: 2,
       run: async ({ updateProgress }) => {
         timeoutAttempts += 1;
-        await Bun.sleep(25);
+        await clock.delay(25);
         updateProgress({ current: 99 });
         return "late";
       },
     }),
   );
-  const started = performance.now();
-  await expect(timed.execute()).rejects.toThrow("timed out");
-  expect(performance.now() - started).toBeLessThan(20);
+  const started = clock.now();
+  const timedResult = captureRejection(timed.execute());
+  await clock.advance(1);
+  expect(timed.state.status).toBe("running");
+  await clock.advance(1);
+  expect(await timedResult).toMatchObject({
+    message: expect.stringContaining("timed out"),
+  });
+  expect(clock.now() - started).toBe(2);
   expect(timeoutAttempts).toBe(1);
-  await Bun.sleep(30);
+  await clock.advance(30);
   expect(timed.state.status).toBe("failed");
   expect(timed.state.progress).toBeUndefined();
 
@@ -326,19 +351,19 @@ test("non-cooperative work is fenced after timeout or cancellation", async () =>
       id: "non-cooperative-cancel",
       title: "Non-cooperative cancel",
       run: async ({ updateProgress }) => {
-        await Bun.sleep(25);
+        await clock.delay(25);
         updateProgress({ current: 100 });
         return "late";
       },
     }),
   );
   const running = cancelled.execute();
-  await Bun.sleep(1);
-  const cancelStarted = performance.now();
+  await clock.advance(1);
+  const cancelStarted = clock.now();
   cancelled.cancel("stop now");
   await expect(running).rejects.toBe("stop now");
-  expect(performance.now() - cancelStarted).toBeLessThan(20);
-  await Bun.sleep(30);
+  expect(clock.now() - cancelStarted).toBe(0);
+  await clock.advance(30);
   expect(cancelled.state.status).toBe("cancelled");
   expect(cancelled.state.progress).toBeUndefined();
 });
@@ -373,7 +398,7 @@ test("operation retries fence writes from completed attempts", async () => {
       async run({ updateProgress }) {
         attempts += 1;
         if (attempts === 1) {
-          void Bun.sleep(20).then(() => {
+          void clock.delay(20).then(() => {
             updateProgress({ current: 99 });
           });
           throw new Error("retry");
@@ -384,7 +409,7 @@ test("operation retries fence writes from completed attempts", async () => {
     }),
   );
   expect(await operation.execute()).toBe("done");
-  await Bun.sleep(25);
+  await clock.advance(25);
   expect(operation.state.status).toBe("succeeded");
   expect(operation.state.progress).toEqual({ current: 1, total: 1 });
 });
@@ -421,7 +446,7 @@ test("operation retries dispose children owned by failed attempts", async () => 
         attempts += 1;
         if (attempts === 1) {
           void runChild(failedAttemptChild).catch(() => undefined);
-          await Bun.sleep(1);
+          await clock.delay(1);
           throw new Error("retry");
         }
         return runChild(successfulChild);
@@ -429,7 +454,9 @@ test("operation retries dispose children owned by failed attempts", async () => 
     }),
   );
 
-  expect(await operation.execute()).toBe("child-result");
+  const result = operation.execute();
+  await clock.advance(1);
+  expect(await result).toBe("child-result");
   expect(failedAttemptChildAborted).toBeTrue();
   expect(operation.state.children).toHaveLength(1);
   expect(operation.state.children[0]).toMatchObject({

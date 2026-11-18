@@ -191,7 +191,7 @@ export class SemanticScreen {
 }
 
 const ansiPattern =
-  // biome-ignore lint/suspicious/noControlCharactersInRegex: ANSI normalization requires ESC.
+  // oxlint-disable-next-line no-control-regex -- ANSI normalization requires ESC.
   /[\u001B\u009B][[\]()#;?]*(?:(?:(?:[a-zA-Z\d]*(?:;[a-zA-Z\d]*)*)?\u0007)|(?:(?:\d{1,4}(?:;\d{0,4})*)?[\dA-PR-TZcf-nq-uy=><~]))/g;
 
 export function normalizeTerminalFrame(frame: string): string {

@@ -44,8 +44,36 @@ function intersects(left: TerminalBounds, right: TerminalBounds): boolean {
 
 function validateLayoutNode(input: LayoutNodeInput): void {
   if (!input.id.trim()) throw new Error("Layout node id cannot be empty");
-  if (input.bounds.width < 0 || input.bounds.height < 0) {
-    throw new Error(`Layout node "${input.id}" has invalid bounds`);
+  for (const [label, rectangle] of [
+    ["bounds", input.bounds],
+    ["clip", input.clip],
+  ] as const) {
+    if (
+      !Number.isFinite(rectangle.x) ||
+      !Number.isFinite(rectangle.y) ||
+      !Number.isFinite(rectangle.width) ||
+      !Number.isFinite(rectangle.height) ||
+      rectangle.width < 0 ||
+      rectangle.height < 0
+    ) {
+      throw new Error(`Layout node "${input.id}" has invalid ${label}`);
+    }
+  }
+}
+
+function validateLayoutChildren(
+  input: LayoutNodeInput,
+  children: readonly string[],
+): void {
+  if (input.children === undefined) return;
+  const declared = new Set(input.children);
+  if (
+    declared.size !== children.length ||
+    children.some((id) => !declared.has(id))
+  ) {
+    throw new Error(
+      `Layout node "${input.id}" has children inconsistent with parent relationships`,
+    );
   }
 }
 
@@ -77,10 +105,8 @@ export class LayoutProjection {
     const knownChildren = [...this.#nodes.values()].flatMap((candidate) =>
       candidate.parentId === input.id ? [candidate.id] : [],
     );
-    const node = freezeLayoutNode(input, [
-      ...(input.children ?? previous?.children ?? []),
-      ...knownChildren,
-    ]);
+    validateLayoutChildren(input, knownChildren);
+    const node = freezeLayoutNode(input, knownChildren);
     this.#nodes.set(input.id, node);
     this.#reconcileParentage(input, previous);
     this.#version += 1;
@@ -109,11 +135,23 @@ export class LayoutProjection {
 
   reconcile(inputs: readonly LayoutNodeInput[]): readonly LayoutNode[] {
     this.#validateReconciliation(inputs);
-    const nextIds = new Set(inputs.map((input) => input.id));
-    for (const node of this.nodes()) {
-      if (!nextIds.has(node.id)) this.remove(node.id);
+    const children = new Map<string, string[]>(
+      inputs.map((input) => [input.id, []]),
+    );
+    for (const input of inputs) {
+      if (input.parentId) children.get(input.parentId)?.push(input.id);
     }
-    return Object.freeze(inputs.map((input) => this.upsert(input)));
+    const nodes = inputs.map((input) => {
+      const childIds = children.get(input.id) ?? [];
+      validateLayoutChildren(input, childIds);
+      return freezeLayoutNode(input, childIds);
+    });
+    const nextIds = new Set(nodes.map((node) => node.id));
+    const removed = [...this.#nodes.keys()].filter((id) => !nextIds.has(id));
+    this.#nodes.clear();
+    for (const node of nodes) this.#nodes.set(node.id, node);
+    this.#version += removed.length + nodes.length;
+    return Object.freeze(nodes);
   }
 
   #validateReconciliation(inputs: readonly LayoutNodeInput[]): void {
@@ -146,7 +184,7 @@ export class LayoutProjection {
   remove(id: string): void {
     const node = this.#nodes.get(id);
     if (!node) return;
-    for (const childId of [...node.children]) this.remove(childId);
+    for (const childId of node.children) this.remove(childId);
     this.#nodes.delete(id);
     if (node.parentId) {
       this.#setChildren(
@@ -550,8 +588,9 @@ export interface RendererComponentRuntimeOptions<TState extends object> {
   readonly dispose?: (state: Readonly<TState>) => void | Promise<void>;
 }
 
-export interface RendererComponentRuntime<TState extends object>
-  extends RendererApplication {
+export interface RendererComponentRuntime<
+  TState extends object,
+> extends RendererApplication {
   snapshot(): Readonly<TState>;
   update(
     update: TState | ((state: Readonly<TState>) => TState),
@@ -753,7 +792,13 @@ export class FrameScheduler {
     this.#clock = options.clock ?? systemClock;
     const targetFps = options.targetFps ?? 60;
     const maximumFps = options.maximumFps ?? targetFps;
-    if (targetFps <= 0 || maximumFps <= 0 || maximumFps < targetFps) {
+    if (
+      !Number.isFinite(targetFps) ||
+      !Number.isFinite(maximumFps) ||
+      targetFps <= 0 ||
+      maximumFps <= 0 ||
+      maximumFps < targetFps
+    ) {
       throw new Error(
         "Frame rates must be positive and maximumFps >= targetFps",
       );
@@ -846,11 +891,7 @@ export class FrameScheduler {
 }
 
 export type ScreenOwnership =
-  | "alternate"
-  | "main"
-  | "inline"
-  | "split-footer"
-  | "embedded";
+  "alternate" | "main" | "inline" | "split-footer" | "embedded";
 
 export interface OutputTarget {
   write(data: string | Uint8Array): boolean | Promise<boolean>;
@@ -928,7 +969,7 @@ function inlineRelativeOutput(
   const source = new TextDecoder().decode(bytes);
   let found = false;
   const output = source.replace(
-    // biome-ignore lint/suspicious/noControlCharactersInRegex: ANSI CUP is the renderer output grammar.
+    // oxlint-disable-next-line no-control-regex -- ANSI CUP is the renderer output grammar.
     /\u001b\[(\d*)(?:;(\d*))?[Hf]/gu,
     (_sequence, rowValue: string, columnValue: string | undefined) => {
       found = true;

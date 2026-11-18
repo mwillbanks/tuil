@@ -23,6 +23,7 @@ const aliases: Readonly<Record<string, string>> = {
   "node:module": resolve(shimDirectory, "module.ts"),
   module: resolve(shimDirectory, "module.ts"),
   "node:os": resolve(shimDirectory, "os.ts"),
+  "node:url": resolve(shimDirectory, "url.ts"),
   os: resolve(shimDirectory, "os.ts"),
 };
 const productionExample = resolve(shimDirectory, "production-examples.tsx");
@@ -35,15 +36,27 @@ const result = await Bun.build({
   sourcemap: "external",
   external: ["ghostty-web", "react", "react/jsx-runtime"],
   define: {
+    global: "globalThis",
     "process.env.NODE_ENV": JSON.stringify("production"),
+    "process.env.DEV": JSON.stringify("false"),
   },
   plugins: [
     {
       name: "tuil-browser-runtime-boundary",
       setup(build) {
+        build.onLoad(
+          { filter: /^ink-devtools$/, namespace: "terminal-only" },
+          () => ({ contents: "export {};" }),
+        );
         build.onResolve({ filter: /.*/ }, (args) => {
           if (/^\.\.\/\.\.\/examples\/.+\/src\/index\.tsx$/u.test(args.path))
             return { path: productionExample };
+          if (
+            args.path === "./devtools.js" &&
+            /[\\/]ink[\\/]build[\\/]reconciler\.js$/u.test(args.importer)
+          ) {
+            return { path: "ink-devtools", namespace: "terminal-only" };
+          }
           const replacement = aliases[args.path];
           return replacement ? { path: replacement } : undefined;
         });

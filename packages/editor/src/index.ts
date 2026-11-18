@@ -126,8 +126,7 @@ export interface EditorProvider extends EditorBackend {
 }
 
 export type EditorProviderFactory = () =>
-  | EditorProvider
-  | Promise<EditorProvider>;
+  EditorProvider | Promise<EditorProvider>;
 
 export interface EditorProviderOptions {
   readonly id?: string;

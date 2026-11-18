@@ -15,8 +15,7 @@ Public type exported by `@mwillbanks/tuil-theme`.
 ```ts
 export type SlotProps<TSlots extends SlotMap, TState = object> = {
   [TSlot in keyof TSlots]:
-    | Partial<TSlots[TSlot]>
-    | SlotPropFactory<TSlots[TSlot], TState>;
+    Partial<TSlots[TSlot]> | SlotPropFactory<TSlots[TSlot], TState>;
 };
 ```
 

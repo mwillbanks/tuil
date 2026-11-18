@@ -12,6 +12,8 @@ const requiredFiles = [
   "docs/concepts/architecture/index.html",
   "docs/index.html",
   "docs/reference/components/forms/index.html",
+  "docs/reference/components/layout/pane/index.html",
+  "llms.mdx/en/docs/reference/components/layout/pane/index.md",
   "docs/reference/packages/cli/index.html",
   "docs/reference/packages/tuil/index.html",
   "es/index.html",
@@ -63,7 +65,7 @@ function extractInternalTargets(home: string): string[] {
 
 function validateHomeTargets(home: string, basePath: string): void {
   for (const target of [
-    `${basePath}/_next/`,
+    `${basePath}/assets/`,
     `${basePath}/docs/`,
     `${basePath}/logo.svg`,
   ]) {
@@ -97,8 +99,7 @@ async function validateStylesheet(
   basePath: string,
 ): Promise<void> {
   const stylesheet = internalTargets.find(
-    (target) =>
-      target.includes("/_next/static/chunks/") && target.endsWith(".css"),
+    (target) => target.includes("/assets/") && target.endsWith(".css"),
   );
   assertStaticDocs(
     stylesheet,
@@ -107,7 +108,7 @@ async function validateStylesheet(
   const stylesheetPath = stylesheet.slice(basePath.length).replace(/^\//, "");
   const css = await readFile(join(outDirectory, stylesheetPath), "utf8");
   assertStaticDocs(
-    css.includes(".flex{display:flex}"),
+    /\.flex\s*\{\s*display:\s*flex\s*;?\s*\}/.test(css),
     "Tailwind utilities were not compiled into the docs CSS",
   );
 }
@@ -266,7 +267,10 @@ export async function validateStaticDocs(
   const workspace = resolve(import.meta.dir, "../..");
   const outDirectory = options.outDirectory ?? join(workspace, "apps/docs/out");
   const basePath = normalizeBasePath(
-    options.basePath ?? process.env["NEXT_PUBLIC_BASE_PATH"] ?? "",
+    options.basePath ??
+      process.env["TUIL_DOCS_BASE_PATH"] ??
+      process.env["NEXT_PUBLIC_BASE_PATH"] ??
+      "",
   );
   await Promise.all(
     requiredFiles.map((path) => requireFile(join(outDirectory, path))),

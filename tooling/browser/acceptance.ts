@@ -1,8 +1,100 @@
 import { mkdir } from "node:fs/promises";
-import { extname, resolve } from "node:path";
-import { chromium, type Page } from "playwright";
+import { dirname, extname, isAbsolute, resolve } from "node:path";
+import { buildBrowserShowcase } from "../../apps/showcase/src/build-browser.ts";
+import { coverageVariable } from "../../tests/helpers/coverage-instrument.ts";
+import { chromium, type Locator, type Page } from "playwright";
+import { normalizeBasePath } from "../../apps/docs/src/lib/base-path.ts";
 
 const workspace = resolve(import.meta.dir, "../..");
+const coverageArgumentIndex = process.argv.indexOf("--coverage");
+const coverageOutputPath =
+  coverageArgumentIndex === -1
+    ? undefined
+    : process.argv[coverageArgumentIndex + 1];
+if (
+  coverageArgumentIndex !== -1 &&
+  (!coverageOutputPath ||
+    !isAbsolute(coverageOutputPath) ||
+    extname(coverageOutputPath).toLowerCase() !== ".json")
+)
+  throw new TypeError("--coverage requires an absolute .json output path");
+const coverageEnabled = coverageOutputPath !== undefined;
+if (coverageEnabled) await buildBrowserShowcase({ coverage: true });
+
+interface BrowserFileCoverage {
+  readonly path: string;
+  readonly statementMap: Record<string, unknown>;
+  readonly fnMap: Record<string, unknown>;
+  readonly branchMap: Record<string, unknown>;
+  readonly s: Record<string, number>;
+  readonly f: Record<string, number>;
+  readonly b: Record<string, number[]>;
+  [key: string]: unknown;
+}
+
+const browserCoverage: Record<string, BrowserFileCoverage> = {};
+
+function mergeCounters(
+  target: Record<string, number>,
+  incoming: Record<string, number>,
+): void {
+  for (const [key, count] of Object.entries(incoming))
+    target[key] = (target[key] ?? 0) + count;
+}
+
+function mergeBrowserFileCoverage(
+  filename: string,
+  incoming: BrowserFileCoverage,
+): void {
+  const current = browserCoverage[filename];
+  if (!current) {
+    browserCoverage[filename] = incoming;
+    return;
+  }
+  for (const key of ["statementMap", "fnMap", "branchMap"] as const) {
+    if (JSON.stringify(current[key]) !== JSON.stringify(incoming[key])) {
+      throw new Error(
+        "Coverage map changed between browser contexts: " + filename,
+      );
+    }
+  }
+  mergeCounters(current.s, incoming.s);
+  mergeCounters(current.f, incoming.f);
+  for (const [branch, counts] of Object.entries(incoming.b)) {
+    current.b[branch] = (current.b[branch] ?? counts.map(() => 0)).map(
+      (count, index) => count + (counts[index] ?? 0),
+    );
+  }
+}
+
+async function captureBrowserCoverage(page: Page): Promise<void> {
+  if (!coverageEnabled) return;
+  for (const frame of page.frames()) {
+    const report = await frame.evaluate((variable) => {
+      const value = (globalThis as unknown as Record<string, unknown>)[
+        variable
+      ];
+      return value && typeof value === "object"
+        ? (value as Record<string, BrowserFileCoverage>)
+        : null;
+    }, coverageVariable);
+    for (const [id, incoming] of Object.entries(report ?? {})) {
+      mergeBrowserFileCoverage(incoming.path || id, incoming);
+    }
+  }
+}
+
+async function writeBrowserCoverage(): Promise<void> {
+  if (!coverageOutputPath) return;
+  if (Object.keys(browserCoverage).length === 0)
+    throw new Error("Browser coverage instrumentation produced no report");
+  await mkdir(dirname(coverageOutputPath), { recursive: true });
+  await Bun.write(
+    coverageOutputPath,
+    JSON.stringify(browserCoverage, null, 2) + "\n",
+  );
+}
+
 const artifactDirectory =
   process.env["TUIL_BROWSER_ARTIFACTS"] ??
   resolve(workspace, ".browser-acceptance");
@@ -45,6 +137,10 @@ function staticServer(directory: string, basePath = "") {
 async function healthyPage(page: Page, url: string): Promise<void> {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
+  page.on("response", (response) => {
+    if (response.status() >= 400)
+      errors.push(response.status() + " " + response.url());
+  });
   page.on("console", (message) => {
     if (message.type() === "error") errors.push(message.text());
   });
@@ -64,12 +160,16 @@ async function waitForTerminal(page: Page): Promise<void> {
       .first()
       .waitFor({ timeout: 20_000 }),
     page
-      .getByText(/(?:Browser terminal|Terminal) failed:/u)
+      .getByText(
+        /(?:Browser terminal failed:|Terminal failed:|Interactive terminal unavailable:)/u,
+      )
       .first()
       .waitFor({ timeout: 20_000 })
       .then(async () => {
         const failure = await page
-          .getByText(/(?:Browser terminal|Terminal) failed:/u)
+          .getByText(
+            /(?:Browser terminal failed:|Terminal failed:|Interactive terminal unavailable:)/u,
+          )
           .first()
           .textContent();
         throw new Error(failure ?? "Browser terminal failed.");
@@ -77,12 +177,72 @@ async function waitForTerminal(page: Page): Promise<void> {
   ]);
 }
 
-const docs = staticServer(resolve(workspace, "apps/docs/out"), "/tuil");
-const storybook = staticServer(
-  resolve(workspace, "apps/showcase/dist-storybook"),
+async function resetLiveTerminal(
+  page: Page,
+  control: Locator,
+  canvas: Locator,
+): Promise<void> {
+  await waitForTerminal(page);
+  const originalCanvas = await canvas.elementHandle();
+  assert(originalCanvas, "No terminal canvas was mounted before reset.");
+  await control.click();
+  await page.waitForFunction((element) => !element.isConnected, originalCanvas);
+  await originalCanvas.dispose();
+  await waitForTerminal(page);
+  const liveCanvases = await canvas.count();
+  assert(
+    liveCanvases === 1,
+    "Reset left " + liveCanvases + " live terminal canvases.",
+  );
+}
+
+async function waitForShowcasePreview(page: Page): Promise<void> {
+  await waitForTerminal(page);
+  try {
+    await page.waitForFunction(() => {
+      const preview = document.querySelector(".showcase-preview:focus");
+      if (!preview) return false;
+      const visibleTop =
+        preview.getBoundingClientRect().top - (visualViewport?.offsetTop ?? 0);
+      return visibleTop >= 0 && visibleTop < 140;
+    });
+  } catch (cause) {
+    const state = await page
+      .evaluate(() => ({
+        previewTop: document
+          .querySelector(".showcase-preview")
+          ?.getBoundingClientRect().top,
+        activeClass: document.activeElement?.className,
+        visualOffset: visualViewport?.offsetTop,
+        scrollY,
+      }))
+      .catch(() => undefined);
+    throw new Error(
+      "Showcase preview did not receive focus at the top of the viewport: " +
+        JSON.stringify({ viewport: page.viewportSize(), state }),
+      { cause },
+    );
+  }
+}
+
+const docsBasePath = normalizeBasePath(
+  Bun.env["TUIL_DOCS_BASE_PATH"] ?? "/tuil",
 );
-const browser = await chromium.launch({ headless: true });
+let docs: ReturnType<typeof staticServer> | undefined;
+let showcase: ReturnType<typeof staticServer> | undefined;
+let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
+let acceptanceFailure: { readonly error: unknown } | undefined;
 try {
+  docs = staticServer(resolve(workspace, "apps/docs/out"), docsBasePath);
+  showcase = staticServer(
+    resolve(
+      workspace,
+      coverageEnabled
+        ? "apps/showcase/dist/browser-coverage"
+        : "apps/showcase/dist/browser",
+    ),
+  );
+  browser = await chromium.launch({ headless: true });
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
     permissions: ["clipboard-read", "clipboard-write"],
@@ -92,7 +252,7 @@ try {
   page.on("pageerror", (error) =>
     runtimeErrors.push(error.stack ?? error.message),
   );
-  const docsOrigin = `http://127.0.0.1:${docs.port}/tuil`;
+  const docsOrigin = `http://127.0.0.1:${docs.port}${docsBasePath}`;
   await healthyPage(page, `${docsOrigin}/playground/`);
   await waitForTerminal(page);
   assert(
@@ -158,15 +318,12 @@ try {
   await page.getByRole("button", { name: "Save" }).click();
   await page.reload({ waitUntil: "networkidle" });
   await page.getByText("Saved document restored.").waitFor();
-  await page
-    .locator(".visual-preview")
-    .getByRole("button", { name: "Reset session" })
-    .click();
-  await waitForTerminal(page);
-  assert(
-    (await page.locator(".visual-preview .ghostty-terminal canvas").count()) ===
-      1,
-    "Reset leaked a terminal canvas.",
+  await resetLiveTerminal(
+    page,
+    page
+      .locator(".visual-preview")
+      .getByRole("button", { name: "Reset session" }),
+    page.locator(".visual-preview .ghostty-terminal canvas"),
   );
   const semanticCompanions = await page
     .locator(".visual-preview [data-tuil-semantic-companion]")
@@ -195,18 +352,7 @@ try {
   await page.getByRole("button", { name: "component-acceptance" }).click();
   await page.getByLabel("Search components").fill("Field");
   await page.locator(".showcase-card").first().click();
-  await waitForTerminal(page);
-  const showcasePreview = page.locator(".showcase-preview");
-  assert(
-    await showcasePreview.isVisible(),
-    "Selecting a showcase card did not render the selected preview.",
-  );
-  await page.waitForTimeout(1_000);
-  const showcasePreviewBox = await showcasePreview.boundingBox();
-  assert(
-    showcasePreviewBox !== null && showcasePreviewBox.y < 140,
-    `Selecting a showcase card did not scroll to its preview: ${JSON.stringify(showcasePreviewBox)}`,
-  );
+  await waitForShowcasePreview(page);
   assert(
     (await page.locator(".ghostty-terminal canvas").count()) === 1,
     "Showcase mounted more than the selected live terminal.",
@@ -220,25 +366,103 @@ try {
     path: resolve(artifactDirectory, "showcase-selected.png"),
     fullPage: false,
   });
+  const selectedStory = new URL(page.url()).searchParams.get("story");
+  assert(selectedStory, "Showcase selection did not write its direct link.");
+  const resetShowcase = page
+    .locator(".showcase-preview")
+    .getByRole("button", { name: "Reset session" });
+  const showcaseTerminal = page.locator(".showcase-preview .ghostty-terminal");
+  await page.keyboard.press("Tab");
+  assert(
+    await resetShowcase.evaluate(
+      (control) => control === document.activeElement,
+    ),
+    "Keyboard focus did not enter the selected showcase controls.",
+  );
+  await page.keyboard.press("Tab");
+  assert(
+    await showcaseTerminal.evaluate(
+      (terminal) => terminal === document.activeElement,
+    ),
+    "Keyboard focus did not reach the selected showcase terminal.",
+  );
+  await resetLiveTerminal(
+    page,
+    resetShowcase,
+    page.locator(".showcase-preview canvas"),
+  );
+  assert(
+    await resetShowcase.evaluate((button) => button === document.activeElement),
+    "Resetting the selected showcase terminal moved focus away from its control.",
+  );
+  await captureBrowserCoverage(page);
+  await page.reload({ waitUntil: "networkidle" });
+  await waitForShowcasePreview(page);
+  assert(
+    new URL(page.url()).searchParams.get("story") === selectedStory,
+    "Reload lost the selected showcase story.",
+  );
 
   const storyPage = await context.newPage();
   const requests: string[] = [];
   storyPage.on("request", (request) => requests.push(request.url()));
   await healthyPage(
     storyPage,
-    `http://127.0.0.1:${storybook.port}/iframe.html?id=components-ecosystem--foundation-running&viewMode=story`,
+    `http://127.0.0.1:${showcase.port}/?story=foundation&variant=Running`,
   );
   await waitForTerminal(storyPage);
   assert(
     (await storyPage.locator("canvas").count()) === 1,
-    "Storybook did not mount Ghostty.",
+    "Bun showcase did not mount Ghostty.",
   );
   assert(
     !requests.some(
       (url) => url.includes("4317") || url.includes("/api/tuil-story"),
     ),
-    "Storybook contacted the legacy HTTP bridge.",
+    "Bun showcase contacted the legacy HTTP bridge.",
   );
+
+  const storySelection = storyPage.getByRole("navigation", {
+    name: "Story selection",
+  });
+  const alternateStory = storySelection
+    .locator("button[aria-pressed=false]")
+    .first();
+  await alternateStory.click();
+  await waitForTerminal(storyPage);
+  assert(
+    (await storySelection.locator("button[aria-pressed=true]").count()) === 1 &&
+      new URL(storyPage.url()).searchParams.has("variant"),
+    "Showcase selection did not update the preview and URL.",
+  );
+  const interactive = storyPage.getByRole("checkbox", { name: "interactive" });
+  await interactive.uncheck();
+  await storyPage
+    .getByText("Static terminal ready.", { exact: true })
+    .waitFor();
+  assert(
+    await storyPage.getByText("Static playback", { exact: true }).isVisible(),
+    "Showcase did not switch to static playback.",
+  );
+  await interactive.check();
+  await storyPage
+    .getByText("Interactive terminal ready.", { exact: true })
+    .waitFor();
+  const input = storyPage
+    .locator("form")
+    .getByRole("textbox", { name: "Terminal input" });
+  await input.fill("demo");
+  await storyPage.getByRole("button", { name: "Send input" }).click();
+  assert(
+    (await input.inputValue()) === "",
+    "Showcase did not submit terminal input.",
+  );
+  await resetLiveTerminal(
+    storyPage,
+    storyPage.getByRole("button", { name: "Reset session" }),
+    storyPage.locator("canvas"),
+  );
+  await captureBrowserCoverage(storyPage);
 
   const mobile = await browser.newContext({
     viewport: { width: 390, height: 844 },
@@ -247,6 +471,7 @@ try {
   });
   const mobilePage = await mobile.newPage();
   await healthyPage(mobilePage, `${docsOrigin}/playground/`);
+  await waitForTerminal(mobilePage);
   const fit = await mobilePage.evaluate(() => {
     const pageDocument = (
       globalThis as unknown as {
@@ -258,8 +483,7 @@ try {
           querySelector(
             selector: string,
           ):
-            | { getBoundingClientRect(): { readonly width: number } }
-            | undefined;
+            { getBoundingClientRect(): { readonly width: number } } | undefined;
         };
       }
     ).document;
@@ -340,16 +564,13 @@ try {
     .click();
   await mobilePage.getByLabel("Search components").fill("Field");
   await mobilePage.locator(".showcase-card").first().click();
-  await waitForTerminal(mobilePage);
+  await waitForShowcasePreview(mobilePage);
   const mobileShowcasePreview = mobilePage.locator(".showcase-preview");
-  assert(
-    await mobileShowcasePreview.isVisible(),
-    "The mobile showcase did not render its selected preview.",
-  );
   assert(
     ((await mobileShowcasePreview.boundingBox())?.width ?? 0) <= fit.viewport,
     "The showcase preview overflows the mobile viewport.",
   );
+  await captureBrowserCoverage(mobilePage);
   await mobile.close();
 
   const failureContext = await browser.newContext({
@@ -371,12 +592,33 @@ try {
     .getByText(/Browser terminal failed:/u)
     .first()
     .waitFor({ timeout: 20_000 });
+  await captureBrowserCoverage(failurePage);
+  await healthyPage(failurePage, docsOrigin + "/showcase/");
+  await failurePage.getByLabel("Search components").fill("Field");
+  await failurePage.locator(".showcase-card").first().click();
+  await failurePage.getByText(/Interactive terminal unavailable:/u).waitFor();
+  await failurePage.locator(".showcase-preview:focus").waitFor();
   await failureContext.close();
   await context.close();
-} finally {
-  await browser.close();
-  docs.stop(true);
-  storybook.stop(true);
+  await writeBrowserCoverage();
+} catch (error) {
+  acceptanceFailure = { error };
 }
+
+const cleanupErrors: unknown[] = [];
+for (const cleanup of [
+  () => browser?.close(),
+  () => docs?.stop(true),
+  () => showcase?.stop(true),
+]) {
+  try {
+    await cleanup();
+  } catch (error) {
+    cleanupErrors.push(error);
+  }
+}
+if (acceptanceFailure) throw acceptanceFailure.error;
+if (cleanupErrors.length > 0)
+  throw new AggregateError(cleanupErrors, "Browser acceptance cleanup failed");
 
 console.log(`Browser acceptance passed. Artifacts: ${artifactDirectory}`);

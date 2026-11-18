@@ -69,7 +69,8 @@ export interface VirtualListRenderContext {
 }
 
 export interface VirtualListProps<TItem>
-  extends CommonComponentProps,
+  extends
+    CommonComponentProps,
     SlottedComponentProps<
       VirtualListSlots,
       {

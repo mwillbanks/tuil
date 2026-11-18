@@ -17,6 +17,7 @@ import {
   useState,
 } from "react";
 import registryIndex from "../../apps/registry/public/registry.json";
+import { registryExportName } from "../../tooling/registry/names.ts";
 import * as initWizard from "../blocks/init-wizard.tsx";
 import * as appBar from "../components/app-bar.tsx";
 import * as appShell from "../components/app-shell.tsx";
@@ -649,8 +650,7 @@ const componentPreviewOverrides: Readonly<
       name="dialog"
       onOpenChange={
         props["onOpenChange"] as
-          | ((open: boolean) => void | Promise<void>)
-          | undefined
+          ((open: boolean) => void | Promise<void>) | undefined
       }
     />
   ),
@@ -659,8 +659,7 @@ const componentPreviewOverrides: Readonly<
       name="drawer"
       onOpenChange={
         props["onOpenChange"] as
-          | ((open: boolean) => void | Promise<void>)
-          | undefined
+          ((open: boolean) => void | Promise<void>) | undefined
       }
     />
   ),
@@ -669,8 +668,7 @@ const componentPreviewOverrides: Readonly<
       name="popover"
       onOpenChange={
         props["onOpenChange"] as
-          | ((open: boolean) => void | Promise<void>)
-          | undefined
+          ((open: boolean) => void | Promise<void>) | undefined
       }
     />
   ),
@@ -678,8 +676,7 @@ const componentPreviewOverrides: Readonly<
     <TooltipPreview
       onOpenChange={
         props["onOpenChange"] as
-          | ((open: boolean) => void | Promise<void>)
-          | undefined
+          ((open: boolean) => void | Promise<void>) | undefined
       }
     />
   ),
@@ -705,8 +702,7 @@ function acceptanceComponent(
   return (
     componentPreviewOverrides[name] ??
     (componentExports[exportName(name)] as
-      | ComponentType<Readonly<Record<string, unknown>>>
-      | undefined)
+      ComponentType<Readonly<Record<string, unknown>>> | undefined)
   );
 }
 
@@ -754,7 +750,7 @@ export function ComponentAcceptancePreview(props: {
 export const componentAcceptanceStoryVariants = Object.freeze(
   Object.fromEntries(
     registryIndex.items.map((item) => [
-      exportName(item.name),
+      registryExportName(item.name),
       Object.freeze({ args: Object.freeze({ name: item.name }) }),
     ]),
   ),

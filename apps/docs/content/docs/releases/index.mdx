@@ -1,0 +1,17 @@
+---
+title: Releases
+description: Authored release notes and package version history.
+icon: BookOpenText
+---
+
+Release Please selects package versions and creates release candidates. Each released package links to authored notes for its version.
+
+The root CHANGELOG.md gives a concise release summary. Historical package changelogs retain earlier release entries.
+
+## Prepare the next release
+
+Write the release summary under NEXT_RELEASE in the root CHANGELOG.md. Add the full portable Markdown notes to releases/next.mdx with the title Upcoming release. Describe the user-visible changes and required migration steps.
+
+Release Please selects independent component versions. Its branch stamps one versioned note page for each changed package and updates the package-to-notes map. The candidate validates those pages and generated registry artifacts before publication.
+
+Keep existing package changelogs and versioned note pages as historical records. Publishing renders the authored pages into GitHub release bodies. It converts documentation links to absolute URLs and omits Mermaid blocks.

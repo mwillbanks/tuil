@@ -1,6 +1,6 @@
 import { renderMermaidSVG } from "beautiful-mermaid";
 import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
-import Image from "next/image";
+import { Image } from "fumadocs-core/framework";
 import type { ReactNode } from "react";
 
 function sanitizeMermaidSvg(svg: string): string {
@@ -67,7 +67,6 @@ export function Mermaid(props: {
           className="tuil-mermaid"
           height={540}
           src={`data:image/svg+xml,${encodeURIComponent(svg)}`}
-          unoptimized
           width={960}
         />
         <figcaption className="sr-only">

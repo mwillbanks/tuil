@@ -6,8 +6,9 @@ import {
 import type { ReactNode } from "react";
 import { Text, type TextProps } from "./text";
 
-export interface DividerProps
-  extends SlottedComponentProps<{ root: TextProps }> {
+export interface DividerProps extends SlottedComponentProps<{
+  root: TextProps;
+}> {
   readonly id?: string;
   readonly testId?: string;
   readonly label?: string;

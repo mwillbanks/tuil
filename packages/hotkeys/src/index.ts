@@ -9,12 +9,7 @@ import {
 } from "react";
 
 export type HotkeyScope =
-  | "application"
-  | "route"
-  | "focus-scope"
-  | "component"
-  | "overlay"
-  | "dialog";
+  "application" | "route" | "focus-scope" | "component" | "overlay" | "dialog";
 
 const scopePriority: Record<HotkeyScope, number> = {
   application: 0,

@@ -52,7 +52,7 @@ export function Table<TData>({
 | `size` | `"sm" \| "md" \| "lg" \| undefined` | No | The `size` member uses the `"sm" \| "md" \| "lg" \| undefined` contract. | — |
 | `unstyled` | `boolean \| undefined` | No | The `unstyled` member uses the `boolean \| undefined` contract. | — |
 | `className` | `string \| undefined` | No | The `className` member uses the `string \| undefined` contract. | — |
-| `layout` | `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` | No | The `layout` member uses the `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` contract. | — |
+| `layout` | `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` | No | The `layout` member uses the `Partial<Omit<LayoutNodeInput, "children" \| "id" \| "semantics">> \| undefined` contract. | [`LayoutNodeInput`](/docs/reference/packages/renderer/api/layout-node-input) |
 | `id` | `string \| undefined` | No | The `id` member uses the `string \| undefined` contract. | — |
 | `testId` | `string \| undefined` | No | The `testId` member uses the `string \| undefined` contract. | — |
 | `role` | `SemanticRole \| undefined` | No | The `role` member uses the `SemanticRole \| undefined` contract. | [`SemanticRole`](/docs/reference/packages/core/api/semantic-role) |
@@ -74,6 +74,41 @@ Callback props run after the documented input is accepted. Callbacks are not can
 ## Interaction and capabilities
 
 Arrow keys navigate cells or rows; Space toggles selection; Enter activates; configured keys sort columns.
+
+## TanStack Table v9 setup
+
+`DataTable` accepts a TanStack Table v9 instance configured with the exported
+`dataTableFeatures` feature set.
+
+```tsx
+import { createColumnHelper, useTable } from "@tanstack/react-table";
+import {
+  DataTable,
+  dataTableFeatures,
+} from "@/components/tuil/data-display/complex-data";
+
+interface Person {
+  id: string;
+  name: string;
+}
+
+const columnHelper = createColumnHelper<typeof dataTableFeatures, Person>();
+const columns = columnHelper.columns([
+  columnHelper.accessor("name", { header: "Name" }),
+]);
+
+export function PeopleTable({ people }: { people: Person[] }) {
+  const table = useTable({
+    features: dataTableFeatures,
+    data: people,
+    columns,
+    getRowId: (person) => person.id,
+  });
+
+  return <DataTable table={table} />;
+}
+```
+
 
 The published manifest records keyboard, focus, pointer, theme, terminal, semantic, event, and dependency requirements.
 

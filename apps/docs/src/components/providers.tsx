@@ -1,7 +1,7 @@
 "use client";
 
 import { i18nProvider } from "fumadocs-ui/i18n";
-import { RootProvider } from "fumadocs-ui/provider/next";
+import { RootProvider } from "fumadocs-ui/provider/base";
 import type { ReactNode } from "react";
 import StaticSearchDialog from "@/components/search";
 import type { DocsLocale } from "@/lib/i18n";

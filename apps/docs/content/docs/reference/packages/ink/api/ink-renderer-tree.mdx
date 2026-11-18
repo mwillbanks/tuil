@@ -21,7 +21,7 @@ export type InkRendererTree = RendererScene;
 | Member | Type | Required | Description | Related types |
 | --- | --- | --- | --- | --- |
 | `lines` | `readonly string[]` | Yes | The `lines` member uses the `readonly string[]` contract. | — |
-| `styledLines` | `readonly (readonly RendererTextRun[])[] \| undefined` | No | The `styledLines` member uses the `readonly (readonly RendererTextRun[])[] \| undefined` contract. | — |
+| `styledLines` | `readonly (readonly RendererTextRun[])[] \| undefined` | No | The `styledLines` member uses the `readonly (readonly RendererTextRun[])[] \| undefined` contract. | [`RendererTextRun`](/docs/reference/packages/renderer/api/renderer-text-run) |
 | `semantics` | `readonly SemanticMetadata[] \| undefined` | No | The `semantics` member uses the `readonly SemanticMetadata[] \| undefined` contract. | [`SemanticMetadata`](/docs/reference/packages/core/api/semantic-metadata) |
 | `cursor` | `&#123; readonly x: number; readonly y: number; readonly visible: boolean; readonly shape?: "block" \| "line" \| "underline"; &#125; \| undefined` | No | The `cursor` member uses the `&#123; readonly x: number; readonly y: number; readonly visible: boolean; readonly shape?: "block" \| "line" \| "underline"; &#125; \| undefined` contract. | — |
 

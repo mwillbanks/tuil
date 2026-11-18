@@ -50,10 +50,17 @@ import {
 import { InitSummary } from "./init-summary.tsx";
 import { runInitializerSetup } from "./initializer-process.ts";
 import { promptInit } from "./prompt-init.tsx";
+import { starterManifest } from "./starter-manifest.ts";
 import { installRegistryDependencies } from "./registry-dependencies.ts";
 
 export type { InitAnswers };
 export { InitWizard };
+
+declare const TUIL_STANDALONE_VERSION: string | undefined;
+const cliVersion =
+  typeof TUIL_STANDALONE_VERSION === "string"
+    ? TUIL_STANDALONE_VERSION
+    : packageMetadata.version;
 
 const defaultConfig = defineConfig({
   renderer: "ink",
@@ -85,7 +92,7 @@ function registryInstallEnvironment(renderer: TuilConfig["renderer"]) {
       "silent",
       "embedded",
     ]),
-    tuilVersion: packageMetadata.version,
+    tuilVersion: cliVersion,
   } as const;
 }
 
@@ -479,6 +486,7 @@ function projectFiles(
   template: Template,
   enabledFeatures: readonly Feature[],
   themePreset: string,
+  plan: readonly RegistryItem[],
 ): Readonly<Record<string, string>> {
   const formsEnabled =
     enabledFeatures.includes("forms") || template === "component-library";
@@ -486,54 +494,27 @@ function projectFiles(
     enabledFeatures.includes("router") || template === "component-library";
   const workflowEnabled =
     enabledFeatures.includes("workflow") || template === "component-library";
-  const dependencies: Record<string, string> = {
-    "@mwillbanks/tuil": "^0.2.0",
-    "@mwillbanks/tuil-core": "^0.2.0",
-    "@mwillbanks/tuil-focus": "^0.2.0",
-    "@mwillbanks/tuil-hotkeys": "^0.2.0",
-    "@mwillbanks/tuil-ink": "^0.2.0",
-    "@mwillbanks/tuil-theme": "^0.2.0",
-    ink: "^7.1.0",
-    react: "^19.0.0",
-  };
-  if (formsEnabled) {
-    dependencies["@mwillbanks/tuil-form"] = "^0.2.0";
-    dependencies["@tanstack/react-form"] = "^1.33.2";
-  }
-  if (routerEnabled) {
-    dependencies["@mwillbanks/tuil-router"] = "^0.2.0";
-  }
+  const dependencies = [
+    "@mwillbanks/tuil",
+    "@mwillbanks/tuil-ink",
+    "ink",
+    "react",
+    ...plan.flatMap((item) => item.dependencies ?? []),
+  ];
+  if (formsEnabled)
+    dependencies.push("@mwillbanks/tuil-form", "@tanstack/react-form");
+  if (routerEnabled) dependencies.push("@mwillbanks/tuil-router");
   if (workflowEnabled) {
-    dependencies["@mwillbanks/tuil-operations"] = "^0.2.0";
-    dependencies["@mwillbanks/tuil-workflow"] = "^0.2.0";
+    dependencies.push(
+      "@mwillbanks/tuil-operations",
+      "@mwillbanks/tuil-workflow",
+    );
   }
-  if (template === "component-library") {
-    dependencies["@tanstack/react-table"] = "^9.1.2";
-    dependencies["@mwillbanks/tuil-virtual"] = "^0.2.0";
-    dependencies["diff"] = "^9.0.0";
-    dependencies["react-dom"] = "^19.2.8";
-  }
+  if (template === "component-library") dependencies.push("react-dom");
+
   const files: Record<string, string> = {
-    "package.json": `${JSON.stringify(
-      {
-        name,
-        private: true,
-        type: "module",
-        scripts: {
-          start: "bun src/index.tsx",
-          typecheck: "tsc --noEmit",
-          test: "bun test",
-        },
-        dependencies,
-        devDependencies: {
-          "@types/bun": "latest",
-          "@types/react": "^19.0.0",
-          typescript: "^7.0.0",
-        },
-      },
-      null,
-      2,
-    )}\n`,
+    "package.json":
+      JSON.stringify(starterManifest(name, dependencies), null, 2) + "\n",
     "tsconfig.json": `${JSON.stringify(
       {
         compilerOptions: {
@@ -776,6 +757,7 @@ async function writeInitWorkspace(
     context.prompted.template,
     context.prompted.features,
     context.themePreset,
+    context.plan,
   );
   for (const [path, content] of Object.entries(files)) {
     const destination = join(context.workingTarget, path);
@@ -931,24 +913,21 @@ async function registryCommand(args: ParsedArguments): Promise<void> {
     }
     return;
   }
-  const biome = join(root, "node_modules/.bin/biome");
-  const formatter = (await pathExists(biome))
+  const formatter = Bun.semver.satisfies(Bun.version, ">=1.4.4")
     ? async (content: string, target: string) => {
-        const process = Bun.spawn(
-          [biome, "format", "--stdin-file-path", target],
+        const child = Bun.spawn(
+          [process.execPath, "fmt", "--stdin-filepath", target],
           {
             cwd: root,
-            stdin: "pipe",
+            stdin: new Blob([content]),
             stdout: "pipe",
             stderr: "pipe",
           },
         );
-        process.stdin.write(content);
-        process.stdin.end();
         const [formatted, error, exitCode] = await Promise.all([
-          new Response(process.stdout).text(),
-          new Response(process.stderr).text(),
-          process.exited,
+          new Response(child.stdout).text(),
+          new Response(child.stderr).text(),
+          child.exited,
         ]);
         if (exitCode !== 0) {
           throw new Error(`Formatter failed for "${target}": ${error.trim()}`);
@@ -1032,7 +1011,7 @@ async function showInfo(args: ParsedArguments): Promise<void> {
   output(
     {
       name: "@mwillbanks/tuil",
-      version: "0.2.0",
+      version: cliVersion,
       runtime: `Bun ${Bun.version}`,
       platform: process.platform,
       renderer: config.renderer,
@@ -1280,13 +1259,22 @@ Commands:
 ${commands}
 
 Global options:
+  -h, --help
   --output interactive|static|json|silent
 `;
 }
 
 export async function main(argv = process.argv.slice(2)): Promise<void> {
   const args = parseArguments(argv);
-  if (args.command === "init") {
+  if (
+    args.command === "help" ||
+    args.command === "--help" ||
+    args.command === "-h" ||
+    flag(args, "help") !== undefined ||
+    args.operands.includes("-h")
+  ) {
+    output(help(), outputMode(args));
+  } else if (args.command === "init") {
     await runInit(args);
   } else if (
     ["add", "remove", "update", "diff", "list", "search", "registry"].includes(

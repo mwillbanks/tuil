@@ -61,8 +61,10 @@ runtime that disposes them in reverse order.
 ## Example
 
 ```tsx
+import { CodeDocument } from "@mwillbanks/tuil-code";
+
 const document = new CodeDocument("const ready = true");
-await document.parse(signal);
+await document.parse();
 ```
 
 ## Related

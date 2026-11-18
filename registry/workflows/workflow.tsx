@@ -73,8 +73,9 @@ type WorkflowSlots = {
   content: BoxProps;
 };
 
-export interface WorkflowProps<TState>
-  extends SlottedComponentProps<WorkflowSlots> {
+export interface WorkflowProps<
+  TState,
+> extends SlottedComponentProps<WorkflowSlots> {
   readonly id?: string;
   readonly workflow: WorkflowRunner<TState>;
   readonly autoStart?: boolean;
@@ -549,8 +550,7 @@ type OperationSlots = {
   metadata: TextProps;
 };
 
-export interface OperationListProps
-  extends SlottedComponentProps<OperationSlots> {
+export interface OperationListProps extends SlottedComponentProps<OperationSlots> {
   readonly id?: string;
   readonly operations: readonly OperationSnapshot[];
   readonly expandable?: boolean;
@@ -657,8 +657,10 @@ export function OperationList({
   );
 }
 
-export interface OperationTreeProps
-  extends Omit<OperationListProps, "expandable"> {
+export interface OperationTreeProps extends Omit<
+  OperationListProps,
+  "expandable"
+> {
   readonly expanded?: readonly string[];
   readonly defaultExpanded?: readonly string[];
   readonly onExpandedChange?: (
