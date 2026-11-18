@@ -46,7 +46,7 @@ export function NumberInput({
 | `size` | `"sm" \| "md" \| "lg" \| undefined` | No | The `size` member uses the `"sm" \| "md" \| "lg" \| undefined` contract. | — |
 | `unstyled` | `boolean \| undefined` | No | The `unstyled` member uses the `boolean \| undefined` contract. | — |
 | `className` | `string \| undefined` | No | The `className` member uses the `string \| undefined` contract. | — |
-| `layout` | `Partial<Omit<LayoutNodeInput, "id" \| "children" \| "semantics">> \| undefined` | No | The `layout` member uses the `Partial<Omit<LayoutNodeInput, "id" \| "children" \| "semantics">> \| undefined` contract. | — |
+| `layout` | `Partial<Omit<LayoutNodeInput, "id" \| "children" \| "semantics">> \| undefined` | No | The `layout` member uses the `Partial<Omit<LayoutNodeInput, "id" \| "children" \| "semantics">> \| undefined` contract. | [`LayoutNodeInput`](/docs/reference/packages/renderer/api/layout-node-input) |
 | `id` | `string \| undefined` | No | The `id` member uses the `string \| undefined` contract. | — |
 | `testId` | `string \| undefined` | No | The `testId` member uses the `string \| undefined` contract. | — |
 | `role` | `SemanticRole \| undefined` | No | The `role` member uses the `SemanticRole \| undefined` contract. | [`SemanticRole`](/docs/reference/packages/core/api/semantic-role) |
@@ -61,7 +61,7 @@ export function NumberInput({
 | `mask` | `string \| undefined` | No | The `mask` member uses the `string \| undefined` contract. | — |
 | `session` | `EditorSession \| undefined` | No | The `session` member uses the `EditorSession \| undefined` contract. | [`EditorSession`](/docs/reference/packages/editor/api/editor-session) |
 | `editorProvider` | `EditorProvider \| undefined` | No | The `editorProvider` member uses the `EditorProvider \| undefined` contract. | [`EditorProvider`](/docs/reference/packages/editor/api/editor-provider) |
-| `clipboard` | `EditorClipboardAdapter \| undefined` | No | The `clipboard` member uses the `EditorClipboardAdapter \| undefined` contract. | — |
+| `clipboard` | `EditorClipboardAdapter \| undefined` | No | The `clipboard` member uses the `EditorClipboardAdapter \| undefined` contract. | [`EditorClipboardAdapter`](/docs/reference/packages/editor/api/editor-clipboard-adapter) |
 | `documentType` | `string \| undefined` | No | The `documentType` member uses the `string \| undefined` contract. | — |
 | `onSubmit` | `((value: string) => void \| Promise<void>) \| undefined` | No | The `onSubmit` member uses the `((value: string) => void \| Promise<void>) \| undefined` contract. | — |
 | `onBlur` | `(() => void \| Promise<void>) \| undefined` | No | The `onBlur` member uses the `(() => void \| Promise<void>) \| undefined` contract. | — |
