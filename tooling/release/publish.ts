@@ -1,4 +1,4 @@
-import { resolve } from "node:path";
+import { isAbsolute, join, resolve } from "node:path";
 import {
   discoverPublishArtifacts,
   npmPublishArguments,
@@ -13,6 +13,7 @@ export interface PublishRuntime {
   readonly discover: (workspace: string) => Promise<readonly PublishArtifact[]>;
   readonly environment: Readonly<Record<string, string | undefined>>;
   readonly fetch: typeof fetch;
+  readonly exists?: (path: string) => Promise<boolean>;
   readonly spawn: (
     command: readonly string[],
     options: {
@@ -34,6 +35,14 @@ const defaultRuntime: PublishRuntime = {
 };
 
 const npmTokenVariables = new Set(["NODE_AUTH_TOKEN", "NPM_TOKEN"]);
+const registryPollAttempts = 121;
+const registryPollInterval = 5_000;
+
+export function publishTarballName(
+  artifact: Pick<PublishArtifact, "name" | "version">,
+): string {
+  return `${artifact.name.replace(/^@/, "").replace("/", "-")}-${artifact.version}.tgz`;
+}
 
 export function oidcPublishEnvironment(
   environment: Readonly<Record<string, string | undefined>>,
@@ -49,18 +58,36 @@ export async function publishRelease(
   workspace: string,
   releaseTag: string,
   runtime: PublishRuntime = defaultRuntime,
+  tarballDirectory?: string,
 ): Promise<{
   readonly published: readonly string[];
   readonly releaseTag: string;
 }> {
   const artifacts = await runtime.discover(workspace);
+  const tarballs = new Map<string, string>();
+  if (tarballDirectory !== undefined) {
+    if (!isAbsolute(tarballDirectory)) {
+      throw new Error("Publication tarball directory must be absolute");
+    }
+    for (const artifact of artifacts) {
+      const path = join(tarballDirectory, publishTarballName(artifact));
+      const exists =
+        runtime.exists ?? ((path: string) => Bun.file(path).exists());
+      if (!(await exists(path))) {
+        throw new Error(`Missing publication tarball ${path}`);
+      }
+      tarballs.set(artifact.name, path);
+    }
+  }
   const published: string[] = [];
+  const pending = new Map<string, PublishArtifact>();
   const isPublished = async (
     name: string,
     version: string,
   ): Promise<boolean> => {
     const response = await runtime.fetch(
       `https://registry.npmjs.org/${encodeURIComponent(name)}/${encodeURIComponent(version)}`,
+      { cache: "no-store", headers: { "cache-control": "no-cache" } },
     );
     if (response.ok) return true;
     if (response.status === 404) return false;
@@ -72,7 +99,10 @@ export async function publishRelease(
   for (const artifact of artifacts) {
     const specifier = `${artifact.name}@${artifact.version}`;
     if (!(await isPublished(artifact.name, artifact.version))) {
-      const publish = runtime.spawn([...npmPublishArguments(releaseTag)], {
+      const tarball = tarballs.get(artifact.name);
+      const arguments_ = [...npmPublishArguments(releaseTag)];
+      if (tarball) arguments_.push(tarball);
+      const publish = runtime.spawn(arguments_, {
         cwd: artifact.artifactDirectory,
         stdout: "inherit",
         stderr: "inherit",
@@ -82,18 +112,28 @@ export async function publishRelease(
         throw new Error(`Failed to publish ${specifier}`);
       }
       published.push(specifier);
+      pending.set(specifier, artifact);
     }
-    let verified = false;
-    for (let attempt = 0; attempt < 10; attempt += 1) {
+  }
+
+  for (
+    let attempt = 0;
+    pending.size > 0 && attempt < registryPollAttempts;
+    attempt += 1
+  ) {
+    for (const [specifier, artifact] of pending) {
       if (await isPublished(artifact.name, artifact.version)) {
-        verified = true;
-        break;
+        pending.delete(specifier);
       }
-      await runtime.sleep(1_000);
     }
-    if (!verified) {
-      throw new Error(`npm did not expose published package ${specifier}`);
+    if (pending.size > 0 && attempt + 1 < registryPollAttempts) {
+      await runtime.sleep(registryPollInterval);
     }
+  }
+  if (pending.size > 0) {
+    throw new Error(
+      `npm did not expose published packages: ${[...pending.keys()].join(", ")}`,
+    );
   }
 
   return Object.freeze({
@@ -102,9 +142,31 @@ export async function publishRelease(
   });
 }
 
-const workspace = resolve(import.meta.dir, "../..");
-const releaseTag = process.env["NPM_CONFIG_TAG"] ?? "latest";
-const result = import.meta.main
-  ? await publishRelease(workspace, releaseTag)
-  : undefined;
-process.stdout.write(result ? `${JSON.stringify(result)}\n` : "");
+export function publicationPaths(arguments_: readonly string[]): {
+  readonly workspace: string;
+  readonly tarballDirectory: string | undefined;
+} {
+  if (arguments_.length > 2 || arguments_.some((path) => !isAbsolute(path))) {
+    throw new Error(
+      "Usage: publish.ts [absolute workspace] [absolute tarball directory]",
+    );
+  }
+  return {
+    workspace: arguments_[0] ?? resolve(import.meta.dir, "../.."),
+    tarballDirectory: arguments_[1],
+  };
+}
+
+if (import.meta.main) {
+  const { workspace, tarballDirectory } = publicationPaths(
+    process.argv.slice(2),
+  );
+  const releaseTag = process.env["NPM_CONFIG_TAG"] ?? "latest";
+  const result = await publishRelease(
+    workspace,
+    releaseTag,
+    defaultRuntime,
+    tarballDirectory,
+  );
+  process.stdout.write(`${JSON.stringify(result)}\n`);
+}

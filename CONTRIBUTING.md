@@ -131,8 +131,11 @@ publishing through the `ci.yml` GitHub Actions workflow and does not accept a
 long-lived npm token. If publication is interrupted after GitHub releases are
 created, manually dispatch the **CI** workflow with the full release commit
 SHA. Recovery checks out that immutable commit and verifies every expected
-component release tag before publishing. The publisher is idempotent and skips
-versions already present on npm.
+component release tag before publishing. It builds and attests the exact
+tarballs before publishing them. npm provenance identifies the trusted CI
+workflow revision. The GitHub artifact attestation binds each recovery tarball
+to its tagged source commit. The publisher skips versions already present on
+npm and submits the remaining versions before waiting for registry scans.
 
 ## Security
 

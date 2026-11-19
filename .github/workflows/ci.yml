@@ -83,6 +83,7 @@ jobs:
     with:
       release_sha: ${{ github.event_name == 'workflow_dispatch' && inputs.release_sha || '' }}
     permissions:
+      attestations: write
       contents: write
       id-token: write
       issues: write
