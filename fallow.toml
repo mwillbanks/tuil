@@ -20,6 +20,7 @@ entry = [
   "tooling/docs/generate-reference.ts",
   "tooling/docs/prepare-assets.ts",
   "tooling/docs/validate-static.ts",
+  "tooling/release/pack-recovery.ts",
   "tooling/release/verify-recovery.ts",
   "tuil.workspace.ts",
   "tests/helpers/coverage-preload.ts",
