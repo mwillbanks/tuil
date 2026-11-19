@@ -54,6 +54,60 @@ export function oidcPublishEnvironment(
   );
 }
 
+async function resolveTarballs(
+  artifacts: readonly PublishArtifact[],
+  directory: string | undefined,
+  exists: (path: string) => Promise<boolean>,
+): Promise<ReadonlyMap<string, string>> {
+  const tarballs = new Map<string, string>();
+  if (directory === undefined) return tarballs;
+  if (!isAbsolute(directory)) {
+    throw new Error("Publication tarball directory must be absolute");
+  }
+  for (const artifact of artifacts) {
+    const path = join(directory, publishTarballName(artifact));
+    if (!(await exists(path))) {
+      throw new Error(`Missing publication tarball ${path}`);
+    }
+    tarballs.set(artifact.name, path);
+  }
+  return tarballs;
+}
+
+async function isPublished(
+  runtime: PublishRuntime,
+  { name, version }: PublishArtifact,
+): Promise<boolean> {
+  const response = await runtime.fetch(
+    `https://registry.npmjs.org/${encodeURIComponent(name)}/${encodeURIComponent(version)}`,
+    { cache: "no-store", headers: { "cache-control": "no-cache" } },
+  );
+  if (response.ok) return true;
+  if (response.status === 404) return false;
+  throw new Error(
+    `npm registry lookup failed for ${name}@${version}: HTTP ${response.status}`,
+  );
+}
+
+async function waitForRegistry(
+  runtime: PublishRuntime,
+  submitted: ReadonlyMap<string, PublishArtifact>,
+): Promise<void> {
+  const pending = new Map(submitted);
+  for (let attempt = 0; pending.size > 0; attempt += 1) {
+    for (const [specifier, artifact] of pending) {
+      if (await isPublished(runtime, artifact)) pending.delete(specifier);
+    }
+    if (pending.size === 0) return;
+    if (attempt + 1 === registryPollAttempts) {
+      throw new Error(
+        `npm did not expose published packages: ${[...pending.keys()].join(", ")}`,
+      );
+    }
+    await runtime.sleep(registryPollInterval);
+  }
+}
+
 export async function publishRelease(
   workspace: string,
   releaseTag: string,
@@ -64,80 +118,33 @@ export async function publishRelease(
   readonly releaseTag: string;
 }> {
   const artifacts = await runtime.discover(workspace);
-  const tarballs = new Map<string, string>();
-  if (tarballDirectory !== undefined) {
-    if (!isAbsolute(tarballDirectory)) {
-      throw new Error("Publication tarball directory must be absolute");
-    }
-    for (const artifact of artifacts) {
-      const path = join(tarballDirectory, publishTarballName(artifact));
-      const exists =
-        runtime.exists ?? ((path: string) => Bun.file(path).exists());
-      if (!(await exists(path))) {
-        throw new Error(`Missing publication tarball ${path}`);
-      }
-      tarballs.set(artifact.name, path);
-    }
-  }
-  const published: string[] = [];
-  const pending = new Map<string, PublishArtifact>();
-  const isPublished = async (
-    name: string,
-    version: string,
-  ): Promise<boolean> => {
-    const response = await runtime.fetch(
-      `https://registry.npmjs.org/${encodeURIComponent(name)}/${encodeURIComponent(version)}`,
-      { cache: "no-store", headers: { "cache-control": "no-cache" } },
-    );
-    if (response.ok) return true;
-    if (response.status === 404) return false;
-    throw new Error(
-      `npm registry lookup failed for ${name}@${version}: HTTP ${response.status}`,
-    );
-  };
-
+  const tarballs = await resolveTarballs(
+    artifacts,
+    tarballDirectory,
+    runtime.exists ?? ((path) => Bun.file(path).exists()),
+  );
+  const submitted = new Map<string, PublishArtifact>();
+  const env = oidcPublishEnvironment(runtime.environment);
   for (const artifact of artifacts) {
+    if (await isPublished(runtime, artifact)) continue;
     const specifier = `${artifact.name}@${artifact.version}`;
-    if (!(await isPublished(artifact.name, artifact.version))) {
-      const tarball = tarballs.get(artifact.name);
-      const arguments_ = [...npmPublishArguments(releaseTag)];
-      if (tarball) arguments_.push(tarball);
-      const publish = runtime.spawn(arguments_, {
-        cwd: artifact.artifactDirectory,
-        stdout: "inherit",
-        stderr: "inherit",
-        env: oidcPublishEnvironment(runtime.environment),
-      });
-      if ((await publish.exited) !== 0) {
-        throw new Error(`Failed to publish ${specifier}`);
-      }
-      published.push(specifier);
-      pending.set(specifier, artifact);
+    const tarball = tarballs.get(artifact.name);
+    const arguments_ = [...npmPublishArguments(releaseTag)];
+    if (tarball) arguments_.push(tarball);
+    const publish = runtime.spawn(arguments_, {
+      cwd: artifact.artifactDirectory,
+      stdout: "inherit",
+      stderr: "inherit",
+      env,
+    });
+    if ((await publish.exited) !== 0) {
+      throw new Error(`Failed to publish ${specifier}`);
     }
+    submitted.set(specifier, artifact);
   }
-
-  for (
-    let attempt = 0;
-    pending.size > 0 && attempt < registryPollAttempts;
-    attempt += 1
-  ) {
-    for (const [specifier, artifact] of pending) {
-      if (await isPublished(artifact.name, artifact.version)) {
-        pending.delete(specifier);
-      }
-    }
-    if (pending.size > 0 && attempt + 1 < registryPollAttempts) {
-      await runtime.sleep(registryPollInterval);
-    }
-  }
-  if (pending.size > 0) {
-    throw new Error(
-      `npm did not expose published packages: ${[...pending.keys()].join(", ")}`,
-    );
-  }
-
+  await waitForRegistry(runtime, submitted);
   return Object.freeze({
-    published: Object.freeze(published),
+    published: Object.freeze([...submitted.keys()]),
     releaseTag,
   });
 }
